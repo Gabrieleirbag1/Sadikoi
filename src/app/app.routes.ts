@@ -1,10 +1,8 @@
 import { Routes } from '@angular/router';
-import { Home } from './home/home';
 
 export const routes: Routes = [
     {
         path: '',
-        component: Home,
-        pathMatch: 'full'
+        loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)        
     }
 ];
