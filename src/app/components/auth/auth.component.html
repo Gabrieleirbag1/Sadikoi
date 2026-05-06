@@ -1,1 +1,14 @@
 <p>auth.component works!</p>
+
+<div>
+  <label for="username">Username:</label>
+  <input id="username" name="username" #username type="text" />
+
+  <label for="email">Email:</label>
+  <input id="email" name="email" #email type="email" />
+
+  <label for="password">Password:</label>
+  <input id="password" name="password" #password type="password" />
+
+  <button type="submit" (click)="register(username.value, password.value, email.value)">Register</button>
+</div>

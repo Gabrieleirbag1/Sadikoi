@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-auth.component',
@@ -6,4 +7,11 @@ import { Component } from '@angular/core';
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
 })
-export class AuthComponent {}
+export class AuthComponent {
+
+  private readonly authService = inject(AuthService);
+
+  protected register(username: string, password: string, email: string): void {
+    this.authService.register(username, password, email);
+  }
+}
