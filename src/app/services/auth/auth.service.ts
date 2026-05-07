@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -10,20 +11,29 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
 
   public isAuthenticated(): boolean {
-    // Placeholder method
     return false;
   }
 
-  public register(username: string, password: string, email: string): void {
+  public async register(username: string, password: string, email: string): Promise<boolean> {
     const payload = { username, password, email };
-    this.httpClient.post(`${environment.apiUrl}register`, payload).subscribe({
-      next: (response) => {
-        console.log('Registration successful:', response);
-      },
-      error: (error) => {
-        console.error('Registration failed:', error);
-      }
-    }); 
+    try {
+      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}register`, payload));
+      console.log('Registration successful:', response);
+      return true;
+    } catch (error) {
+      console.error('Registration failed:', error);
+      return false;
+    }
+  }
+
+  public async login(username_or_email: string, password: string): Promise<void> {
+    const payload = { username_or_email, password };
+    try {
+      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}login`, payload));
+      console.log('Login successful:', response);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   }
 
 }

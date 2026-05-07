@@ -1,5 +1,10 @@
-<p>auth.component works!</p>
+<div>
+  <button (click)="setDisplayMode('register')"> Register </button>
+  <br>
+  <button (click)="setDisplayMode('login')"> Login </button>
+</div>
 
+@if (displayMode() === 'register') {
 <div>
   <label for="username">Username:</label>
   <input id="username" name="username" #username type="text" />
@@ -11,4 +16,13 @@
   <input id="password" name="password" #password type="password" />
 
   <button type="submit" (click)="register(username.value, password.value, email.value)">Register</button>
-</div>
+</div> }
+@else if (displayMode() === 'login') {
+  <div>
+  <label for="username">Username or Email:</label>
+  <input id="username" name="username" #username type="text" />
+  <label for="password">Password:</label>
+  <input id="password" name="password" #password type="password" />
+  <button type="submit" (click)="login(username.value, password.value)">Login</button>
+  </div>
+}

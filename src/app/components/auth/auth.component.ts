@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
@@ -10,12 +10,23 @@ import { AuthService } from '../../services/auth/auth.service';
 export class AuthComponent {
 
   private readonly authService = inject(AuthService);
+  protected displayMode = signal<'register' | 'login' | null>(null);
 
   public isAuhenticated(): boolean {
     return true;
   }
 
-  protected register(username: string, password: string, email: string): void {
-    this.authService.register(username, password, email);
+  protected setDisplayMode(displayMode: 'register' | 'login' | null): void {
+    this.displayMode.set(displayMode);
+  }
+
+  protected async register(username: string, password: string, email: string): Promise<void> {
+    const sucess = await this.authService.register(username, password, email);
+    if (sucess) this.setDisplayMode('login'); 
+  
+  }
+
+  protected login(usernameOrEmail: string, password: string): void {
+    this.authService.login(usernameOrEmail, password);
   }
 }
