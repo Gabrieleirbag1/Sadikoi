@@ -9,9 +9,22 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
 
   private readonly httpClient = inject(HttpClient);
+  private isAuthenticatedFlag = false;
+
+  constructor() {
+    const savedAuthState = localStorage.getItem('isAuthenticated');
+    if (savedAuthState) {
+      this.isAuthenticatedFlag = JSON.parse(savedAuthState);
+    }
+  }
 
   public isAuthenticated(): boolean {
-    return false;
+    return this.isAuthenticatedFlag;
+  }
+
+  public setAuhenticated(isAuthenticated: boolean): void {
+    this.isAuthenticatedFlag = isAuthenticated;
+    localStorage.setItem('isAuthenticated', isAuthenticated.toString());
   }
 
   public async register(username: string, password: string, email: string): Promise<boolean> {
@@ -26,13 +39,15 @@ export class AuthService {
     }
   }
 
-  public async login(username_or_email: string, password: string): Promise<void> {
+  public async login(username_or_email: string, password: string): Promise<boolean> {
     const payload = { username_or_email, password };
     try {
       const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}login`, payload));
       console.log('Login successful:', response);
+      return true;
     } catch (error) {
       console.error('Login failed:', error);
+      return false;
     }
   }
 
