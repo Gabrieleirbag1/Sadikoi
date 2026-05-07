@@ -10,13 +10,13 @@ import { AuthService } from '../../services/auth/auth.service';
 export class AuthComponent {
 
   private readonly authService = inject(AuthService);
-  protected displayMode = signal<'register' | 'login' | null>(null);
+  protected displayMode = signal<'register' | 'login'>('login');
 
   public isAuhenticated(): boolean {
     return true;
   }
 
-  protected setDisplayMode(displayMode: 'register' | 'login' | null): void {
+  protected setDisplayMode(displayMode: 'register' | 'login'): void {
     this.displayMode.set(displayMode);
   }
 
