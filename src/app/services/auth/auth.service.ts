@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -7,11 +8,10 @@ import { inject, Injectable } from '@angular/core';
 export class AuthService {
 
   private readonly httpClient = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8082';
 
   public register(username: string, password: string, email: string): void {
     const payload = { username, password, email };
-    this.httpClient.post(`${this.apiUrl}/api/register`, payload).subscribe({
+    this.httpClient.post(`${environment.apiUrl}register`, payload).subscribe({
       next: (response) => {
         console.log('Registration successful:', response);
       },
