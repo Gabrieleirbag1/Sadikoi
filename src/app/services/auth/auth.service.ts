@@ -9,6 +9,11 @@ export class AuthService {
 
   private readonly httpClient = inject(HttpClient);
 
+  public isAuthenticated(): boolean {
+    // Placeholder method
+    return false;
+  }
+
   public register(username: string, password: string, email: string): void {
     const payload = { username, password, email };
     this.httpClient.post(`${environment.apiUrl}register`, payload).subscribe({

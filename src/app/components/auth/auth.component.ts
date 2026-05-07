@@ -11,6 +11,10 @@ export class AuthComponent {
 
   private readonly authService = inject(AuthService);
 
+  public isAuhenticated(): boolean {
+    return true;
+  }
+
   protected register(username: string, password: string, email: string): void {
     this.authService.register(username, password, email);
   }
