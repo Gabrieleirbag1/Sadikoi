@@ -10,11 +10,11 @@ export class GroupsService {
 
   private readonly httpClient = inject(HttpClient);
 
-  public async getGroups(userId: number): Promise<any> {
+  public async getGroups(userId: number): Promise<any | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${userId}`));
       console.log('Groups fetched successfully:', response);
-      return response;
+      return response.content || null;
     } catch (error) {
       console.error('Failed to fetch groups:', error);
       throw error;
