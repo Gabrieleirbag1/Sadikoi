@@ -12,7 +12,7 @@ export class GroupsService {
 
   public async getGroups(userId: number): Promise<any> {
     try {
-      const response = await firstValueFrom(this.httpClient.get(`${environment.apiUrl}groups/${userId}`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${userId}`));
       console.log('Groups fetched successfully:', response);
       return response;
     } catch (error) {
