@@ -20,4 +20,17 @@ export class GroupsService {
       throw error;
     }
   }
+
+  public async createGroup(groupName: string, userId: number): Promise<any | null> {
+    const payload = { name: groupName, user_info: userId };
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups`, payload));
+      console.log('Group created successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      console.error('Failed to create group:', error);
+      throw error;
+    }
+  }
+
 }

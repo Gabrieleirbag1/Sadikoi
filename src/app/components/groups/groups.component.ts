@@ -29,5 +29,16 @@ export class GroupsComponent {
     }
   }
 
+  protected async createGroup(groupName: string): Promise<void> {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    try {
+      const newGroup = await this.groupsService.createGroup(groupName, user.id);
+      this.groups.update(current => [...current, newGroup]);
+      console.log('Created group:', newGroup);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
+  }
+
 
 }
