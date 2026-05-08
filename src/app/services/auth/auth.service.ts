@@ -21,7 +21,12 @@ export class AuthService {
   constructor() {
     const savedAuthState = localStorage.getItem('isAuthenticated');
     if (savedAuthState) {
-      this.isAuthenticatedFlag = JSON.parse(savedAuthState);
+      const user =JSON.parse(localStorage.getItem('user') || '{}');
+      if (Object.keys(user).length === 0 || !user.id) {
+        this.logout();
+      } else {
+        this.isAuthenticatedFlag = JSON.parse(savedAuthState);
+      }
     }
   }
 
@@ -61,11 +66,17 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}login`, payload));
       console.log('Login successful:', response);
+      localStorage.setItem('user', JSON.stringify(response));
       return true;
     } catch (error) {
       console.error('Login failed:', error);
       return false;
     }
+  }
+
+  public logout(): void {
+    this.setAuthenticated(false);
+    localStorage.removeItem('user');
   }
 
 }

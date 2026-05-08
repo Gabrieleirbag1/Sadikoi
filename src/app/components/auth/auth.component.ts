@@ -35,7 +35,7 @@ export class AuthComponent {
   }
 
   protected logout(): void {
-    this.authService.setAuthenticated(false);
+    this.authService.logout();
     this.isAuhenticated = false;
     this.router.navigate(['/login']);
   }
