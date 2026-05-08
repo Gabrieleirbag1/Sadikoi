@@ -1,5 +1,6 @@
 <p>groups.component works!</p>
-<button (click)="createGroup('New Group')">Create Group</button>
+<input type="text" placeholder="Group Name" #groupName>
+<button (click)="createGroup(groupName.value)">Create Group</button>
 @for (group of groups(); track $index) {
     <p>{{ group.name }}</p>
 }
