@@ -14,7 +14,12 @@ export class AuthService {
   constructor() {
     const savedAuthState = localStorage.getItem('isAuthenticated');
     if (savedAuthState) {
-      this.isAuthenticatedFlag = JSON.parse(savedAuthState);
+      const user =JSON.parse(localStorage.getItem('user') || '{}');
+      if (Object.keys(user).length === 0 || !user.id) {
+        this.logout();
+      } else {
+        this.isAuthenticatedFlag = JSON.parse(savedAuthState);
+      }
     }
   }
 
@@ -22,15 +27,37 @@ export class AuthService {
     return this.isAuthenticatedFlag;
   }
 
-  public setAuhenticated(isAuthenticated: boolean): void {
+  public setAuthenticated(isAuthenticated: boolean): void {
     this.isAuthenticatedFlag = isAuthenticated;
     localStorage.setItem('isAuthenticated', isAuthenticated.toString());
+  }
+
+  // Helper method to fetch user details, can be used after login to get user info
+  public async getUser(userInfo: number | string): Promise<User | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}account/${userInfo}`));
+      return response.content || null;
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      return null;
+    }
+  }
+
+  // Helper method to get user details from local storage, if not found fetch from API
+  public async getLocalUser(userInfo?: number | string): Promise<User | null> {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (Object.keys(user).length === 0 || !user.id) {
+      if (!userInfo) return null;
+      const response = await this.getUser(userInfo);
+      return response;
+    }
+    return user;
   }
 
   public async register(username: string, password: string, email: string): Promise<boolean> {
     const payload = { username, password, email };
     try {
-      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}register`, payload));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}register`, payload));
       console.log('Registration successful:', response);
       return true;
     } catch (error) {
@@ -42,13 +69,19 @@ export class AuthService {
   public async login(username_or_email: string, password: string): Promise<boolean> {
     const payload = { username_or_email, password };
     try {
-      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}login`, payload));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}login`, payload));
       console.log('Login successful:', response);
+      localStorage.setItem('user', JSON.stringify(response.content));
       return true;
     } catch (error) {
       console.error('Login failed:', error);
       return false;
     }
+  }
+
+  public logout(): void {
+    this.setAuthenticated(false);
+    localStorage.removeItem('user');
   }
 
 }
