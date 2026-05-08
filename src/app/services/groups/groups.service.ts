@@ -12,11 +12,22 @@ export class GroupsService {
 
   public async getGroups(userId: number): Promise<Group[] | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${userId}`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/${userId}`));
       console.log('Groups fetched successfully:', response);
       return response.content || null;
     } catch (error) {
       console.error('Failed to fetch groups:', error);
+      throw error;
+    }
+  }
+
+  public async getGroup(groupId: number): Promise<Group | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}`));
+      console.log('Group fetched successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      console.error('Failed to fetch group:', error);
       throw error;
     }
   }
