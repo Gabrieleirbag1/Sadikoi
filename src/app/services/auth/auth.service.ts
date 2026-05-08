@@ -3,19 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  date_created: string;
-}
-
-interface ApiResponse extends Response {
-  success: boolean;
-  message: string;
-  content?: any;
-}
-
 @Injectable({
   providedIn: 'root',
 })
