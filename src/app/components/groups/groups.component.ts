@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-groups',
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class GroupsComponent implements OnInit {
 
   private readonly groupsService = inject(GroupsService);
+  private readonly router = inject(Router);
   protected groups = signal<Group[]>([]);
 
   async ngOnInit(): Promise<void> {
@@ -40,5 +42,8 @@ export class GroupsComponent implements OnInit {
     }
   }
 
+  protected redirectGroup(group: Group): void {
+    this.router.navigate([`/group/${group.id}`], { state: { group } });
+  }
 
 }

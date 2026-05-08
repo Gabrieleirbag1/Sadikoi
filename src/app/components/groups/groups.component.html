@@ -2,5 +2,7 @@
 <input type="text" placeholder="Group Name" #groupName>
 <button (click)="createGroup(groupName.value)">Create Group</button>
 @for (group of groups(); track $index) {
-    <p>{{ group.name }}</p>
+    <button (click)="redirectGroup(group)">
+        <p>{{ group.name }}</p>
+    </button>
 }
