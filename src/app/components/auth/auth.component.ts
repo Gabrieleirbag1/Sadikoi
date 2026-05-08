@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-auth.component',
+  selector: 'app-auth',
   imports: [],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
@@ -28,14 +28,14 @@ export class AuthComponent {
   protected async login(usernameOrEmail: string, password: string): Promise<void> {
     const success = await this.authService.login(usernameOrEmail, password);
     if (success) {
-      this.authService.setAuhenticated(true);
+      this.authService.setAuthenticated(true);
       this.isAuhenticated = true;
       this.router.navigate(['/dashboard']);
     }
   }
 
   protected logout(): void {
-    this.authService.setAuhenticated(false);
+    this.authService.setAuthenticated(false);
     this.isAuhenticated = false;
     this.router.navigate(['/login']);
   }

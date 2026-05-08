@@ -3,6 +3,13 @@ import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  date_created: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,9 +29,19 @@ export class AuthService {
     return this.isAuthenticatedFlag;
   }
 
-  public setAuhenticated(isAuthenticated: boolean): void {
+  public setAuthenticated(isAuthenticated: boolean): void {
     this.isAuthenticatedFlag = isAuthenticated;
     localStorage.setItem('isAuthenticated', isAuthenticated.toString());
+  }
+
+  public async getUser(userInfo: number | string): Promise<User | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<User>(`${environment.apiUrl}account/${userInfo}`));
+      return response;
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      return null;
+    }
   }
 
   public async register(username: string, password: string, email: string): Promise<boolean> {
