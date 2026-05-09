@@ -18,4 +18,15 @@ export class ChatService {
       return [];
     }
   }
+
+  public async sendMessage(groupId: number, content: string, userInfo: string | number): Promise<Message | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`/api/groups/${groupId}/messages`, { content, user_info: userInfo }));
+      return response.content || null;
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      return null;
+    }
+  }
+  
 }
