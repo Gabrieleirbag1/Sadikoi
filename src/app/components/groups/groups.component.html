@@ -1,1 +1,8 @@
 <p>groups.component works!</p>
+<input type="text" placeholder="Group Name" #groupName>
+<button (click)="createGroup(groupName.value)">Create Group</button>
+@for (group of groups(); track $index) {
+    <button (click)="redirectGroup(group)">
+        <p>{{ group.name }}</p>
+    </button>
+}

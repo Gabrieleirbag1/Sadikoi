@@ -12,6 +12,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/auth/auth.component').then(m => m.AuthComponent) 
     },
     {
+        path: 'group/:id',
+        loadComponent: () => import('./components/group/group.component').then(m => m.GroupComponent) 
+    },
+    {
         path: '**',
         redirectTo: ''
     }

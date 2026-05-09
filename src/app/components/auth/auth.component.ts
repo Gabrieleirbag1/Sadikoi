@@ -30,14 +30,13 @@ export class AuthComponent {
     if (success) {
       this.authService.setAuthenticated(true);
       this.isAuhenticated = true;
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/']);
     }
   }
 
   protected logout(): void {
     this.authService.logout();
     this.isAuhenticated = false;
-    this.router.navigate(['/login']);
   }
   
 }

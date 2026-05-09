@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-groups',
@@ -9,25 +10,40 @@ import { CommonModule } from '@angular/common';
   styleUrl: './groups.component.css',
   standalone: true
 })
-export class GroupsComponent {
+export class GroupsComponent implements OnInit {
 
   private readonly groupsService = inject(GroupsService);
-  protected groups: any[] = [];
+  private readonly router = inject(Router);
+  protected groups = signal<Group[]>([]);
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.fetchGroups(user.id);
+    await this.fetchGroups(user.id);
   }
 
   protected async fetchGroups(userId: number): Promise<void> {
     try {
       const groups = await this.groupsService.getGroups(userId);
-      this.groups = groups;
-      console.log('Fetched groups:', groups);
+      if (groups) this.groups.set(groups);
+      console.log('Fetched groups:', this.groups());
     } catch (error) {
       console.error('Error fetching groups:', error);
     }
   }
 
+  protected async createGroup(groupName: string): Promise<void> {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    try {
+      const newGroup = await this.groupsService.createGroup(groupName, user.id);
+      if (newGroup) this.groups.update(current => [...current, newGroup]);
+      console.log('Created group:', newGroup);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
+  }
+
+  protected redirectGroup(group: Group): void {
+    this.router.navigate([`/group/${group.id}`], { state: { group } });
+  }
 
 }
