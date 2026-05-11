@@ -21,4 +21,14 @@ export class QuestionService {
     }
   }
 
+  public async submitVote(questionId: number, userInfo: string | number): Promise<void> {
+    try {
+      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}questions/${questionId}/vote`, { user_info: userInfo }));
+      console.log('Vote submitted successfully');
+    } catch (error) {
+      console.error('Failed to submit vote:', error);
+      throw error;
+    }
+  }
+
 }
