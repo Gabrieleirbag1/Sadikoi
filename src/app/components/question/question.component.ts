@@ -1,6 +1,7 @@
 import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-question',
@@ -11,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class QuestionComponent implements OnInit{
 
   private readonly questionService = inject(QuestionService);
+  private readonly authService = inject(AuthService);
 
   @Input() group: Group | null = null;
 
@@ -31,13 +33,14 @@ export class QuestionComponent implements OnInit{
     }
   }
 
-  protected async submitVote(userId: number): Promise<void> {
+  protected async submitVote(votedUsersId: number[]): Promise<void> {
     try {
       if (!this.question()) throw new Error('No question available to vote on');
 
-      if (!userId) throw new Error('User not authenticated')
+      const user = await this.authService.getLocalUser();
+      if (!user) throw new Error('User not authenticated')
 
-      await this.questionService.submitVote(this.question()!.id, userId);
+      await this.questionService.submitVote(this.question()!.id, user.id, votedUsersId);
       console.log('Vote submitted successfully');
     } catch (error) {
       console.error('Error submitting vote:', error);
