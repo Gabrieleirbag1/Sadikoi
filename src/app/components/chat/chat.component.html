@@ -1,0 +1,12 @@
+<p>chat.component works!</p>
+
+@for (message of messages(); track $index) {
+  <p>{{message.content}} - {{message.sender.username}}</p>
+} @empty {
+<p>
+    No messages to display.
+</p>
+}
+
+<input type="text" placeholder="Type your message here..." #messageContent>
+<button (click)="sendMessage(messageContent.value)">Send</button>
