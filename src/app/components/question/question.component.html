@@ -1,2 +1,5 @@
 <p>question.component works!</p>
 <p>Question: {{question()?.content}}</p>
+@for (user of group?.users; track $index) {
+  <button (click)="submitVote(user.id)">{{user.username}} - Vote</button>
+}
