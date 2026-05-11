@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { ChatComponent } from "../chat/chat.component";
+import { QuestionComponent } from "../question/question.component";
 
 @Component({
   selector: 'app-group',
-  imports: [ChatComponent],
+  imports: [ChatComponent, QuestionComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
