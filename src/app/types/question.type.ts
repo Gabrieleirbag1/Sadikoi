@@ -1,6 +1,10 @@
 interface Question {
-  id: number;
-  questionText: string;
-  options: string[];
-  correctAnswer: string;
+    question_id: number,
+    content: string,
+    theme: string,
+    enableSelfVote: boolean,
+    enableMultipleVoting: boolean,
+    voteNumberLimit: number,
+    canWrite: boolean,
+    item: string
 }
