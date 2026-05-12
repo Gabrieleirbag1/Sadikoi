@@ -38,11 +38,7 @@ export class QuestionComponent implements OnInit{
   protected async submitVote(votedUsersId: number[]): Promise<void> {
     try {
       if (!this.question()) throw new Error('No question available to vote on');
-
-      const user = await this.authService.getLocalUser();
-      if (!user) throw new Error('User not authenticated')
-
-      await this.questionService.submitVote(this.question()!.id, user.id, votedUsersId);
+      await this.questionService.submitVote(this.question()!.id, votedUsersId);
       console.log('Vote submitted successfully');
     } catch (error) {
       console.error('Error submitting vote:', error);

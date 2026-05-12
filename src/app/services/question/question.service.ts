@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { first, firstValueFrom } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 
 @Injectable({
@@ -9,6 +10,7 @@ import { first, firstValueFrom } from 'rxjs';
 })
 export class QuestionService {
   private readonly httpClient = inject(HttpClient);
+  private readonly authService = inject(AuthService);
 
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
@@ -21,9 +23,11 @@ export class QuestionService {
     }
   }
 
-  public async submitVote(questionId: number, userInfo: string | number, votedUsersId: number[]): Promise<void> {
+  public async submitVote(questionId: number, votedUsersId: number[]): Promise<void> {
     try {
-      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}questions/${questionId}/vote`, { user_info: userInfo, votedUsers: votedUsersId }));
+      const user = await this.authService.getLocalUser();
+      if (!user) throw new Error('User not authenticated');
+      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}questions/${questionId}/vote`, { user_info: user.id, votedUsers: votedUsersId }));
       console.log('Vote submitted successfully:', response);
     } catch (error) {
       console.error('Failed to submit vote:', error);
