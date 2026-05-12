@@ -1,4 +1,8 @@
 <p>group.component works!</p>
 {{group()?.name}}
-<app-question [group]="group()"></app-question>
-<app-chat [groupId]="group()!.id"></app-chat>
+@if (group()) {
+  <app-question [group]="group()"></app-question>
+  <app-chat [groupId]="group()!.id"></app-chat>
+} @else {
+    <p>Loading group...</p>
+}
