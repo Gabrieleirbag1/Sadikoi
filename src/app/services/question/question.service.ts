@@ -14,7 +14,7 @@ export class QuestionService {
 
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}`, { withCredentials: true }));
       console.log('Questions fetched successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -27,7 +27,7 @@ export class QuestionService {
     try {
       const user = await this.authService.getLocalUser();
       if (!user) throw new Error('User not authenticated');
-      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}questions/${questionId}/vote`, { user_info: user.id, votedUsers: votedUsersId }));
+      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}questions/${questionId}/vote`, { user_info: user.id, votedUsers: votedUsersId }, { withCredentials: true }));
       console.log('Vote submitted successfully:', response);
     } catch (error) {
       console.error('Failed to submit vote:', error);

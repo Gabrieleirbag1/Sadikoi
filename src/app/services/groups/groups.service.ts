@@ -12,7 +12,7 @@ export class GroupsService {
 
   public async getGroups(userId: number): Promise<Group[] | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/${userId}`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/${userId}`, { withCredentials: true }));
       console.log('Groups fetched successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -23,7 +23,7 @@ export class GroupsService {
 
   public async getGroup(groupId: number): Promise<Group | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}`, { withCredentials: true }));
       console.log('Group fetched successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -35,7 +35,7 @@ export class GroupsService {
   public async createGroup(groupName: string, userId: number): Promise<Group | null> {
     const payload = { name: groupName, user_info: userId };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups`, payload));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups`, payload, { withCredentials: true }));
       console.log('Group created successfully:', response);
       return response.content || null;
     } catch (error) {

@@ -35,7 +35,7 @@ export class AuthService {
   // Helper method to fetch user details, can be used after login to get user info
   public async getUser(userInfo: number | string): Promise<User | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}account/${userInfo}`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}account/${userInfo}`, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
       console.error('Failed to fetch user:', error);
@@ -57,7 +57,7 @@ export class AuthService {
   public async register(username: string, password: string, email: string): Promise<boolean> {
     const payload = { username, password, email };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}register`, payload));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}register`, payload, { withCredentials: true }));
       console.log('Registration successful:', response);
       return true;
     } catch (error) {
@@ -69,7 +69,7 @@ export class AuthService {
   public async login(username_or_email: string, password: string): Promise<boolean> {
     const payload = { username_or_email, password };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}login`, payload));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}login`, payload, { withCredentials: true }));
       console.log('Login successful:', response);
       localStorage.setItem('user', JSON.stringify(response.content));
       return true;
