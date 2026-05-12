@@ -32,9 +32,8 @@ export class GroupsComponent implements OnInit {
   }
 
   protected async createGroup(groupName: string): Promise<void> {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
     try {
-      const newGroup = await this.groupsService.createGroup(groupName, user.id);
+      const newGroup = await this.groupsService.createGroup(groupName);
       if (newGroup) this.groups.update(current => [...current, newGroup]);
       console.log('Created group:', newGroup);
     } catch (error) {

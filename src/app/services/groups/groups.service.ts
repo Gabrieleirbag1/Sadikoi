@@ -32,8 +32,8 @@ export class GroupsService {
     }
   }
 
-  public async createGroup(groupName: string, userId: number): Promise<Group | null> {
-    const payload = { name: groupName, user_info: userId };
+  public async createGroup(groupName: string): Promise<Group | null> {
+    const payload = { name: groupName };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups`, payload, { withCredentials: true }));
       console.log('Group created successfully:', response);
