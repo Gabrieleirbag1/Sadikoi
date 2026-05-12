@@ -14,6 +14,8 @@ export class QuestionComponent implements OnInit{
   private readonly questionService = inject(QuestionService);
   private readonly authService = inject(AuthService);
 
+  protected usersId: number[] = [];
+
   @Input() group: Group | null = null;
 
   protected question = signal<Question | null>(null);
@@ -44,6 +46,14 @@ export class QuestionComponent implements OnInit{
       console.log('Vote submitted successfully');
     } catch (error) {
       console.error('Error submitting vote:', error);
+    }
+  }
+
+  protected toggleVote(userId: number): void {
+    if (this.usersId.includes(userId)) {
+      this.usersId = this.usersId.filter(id => id !== userId);
+    } else {
+      this.usersId.push(userId);
     }
   }
 
