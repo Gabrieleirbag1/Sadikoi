@@ -7,5 +7,6 @@ interface Question {
   enableMultipleVoting: boolean,
   voteNumberLimit: number,
   canWrite: boolean,
-  item: string
+  item: string,
+  hasVoted?: boolean
 }
