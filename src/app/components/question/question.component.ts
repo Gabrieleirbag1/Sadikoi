@@ -1,7 +1,6 @@
 import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-question',
@@ -12,7 +11,6 @@ import { AuthService } from '../../services/auth/auth.service';
 export class QuestionComponent implements OnInit{
 
   private readonly questionService = inject(QuestionService);
-  private readonly authService = inject(AuthService);
 
   protected usersId: number[] = [];
 
