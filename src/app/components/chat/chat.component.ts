@@ -13,7 +13,6 @@ export class ChatComponent {
 
   private readonly chatService = inject(ChatService);
   private readonly authService = inject(AuthService);
-  private user: User | null = null;
   protected messages = signal<Message[]>([]);
 
   @Input() groupId!: number;
@@ -21,7 +20,6 @@ export class ChatComponent {
   async ngOnInit(): Promise<void> {
     const response = await this.authService.getLocalUser();
     if (response) {
-      this.user = response;
       this.loadMessages(this.groupId);
     } else {
       console.error('User not authenticated');
@@ -40,8 +38,7 @@ export class ChatComponent {
 
   protected async sendMessage(content: string): Promise<void> {
     try {
-      if (!this.user) throw new Error('User not authenticated');
-      const newMessage = await this.chatService.sendMessage(this.groupId, content, this.user.id);
+      const newMessage = await this.chatService.sendMessage(this.groupId, content);
       if (newMessage) this.messages.update(messages => [...messages, newMessage]);
       console.log('Sent message:', newMessage);
     } catch (error) {

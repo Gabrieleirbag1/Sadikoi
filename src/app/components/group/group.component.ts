@@ -1,16 +1,18 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { ChatComponent } from "../chat/chat.component";
+import { QuestionComponent } from "../question/question.component";
 
 @Component({
   selector: 'app-group',
-  imports: [ChatComponent],
+  imports: [ChatComponent, QuestionComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
 export class GroupComponent implements OnInit {
   private readonly groupsService = inject(GroupsService);
   protected group = signal<Group | null>(null);
+  protected invitation = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
     const navState = window.history.state;
@@ -37,4 +39,19 @@ export class GroupComponent implements OnInit {
       console.error('Error fetching group:', error);
     }
   }
+
+  protected async fetchInvitation(): Promise<void> {
+    if (!this.group()) {
+      console.error('Group not loaded yet');
+      return;
+    }
+    try {
+      const invitation = await this.groupsService.getGroupInvitation(this.group()!.id);
+      console.log('Fetched group invitation:', invitation);
+      this.invitation.set(invitation);
+    } catch (error) {
+      console.error('Error fetching group invitation:', error);
+    }
+  }
+
 }

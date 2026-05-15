@@ -12,7 +12,7 @@ export class ChatService {
 
   public async getMessages(groupId: number): Promise<Message[]> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages`));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages`, { withCredentials: true }));
       return response.content || [];
     } catch (error) {
       console.error('Failed to fetch messages:', error);
@@ -20,9 +20,9 @@ export class ChatService {
     }
   }
 
-  public async sendMessage(groupId: number, content: string, userInfo: string | number): Promise<Message | null> {
+  public async sendMessage(groupId: number, content: string): Promise<Message | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages`, { content, user_info: userInfo }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages`, { content}, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
       console.error('Failed to send message:', error);

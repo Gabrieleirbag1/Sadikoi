@@ -2,6 +2,6 @@ interface Group {
   id: number;
   name: string;
   description: string;
-  users: string[];
+  users: User[];
   date_created: string;
 }

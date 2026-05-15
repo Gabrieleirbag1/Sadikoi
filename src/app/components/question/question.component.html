@@ -1,0 +1,9 @@
+<p>question.component works!</p>
+<p>Question: {{question()?.content}}</p>
+@for (user of group?.users; track $index) {
+  <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)">
+  <label>{{user.username}}</label>
+}
+<br>
+<button (click)="submitVote(usersId)">Vote</button>
+

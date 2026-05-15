@@ -16,6 +16,14 @@ export const routes: Routes = [
         loadComponent: () => import('./components/group/group.component').then(m => m.GroupComponent) 
     },
     {
+        path: 'group/invitations/:token',
+        loadComponent: () => import('./components/answer.invitation/answer.invitation.component').then(m => m.AnswerInvitationComponent)
+    },
+    {
+        path: 'join',
+        loadComponent: () => import('./components/join.group/join.group.component').then(m => m.JoinGroupComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }
