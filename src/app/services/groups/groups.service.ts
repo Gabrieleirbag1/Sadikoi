@@ -44,4 +44,15 @@ export class GroupsService {
     }
   }
 
+  public async getGroupInvitation(groupId: number): Promise<string | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/invitations`, { withCredentials: true }));
+      console.log('Group invitation fetched successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      console.error('Failed to fetch group invitation:', error);
+      throw error;
+    }
+  }
+  
 }
