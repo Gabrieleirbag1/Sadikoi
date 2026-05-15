@@ -62,7 +62,7 @@ export class GroupsService {
       return response.content || null;
     } catch (error) {
       console.error('Failed to answer group invitation:', error);
-      return null;
+      throw error;
     }
   }
 
