@@ -54,5 +54,16 @@ export class GroupsService {
       throw error;
     }
   }
-  
+
+  public async answerGroupInvitation(token: string): Promise<Group | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/invitations/${token}/`, null, { withCredentials: true }));
+      console.log('Group invitation answered successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      console.error('Failed to answer group invitation:', error);
+      throw error;
+    }
+  }
+
 }
