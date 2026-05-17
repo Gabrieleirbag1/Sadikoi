@@ -17,13 +17,12 @@ export class GroupsComponent implements OnInit {
   protected groups = signal<Group[]>([]);
 
   async ngOnInit(): Promise<void> {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    await this.fetchGroups(user.id);
+    await this.fetchGroups();
   }
 
-  protected async fetchGroups(userId: number): Promise<void> {
+  protected async fetchGroups(): Promise<void> {
     try {
-      const groups = await this.groupsService.getGroups(userId);
+      const groups = await this.groupsService.getGroups();
       if (groups) this.groups.set(groups);
       console.log('Fetched groups:', this.groups());
     } catch (error) {

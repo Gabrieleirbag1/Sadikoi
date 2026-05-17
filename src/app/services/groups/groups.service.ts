@@ -10,9 +10,9 @@ export class GroupsService {
 
   private readonly httpClient = inject(HttpClient);
 
-  public async getGroups(userId: number): Promise<Group[] | null> {
+  public async getGroups(): Promise<Group[] | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/${userId}`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/`, { withCredentials: true }));
       console.log('Groups fetched successfully:', response);
       return response.content || null;
     } catch (error) {
