@@ -11,20 +11,44 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private isAuthenticatedFlag = false;
 
-  constructor() {}
+  constructor() {
+    this.initializeAuthState();
+    const savedAuthState = sessionStorage.getItem('isAuthenticated');
+    if (savedAuthState) {
+      const parsedAuthState = JSON.parse(savedAuthState);
+      if (parsedAuthState) {
+        const user =JSON.parse(sessionStorage.getItem('user') || '{}');
+        if (Object.keys(user).length === 0 || !user.id) {
+          this.logout();
+        } else {
+          this.isAuthenticatedFlag = parsedAuthState;
+        }
+      }
+    }
+  }
+
+  private async initializeAuthState(): Promise<void> {
+    const response = await this.getUser();
+    if (response) {
+      this.setAuthenticated(true);
+    } else {
+      this.setAuthenticated(false);
+    }
+  }
 
   public isAuthenticated(): boolean {
     return this.isAuthenticatedFlag;
   }
 
   public setAuthenticated(isAuthenticated: boolean): void {
+    sessionStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
     this.isAuthenticatedFlag = isAuthenticated;
   }
 
   // Helper method to fetch user details, can be used after login to get user info
-  public async getUser(userInfo: number | string): Promise<User | null> {
+  public async getUser(): Promise<User | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}account/${userInfo}`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}account`, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
       console.error('Failed to fetch user:', error);
@@ -49,6 +73,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}login`, payload, { withCredentials: true }));
       console.log('Login successful:', response);
+      sessionStorage.setItem('user', JSON.stringify(response.content));
       this.setAuthenticated(true);
       return true;
     } catch (error) {
@@ -57,9 +82,15 @@ export class AuthService {
     }
   }
 
-  public logout(): void {
-    this.setAuthenticated(false);
-    // Add http call to your backend logout endpoint here if you have one!
-  }
-
+  public async logout(): Promise<void> {
+    try {
+        const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}logout`, null, { withCredentials: true }));
+        console.log('Login successful:', response);
+        sessionStorage.setItem('user', JSON.stringify(response.content));
+        this.setAuthenticated(false);
+        sessionStorage.removeItem('user');
+      } catch (error) {
+        console.error('Login failed:', error);
+        }
+    }
 }
