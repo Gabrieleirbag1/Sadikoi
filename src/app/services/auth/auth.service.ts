@@ -11,17 +11,7 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private isAuthenticatedFlag = false;
 
-  constructor() {
-    const savedAuthState = localStorage.getItem('isAuthenticated');
-    if (savedAuthState) {
-      const user =JSON.parse(localStorage.getItem('user') || '{}');
-      if (Object.keys(user).length === 0 || !user.id) {
-        this.logout();
-      } else {
-        this.isAuthenticatedFlag = JSON.parse(savedAuthState);
-      }
-    }
-  }
+  constructor() {}
 
   public isAuthenticated(): boolean {
     return this.isAuthenticatedFlag;
@@ -29,7 +19,6 @@ export class AuthService {
 
   public setAuthenticated(isAuthenticated: boolean): void {
     this.isAuthenticatedFlag = isAuthenticated;
-    localStorage.setItem('isAuthenticated', isAuthenticated.toString());
   }
 
   // Helper method to fetch user details, can be used after login to get user info
@@ -43,15 +32,10 @@ export class AuthService {
     }
   }
 
-  // Helper method to get user details from local storage, if not found fetch from API
+  // Helper method to get user details, relying only on API
   public async getLocalUser(userInfo?: number | string): Promise<User | null> {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (Object.keys(user).length === 0 || !user.id) {
-      if (!userInfo) return null;
-      const response = await this.getUser(userInfo);
-      return response;
-    }
-    return user;
+    if (!userInfo) return null;
+    return await this.getUser(userInfo);
   }
 
   public async register(username: string, password: string, email: string): Promise<boolean> {
@@ -71,7 +55,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}login`, payload, { withCredentials: true }));
       console.log('Login successful:', response);
-      localStorage.setItem('user', JSON.stringify(response.content));
+      this.setAuthenticated(true);
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -81,7 +65,7 @@ export class AuthService {
 
   public logout(): void {
     this.setAuthenticated(false);
-    localStorage.removeItem('user');
+    // Add http call to your backend logout endpoint here if you have one!
   }
 
 }
