@@ -32,12 +32,6 @@ export class AuthService {
     }
   }
 
-  // Helper method to get user details, relying only on API
-  public async getLocalUser(userInfo?: number | string): Promise<User | null> {
-    if (!userInfo) return null;
-    return await this.getUser(userInfo);
-  }
-
   public async register(username: string, password: string, email: string): Promise<boolean> {
     const payload = { username, password, email };
     try {
