@@ -1,6 +1,6 @@
 <p>question.component works!</p>
 <p>Question: {{ question()?.content }}</p>
-@if (question()?.hasVoted) {
+@if (question()?.votes) {
   <p>You have already voted. Item {{ question()?.item }}</p>
 } @else {
   @for (user of group?.users; track $index) {

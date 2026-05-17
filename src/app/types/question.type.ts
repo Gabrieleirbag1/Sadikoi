@@ -8,5 +8,5 @@ interface Question {
   voteNumberLimit: number,
   canWrite: boolean,
   item: string,
-  hasVoted?: boolean
+  votes?: Vote[],
 }
