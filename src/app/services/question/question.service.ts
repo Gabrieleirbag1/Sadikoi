@@ -2,8 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-
 
 @Injectable({
   providedIn: 'root',
