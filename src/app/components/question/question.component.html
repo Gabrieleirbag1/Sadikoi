@@ -3,12 +3,16 @@
 @if (question()?.votes) {
   <p>You have already voted. Item {{ question()?.item }}</p>
   @for (vote of question()?.votes; track $index) {
-    <p>
-      @for (targetUser of vote.targets; track $index) {
-        {{ targetUser.username }}
-      }
-      voted by {{ vote.voterUser.username }}
-    </p>
+    @if (vote.writtenAnswer) {
+      <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
+    } @else {
+      <p>
+        @for (targetUser of vote.targets; track $index) {
+          {{ targetUser.username }}
+        }
+        voted by {{ vote.voterUser.username }}
+      </p>
+    }
   }
 } @else {
   @for (user of group?.users; track $index) {
