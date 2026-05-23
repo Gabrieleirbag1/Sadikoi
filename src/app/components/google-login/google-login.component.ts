@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
+import { secrets } from '../../../environments/secrets';
 
 declare const google: any;
 
@@ -21,7 +21,7 @@ export class GoogleLoginComponent implements OnInit {
 
      initializeGoogleSignIn() {
        google.accounts.id.initialize({
-         client_id: environment.googleClientId,
+         client_id: secrets.googleClientId,
          callback: (response: any) => this.handleCredentialResponse(response)
        });
 
