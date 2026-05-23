@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 export class AuthService {
 
   private readonly httpClient = inject(HttpClient);
-  private readonly router = inject(Router);
   private isAuthenticatedFlag = false;
 
   constructor() {
