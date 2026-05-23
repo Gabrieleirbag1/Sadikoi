@@ -1,9 +1,24 @@
 <p>question.component works!</p>
-<p>Question: {{question()?.content}}</p>
-@for (user of group?.users; track $index) {
-  <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)">
-  <label>{{user.username}}</label>
+<p>Question: {{ question()?.content }}</p>
+@if (question()?.votes) {
+  <p>You have already voted. Item {{ question()?.item }}</p>
+  @for (vote of question()?.votes; track $index) {
+    @if (vote.writtenAnswer) {
+      <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
+    } @else {
+      <p>
+        @for (targetUser of vote.targets; track $index) {
+          {{ targetUser.username }}
+        }
+        voted by {{ vote.voterUser.username }}
+      </p>
+    }
+  }
+} @else {
+  @for (user of group?.users; track $index) {
+    <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />
+    <label>{{ user.username }}</label>
+  }
+  <br />
+  <button (click)="submitVote(usersId)">Vote</button>
 }
-<br>
-<button (click)="submitVote(usersId)">Vote</button>
-

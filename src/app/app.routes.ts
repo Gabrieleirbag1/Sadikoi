@@ -13,14 +13,17 @@ export const routes: Routes = [
     },
     {
         path: 'group/:id',
+        canActivate: [authGuard],
         loadComponent: () => import('./components/group/group.component').then(m => m.GroupComponent) 
     },
     {
         path: 'group/invitations/:token',
+        canActivate: [authGuard],
         loadComponent: () => import('./components/answer.invitation/answer.invitation.component').then(m => m.AnswerInvitationComponent)
     },
     {
         path: 'join',
+        canActivate: [authGuard],
         loadComponent: () => import('./components/join.group/join.group.component').then(m => m.JoinGroupComponent)
     },
     {

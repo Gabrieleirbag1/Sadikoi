@@ -18,12 +18,7 @@ export class ChatComponent {
   @Input() groupId!: number;
 
   async ngOnInit(): Promise<void> {
-    const response = await this.authService.getLocalUser();
-    if (response) {
-      this.loadMessages(this.groupId);
-    } else {
-      console.error('User not authenticated');
-    }
+    this.loadMessages(this.groupId);
   }
 
   protected async loadMessages(groupId: number): Promise<void> {

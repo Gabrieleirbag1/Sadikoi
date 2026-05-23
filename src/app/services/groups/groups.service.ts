@@ -10,9 +10,9 @@ export class GroupsService {
 
   private readonly httpClient = inject(HttpClient);
 
-  public async getGroups(userId: number): Promise<Group[] | null> {
+  public async getGroups(): Promise<Group[] | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/${userId}`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/user/`, { withCredentials: true }));
       console.log('Groups fetched successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -23,7 +23,7 @@ export class GroupsService {
 
   public async getGroup(groupId: number): Promise<Group | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/`, { withCredentials: true }));
       console.log('Group fetched successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -35,7 +35,7 @@ export class GroupsService {
   public async createGroup(groupName: string): Promise<Group | null> {
     const payload = { name: groupName };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups`, payload, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/`, payload, { withCredentials: true }));
       console.log('Group created successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -46,7 +46,7 @@ export class GroupsService {
 
   public async getGroupInvitation(groupId: number): Promise<string | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/invitations`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/invitations/`, { withCredentials: true }));
       console.log('Group invitation fetched successfully:', response);
       return response.content || null;
     } catch (error) {
