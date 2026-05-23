@@ -87,15 +87,28 @@ export class AuthService {
     }
   }
 
+  public async googleLogin(token: string): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/google/`, { token }, { withCredentials: true }));
+      console.log('Google login successful:', response);
+      sessionStorage.setItem('user', JSON.stringify(response.content));
+      this.setAuthenticated(true);
+      return true;
+    } catch (error) {
+      console.error('Google login failed:', error);
+      return false;
+    }
+  }
+
   public async logout(): Promise<void> {
     try {
-        const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}logout/`, null, { withCredentials: true }));
-        console.log('Login successful:', response);
-        sessionStorage.setItem('user', JSON.stringify(response.content));
-        this.setAuthenticated(false);
-        sessionStorage.removeItem('user');
-      } catch (error) {
-        console.error('Login failed:', error);
-        }
-    }
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}logout/`, null, { withCredentials: true }));
+      console.log('Login successful:', response);
+      sessionStorage.setItem('user', JSON.stringify(response.content));
+      this.setAuthenticated(false);
+      sessionStorage.removeItem('user');
+    } catch (error) {
+      console.error('Login failed:', error);
+      }
+  }
 }
