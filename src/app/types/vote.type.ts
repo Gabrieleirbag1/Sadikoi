@@ -1,5 +1,5 @@
 interface Vote {
-    target: string[],
-    voterUser: string,
+    targets: User[],
+    voterUser: User,
     writtenAnswer?: string,
 }
