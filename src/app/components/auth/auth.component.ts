@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { GoogleLoginComponent } from '../google-login/google-login.component';
 
 @Component({
   selector: 'app-auth',
-  imports: [],
+  imports: [GoogleLoginComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
 })
