@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -9,9 +10,14 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
 
   private readonly httpClient = inject(HttpClient);
+  private readonly router = inject(Router);
   private isAuthenticatedFlag = false;
 
   constructor() {
+    this.setup();
+  }
+
+  private setup(): void {
     this.initializeAuthState();
     const savedAuthState = sessionStorage.getItem('isAuthenticated');
     if (savedAuthState) {
