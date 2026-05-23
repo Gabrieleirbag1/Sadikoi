@@ -13,7 +13,7 @@ export class QuestionService {
 
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/`, { withCredentials: true }));
       console.log('Questions fetched successfully:', response);
       return response.content || null;
     } catch (error) {
@@ -24,7 +24,7 @@ export class QuestionService {
 
   public async submitVote(questionId: number, votedUsersId: number[]): Promise<void> {
     try {
-      const response = await firstValueFrom(this.httpClient.post(`${environment.apiUrl}questions/${questionId}/vote`, { votedUsers: votedUsersId }, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}questions/${questionId}/vote/`, { votedUsers: votedUsersId }, { withCredentials: true }));
       console.log('Vote submitted successfully:', response);
     } catch (error) {
       console.error('Failed to submit vote:', error);
