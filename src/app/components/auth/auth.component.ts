@@ -13,31 +13,35 @@ export class AuthComponent {
 
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  protected isAuhenticated = this.authService.isAuthenticated();
+  protected isAuthenticated = this.authService.isAuthenticated();
   protected displayMode = signal<'register' | 'login'>('login');
 
   protected setDisplayMode(displayMode: 'register' | 'login'): void {
     this.displayMode.set(displayMode);
   }
 
-  protected async register(username: string, password: string, email: string): Promise<void> {
-    const success = await this.authService.register(username, password, email);
-    if (success) this.setDisplayMode('login'); 
-  
+  protected async register(username: string, password: string, email: string, login: boolean): Promise<void> {
+    const success = await this.authService.register(username, password, email, login);
+    if (success) {
+      this.setDisplayMode('login'); 
+      if (login) {
+        this.isAuthenticated = true;
+        this.router.navigate(['/']);
+      }
+    }
   }
 
-  protected async login(usernameOrEmail: string, password: string): Promise<void> {
-    const success = await this.authService.login(usernameOrEmail, password);
+  protected async login(usernameOrEmail: string, password: string, remember: boolean): Promise<void> {
+    const success = await this.authService.login(usernameOrEmail, password, remember);
     if (success) {
-      this.authService.setAuthenticated(true);
-      this.isAuhenticated = true;
+      this.isAuthenticated = true;
       this.router.navigate(['/']);
     }
   }
 
   protected logout(): void {
     this.authService.logout();
-    this.isAuhenticated = false;
+    this.isAuthenticated = false;
   }
   
 }
