@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { ChatComponent } from "../chat/chat.component";
 import { QuestionComponent } from "../question/question.component";
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   selector: 'app-group',
@@ -10,6 +11,7 @@ import { QuestionComponent } from "../question/question.component";
   styleUrl: './group.component.css',
 })
 export class GroupComponent implements OnInit {
+  private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   protected group = signal<Group | null>(null);
   protected invitation = signal<string | null>(null);
@@ -26,7 +28,7 @@ export class GroupComponent implements OnInit {
     if (groupId) {
       await this.fetchGroup(groupId);
     } else {
-      console.error('Invalid group ID in URL');
+      this.logger.error('Invalid group ID in URL');
     }
   }
 
@@ -34,23 +36,23 @@ export class GroupComponent implements OnInit {
     try {
       const group = await this.groupsService.getGroup(groupId);
       if (group) this.group.set(group);
-      console.log('Fetched group:', this.group());
+      this.logger.debug('Fetched group:', this.group());
     } catch (error) {
-      console.error('Error fetching group:', error);
+      this.logger.error('Error fetching group:', error);
     }
   }
 
   protected async fetchInvitation(): Promise<void> {
     if (!this.group()) {
-      console.error('Group not loaded yet');
+      this.logger.error('Group not loaded yet');
       return;
     }
     try {
       const invitation = await this.groupsService.getGroupInvitation(this.group()!.id);
-      console.log('Fetched group invitation:', invitation);
+      this.logger.debug('Fetched group invitation:', invitation);
       this.invitation.set(invitation);
     } catch (error) {
-      console.error('Error fetching group invitation:', error);
+      this.logger.error('Error fetching group invitation:', error);
     }
   }
 

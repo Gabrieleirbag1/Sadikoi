@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-
+  private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
 
   public async getMessages(groupId: number): Promise<Message[]> {
@@ -15,7 +16,7 @@ export class ChatService {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { withCredentials: true }));
       return response.content || [];
     } catch (error) {
-      console.error('Failed to fetch messages:', error);
+      this.logger.error('Failed to fetch messages:', error);
       return [];
     }
   }
@@ -25,7 +26,7 @@ export class ChatService {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { content}, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
-      console.error('Failed to send message:', error);
+      this.logger.error('Failed to send message:', error);
       return null;
     }
   }

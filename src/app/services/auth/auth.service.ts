@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-
+  private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
   private isAuthenticatedFlag = false;
 
@@ -60,7 +61,7 @@ export class AuthService {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/account/`, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
-      console.error('Failed to fetch user:', error);
+      this.logger.error('Failed to fetch user:', error);
       return null;
     }
   }
@@ -69,11 +70,11 @@ export class AuthService {
     const payload = { username, password, email, login };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, payload, { withCredentials: true }));
-      console.log('Registration successful:', response);
+      this.logger.debug('Registration successful:', response);
       if (login) this.setAuthSession(response.content, true);
       return true;
     } catch (error) {
-      console.error('Registration failed:', error);
+      this.logger.error('Registration failed:', error);
       return false;
     }
   }
@@ -82,11 +83,11 @@ export class AuthService {
     const payload = { username_or_email, password, remember };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true }));
-      console.log('Login successful:', response);
+      this.logger.debug('Login successful:', response);
       this.setAuthSession(response.content, true);
       return true;
     } catch (error) {
-      console.error('Login failed:', error);
+      this.logger.error('Login failed:', error);
       return false;
     }
   }
@@ -94,11 +95,11 @@ export class AuthService {
   public async googleLogin(token: string): Promise<boolean> {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/google/`, { token }, { withCredentials: true }));
-      console.log('Google login successful:', response);
+      this.logger.debug('Google login successful:', response);
       this.setAuthSession(response.content, true);
       return true;
     } catch (error) {
-      console.error('Google login failed:', error);
+      this.logger.error('Google login failed:', error);
       return false;
     }
   }
@@ -106,11 +107,11 @@ export class AuthService {
   public async logout(): Promise<void> {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, null, { withCredentials: true }));
-      console.log('Logout successful:', response);
+      this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
       sessionStorage.removeItem('user');
     } catch (error) {
-      console.error('Logout failed:', error);
+      this.logger.error('Logout failed:', error);
     }
   }
 }

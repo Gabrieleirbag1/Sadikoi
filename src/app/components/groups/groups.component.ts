@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   selector: 'app-groups',
@@ -11,7 +12,7 @@ import { Router } from '@angular/router';
   standalone: true
 })
 export class GroupsComponent implements OnInit {
-
+  private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
   protected groups = signal<Group[]>([]);
@@ -24,9 +25,9 @@ export class GroupsComponent implements OnInit {
     try {
       const groups = await this.groupsService.getGroups();
       if (groups) this.groups.set(groups);
-      console.log('Fetched groups:', this.groups());
+      this.logger.debug('Fetched groups:', this.groups());
     } catch (error) {
-      console.error('Error fetching groups:', error);
+      this.logger.error('Error fetching groups:', error);
     }
   }
 
@@ -34,9 +35,9 @@ export class GroupsComponent implements OnInit {
     try {
       const newGroup = await this.groupsService.createGroup(groupName);
       if (newGroup) this.groups.update(current => [...current, newGroup]);
-      console.log('Created group:', newGroup);
+      this.logger.debug('Created group:', newGroup);
     } catch (error) {
-      console.error('Error creating group:', error);
+      this.logger.error('Error creating group:', error);
     }
   }
 

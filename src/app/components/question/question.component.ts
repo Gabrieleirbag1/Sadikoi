@@ -1,6 +1,7 @@
 import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   selector: 'app-question',
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './question.component.css',
 })
 export class QuestionComponent implements OnInit{
-
+  private readonly logger = inject(LoggerService)
   private readonly questionService = inject(QuestionService);
 
   protected usersId: number[] = [];
@@ -27,9 +28,9 @@ export class QuestionComponent implements OnInit{
       if (!this.group) throw new Error('Group is not set');
       const question = await this.questionService.getQuestion(this.group.id);
       this.question.set(question);
-      console.log('Fetched question:', this.question());
+      this.logger.debug('Fetched question:', this.question());
     } catch (error) {
-      console.error('Error fetching question:', error);
+      this.logger.error('Error fetching question:', error);
     }
   }
 
@@ -37,10 +38,10 @@ export class QuestionComponent implements OnInit{
     try {
       if (!this.question()) throw new Error('No question available to vote on');
       const response = await this.questionService.submitVote(this.question()!.id, votedUsersId);
-      console.log('Vote submitted successfully', response);
+      this.logger.debug('Vote submitted successfully', response);
       if (response) this.question.update(q => q ? { ...q, votes: response } : q);
     } catch (error) {
-      console.error('Error submitting vote:', error);
+      this.logger.error('Error submitting vote:', error);
     }
   }
 
