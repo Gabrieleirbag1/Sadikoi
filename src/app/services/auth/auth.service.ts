@@ -87,6 +87,28 @@ export class AuthService {
     }
   }
 
+  public async updateUser(username: string, email: string, password: string, profile_picture: File | null): Promise<boolean> {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('email', email);
+    if (password) {
+      formData.append('password', password);
+    }
+    if (profile_picture) {
+      formData.append('profile_picture', profile_picture);
+    }
+
+    try {
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}auth/account/`, formData, { withCredentials: true }));
+      this.logger.debug('User update successful:', response);
+      this.setAuthSession(response.content, true);
+      return true;
+    } catch (error) {
+      this.logger.error('User update failed:', error);
+      return false;
+    }
+  }
+
   public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
     const payload = { username_or_email, password, remember };
     try {

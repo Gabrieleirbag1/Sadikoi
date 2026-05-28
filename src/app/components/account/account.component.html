@@ -1,6 +1,17 @@
 @if (user) {
-  <p>profile pic: <img [src]="profilePictureUrl + '/' + user.profile_picture" alt="Profile Picture"></p>
-  <p>username: {{ user.username }}</p>
-  <p>email: {{ user.email }}</p>
-  <p>date created: {{ user.date_created }}</p>
+<form (submit)="updateAccount($event)">
+  <label>Profile Picture:</label>
+  <img [src]="profilePictureUrl + '/' + user.profile_picture" alt="Profile Picture" width="200">
+  <input type="file" accept="image/*" (change)="onFileChange($event)"/>
+
+  <label for="username">Username:</label>
+  <input id="username" type="text" [formField]="authForm.username" />
+
+  <label for="email">Email:</label>
+  <input id="email" type="email" [formField]="authForm.email"/>
+
+  <p> date: {{ user.date_created | date }} </p>
+
+  <button type="submit">Update Account</button>
+</form>
 }
