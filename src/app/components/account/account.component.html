@@ -1,17 +1,23 @@
 @if (user) {
 <form (submit)="updateAccount($event)">
-  <label>Profile Picture:</label>
-  <img [src]="profilePictureUrl + '/' + user.profile_picture" alt="Profile Picture" width="200">
-  <input type="file" accept="image/*" (change)="onFileChange($event)"/>
+    <label>Profile Picture:</label>
+    <img [src]="previewUrl || (profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp)" alt="Profile Picture" width="200">
+    <input type="file" accept="image/*" (change)="onFileChange($event)"/>
 
-  <label for="username">Username:</label>
-  <input id="username" type="text" [formField]="authForm.username" />
+    <label for="username">Username:</label>
+    <input id="username" type="text" [formField]="authForm.username" />
 
-  <label for="email">Email:</label>
-  <input id="email" type="email" [formField]="authForm.email"/>
+    <label for="email">Email:</label>
+    <input id="email" type="email" [formField]="authForm.email"/>
 
-  <p> date: {{ user.date_created | date }} </p>
+    <label for="password">New Password:</label>
+    <input id="password" type="password" [formField]="authForm.password"/>
 
-  <button type="submit">Update Account</button>
+    <label for="confirmPassword">Confirm New Password:</label>
+    <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword"/>
+
+    <p> date: {{ user.date_created | date }} </p>
+
+    <button type="submit">Update Account</button>
 </form>
 }

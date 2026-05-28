@@ -40,10 +40,17 @@ export class AccountComponent implements OnInit {
   protected authForm = form(this.authModel);
     
   private selectedFile: File | null = null;
+  protected previewUrl: string | null = null;
+  protected timestamp = Date.now();
 
   protected onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input.files?.[0] || null;
+    if (this.selectedFile) {
+      this.previewUrl = URL.createObjectURL(this.selectedFile);
+    } else {
+      this.previewUrl = null;
+    }
   }
 
   protected async updateAccount(event: Event): Promise<void> {
@@ -56,6 +63,8 @@ export class AccountComponent implements OnInit {
     const success = await this.authService.updateUser(val.username, val.email, val.password, this.selectedFile);
     if (success) {
       this.user = JSON.parse(sessionStorage.getItem('user') || 'null');
+      this.timestamp = Date.now();
+      this.previewUrl = null;
     } else {
       this.logger.error('Failed to update account');
     }
