@@ -22,11 +22,6 @@ export const routes: Routes = [
         loadComponent: () => import('./components/answer.invitation/answer.invitation.component').then(m => m.AnswerInvitationComponent)
     },
     {
-        path: 'join',
-        canActivate: [authGuard],
-        loadComponent: () => import('./components/join-group/join-group.component').then(m => m.JoinGroupComponent)
-    },
-    {
         path: '**',
         redirectTo: ''
     }
