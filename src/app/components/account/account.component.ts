@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-account',
@@ -9,9 +10,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountComponent implements OnInit {
   protected user: User | null = null;
+  protected profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
 
   public ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('user') || 'null');
+    this.user = JSON.parse(sessionStorage.getItem('user') || 'null');
   }
-
 }

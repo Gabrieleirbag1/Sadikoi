@@ -1,6 +1,5 @@
-<p>account.component works!</p>
 @if (user) {
-  <p>profile pic: {{ user.profile_picture }}</p>
+  <p>profile pic: <img [src]="profilePictureUrl + '/' + user.profile_picture" alt="Profile Picture"></p>
   <p>username: {{ user.username }}</p>
   <p>email: {{ user.email }}</p>
   <p>date created: {{ user.date_created }}</p>

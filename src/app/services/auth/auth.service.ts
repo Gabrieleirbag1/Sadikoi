@@ -75,7 +75,7 @@ export class AuthService {
     if (profile_picture) {
       formData.append('profile_picture', profile_picture);
     }
-    
+
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, formData, { withCredentials: true }));
       this.logger.debug('Registration successful:', response);

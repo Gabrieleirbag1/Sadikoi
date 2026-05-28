@@ -2,6 +2,6 @@ interface User {
   id: number;
   username: string;
   email: string;
-  profile_picture?: File;
+  profile_picture?: string;
   date_created: string;
 }
