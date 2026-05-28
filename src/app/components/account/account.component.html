@@ -1,7 +1,7 @@
 @if (user) {
 <form (submit)="updateAccount($event)">
     <label>Profile Picture:</label>
-    <img [src]="previewUrl || (profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp)" alt="Profile Picture" width="200">
+    <img [src]="previewUrl || (user.profile_picture ? profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp : '/default-profile.svg')" alt="Profile Picture" width="200">
     <input type="file" accept="image/*" (change)="onFileChange($event)"/>
 
     <label for="username">Username:</label>
