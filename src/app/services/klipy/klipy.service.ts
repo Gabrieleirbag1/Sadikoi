@@ -24,17 +24,17 @@ export class KlipyService {
   }
 
   async search(query: string): Promise<KlipyGif[]> {
-    const params = new URLSearchParams({ q: query, per_page: '24', content_filter: 'off', customer_id: this.user ? this.user.id.toString() : 'anonymous' });
+    const params = new URLSearchParams({ q: query, per_page: '50', content_filter: 'off', customer_id: this.user ? this.user.id.toString() : 'anonymous' });
     const res = await fetch(`${this.base}/search?${params}`);
     const json = await res.json();
     return json?.data?.data ?? [];
   }
 
   getPreviewUrl(gif: KlipyGif): string {
-    return gif.file.hd.gif.url;
+    return gif.file.xs.gif.url;
   }
 
   getFullUrl(gif: KlipyGif): string {
-    return gif.file.sd.gif.url;
+    return gif.file.hd.gif.url;
   }
 }
