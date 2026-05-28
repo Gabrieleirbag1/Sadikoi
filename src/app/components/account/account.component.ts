@@ -15,10 +15,13 @@ import { ProfileImagePickerComponent } from '../profile-image-picker/profile-ima
 export class AccountComponent implements OnInit {
   @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
   
-  protected user: User | null = null;
   private readonly authService = inject(AuthService);
   private readonly logger = inject(LoggerService);
+
   protected profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
+  protected user: User | null = null;
+  private selectedFile: File | null = null;
+  protected timestamp = Date.now();
 
   protected authModel = signal({
     username: this.user?.username || '',
@@ -28,6 +31,8 @@ export class AccountComponent implements OnInit {
     login: true,
     remember: false
   });
+
+  protected authForm = form(this.authModel);
 
   public ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -39,11 +44,6 @@ export class AccountComponent implements OnInit {
       }));
     }
   }
-
-  protected authForm = form(this.authModel);
-    
-  private selectedFile: File | null = null;
-  protected timestamp = Date.now();
 
   protected handleFileSelected(file: File | null): void {
     this.selectedFile = file;
