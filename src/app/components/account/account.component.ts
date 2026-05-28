@@ -60,7 +60,7 @@ export class AccountComponent implements OnInit {
       this.logger.error('Passwords do not match!');
       return;
     }
-    const success = await this.authService.updateUser(val.username, val.email, val.password, this.selectedFile);
+    const success = await this.authService.updateUser(val.username, val.email, val.password, val.confirmPassword, this.selectedFile);
     if (success) {
       this.user = JSON.parse(sessionStorage.getItem('user') || 'null');
       this.timestamp = Date.now();

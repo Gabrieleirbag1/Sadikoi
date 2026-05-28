@@ -54,7 +54,7 @@ export class AuthComponent {
       alert('Passwords do not match!');
       return;
     }
-    const success = await this.authService.register(val.username, val.password, val.email, this.selectedFile, val.login);
+    const success = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
     if (success) {
       this.setDisplayMode('login'); 
       if (val.login) {

@@ -66,10 +66,11 @@ export class AuthService {
     }
   }
 
-  public async register(username: string, password: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
+  public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
+    formData.append('confirm_password', confirmPassword);
     formData.append('email', email);
     formData.append('login', String(login));
     if (profile_picture) {
@@ -87,12 +88,13 @@ export class AuthService {
     }
   }
 
-  public async updateUser(username: string, email: string, password: string, profile_picture: File | null): Promise<boolean> {
+  public async updateUser(username: string, email: string, password: string, confirmPassword: string, profile_picture: File | null): Promise<boolean> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('email', email);
     if (password) {
       formData.append('password', password);
+      formData.append('confirm_password', confirmPassword);
     }
     if (profile_picture) {
       formData.append('profile_picture', profile_picture);
