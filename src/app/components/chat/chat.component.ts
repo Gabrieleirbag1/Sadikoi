@@ -2,17 +2,22 @@ import { Component, inject, Input, signal } from '@angular/core';
 import { ChatService } from '../../services/chat/chat.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
+import { GifPickerComponent } from '../gif-picker/gif-picker.component';
+import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule],
+  imports: [CommonModule, GifPickerComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
 })
 export class ChatComponent {
   private readonly logger = inject(LoggerService);
   private readonly chatService = inject(ChatService);
+  private readonly klipyService = inject(KlipyService);
+
   protected messages = signal<Message[]>([]);
+  protected showGifPicker = signal(false);
 
   @Input() groupId!: number;
 
@@ -24,19 +29,33 @@ export class ChatComponent {
     try {
       const response = await this.chatService.getMessages(groupId);
       this.messages.set(response);
-      this.logger.debug('Loaded messages:', this.messages());
     } catch (error) {
       this.logger.error('Error loading messages:', error);
     }
   }
 
-  protected async sendMessage(content: string): Promise<void> {
+  protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
+    if (!content.trim()) return;
     try {
       const newMessage = await this.chatService.sendMessage(this.groupId, content);
       if (newMessage) this.messages.update(messages => [...messages, newMessage]);
-      this.logger.debug('Sent message:', newMessage);
+      if (input) input.value = '';
     } catch (error) {
       this.logger.error('Error sending message:', error);
     }
+  }
+
+  protected toggleGifPicker(): void {
+    this.showGifPicker.update(v => !v);
+  }
+
+  protected async onGifSelected(gif: KlipyGif): Promise<void> {
+    this.showGifPicker.set(false);
+    const gifUrl = this.klipyService.getFullUrl(gif);
+    await this.sendMessage(gifUrl);
+  }
+
+  protected isGifMessage(content: string): boolean {
+    return content.startsWith('https://') && content.includes('klipy');
   }
 }
