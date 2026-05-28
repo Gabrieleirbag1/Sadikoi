@@ -1,0 +1,28 @@
+<div class="gif-picker">
+  <input
+    type="text"
+    placeholder="Search KLIPY"
+    [(ngModel)]="searchQuery"
+    (input)="onSearchInput()"
+    class="gif-search-input"
+  />
+
+  <div class="gif-grid" [class.loading]="loading()">
+    @if (loading()) {
+      <div class="gif-spinner">Loading…</div>
+    }
+    @for (gif of gifs(); track gif.id) {
+      <img
+        [src]="getPreviewUrl(gif)"
+        [alt]="gif.title"
+        (click)="selectGif(gif)"
+        class="gif-thumb"
+        loading="lazy"
+      />
+    } @empty {
+      @if (!loading()) {
+        <p class="gif-empty">No GIFs found.</p>
+      }
+    }
+  </div>
+</div>
