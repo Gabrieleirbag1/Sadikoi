@@ -18,11 +18,11 @@ export class AuthService {
 
   private setup(): void {
     this.initializeAuthState();
-    const savedAuthState = sessionStorage.getItem('isAuthenticated');
+    const savedAuthState = localStorage.getItem('isAuthenticated');
     if (savedAuthState) {
       const parsedAuthState = JSON.parse(savedAuthState);
       if (parsedAuthState) {
-        const user =JSON.parse(sessionStorage.getItem('user') || '{}');
+        const user =JSON.parse(localStorage.getItem('user') || '{}');
         if (Object.keys(user).length === 0 || !user.id) {
           this.logout();
         } else {
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   private setAuthSession(user: any, isAuthenticated: boolean): void {
-    sessionStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
     this.setAuthenticated(isAuthenticated);
   }
 
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   private setAuthenticated(isAuthenticated: boolean): void {
-    sessionStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
+    localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
     this.isAuthenticatedFlag = isAuthenticated;
   }
 
@@ -141,7 +141,7 @@ export class AuthService {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, null, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
-      sessionStorage.removeItem('user');
+      localStorage.removeItem('user');
     } catch (error) {
       this.logger.error('Logout failed:', error);
     }

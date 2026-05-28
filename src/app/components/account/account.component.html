@@ -1,8 +1,10 @@
 @if (user) {
 <form (submit)="updateAccount($event)">
     <label>Profile Picture:</label>
-    <img [src]="previewUrl || (user.profile_picture ? profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp : '/default-profile.svg')" alt="Profile Picture" width="200">
-    <input type="file" accept="image/*" (change)="onFileChange($event)"/>
+    <app-profile-image-picker 
+        [currentImageUrl]="user.profile_picture ? (profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp) : null" 
+        (fileSelected)="handleFileSelected($event)">
+    </app-profile-image-picker>
 
     <label for="username">Username:</label>
     <input id="username" type="text" [formField]="authForm.username" />

@@ -1,0 +1,13 @@
+.profile-image-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.profile-image-picker img {
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #f0f0f0;
+}

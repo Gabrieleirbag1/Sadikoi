@@ -1,16 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
+import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 
 @Component({
   selector: 'app-auth',
-  imports: [GoogleLoginComponent, FormField],
+  imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
 })
 export class AuthComponent {
+  @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
 
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -30,9 +32,8 @@ export class AuthComponent {
     
   private selectedFile: File | null = null;
 
-  protected onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.selectedFile = input.files?.[0] || null;
+  protected handleFileSelected(file: File | null): void {
+    this.selectedFile = file;
   }
 
   protected setDisplayMode(displayMode: 'register' | 'login'): void {
@@ -56,6 +57,9 @@ export class AuthComponent {
     }
     const success = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
     if (success) {
+      if (this.imagePicker) {
+        this.imagePicker.clearPreview();
+      }
       this.setDisplayMode('login'); 
       if (val.login) {
         this.isAuthenticated = true;
@@ -78,3 +82,4 @@ export class AuthComponent {
     this.isAuthenticated = false;
   }
 }
+

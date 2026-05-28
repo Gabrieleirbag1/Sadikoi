@@ -25,8 +25,8 @@
       <label for="confirmPassword">Confirm Password:</label>
       <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword" />
 
-      <label for="profilePicture">Profile Picture:</label>
-      <input id="profilePicture" type="file" accept="image/*" (change)="onFileChange($event)"/>
+      <label>Profile Picture:</label>
+      <app-profile-image-picker (fileSelected)="handleFileSelected($event)"></app-profile-image-picker>
 
       <label for="login"> Login:</label>
       <input id="login" type="checkbox" [formField]="authForm.login" />
