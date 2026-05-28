@@ -1,1 +1,7 @@
 <p>account.component works!</p>
+@if (user) {
+  <p>profile pic: {{ user.profile_picture }}</p>
+  <p>username: {{ user.username }}</p>
+  <p>email: {{ user.email }}</p>
+  <p>date created: {{ user.date_created }}</p>
+}

@@ -20,8 +20,12 @@ export class AuthComponent {
     this.displayMode.set(displayMode);
   }
 
-  protected async register(username: string, password: string, email: string, login: boolean): Promise<void> {
-    const success = await this.authService.register(username, password, email, login);
+  protected async register(username: string, email: string, password: string, confirmPassword: string, profilePicture: File | null, login: boolean): Promise<void> {
+    if (password !== confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+    const success = await this.authService.register(username, password, email, profilePicture, login);
     if (success) {
       this.setDisplayMode('login'); 
       if (login) {

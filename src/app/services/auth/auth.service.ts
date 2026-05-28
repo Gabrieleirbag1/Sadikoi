@@ -66,8 +66,8 @@ export class AuthService {
     }
   }
 
-  public async register(username: string, password: string, email: string, login: boolean): Promise<boolean> {
-    const payload = { username, password, email, login };
+  public async register(username: string, password: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
+    const payload = { username, password, email, profile_picture, login };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, payload, { withCredentials: true }));
       this.logger.debug('Registration successful:', response);
