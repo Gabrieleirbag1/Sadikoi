@@ -1,0 +1,25 @@
+@if (user) {
+<form (submit)="updateAccount($event)">
+    <label>Profile Picture:</label>
+    <app-profile-image-picker 
+        [currentImageUrl]="user.profile_picture ? (profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp) : null" 
+        (fileSelected)="handleFileSelected($event)">
+    </app-profile-image-picker>
+
+    <label for="username">Username:</label>
+    <input id="username" type="text" [formField]="authForm.username" />
+
+    <label for="email">Email:</label>
+    <input id="email" type="email" [formField]="authForm.email"/>
+
+    <label for="password">New Password:</label>
+    <input id="password" type="password" [formField]="authForm.password"/>
+
+    <label for="confirmPassword">Confirm New Password:</label>
+    <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword"/>
+
+    <p> date: {{ user.date_created | date }} </p>
+
+    <button type="submit">Update Account</button>
+</form>
+}

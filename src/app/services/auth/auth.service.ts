@@ -18,11 +18,11 @@ export class AuthService {
 
   private setup(): void {
     this.initializeAuthState();
-    const savedAuthState = sessionStorage.getItem('isAuthenticated');
+    const savedAuthState = localStorage.getItem('isAuthenticated');
     if (savedAuthState) {
       const parsedAuthState = JSON.parse(savedAuthState);
       if (parsedAuthState) {
-        const user =JSON.parse(sessionStorage.getItem('user') || '{}');
+        const user =JSON.parse(localStorage.getItem('user') || '{}');
         if (Object.keys(user).length === 0 || !user.id) {
           this.logout();
         } else {
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   private setAuthSession(user: any, isAuthenticated: boolean): void {
-    sessionStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
     this.setAuthenticated(isAuthenticated);
   }
 
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   private setAuthenticated(isAuthenticated: boolean): void {
-    sessionStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
+    localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
     this.isAuthenticatedFlag = isAuthenticated;
   }
 
@@ -66,15 +66,47 @@ export class AuthService {
     }
   }
 
-  public async register(username: string, password: string, email: string, login: boolean): Promise<boolean> {
-    const payload = { username, password, email, login };
+  public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('confirm_password', confirmPassword);
+    formData.append('email', email);
+    formData.append('login', String(login));
+    if (profile_picture) {
+      formData.append('profile_picture', profile_picture);
+    }
+
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, payload, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, formData, { withCredentials: true }));
       this.logger.debug('Registration successful:', response);
       if (login) this.setAuthSession(response.content, true);
       return true;
     } catch (error) {
       this.logger.error('Registration failed:', error);
+      return false;
+    }
+  }
+
+  public async updateUser(username: string, email: string, password: string, confirmPassword: string, profile_picture: File | null): Promise<boolean> {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('email', email);
+    if (password) {
+      formData.append('password', password);
+      formData.append('confirm_password', confirmPassword);
+    }
+    if (profile_picture) {
+      formData.append('profile_picture', profile_picture);
+    }
+
+    try {
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}auth/account/`, formData, { withCredentials: true }));
+      this.logger.debug('User update successful:', response);
+      this.setAuthSession(response.content, true);
+      return true;
+    } catch (error) {
+      this.logger.error('User update failed:', error);
       return false;
     }
   }
@@ -109,7 +141,7 @@ export class AuthService {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, null, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
-      sessionStorage.removeItem('user');
+      localStorage.removeItem('user');
     } catch (error) {
       this.logger.error('Logout failed:', error);
     }

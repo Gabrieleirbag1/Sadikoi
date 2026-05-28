@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
-  selector: 'app-join.group',
+  selector: 'app-join-group',
   imports: [],
-  templateUrl: './join.group.component.html',
-  styleUrl: './join.group.component.css',
+  templateUrl: './join-group.component.html',
+  styleUrl: './join-group.component.css',
 })
 export class JoinGroupComponent {
   private readonly logger = inject(LoggerService)
