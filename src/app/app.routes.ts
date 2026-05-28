@@ -24,7 +24,7 @@ export const routes: Routes = [
     {
         path: 'join',
         canActivate: [authGuard],
-        loadComponent: () => import('./components/join.group/join.group.component').then(m => m.JoinGroupComponent)
+        loadComponent: () => import('./components/join-group/join-group.component').then(m => m.JoinGroupComponent)
     },
     {
         path: '**',

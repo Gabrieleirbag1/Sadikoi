@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JoinGroupComponent } from './join.group.component';
+import { JoinGroupComponent } from './join-group.component';
 
 describe('JoinGroupComponent', () => {
   let component: JoinGroupComponent;
