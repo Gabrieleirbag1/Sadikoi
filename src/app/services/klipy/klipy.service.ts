@@ -23,8 +23,26 @@ export class KlipyService {
     return json?.data?.data ?? [];
   }
 
+  async getRecent(): Promise<KlipyGif[]> {
+    const params = new URLSearchParams({ per_page: '50' });
+    const res = await fetch(`${this.base}/recent/tititititioovekcoznclo191918zxxe?${params}`);
+    console.log(`${this.base}/recent?${params}`)
+    console.log(res)
+    const json = await res.json();
+    return json?.data?.data ?? [];
+  }
+
+  async shareGif(gif: KlipyGif): Promise<void> {
+    const gifSlug = gif.slug;
+    await fetch(`${this.base}/share/${gifSlug}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: "tititititioovekcoznclo191918zxxe"}),
+    });
+  }
+
   async search(query: string): Promise<KlipyGif[]> {
-    const params = new URLSearchParams({ q: query, per_page: '50', content_filter: 'off', customer_id: this.user ? this.user.id.toString() : 'anonymous' });
+    const params = new URLSearchParams({ q: query, per_page: '50', content_filter: 'off', customer_id: "tititititioovekcoznclo191918zxxe" });
     const res = await fetch(`${this.base}/search?${params}`);
     const json = await res.json();
     return json?.data?.data ?? [];

@@ -23,10 +23,31 @@ export class GifPickerComponent {
     await this.loadTrending();
   }
 
-  protected async loadTrending(): Promise<void> {
+  protected setView(view: 'recent' | 'trending'): void {
+    this.loadGifs(view);
+  }
+
+  private async loadGifs(view: 'recent' | 'trending'): Promise<void> {
+    if (view === 'trending') {
+      await this.loadTrending();
+    } else {
+      await this.loadRecent();
+    }
+  }
+
+  private async loadTrending(): Promise<void> {
     this.loading.set(true);
     try {
       this.gifs.set(await this.klipyService.getTrending());
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  private async loadRecent(): Promise<void> {
+    this.loading.set(true);
+    try {
+      this.gifs.set(await this.klipyService.getRecent());
     } finally {
       this.loading.set(false);
     }
@@ -51,6 +72,7 @@ export class GifPickerComponent {
 
   protected selectGif(gif: KlipyGif): void {
     this.gifSelected.emit(gif);
+    this.klipyService.shareGif(gif).catch(err => console.error('Error sharing GIF:', err));
   }
 
   protected getPreviewUrl(gif: KlipyGif): string {
