@@ -64,7 +64,7 @@ export class GifPickerComponent {
     }
     this.loading.set(true);
     try {
-      this.gifs.set(await this.klipyService.search(this.searchQuery));
+      this.gifs.set(await this.klipyService.searchGifs(this.searchQuery));
     } finally {
       this.loading.set(false);
     }
@@ -76,7 +76,6 @@ export class GifPickerComponent {
   }
 
   protected getPreviewUrl(gif: KlipyGif): string {
-    console.log('Getting preview URL for GIF:', gif);
     return this.klipyService.getPreviewUrl(gif);
   }
 }
