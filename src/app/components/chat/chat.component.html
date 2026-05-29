@@ -1,12 +1,26 @@
 <p>chat.component works!</p>
 
 @for (message of messages(); track $index) {
-  <p>{{message.content}} - {{message.sender.username}}</p>
+  <div class="message">
+    <strong>{{ message.sender.username }}</strong>
+    @if (isGifMessage(message.content)) {
+      <img [src]="message.content" alt="GIF" class="message-gif" />
+    } @else {
+      <p>{{ message.content }}</p>
+    }
+  </div>
 } @empty {
-<p>
-    No messages to display.
-</p>
+  <p>No messages to display.</p>
 }
 
-<input type="text" placeholder="Type your message here..." #messageContent>
-<button (click)="sendMessage(messageContent.value)">Send</button>
+<div class="chat-input-area">
+  @if (showGifPicker()) {
+    <app-gif-picker (gifSelected)="onGifSelected($event)" />
+  }
+
+  <button (click)="toggleGifPicker()" class="gif-btn" title="Send a GIF">
+    GIF
+  </button>
+  <input type="text" placeholder="Type your message here..." #messageContent />
+  <button (click)="sendMessage(messageContent.value, messageContent)">Send</button>
+</div>

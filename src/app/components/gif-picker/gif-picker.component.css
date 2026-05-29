@@ -1,0 +1,53 @@
+.gif-picker {
+  bottom: 100%;
+  left: 0;
+  width: 320px;
+  background: #1e1e2e;
+  border: 1px solid #3a3a5c;
+  border-radius: 12px;
+  padding: 10px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.gif-search-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #3a3a5c;
+  background: #12121f;
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.gif-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+  min-height: 60px;
+}
+
+.gif-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.gif-thumb:hover {
+  opacity: 0.8;
+}
+
+.gif-spinner, .gif-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  padding: 16px 0;
+  font-size: 13px;
+}
