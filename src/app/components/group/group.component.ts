@@ -6,7 +6,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   selector: 'app-group',
-  imports: [ChatComponent, QuestionComponent],
+  imports: [QuestionComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })

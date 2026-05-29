@@ -2,10 +2,11 @@ import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
+import { ChatComponent } from "../chat/chat.component";
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule],
+  imports: [CommonModule, ChatComponent],
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })

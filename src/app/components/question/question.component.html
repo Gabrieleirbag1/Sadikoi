@@ -14,6 +14,8 @@
       </p>
     }
   }
+  <app-chat [group]="group"></app-chat>
+
 } @else {
   @for (user of group?.users; track $index) {
     <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />

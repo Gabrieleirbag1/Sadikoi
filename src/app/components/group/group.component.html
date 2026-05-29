@@ -2,7 +2,6 @@
 {{group()?.name}}
 @if (group()) {
   <app-question [group]="group()"></app-question>
-  <app-chat [groupId]="group()!.id"></app-chat>
 
   <button (click)="fetchInvitation()">Get Group Invitation</button>
   @if (invitation()) {
