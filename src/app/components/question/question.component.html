@@ -18,12 +18,18 @@
 
 } @else {
   @for (user of group?.users; track $index) {
-    @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
+    @if (question()?.canWrite) {
+      <input type="text" placeholder="Enter your answer..." #answerInput />
+      <button (click)="submitVote(usersId, answerInput.value)">Submit Answer</button>
     } @else {
-      <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />
+      @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
+        <input type="checkbox" disabled />
+      } @else {
+        <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />
+      }
       <label>{{ user.username }}</label>
+      <br/>
+      <button (click)="submitVote(usersId)">Submit Answer</button>
     }
   }
-  <br />
-  <button (click)="submitVote(usersId)">Vote</button>
 }
