@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
-import { ChatComponent } from "../chat/chat.component";
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 

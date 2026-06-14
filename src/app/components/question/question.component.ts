@@ -13,14 +13,14 @@ import { ChatComponent } from "../chat/chat.component";
 export class QuestionComponent implements OnInit{
   private readonly logger = inject(LoggerService)
   private readonly questionService = inject(QuestionService);
-
+  protected connectedUser: User | null = null;
   protected usersId: number[] = [];
+  protected question = signal<Question | null>(null);
 
   @Input() group: Group | null = null;
 
-  protected question = signal<Question | null>(null);
-
   async ngOnInit(): Promise<void> {
+    this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
     await this.fetchQuestion();
   }
 
