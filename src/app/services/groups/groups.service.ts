@@ -45,9 +45,9 @@ export class GroupsService {
     }
   }
 
-  public async updateGroup(groupId: number, name: string, decription: string): Promise<Group | null> {
+  public async updateGroup(groupId: number, name: string, decription: string, daily_reset_timestamp: string): Promise<Group | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}groups/${groupId}/`, { name, description: decription }, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}groups/${groupId}/`, { name, description: decription, daily_reset_timestamp }, { withCredentials: true }));
       this.logger.debug('Group updated successfully:', response);
       return response.content || null;
     } catch (error) {

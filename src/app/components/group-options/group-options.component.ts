@@ -15,7 +15,7 @@ export class GroupOptionsComponent implements OnChanges {
   private readonly groupService = inject(GroupsService);
   readonly group = model<Group | null>(null); 
 
-  protected groupModel = signal({ name: '', description: '' });
+  protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
   protected groupForm = form(this.groupModel);
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -24,6 +24,7 @@ export class GroupOptionsComponent implements OnChanges {
       this.groupModel.set({
         name: g.name ?? '',
         description: g.description ?? '',
+        daily_reset_timestamp: g.daily_reset_timestamp ?? '',
       });
     }
   }
@@ -34,7 +35,7 @@ export class GroupOptionsComponent implements OnChanges {
     try {
       const g = this.group();
       if (!g) throw new Error('Group is not defined');
-      const response = await this.groupService.updateGroup(g.id, val.name, val.description);
+      const response = await this.groupService.updateGroup(g.id, val.name, val.description, val.daily_reset_timestamp);
       this.group.set(response);
     } catch (error) {
       this.logger.error('Error updating group:', error);

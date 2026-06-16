@@ -6,6 +6,8 @@
     <label for="description">Description:</label>
     <textarea id="description" [formField]="groupForm.description"></textarea>
 
+    <label for="daily_reset_timestamp">Daily Reset Time:</label>
+    <input id="daily_reset_timestamp" type="time" [formField]="groupForm.daily_reset_timestamp"/>
     <p> date: {{ group()?.date_created | date }} </p>
 
     <button type="submit">Update Group</button>
