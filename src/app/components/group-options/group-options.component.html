@@ -2,10 +2,10 @@
 <form (submit)="updateGroup($event)">
 
     <label for="name">Name:</label>
-    <input id="name" type="text" [formField]="groupForm.name" />
+    <input id="name" type="text" [formField]="groupForm.name"/>
 
     <label for="description">Description:</label>
-    <textarea id="description" [formField]="groupForm.description"></textarea>
+    <textarea id="description" [formField]="groupForm.description">{{ group.description }}</textarea>
 
     <p> date: {{ group.date_created | date }} </p>
 

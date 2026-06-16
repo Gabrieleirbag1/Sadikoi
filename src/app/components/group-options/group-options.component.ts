@@ -22,6 +22,16 @@ export class GroupOptionsComponent {
 
   protected groupForm = form(this.groupModel);
 
+  public ngOnInit(): void {
+    if (this.group) {
+      this.groupModel.update(model => ({
+        ...model,
+        name: this.group?.name || '',
+        description: this.group?.description || ''
+      }));
+    }
+  }
+
   protected async updateGroup(event: Event): Promise<void> {
     event.preventDefault();
     const val = this.groupModel();
