@@ -41,4 +41,15 @@ export class GroupOptionsComponent implements OnChanges {
       this.logger.error('Error updating group:', error);
     }
   }
+
+  protected async removeUser(user: User): Promise<void> {
+    try {
+      const g = this.group();
+      if (!g) throw new Error('Group is not defined');
+      const response = await this.groupService.removeUserFromGroup(g.id, user.id);
+      this.group.set(response);
+    } catch (error) {
+      this.logger.error('Error removing user from group:', error);
+    }
+  }
 }
