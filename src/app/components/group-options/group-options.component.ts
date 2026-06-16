@@ -1,8 +1,8 @@
-import { Component, inject, Input, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
+import { DatePipe } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupsService } from '../../services/groups/groups.service';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-group-options',
@@ -10,25 +10,20 @@ import { DatePipe } from '@angular/common';
   templateUrl: './group-options.component.html',
   styleUrl: './group-options.component.css',
 })
-export class GroupOptionsComponent {
+export class GroupOptionsComponent implements OnChanges {
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
   @Input() group: Group | null = null;
 
-  protected groupModel = signal({
-    name: this.group?.name || '',
-    description: this.group?.description || '',
-  });
-
+  protected groupModel = signal({ name: '', description: '' });
   protected groupForm = form(this.groupModel);
 
-  public ngOnInit(): void {
-    if (this.group) {
-      this.groupModel.update(model => ({
-        ...model,
-        name: this.group?.name || '',
-        description: this.group?.description || ''
-      }));
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['group'] && this.group) {
+      this.groupModel.set({
+        name: this.group.name ?? '',
+        description: this.group.description ?? '',
+      });
     }
   }
 
@@ -37,10 +32,9 @@ export class GroupOptionsComponent {
     const val = this.groupModel();
     try {
       if (!this.group) throw new Error('Group is not defined');
-      const success = await this.groupService.updateGroup(this.group?.id, val.name, val.description);
+      await this.groupService.updateGroup(this.group.id, val.name, val.description);
     } catch (error) {
       this.logger.error('Error updating group:', error);
     }
   }
-
 }
