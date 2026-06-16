@@ -38,7 +38,8 @@ export class QuestionComponent implements OnInit{
   protected async submitVote(votedUsersId: number[], writtenAnswer?: string): Promise<void> {
     try {
       if (!this.question()) throw new Error('No question available to vote on');
-      const response = await this.questionService.submitVote(this.question()!.id, votedUsersId, writtenAnswer);
+      if (!this.group) throw new Error('No group available to vote on');
+      const response = await this.questionService.submitVote(this.group.id, votedUsersId, writtenAnswer);
       this.logger.debug('Vote submitted successfully', response);
       if (response) this.question.update(q => q ? { ...q, votes: response } : q);
     } catch (error) {
