@@ -3,6 +3,7 @@ import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupOptionsComponent } from "../group-options/group-options.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-group',
@@ -13,6 +14,7 @@ import { GroupOptionsComponent } from "../group-options/group-options.component"
 export class GroupComponent implements OnInit {
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
+  private readonly router = inject(Router);
   protected group = signal<Group | null>(null);
   protected invitation = signal<string | null>(null);
 
@@ -39,6 +41,7 @@ export class GroupComponent implements OnInit {
       this.logger.debug('Fetched group:', this.group());
     } catch (error) {
       this.logger.error('Error fetching group:', error);
+      this.router.navigate(['/groups']);
     }
   }
 
