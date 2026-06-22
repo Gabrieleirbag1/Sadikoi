@@ -4,4 +4,5 @@ interface User {
   email: string;
   profile_picture?: string;
   date_created: string;
+  language: Language;
 }
