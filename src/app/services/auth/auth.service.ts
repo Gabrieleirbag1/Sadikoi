@@ -73,6 +73,8 @@ export class AuthService {
     formData.append('confirm_password', confirmPassword);
     formData.append('email', email);
     formData.append('login', String(login));
+    formData.append('device_id', navigator.userAgent);
+    formData.append('device_name', navigator.platform);
     if (profile_picture) {
       formData.append('profile_picture', profile_picture);
     }
