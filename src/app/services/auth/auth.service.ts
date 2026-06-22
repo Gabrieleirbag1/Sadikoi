@@ -182,16 +182,4 @@ export class AuthService {
       return false;
     }
   }
-
-  public async requestNewDeviceCode(userInfo: string): Promise<boolean> {
-    const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform };
-    try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/request-new-device-code/`, payload, { withCredentials: true }));
-      this.logger.debug('Request new device code successful:', response);
-      return response.success;
-    } catch (error) {
-      this.logger.error('Request new device code failed:', error);
-      return false;
-    }
-  }
 }

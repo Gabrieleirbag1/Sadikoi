@@ -83,16 +83,15 @@ export class AuthComponent {
   }
 
   protected async verifyDevice(code: string): Promise<void> {
-    const userInfo = "karimtufaistoujourslecon@gmail.com";
-    const success = await this.authService.verifyDevice(userInfo, code);
+    const val = this.authModel();
+    const success = await this.authService.verifyDevice(val.username, code);
     if (success) {
       this.login();
     }
   }
 
   protected async askForNewCode(): Promise<void> {
-    const userInfo = "karimtufaistoujourslecon@gmail.com";
-    await this.authService.requestNewDeviceCode(userInfo);
+    const val = this.authModel();
+    await this.authService.login(val.username, val.password, val.remember);
   }
 }
-
