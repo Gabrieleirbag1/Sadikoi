@@ -19,13 +19,13 @@ export class ChatComponent {
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
 
-  @Input() groupId!: number;
+  @Input() group: Group | null = null;
 
   async ngOnInit(): Promise<void> {
-    this.loadMessages(this.groupId);
+    if (this.group) this.loadMessages(this.group.id);
   }
 
-  protected async loadMessages(groupId: number): Promise<void> {
+  private async loadMessages(groupId: number): Promise<void> {
     try {
       const response = await this.chatService.getMessages(groupId);
       this.messages.set(response);
@@ -37,7 +37,8 @@ export class ChatComponent {
   protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
     if (!content.trim()) return;
     try {
-      const newMessage = await this.chatService.sendMessage(this.groupId, content);
+      if (!this.group) throw new Error('Group is not set');
+      const newMessage = await this.chatService.sendMessage(this.group.id, content);
       if (newMessage) this.messages.update(messages => [...messages, newMessage]);
       if (input) input.value = '';
     } catch (error) {

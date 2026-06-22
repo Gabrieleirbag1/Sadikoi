@@ -45,6 +45,28 @@ export class GroupsService {
     }
   }
 
+  public async updateGroup(groupId: number, name: string, decription: string, daily_reset_timestamp: string): Promise<Group | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}groups/${groupId}/`, { name, description: decription, daily_reset_timestamp }, { withCredentials: true }));
+      this.logger.debug('Group updated successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Group update failed:', error);
+      throw error;
+    }
+  }
+
+  public async removeUserFromGroup(groupId: number, userId: number): Promise<Group | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.delete<ApiResponse>(`${environment.apiUrl}groups/${groupId}/${userId}/`, { withCredentials: true }));
+      this.logger.debug('User removed from group successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Failed to remove user from group:', error);
+      throw error;
+    }
+  }
+  
   public async getGroupInvitation(groupId: number): Promise<string | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/invitations/`, { withCredentials: true }));

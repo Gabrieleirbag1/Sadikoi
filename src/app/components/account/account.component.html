@@ -2,7 +2,7 @@
 <form (submit)="updateAccount($event)">
     <label>Profile Picture:</label>
     <app-profile-image-picker 
-        [currentImageUrl]="user.profile_picture ? (profilePictureUrl + '/' + user.profile_picture + '?t=' + timestamp) : null" 
+        [currentImageUrl]="userPfpUrl" 
         (fileSelected)="handleFileSelected($event)">
     </app-profile-image-picker>
 

@@ -20,6 +20,7 @@ export class AccountComponent implements OnInit {
 
   protected profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
   protected user: User | null = null;
+  protected userPfpUrl: string | null = null;
   private selectedFile: File | null = null;
   protected timestamp = Date.now();
 
@@ -42,6 +43,19 @@ export class AccountComponent implements OnInit {
         username: this.user?.username || '',
         email: this.user?.email || ''
       }));
+      this.setPfpUrl();
+    }
+  }
+
+  private setPfpUrl(): void {
+    if (this.user?.profile_picture) {
+      if (this.user.profile_picture.includes('googleusercontent.com')) {
+        this.userPfpUrl = this.user.profile_picture;
+        return;
+      }
+      this.userPfpUrl = this.profilePictureUrl + '/' + this.user.profile_picture + '?t=' + this.timestamp;
+    } else {
+      this.userPfpUrl = null;
     }
   }
 
@@ -60,6 +74,7 @@ export class AccountComponent implements OnInit {
     if (success) {
       this.user = JSON.parse(localStorage.getItem('user') || 'null');
       this.timestamp = Date.now();
+      this.setPfpUrl();
       if (this.imagePicker) {
         this.imagePicker.clearPreview();
       }
