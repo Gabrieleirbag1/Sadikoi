@@ -112,7 +112,8 @@ export class AuthService {
   }
 
   public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
-    const payload = { username_or_email, password, remember };
+    const payload = { username_or_email, password, remember, device_id: navigator.userAgent,device_name: navigator.platform };
+
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true }));
       this.logger.debug('Login successful:', response);
@@ -144,6 +145,18 @@ export class AuthService {
       localStorage.removeItem('user');
     } catch (error) {
       this.logger.error('Logout failed:', error);
+    }
+  }
+
+  public async verifyDevice(userInfo: string, code: string): Promise<boolean> {
+    const payload = { user_info: userInfo, device_id: navigator.userAgent, device_name: navigator.platform, code: code };
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/verify-device/`, payload, { withCredentials: true }));
+      this.logger.debug('Device verification successful:', response);
+      return response.content?.verified || false;
+    } catch (error) {
+      this.logger.error('Device verification failed:', error);
+      return false;
     }
   }
 }

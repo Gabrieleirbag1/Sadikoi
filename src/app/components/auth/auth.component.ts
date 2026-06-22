@@ -81,5 +81,10 @@ export class AuthComponent {
     this.authService.logout();
     this.isAuthenticated = false;
   }
+
+  protected async verifyDevice(code: string): Promise<void> {
+    const userInfo = "karimtufaistoujourslecon@gmail.com";
+    const success = await this.authService.verifyDevice(userInfo, code);
+  }
 }
 
