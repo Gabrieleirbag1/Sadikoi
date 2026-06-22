@@ -138,8 +138,9 @@ export class AuthService {
   }
 
   public async logout(): Promise<void> {
+    const payload = { device_id: navigator.userAgent, device_name: navigator.platform };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, null, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, payload, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
       localStorage.removeItem('user');
@@ -153,7 +154,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/verify-device/`, payload, { withCredentials: true }));
       this.logger.debug('Device verification successful:', response);
-      return response.content?.verified || false;
+      return response.success;
     } catch (error) {
       this.logger.error('Device verification failed:', error);
       return false;
