@@ -18,6 +18,11 @@
     <label for="confirmPassword">Confirm New Password:</label>
     <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword"/>
 
+    <label for="language">Language:</label>
+    <select id="language" [formField]="authForm.language">
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+    </select>
     <p> date: {{ user.date_created | date }} </p>
 
     <button type="submit">Update Account</button>

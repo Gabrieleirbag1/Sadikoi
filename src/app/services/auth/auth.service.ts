@@ -89,6 +89,7 @@ export class AuthService {
     formData.append('password', password);
     formData.append('confirm_password', confirmPassword);
     formData.append('email', email);
+    formData.append('language', navigator.language);
     formData.append('login', String(login));
     formData.append('device_id', this.getDeviceId());
     formData.append('device_name', navigator.platform);
@@ -107,10 +108,11 @@ export class AuthService {
     }
   }
 
-  public async updateUser(username: string, email: string, password: string, confirmPassword: string, profile_picture: File | null): Promise<boolean> {
+  public async updateUser(username: string, email: string, password: string, confirmPassword: string, profile_picture: File | null, language: Language): Promise<boolean> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('email', email);
+    formData.append('language', language);
     if (password) {
       formData.append('password', password);
       formData.append('confirm_password', confirmPassword);
@@ -131,7 +133,7 @@ export class AuthService {
   }
 
   public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
-    const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
+    const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform, language: navigator.language };
 
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true }));
@@ -157,7 +159,7 @@ export class AuthService {
   }
 
   public async logout(forgetDevice: boolean): Promise<void> {
-    const payload = { device_id: this.getDeviceId(), device_name: navigator.platform, forget_device: forgetDevice };
+    const payload = { device_id: this.getDeviceId(), device_name: navigator.platform, forget_device: forgetDevice, language: navigator.language };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, payload, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
@@ -170,7 +172,7 @@ export class AuthService {
   }
 
   public async verifyDevice(userInfo: string, code: string): Promise<boolean> {
-    const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform, code: code };
+    const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform, code: code, language: navigator.language };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/verify-device/`, payload, { withCredentials: true }));
       this.logger.debug('Device verification successful:', response);

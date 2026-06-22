@@ -30,7 +30,8 @@ export class AccountComponent implements OnInit {
     password: '',
     confirmPassword: '',
     login: true,
-    remember: false
+    remember: false,
+    language: this.user?.language || navigator.language
   });
 
   protected authForm = form(this.authModel);
@@ -41,7 +42,8 @@ export class AccountComponent implements OnInit {
       this.authModel.update(model => ({
         ...model,
         username: this.user?.username || '',
-        email: this.user?.email || ''
+        email: this.user?.email || '',
+        language: this.user?.language || navigator.language
       }));
       this.setPfpUrl();
     }
@@ -70,7 +72,7 @@ export class AccountComponent implements OnInit {
       this.logger.error('Passwords do not match!');
       return;
     }
-    const success = await this.authService.updateUser(val.username, val.email, val.password, val.confirmPassword, this.selectedFile);
+    const success = await this.authService.updateUser(val.username, val.email, val.password, val.confirmPassword, this.selectedFile, val.language as Language);
     if (success) {
       this.user = JSON.parse(localStorage.getItem('user') || 'null');
       this.timestamp = Date.now();
