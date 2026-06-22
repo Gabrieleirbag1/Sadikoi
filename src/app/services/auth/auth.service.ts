@@ -24,7 +24,7 @@ export class AuthService {
       if (parsedAuthState) {
         const user =JSON.parse(localStorage.getItem('user') || '{}');
         if (Object.keys(user).length === 0 || !user.id) {
-          this.logout();
+          this.logout(false);
         } else {
           this.isAuthenticatedFlag = parsedAuthState;
         }
@@ -55,6 +55,23 @@ export class AuthService {
     this.isAuthenticatedFlag = isAuthenticated;
   }
 
+  private generateDeviceId(): string {
+    const array = new Uint8Array(16);
+    crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  private getDeviceId(): string {
+    const deviceId = localStorage.getItem('device_id');
+    if (deviceId) {
+      return deviceId;
+    } else {
+      const newDeviceId = this.generateDeviceId();
+      localStorage.setItem('device_id', newDeviceId);
+      return newDeviceId;
+    }
+  }
+
   // Helper method to fetch user details, can be used after login to get user info
   public async getUser(): Promise<User | null> {
     try {
@@ -73,7 +90,7 @@ export class AuthService {
     formData.append('confirm_password', confirmPassword);
     formData.append('email', email);
     formData.append('login', String(login));
-    formData.append('device_id', navigator.userAgent);
+    formData.append('device_id', this.getDeviceId());
     formData.append('device_name', navigator.platform);
     if (profile_picture) {
       formData.append('profile_picture', profile_picture);
@@ -114,7 +131,7 @@ export class AuthService {
   }
 
   public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
-    const payload = { username_or_email, password, remember, device_id: navigator.userAgent,device_name: navigator.platform };
+    const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
 
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true }));
@@ -139,26 +156,39 @@ export class AuthService {
     }
   }
 
-  public async logout(): Promise<void> {
-    const payload = { device_id: navigator.userAgent, device_name: navigator.platform };
+  public async logout(forgetDevice: boolean): Promise<void> {
+    const payload = { device_id: this.getDeviceId(), device_name: navigator.platform, forget_device: forgetDevice };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, payload, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
       localStorage.removeItem('user');
+      if (forgetDevice) localStorage.removeItem('device_id');
     } catch (error) {
       this.logger.error('Logout failed:', error);
     }
   }
 
   public async verifyDevice(userInfo: string, code: string): Promise<boolean> {
-    const payload = { user_info: userInfo, device_id: navigator.userAgent, device_name: navigator.platform, code: code };
+    const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform, code: code };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/verify-device/`, payload, { withCredentials: true }));
       this.logger.debug('Device verification successful:', response);
       return response.success;
     } catch (error) {
       this.logger.error('Device verification failed:', error);
+      return false;
+    }
+  }
+
+  public async requestNewDeviceCode(userInfo: string): Promise<boolean> {
+    const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform };
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/request-new-device-code/`, payload, { withCredentials: true }));
+      this.logger.debug('Request new device code successful:', response);
+      return response.success;
+    } catch (error) {
+      this.logger.error('Request new device code failed:', error);
       return false;
     }
   }

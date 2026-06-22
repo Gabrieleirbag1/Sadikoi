@@ -77,8 +77,8 @@ export class AuthComponent {
     }
   }
 
-  protected logout(): void {
-    this.authService.logout();
+  protected logout(forgetDevice: boolean): void {
+    this.authService.logout(forgetDevice);
     this.isAuthenticated = false;
   }
 
@@ -88,6 +88,11 @@ export class AuthComponent {
     if (success) {
       this.login();
     }
+  }
+
+  protected async askForNewCode(): Promise<void> {
+    const userInfo = "karimtufaistoujourslecon@gmail.com";
+    await this.authService.requestNewDeviceCode(userInfo);
   }
 }
 
