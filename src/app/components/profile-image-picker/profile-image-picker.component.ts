@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, inject, model } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile-image-picker',
@@ -7,26 +8,41 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './profile-image-picker.component.css'
 })
 export class ProfileImagePickerComponent {
-  @Input() currentImageUrl: string | null = null;
-  @Input() defaultImageUrl: string = '/default-profile.svg';
-  
-  @Output() fileSelected = new EventEmitter<File | null>();
+  private readonly sanitizer = inject(DomSanitizer);
 
-  protected previewUrl: string | null = null;
+  readonly currentImageUrl = model<string | null>(null);
+  readonly defaultImageUrl = model<string>('/default-profile.svg');
+  readonly fileSelected = model<File | null>(null);
+
+  protected previewUrl = model<string | null>(null);
+
+  protected readonly displayUrl = computed<SafeUrl | string>(() => {
+    const preview = this.previewUrl();
+    if (preview) {
+      return this.sanitizer.bypassSecurityTrustUrl(preview);
+    }
+
+    const current = this.currentImageUrl();
+    if (current) {
+      return this.sanitizer.bypassSecurityTrustUrl(current);
+    }
+
+    return this.defaultImageUrl();
+  });
 
   public clearPreview(): void {
-    this.previewUrl = null;
-    this.fileSelected.emit(null);
+    this.previewUrl.set(null);
+    this.fileSelected.set(null);
   }
 
   protected onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
     if (file) {
-      this.previewUrl = URL.createObjectURL(file);
+      this.previewUrl.set(URL.createObjectURL(file));
     } else {
-      this.previewUrl = null;
+      this.previewUrl.set(null);
     }
-    this.fileSelected.emit(file);
+    this.fileSelected.set(file);
   }
 }

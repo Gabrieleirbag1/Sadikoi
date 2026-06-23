@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, model, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
@@ -12,7 +12,7 @@ import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 export class GifPickerComponent {
   private readonly klipyService = inject(KlipyService);
 
-  @Output() gifSelected = new EventEmitter<KlipyGif>();
+  readonly gifSelected = model<KlipyGif | null>(null);
 
   protected searchQuery = '';
   protected gifs = signal<KlipyGif[]>([]);
@@ -71,7 +71,7 @@ export class GifPickerComponent {
   }
 
   protected selectGif(gif: KlipyGif): void {
-    this.gifSelected.emit(gif);
+    this.gifSelected.set(gif);
     this.klipyService.shareGif(gif).catch(err => console.error('Error sharing GIF:', err));
   }
 

@@ -1,4 +1,4 @@
-import { Component, inject, Input, model, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';

@@ -50,7 +50,8 @@ export class ChatComponent {
     this.showGifPicker.update(v => !v);
   }
 
-  protected async onGifSelected(gif: KlipyGif): Promise<void> {
+  protected async onGifSelected(gif: KlipyGif | null): Promise<void> {
+    if (!gif) throw new Error('No GIF selected');
     this.showGifPicker.set(false);
     const gifUrl = this.klipyService.getFullUrl(gif);
     await this.sendMessage(gifUrl);
