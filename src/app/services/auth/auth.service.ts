@@ -183,6 +183,19 @@ export class AuthService {
     }
   }
 
+  public async logoutDevices(): Promise<void> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/security/logout-devices/`, { withCredentials: true }));
+      this.logger.debug('Logout all devices successful:', response);
+      this.setAuthSession(response.content, false);
+      localStorage.removeItem('user');
+    } catch (error) {
+      this.logger.error('Logout all devices failed:', error);
+    } finally {
+      this.clearSessionAndRedirect();
+    }
+  }
+
   public async verifyDevice(userInfo: string, code: string): Promise<boolean> {
     const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform, code: code };
     try {
@@ -191,6 +204,29 @@ export class AuthService {
       return response.success;
     } catch (error) {
       this.logger.error('Device verification failed:', error);
+      return false;
+    }
+  }
+
+  public async getDevices(): Promise<Device[] | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/security/devices/`, { withCredentials: true }));
+      this.logger.debug('Fetched devices:', response);
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Failed to fetch devices:', error);
+      return null;
+    }
+  }
+  
+  public async revokeDevice(deviceId: string): Promise<boolean> {
+    const payload = { device_id: deviceId };
+    try {
+      const response = await firstValueFrom(this.httpClient.delete<ApiResponse>(`${environment.apiUrl}auth/security/devices/`, { ...{ withCredentials: true }, body: payload }));
+      this.logger.debug(`Device ${deviceId} revoked successfully:`, response);
+      return response.success;
+    } catch (error) {
+      this.logger.error(`Failed to revoke device ${deviceId}:`, error);
       return false;
     }
   }

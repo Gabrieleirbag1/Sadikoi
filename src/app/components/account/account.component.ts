@@ -18,6 +18,7 @@ export class AccountComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly logger = inject(LoggerService);
 
+  protected devices = signal<Device[] | null>(null);
   protected profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
   protected user: User | null = null;
   protected userPfpUrl: string | null = null;
@@ -82,6 +83,39 @@ export class AccountComponent implements OnInit {
       }
     } else {
       this.logger.error('Failed to update account');
+    }
+  }
+
+  protected async getDevices(): Promise<void> {
+    try {
+      const devices = await this.authService.getDevices();
+      this.devices.set(devices);
+      this.logger.debug('Devices:', devices);
+    } catch (error) {
+      this.logger.error('Failed to get devices:', error);
+    }
+  }
+
+  protected async revokeDevice(deviceId: string): Promise<void> {
+    try {
+      const success = await this.authService.revokeDevice(deviceId);
+      if (success) {
+        this.logger.debug(`Device ${deviceId} revoked successfully`);
+        // Remove the revoked device from the list
+        this.devices.update(devices => devices?.filter(device => device.device_id !== deviceId) || null);
+      } else {
+        this.logger.error(`Failed to revoke device ${deviceId}`);
+      }
+    } catch (error) {
+      this.logger.error(`Error revoking device ${deviceId}:`, error);
+    }
+  }
+
+  protected async logoutAllDevices(): Promise<void> {
+    try {
+      await this.authService.logoutDevices();
+    } catch (error) {
+      this.logger.error('Failed to logout all devices:', error);
     }
   }
 
