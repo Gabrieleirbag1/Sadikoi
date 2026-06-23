@@ -147,8 +147,9 @@ export class AuthService {
   }
 
   public async googleLogin(token: string): Promise<boolean> {
+    const payload = { token, device_id: this.getDeviceId(), device_name: navigator.platform };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/google/`, { token }, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/google/`, payload, { withCredentials: true }));
       this.logger.debug('Google login successful:', response);
       this.setAuthSession(response.content, true);
       return true;
@@ -165,7 +166,6 @@ export class AuthService {
       this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
       localStorage.removeItem('user');
-      if (forgetDevice) localStorage.removeItem('device_id');
     } catch (error) {
       this.logger.error('Logout failed:', error);
     }
