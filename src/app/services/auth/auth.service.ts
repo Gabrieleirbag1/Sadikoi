@@ -74,8 +74,10 @@ export class AuthService {
 
   // Helper method to fetch user details, can be used after login to get user info
   public async getUser(): Promise<User | null> {
+    const paylod = { device_id: this.getDeviceId(), device_name: navigator.platform };
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/account/`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/account/`, paylod, { withCredentials: true }));
+      this.logger.debug('Fetched user details:', response);
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to fetch user:', error);
