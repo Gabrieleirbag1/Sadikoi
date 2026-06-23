@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ import { LoggerService } from '../logger/logger.service';
 export class AuthService {
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
+  private readonly router = inject(Router);
   private isAuthenticatedFlag = false;
 
   constructor() {
@@ -83,6 +85,12 @@ export class AuthService {
       this.logger.error('Failed to fetch user:', error);
       return null;
     }
+  }
+
+  public clearSessionAndRedirect(): void {
+    this.setAuthSession(null, false);
+    localStorage.removeItem('user');
+    this.router.navigate(['/auth']);
   }
 
   public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
@@ -170,6 +178,8 @@ export class AuthService {
       localStorage.removeItem('user');
     } catch (error) {
       this.logger.error('Logout failed:', error);
+    } finally {
+      this.clearSessionAndRedirect();
     }
   }
 
