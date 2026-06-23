@@ -14,14 +14,14 @@
       </p>
     }
   }
-  <app-chat [group]="group"></app-chat>
+  <app-chat [group]="group()"></app-chat>
 
 } @else {
   @if (question()?.canWrite) {
       <input type="text" placeholder="Enter your answer..." #answerInput />
       <button (click)="submitVote(usersId, answerInput.value)">Submit Answer</button>
   } @else {
-    @for (user of group?.users; track $index) {
+    @for (user of group()?.users; track $index) {
       @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
         <input type="checkbox" disabled />
       } @else {

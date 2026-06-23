@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, model, OnInit, signal } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -17,7 +17,7 @@ export class QuestionComponent implements OnInit{
   protected usersId: number[] = [];
   protected question = signal<Question | null>(null);
 
-  @Input() group: Group | null = null;
+  readonly group = model<Group | null>(null);
 
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -26,8 +26,9 @@ export class QuestionComponent implements OnInit{
 
   protected async fetchQuestion(): Promise<void> {
     try {
-      if (!this.group) throw new Error('Group is not set');
-      const question = await this.questionService.getQuestion(this.group.id);
+      const group = this.group();
+      if (!group) throw new Error('Group is not set')
+      const question = await this.questionService.getQuestion(group.id);
       this.question.set(question);
       this.logger.debug('Fetched question:', this.question());
     } catch (error) {
@@ -38,8 +39,9 @@ export class QuestionComponent implements OnInit{
   protected async submitVote(votedUsersId: number[], writtenAnswer?: string): Promise<void> {
     try {
       if (!this.question()) throw new Error('No question available to vote on');
-      if (!this.group) throw new Error('No group available to vote on');
-      const response = await this.questionService.submitVote(this.group.id, votedUsersId, writtenAnswer);
+      const group = this.group();
+      if (!group) throw new Error('No group available for voting');
+      const response = await this.questionService.submitVote(group.id, votedUsersId, writtenAnswer);
       this.logger.debug('Vote submitted successfully', response);
       if (response) this.question.update(q => q ? { ...q, votes: response } : q);
     } catch (error) {

@@ -3,7 +3,7 @@
         <label>Profile Picture:</label>
         <app-profile-image-picker 
             [currentImageUrl]="userPfpUrl" 
-            (fileSelected)="handleFileSelected($event)">
+            (fileSelectedChange)="handleFileSelected($event)">
         </app-profile-image-picker>
 
         <label for="username">Username:</label>

@@ -15,7 +15,7 @@
 
 <div class="chat-input-area">
   @if (showGifPicker()) {
-    <app-gif-picker (gifSelected)="onGifSelected($event)" />
+    <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
   }
 
   <button (click)="toggleGifPicker()" class="gif-btn" title="Send a GIF">
