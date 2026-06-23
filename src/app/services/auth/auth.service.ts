@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ import { LoggerService } from '../logger/logger.service';
 export class AuthService {
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
+  private readonly router = inject(Router);
   private isAuthenticatedFlag = false;
 
   constructor() {
@@ -24,7 +26,7 @@ export class AuthService {
       if (parsedAuthState) {
         const user =JSON.parse(localStorage.getItem('user') || '{}');
         if (Object.keys(user).length === 0 || !user.id) {
-          this.logout();
+          this.logout(false);
         } else {
           this.isAuthenticatedFlag = parsedAuthState;
         }
@@ -55,15 +57,40 @@ export class AuthService {
     this.isAuthenticatedFlag = isAuthenticated;
   }
 
+  private generateDeviceId(): string {
+    const array = new Uint8Array(16);
+    crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  private getDeviceId(): string {
+    const deviceId = localStorage.getItem('device_id');
+    if (deviceId) {
+      return deviceId;
+    } else {
+      const newDeviceId = this.generateDeviceId();
+      localStorage.setItem('device_id', newDeviceId);
+      return newDeviceId;
+    }
+  }
+
   // Helper method to fetch user details, can be used after login to get user info
   public async getUser(): Promise<User | null> {
+    const paylod = { device_id: this.getDeviceId(), device_name: navigator.platform };
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/account/`, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/account/`, paylod, { withCredentials: true }));
+      this.logger.debug('Fetched user details:', response);
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to fetch user:', error);
       return null;
     }
+  }
+
+  public clearSessionAndRedirect(): void {
+    this.setAuthSession(null, false);
+    localStorage.removeItem('user');
+    this.router.navigate(['/auth']);
   }
 
   public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
@@ -72,7 +99,10 @@ export class AuthService {
     formData.append('password', password);
     formData.append('confirm_password', confirmPassword);
     formData.append('email', email);
+    formData.append('language', navigator.language);
     formData.append('login', String(login));
+    formData.append('device_id', this.getDeviceId());
+    formData.append('device_name', navigator.platform);
     if (profile_picture) {
       formData.append('profile_picture', profile_picture);
     }
@@ -88,10 +118,11 @@ export class AuthService {
     }
   }
 
-  public async updateUser(username: string, email: string, password: string, confirmPassword: string, profile_picture: File | null): Promise<boolean> {
+  public async updateUser(username: string, email: string, password: string, confirmPassword: string, profile_picture: File | null, language: Language): Promise<boolean> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('email', email);
+    formData.append('language', language);
     if (password) {
       formData.append('password', password);
       formData.append('confirm_password', confirmPassword);
@@ -112,7 +143,8 @@ export class AuthService {
   }
 
   public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
-    const payload = { username_or_email, password, remember };
+    const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
+
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true }));
       this.logger.debug('Login successful:', response);
@@ -125,8 +157,9 @@ export class AuthService {
   }
 
   public async googleLogin(token: string): Promise<boolean> {
+    const payload = { token, device_id: this.getDeviceId(), device_name: navigator.platform };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/google/`, { token }, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/google/`, payload, { withCredentials: true }));
       this.logger.debug('Google login successful:', response);
       this.setAuthSession(response.content, true);
       return true;
@@ -136,14 +169,29 @@ export class AuthService {
     }
   }
 
-  public async logout(): Promise<void> {
+  public async logout(forgetDevice: boolean): Promise<void> {
+    const payload = { device_id: this.getDeviceId(), device_name: navigator.platform, forget_device: forgetDevice };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, null, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, payload, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
       this.setAuthSession(response.content, false);
       localStorage.removeItem('user');
     } catch (error) {
       this.logger.error('Logout failed:', error);
+    } finally {
+      this.clearSessionAndRedirect();
+    }
+  }
+
+  public async verifyDevice(userInfo: string, code: string): Promise<boolean> {
+    const payload = { user_info: userInfo, device_id: this.getDeviceId(), device_name: navigator.platform, code: code };
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/verify-device/`, payload, { withCredentials: true }));
+      this.logger.debug('Device verification successful:', response);
+      return response.success;
+    } catch (error) {
+      this.logger.error('Device verification failed:', error);
+      return false;
     }
   }
 }

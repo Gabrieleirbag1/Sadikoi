@@ -77,9 +77,21 @@ export class AuthComponent {
     }
   }
 
-  protected logout(): void {
-    this.authService.logout();
+  protected logout(forgetDevice: boolean): void {
+    this.authService.logout(forgetDevice);
     this.isAuthenticated = false;
   }
-}
 
+  protected async verifyDevice(code: string): Promise<void> {
+    const val = this.authModel();
+    const success = await this.authService.verifyDevice(val.username, code);
+    if (success) {
+      this.login();
+    }
+  }
+
+  protected async askForNewCode(): Promise<void> {
+    const val = this.authModel();
+    await this.authService.login(val.username, val.password, val.remember);
+  }
+}

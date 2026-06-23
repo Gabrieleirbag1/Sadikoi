@@ -1,7 +1,9 @@
 <div>
   @if (isAuthenticated) {
   <p>You are logged in!</p>
-  <button (click)="logout()"> Logout </button>
+  <label for="forgetDevice">Forget this device on logout</label>
+  <input type="checkbox" id="forgetDevice" #forgetDevice>
+  <button (click)="logout(forgetDevice.checked)"> Logout </button>
   } @else {
   <button (click)="setDisplayMode('register')"> Register </button>
   <br>
@@ -48,4 +50,8 @@
     </div>
     <app-google-login></app-google-login>
   }
+  <label for="deviceVerification">Verify Device please enter code:</label>
+  <input id="deviceVerification" type="text" #deviceVerification/>
+  <button (click)="verifyDevice(deviceVerification.value)">Verify Device</button>
+  <button (click)="askForNewCode()">Ask for a new Code</button>
 }
