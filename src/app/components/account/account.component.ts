@@ -5,6 +5,7 @@ import { form, FormField } from "@angular/forms/signals";
 import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
+import { ModalService } from '../../services/modal/modal.service';
 
 @Component({
   selector: 'app-account',
@@ -17,6 +18,7 @@ export class AccountComponent implements OnInit {
   
   private readonly authService = inject(AuthService);
   private readonly logger = inject(LoggerService);
+  private readonly modalService = inject(ModalService);
 
   protected devices = signal<Device[] | null>(null);
   protected profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
@@ -117,6 +119,16 @@ export class AccountComponent implements OnInit {
     } catch (error) {
       this.logger.error('Failed to logout all devices:', error);
     }
+  }
+
+  openModal() {
+    console.log('Opening modal...');
+    this.modalService.open({
+      title: 'Confirm deletion',
+      description: 'This action cannot be undone.',
+      save: () => console.log('confirmed'),
+      discard: () => console.log('cancelled'),
+    });
   }
 
 }
