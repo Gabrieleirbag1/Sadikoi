@@ -1,0 +1,100 @@
+{
+  "hello": "Hello",
+  "auth": {
+    "authenticated": "You are logged in!",
+    "forgetDevice": "Forget this device on logout",
+    "logout": "Logout",
+    "register": "Register",
+    "login": "Login",
+    "username": "Username:",
+    "usernameOrEmail": "Username or Email:",
+    "email": "Email:",
+    "password": "Password:",
+    "confirmPassword": "Confirm Password:",
+    "newPassword": "New Password:",
+    "confirmNewPassword": "Confirm New Password:",
+    "profilePicture": "Profile Picture:",
+    "rememberMe": "Remember Me",
+    "autoLogin": "Login:"
+  },
+  "account": {
+    "updateAccount": "Update Account",
+    "language": "Language:",
+    "dateCreated": "date:",
+    "devices": "DEVICES",
+    "getDevices": "Get Devices",
+    "logoutAllDevices": "Logout All Devices",
+    "device": "Device:",
+    "revokeDevice": "Revoke Device",
+    "noDevicesFound": "No devices found.",
+    "openModal": "open modal"
+  },
+  "groups": {
+    "groupName": "Group Name",
+    "createGroup": "Create Group",
+    "enterGroupCode": "Enter group code",
+    "joinGroup": "Join Group"
+  },
+  "group": {
+    "getGroupInvitation": "Get Group Invitation",
+    "groupInvitation": "Group Invitation:",
+    "loadingGroup": "Loading group...",
+    "name": "Name:",
+    "description": "Description:",
+    "dailyResetTime": "Daily Reset Time:",
+    "updateGroup": "Update Group"
+  },
+  "question": {
+    "question": "Question:",
+    "youHaveVoted": "You have already voted. Item",
+    "enterYourAnswer": "Enter your answer...",
+    "submitAnswer": "Submit Answer"
+  },
+  "chat": {
+    "noMessagesDisplay": "No messages to display.",
+    "typeYourMessage": "Type your message here...",
+    "send": "Send",
+    "gif": "GIF"
+  },
+  "gifPicker": {
+    "recent": "Recent",
+    "trending": "Trending",
+    "searchKlipy": "Search KLIPY",
+    "loading": "Loading…",
+    "noGifsFound": "No GIFs found."
+  },
+  "feedback": {
+    "bugReport": "Bug Report",
+    "bugReportTitle": "Title:",
+    "describeBug": "Describe the bug:",
+    "submitBugReport": "Submit Bug Report",
+    "suggestion": "Suggestion",
+    "theme": "Theme:",
+    "themeOptions": {
+      "party": "Party",
+      "spicy": "Spicy",
+      "family": "Family",
+      "popCulture": "Pop Culture",
+      "other": "Other"
+    },
+    "question": "Question:",
+    "submitSuggestion": "Submit Suggestion"
+  },
+  "modal": {
+    "save": "Save changes",
+    "close": "Close"
+  },
+  "languages": {
+    "english": "English",
+    "francais": "Français"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "update": "Update",
+    "delete": "Delete",
+    "add": "Add"
+  }
+}

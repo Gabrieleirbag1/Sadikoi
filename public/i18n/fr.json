@@ -1,0 +1,100 @@
+{
+  "hello": "Bonjour",
+  "auth": {
+    "authenticated": "Vous êtes connecté!",
+    "forgetDevice": "Oublier cet appareil à la déconnexion",
+    "logout": "Déconnexion",
+    "register": "S'inscrire",
+    "login": "Connexion",
+    "username": "Nom d'utilisateur:",
+    "usernameOrEmail": "Nom d'utilisateur ou E-mail:",
+    "email": "E-mail:",
+    "password": "Mot de passe:",
+    "confirmPassword": "Confirmer le mot de passe:",
+    "newPassword": "Nouveau mot de passe:",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe:",
+    "profilePicture": "Photo de profil:",
+    "rememberMe": "Se souvenir de moi",
+    "autoLogin": "Connexion:"
+  },
+  "account": {
+    "updateAccount": "Mettre à jour le compte",
+    "language": "Langue:",
+    "dateCreated": "date:",
+    "devices": "APPAREILS",
+    "getDevices": "Obtenir les appareils",
+    "logoutAllDevices": "Déconnexion de tous les appareils",
+    "device": "Appareil:",
+    "revokeDevice": "Révoquer l'appareil",
+    "noDevicesFound": "Aucun appareil trouvé.",
+    "openModal": "ouvrir modal"
+  },
+  "groups": {
+    "groupName": "Nom du groupe",
+    "createGroup": "Créer un groupe",
+    "enterGroupCode": "Entrer le code du groupe",
+    "joinGroup": "Rejoindre le groupe"
+  },
+  "group": {
+    "getGroupInvitation": "Obtenir l'invitation au groupe",
+    "groupInvitation": "Invitation au groupe:",
+    "loadingGroup": "Chargement du groupe...",
+    "name": "Nom:",
+    "description": "Description:",
+    "dailyResetTime": "Heure de réinitialisation quotidienne:",
+    "updateGroup": "Mettre à jour le groupe"
+  },
+  "question": {
+    "question": "Question:",
+    "youHaveVoted": "Vous avez déjà voté. Élément",
+    "enterYourAnswer": "Entrez votre réponse...",
+    "submitAnswer": "Soumettre la réponse"
+  },
+  "chat": {
+    "noMessagesDisplay": "Aucun message à afficher.",
+    "typeYourMessage": "Tapez votre message ici...",
+    "send": "Envoyer",
+    "gif": "GIF"
+  },
+  "gifPicker": {
+    "recent": "Récent",
+    "trending": "Tendances",
+    "searchKlipy": "Rechercher KLIPY",
+    "loading": "Chargement…",
+    "noGifsFound": "Aucun GIF trouvé."
+  },
+  "feedback": {
+    "bugReport": "Rapport de bogue",
+    "bugReportTitle": "Titre:",
+    "describeBug": "Décrire le bogue:",
+    "submitBugReport": "Soumettre un rapport de bogue",
+    "suggestion": "Suggestion",
+    "theme": "Thème:",
+    "themeOptions": {
+      "party": "Fête",
+      "spicy": "Épicé",
+      "family": "Famille",
+      "popCulture": "Cinéma",
+      "other": "Autre"
+    },
+    "question": "Question:",
+    "submitSuggestion": "Soumettre la suggestion"
+  },
+  "modal": {
+    "save": "Enregistrer",
+    "close": "Fermer"
+  },
+  "languages": {
+    "english": "English",
+    "francais": "Français"
+  },
+  "common": {
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "update": "Mettre à jour",
+    "delete": "Supprimer",
+    "add": "Ajouter"
+  }
+}
