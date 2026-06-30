@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FeedbackService } from '../../../services/feedback/feedback.service';
 
 @Component({
   selector: 'app-bug-report',
@@ -6,4 +7,14 @@ import { Component } from '@angular/core';
   templateUrl: './bug-report.component.html',
   styleUrl: './bug-report.component.css',
 })
-export class BugReportComponent {}
+export class BugReportComponent {
+  readonly feedbackService = inject(FeedbackService);
+
+  protected async submitBugReport(title: string, description: string) {
+    await this.feedbackService.submitBugReport(title, description);
+  }
+
+  protected async submitSuggestion(title: string, description: string) {
+    await this.feedbackService.submitSuggestion(title, description);
+  }
+}
