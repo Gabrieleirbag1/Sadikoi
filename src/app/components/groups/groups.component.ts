@@ -3,10 +3,11 @@ import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoggerService } from '../../services/logger/logger.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-groups',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
   standalone: true

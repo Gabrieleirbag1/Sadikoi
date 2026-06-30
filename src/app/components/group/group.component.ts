@@ -4,10 +4,11 @@ import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupOptionsComponent } from "../group-options/group-options.component";
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-group',
-  imports: [QuestionComponent, GroupOptionsComponent],
+  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })

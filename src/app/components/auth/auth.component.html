@@ -1,13 +1,13 @@
 <div>
   @if (isAuthenticated) {
-  <p>You are logged in!</p>
-  <label for="forgetDevice">Forget this device on logout</label>
+  <p>{{ 'auth.authenticated' | translate }}</p>
+  <label for="forgetDevice">{{ 'auth.forgetDevice' | translate }}</label>
   <input type="checkbox" id="forgetDevice" #forgetDevice>
-  <button (click)="logout(forgetDevice.checked)"> Logout </button>
+  <button (click)="logout(forgetDevice.checked)"> {{ 'auth.logout' | translate }} </button>
   } @else {
-  <button (click)="setDisplayMode('register')"> Register </button>
+  <button (click)="setDisplayMode('register')"> {{ 'auth.register' | translate }} </button>
   <br>
-  <button (click)="setDisplayMode('login')"> Login </button>
+  <button (click)="setDisplayMode('login')"> {{ 'auth.login' | translate }} </button>
   }
 </div>
 
@@ -15,37 +15,37 @@
   @if (displayMode() === 'register') {
   <div>
     <form (submit)="onSubmit($event, 'register')">
-      <label for="username">Username:</label>
+      <label for="username">{{ 'auth.username' | translate }}</label>
       <input id="username" type="text" [formField]="authForm.username" />
 
-      <label for="email">Email:</label>
+      <label for="email">{{ 'auth.email' | translate }}</label>
       <input id="email" type="email" [formField]="authForm.email" />
 
-      <label for="password">Password:</label>
+      <label for="password">{{ 'auth.password' | translate }}</label>
       <input id="password" type="password" [formField]="authForm.password" />
 
-      <label for="confirmPassword">Confirm Password:</label>
+      <label for="confirmPassword">{{ 'auth.confirmPassword' | translate }}</label>
       <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword" />
 
-      <label>Profile Picture:</label>
+      <label>{{ 'auth.profilePicture' | translate }}</label>
       <app-profile-image-picker (fileSelectedChange)="handleFileSelected($event)"></app-profile-image-picker>
 
-      <label for="login"> Login:</label>
+      <label for="login">{{ 'auth.autoLogin' | translate }}</label>
       <input id="login" type="checkbox" [formField]="authForm.login" />
 
-      <button type="submit">Register</button>
+      <button type="submit">{{ 'auth.register' | translate }}</button>
     </form>
   </div> }
   @else if (displayMode() === 'login') {
     <div>
     <form (submit)="onSubmit($event, 'login')">
-      <label for="username">Username or Email:</label>
+      <label for="username">{{ 'auth.usernameOrEmail' | translate }}</label>
       <input id="username" type="text" [formField]="authForm.username" />
-      <label for="password">Password:</label>
+      <label for="password">{{ 'auth.password' | translate }}</label>
       <input id="password" type="password" [formField]="authForm.password" />
       <input type="checkbox" id="remember" [formField]="authForm.remember">
-      <label for="remember">Remember Me</label>
-      <button type="submit">Login</button>
+      <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
+      <button type="submit">{{ 'auth.login' | translate }}</button>
     </form>
     </div>
     <app-google-login></app-google-login>

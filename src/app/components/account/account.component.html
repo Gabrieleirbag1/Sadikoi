@@ -1,43 +1,43 @@
 @if (user) {
     <form (submit)="updateAccount($event)">
-        <label>Profile Picture:</label>
+        <label>{{ 'auth.profilePicture' | translate }}</label>
         <app-profile-image-picker 
             [currentImageUrl]="userPfpUrl" 
             (fileSelectedChange)="handleFileSelected($event)">
         </app-profile-image-picker>
 
-        <label for="username">Username:</label>
+        <label for="username">{{ 'auth.username' | translate }}</label>
         <input id="username" type="text" [formField]="authForm.username" />
 
-        <label for="email">Email:</label>
+        <label for="email">{{ 'auth.email' | translate }}</label>
         <input id="email" type="email" [formField]="authForm.email"/>
 
-        <label for="password">New Password:</label>
+        <label for="password">{{ 'auth.newPassword' | translate }}</label>
         <input id="password" type="password" [formField]="authForm.password"/>
 
-        <label for="confirmPassword">Confirm New Password:</label>
+        <label for="confirmPassword">{{ 'auth.confirmNewPassword' | translate }}</label>
         <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword"/>
 
-        <label for="language">Language:</label>
+        <label for="language">{{ 'account.language' | translate }}</label>
         <select id="language" [formField]="authForm.language">
-            <option value="en">English</option>
-            <option value="fr">Français</option>
+            <option value="en">{{ 'languages.english' | translate }}</option>
+            <option value="fr">{{ 'languages.francais' | translate }}</option>
         </select>
-        <p> date: {{ user.date_created | date }} </p>
+        <p> {{ 'account.dateCreated' | translate }} {{ user.date_created | date }} </p>
 
-        <button type="submit">Update Account</button>
+        <button type="submit">{{ 'account.updateAccount' | translate }}</button>
     </form>
 
-    <h1> DEVICES </h1>
-    <button (click)="getDevices()"> Get Devices </button>
-    <button (click)="logoutAllDevices()"> Logout All Devices </button>
+    <h1>{{ 'account.devices' | translate }}</h1>
+    <button (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
+    <button (click)="logoutAllDevices()">{{ 'account.logoutAllDevices' | translate }}</button>
     @if (devices()) {
         @for (device of devices(); track $index) {
-            <p>Device: {{ device.device_name }}</p>
-            <button (click)="revokeDevice(device.device_id)"> Revoke Device </button>
+            <p>{{ 'account.device' | translate }} {{ device.device_name }}</p>
+            <button (click)="revokeDevice(device.device_id)">{{ 'account.revokeDevice' | translate }}</button>
         }
     } @else {
-        <p>No devices found.</p>
+        <p>{{ 'account.noDevicesFound' | translate }}</p>
     }
 }
-<button (click)="openModal()" class="btn btn-primary">open modal</button>
+<button (click)="openModal()" class="btn btn-primary">{{ 'account.openModal' | translate }}</button>

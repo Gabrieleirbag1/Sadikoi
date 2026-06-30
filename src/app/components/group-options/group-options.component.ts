@@ -3,10 +3,11 @@ import { form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupsService } from '../../services/groups/groups.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-group-options',
-  imports: [FormField, DatePipe],
+  imports: [FormField, DatePipe, TranslatePipe],
   templateUrl: './group-options.component.html',
   styleUrl: './group-options.component.css',
 })

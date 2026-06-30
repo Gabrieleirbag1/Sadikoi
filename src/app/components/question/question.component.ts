@@ -3,10 +3,11 @@ import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ChatComponent } from "../chat/chat.component";
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe],
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })

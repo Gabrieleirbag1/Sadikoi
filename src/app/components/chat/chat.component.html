@@ -10,7 +10,7 @@
     }
   </div>
 } @empty {
-  <p>No messages to display.</p>
+  <p>{{ 'chat.noMessagesDisplay' | translate }}</p>
 }
 
 <div class="chat-input-area">
@@ -18,9 +18,9 @@
     <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
   }
 
-  <button (click)="toggleGifPicker()" class="gif-btn" title="Send a GIF">
-    GIF
+  <button (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
+    {{ 'chat.gif' | translate }}
   </button>
-  <input type="text" placeholder="Type your message here..." #messageContent />
-  <button (click)="sendMessage(messageContent.value, messageContent)">Send</button>
+  <input type="text" [placeholder]="'chat.typeYourMessage' | translate" #messageContent />
+  <button (click)="sendMessage(messageContent.value, messageContent)">{{ 'chat.send' | translate }}</button>
 </div>
