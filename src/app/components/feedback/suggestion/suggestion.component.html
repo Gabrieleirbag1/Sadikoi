@@ -1,0 +1,16 @@
+<p>suggestion.component works!</p>
+<div>
+    <label for="theme">Theme:</label>
+    <select id="theme" #theme>
+        <option>Party</option>
+        <option>Spicy</option>
+        <option>Family</option>
+        <option>Pop Culture</option>
+        <option>Other</option>
+    </select>
+
+    <label for="question">Question:</label>
+    <textarea id="question" #question></textarea>
+
+    <button (click)="submitSuggestion(theme.value, question.value)">Submit Suggestion</button>
+</div>

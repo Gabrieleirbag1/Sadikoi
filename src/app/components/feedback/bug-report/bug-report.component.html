@@ -1,0 +1,10 @@
+<p>bug-report.component works!</p>
+<div>
+    <label for="title"> Title:</label>
+    <input id="title" type="text" #title>
+
+    <label for="description">Describe the bug:</label>
+    <textarea id="description" #description></textarea>
+
+    <button (click)="submitBugReport(title.value, description.value)">Submit Bug Report</button>
+</div>
