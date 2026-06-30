@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class AuthService {
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly translateService = inject(TranslateService);
   private isAuthenticatedFlag = false;
 
   constructor() {
@@ -80,6 +82,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/account/`, paylod, { withCredentials: true }));
       this.logger.debug('Fetched user details:', response);
+      this.setLanguage(response.content);
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to fetch user:', error);
@@ -135,6 +138,7 @@ export class AuthService {
       const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}auth/account/`, formData, { withCredentials: true }));
       this.logger.debug('User update successful:', response);
       this.setAuthSession(response.content, true);
+      this.setLanguage(response.content);
       return true;
     } catch (error) {
       this.logger.error('User update failed:', error);
@@ -228,6 +232,12 @@ export class AuthService {
     } catch (error) {
       this.logger.error(`Failed to revoke device ${deviceId}:`, error);
       return false;
+    }
+  }
+
+  private setLanguage(user: User): void {
+    if (user && user.language) {
+      this.translateService.use(user.language);
     }
   }
 }
