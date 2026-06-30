@@ -13,8 +13,4 @@ export class BugReportComponent {
   protected async submitBugReport(title: string, description: string) {
     await this.feedbackService.submitBugReport(title, description);
   }
-
-  protected async submitSuggestion(title: string, description: string) {
-    await this.feedbackService.submitSuggestion(title, description);
-  }
 }

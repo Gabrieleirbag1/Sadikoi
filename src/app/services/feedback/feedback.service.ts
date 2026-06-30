@@ -23,8 +23,16 @@ export class FeedbackService {
     }
   }
 
-  public async submitSuggestion(title: string, description: string) {
-    // Logic to submit the suggestion
-    console.log('Suggestion Submitted:', { title, description });
+  public async submitSuggestion(theme: string, question: string) {
+    const paylod = { theme, question };
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}feedback/suggestions/`, paylod, { withCredentials: true }));
+      this.logger.debug('Suggestion submitted successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Error submitting suggestion:', error);
+      return null;
+    }
   }
+  
 }
