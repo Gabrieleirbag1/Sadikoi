@@ -1,16 +1,16 @@
 <p>suggestion.component works!</p>
 <div>
-    <label for="theme">Theme:</label>
+    <label for="theme">{{ 'feedback.theme' | translate }}</label>
     <select id="theme" #theme>
-        <option>Party</option>
-        <option>Spicy</option>
-        <option>Family</option>
-        <option>Pop Culture</option>
-        <option>Other</option>
+        <option>{{ 'feedback.themeOptions.party' | translate }}</option>
+        <option>{{ 'feedback.themeOptions.spicy' | translate }}</option>
+        <option>{{ 'feedback.themeOptions.family' | translate }}</option>
+        <option>{{ 'feedback.themeOptions.popCulture' | translate }}</option>
+        <option>{{ 'feedback.themeOptions.other' | translate }}</option>
     </select>
 
-    <label for="question">Question:</label>
+    <label for="question">{{ 'feedback.question' | translate }}</label>
     <textarea id="question" #question></textarea>
 
-    <button (click)="submitSuggestion(theme.value, question.value)">Submit Suggestion</button>
+    <button (click)="submitSuggestion(theme.value, question.value)">{{ 'feedback.submitSuggestion' | translate }}</button>
 </div>

@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { GifPickerComponent } from '../gif-picker/gif-picker.component';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule, GifPickerComponent],
+  imports: [CommonModule, GifPickerComponent, TranslatePipe],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
 })

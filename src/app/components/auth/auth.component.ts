@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-auth',
-  imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent],
+  imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent, TranslatePipe],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
 })

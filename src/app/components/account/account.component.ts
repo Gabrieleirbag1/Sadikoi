@@ -6,10 +6,11 @@ import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { ModalService } from '../../services/modal/modal.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account',
-  imports: [CommonModule, FormField, ProfileImagePickerComponent],
+  imports: [CommonModule, FormField, ProfileImagePickerComponent, TranslatePipe],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css',
 })

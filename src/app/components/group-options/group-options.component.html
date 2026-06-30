@@ -1,16 +1,16 @@
 <form (submit)="updateGroup($event)">
 
-    <label for="name">Name:</label>
+    <label for="name">{{ 'group.name' | translate }}</label>
     <input id="name" type="text" [formField]="groupForm.name"/>
 
-    <label for="description">Description:</label>
+    <label for="description">{{ 'group.description' | translate }}</label>
     <textarea id="description" [formField]="groupForm.description"></textarea>
 
-    <label for="daily_reset_timestamp">Daily Reset Time:</label>
+    <label for="daily_reset_timestamp">{{ 'group.dailyResetTime' | translate }}</label>
     <input id="daily_reset_timestamp" type="time" [formField]="groupForm.daily_reset_timestamp"/>
-    <p> date: {{ group()?.date_created | date }} </p>
+    <p> {{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }} </p>
 
-    <button type="submit">Update Group</button>
+    <button type="submit">{{ 'group.updateGroup' | translate }}</button>
 </form>
 
 @for (user of group()?.users; track $index) {

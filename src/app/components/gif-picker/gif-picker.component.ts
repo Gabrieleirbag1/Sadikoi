@@ -2,10 +2,11 @@ import { Component, EventEmitter, inject, model, Output, signal } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-gif-picker',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './gif-picker.component.html',
   styleUrl: './gif-picker.component.css',
 })

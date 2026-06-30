@@ -1,11 +1,11 @@
 <div class="gif-picker">
   <div>
-    <button (click)="setView('recent')">Recent</button>
-    <button (click)="setView('trending')">Trending</button>
+    <button (click)="setView('recent')">{{ 'gifPicker.recent' | translate }}</button>
+    <button (click)="setView('trending')">{{ 'gifPicker.trending' | translate }}</button>
   </div>
   <input
     type="text"
-    placeholder="Search KLIPY"
+    [placeholder]="'gifPicker.searchKlipy' | translate"
     [(ngModel)]="searchQuery"
     (input)="onSearchInput()"
     class="gif-search-input"
@@ -13,7 +13,7 @@
 
   <div class="gif-grid" [class.loading]="loading()">
     @if (loading()) {
-      <div class="gif-spinner">Loading…</div>
+      <div class="gif-spinner">{{ 'gifPicker.loading' | translate }}</div>
     }
     @for (gif of gifs(); track gif.id) {
       <img
@@ -25,7 +25,7 @@
       />
     } @empty {
       @if (!loading()) {
-        <p class="gif-empty">No GIFs found.</p>
+        <p class="gif-empty">{{ 'gifPicker.noGifsFound' | translate }}</p>
       }
     }
   </div>

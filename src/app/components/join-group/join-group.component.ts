@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { Router } from '@angular/router';
 import { LoggerService } from '../../services/logger/logger.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-join-group',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './join-group.component.html',
   styleUrl: './join-group.component.css',
 })

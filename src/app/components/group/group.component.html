@@ -3,11 +3,11 @@
 @if (group()) {
   <app-question [group]="group()"></app-question>
 
-  <button (click)="fetchInvitation()">Get Group Invitation</button>
+  <button (click)="fetchInvitation()">{{ 'group.getGroupInvitation' | translate }}</button>
   @if (invitation()) {
-    <p>Group Invitation: {{ invitation() }}</p>
+    <p>{{ 'group.groupInvitation' | translate }} {{ invitation() }}</p>
   }
 } @else {
-    <p>Loading group...</p>
+    <p>{{ 'group.loadingGroup' | translate }}</p>
 }
 <app-group-options [group]="group()" (groupChange)="group.set($event)" />

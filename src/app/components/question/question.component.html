@@ -1,7 +1,7 @@
 <p>question.component works!</p>
-<p>Question: {{ question()?.content }}</p>
+<p>{{ 'question.question' | translate }} {{ question()?.content }}</p>
 @if (question()?.votes) {
-  <p>You have already voted. Item {{ question()?.item }}</p>
+  <p>{{ 'question.youHaveVoted' | translate }} {{ question()?.item }}</p>
   @for (vote of question()?.votes; track $index) {
     @if (vote.writtenAnswer) {
       <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
@@ -18,8 +18,8 @@
 
 } @else {
   @if (question()?.canWrite) {
-      <input type="text" placeholder="Enter your answer..." #answerInput />
-      <button (click)="submitVote(usersId, answerInput.value)">Submit Answer</button>
+      <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
+      <button (click)="submitVote(usersId, answerInput.value)">{{ 'question.submitAnswer' | translate }}</button>
   } @else {
     @for (user of group()?.users; track $index) {
       @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
@@ -30,6 +30,6 @@
       <label>{{ user.username }}</label>
       <br/>
     }
-    <button (click)="submitVote(usersId)">Submit Answer</button>
+    <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
   }
 }

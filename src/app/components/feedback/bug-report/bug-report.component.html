@@ -1,10 +1,10 @@
 <p>bug-report.component works!</p>
 <div>
-    <label for="title"> Title:</label>
+    <label for="title">{{ 'feedback.bugReportTitle' | translate }}</label>
     <input id="title" type="text" #title>
 
-    <label for="description">Describe the bug:</label>
+    <label for="description">{{ 'feedback.describeBug' | translate }}</label>
     <textarea id="description" #description></textarea>
 
-    <button (click)="submitBugReport(title.value, description.value)">Submit Bug Report</button>
+    <button (click)="submitBugReport(title.value, description.value)">{{ 'feedback.submitBugReport' | translate }}</button>
 </div>
