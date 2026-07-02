@@ -1,10 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ModalService } from '../../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-modal',
-    imports: [TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })

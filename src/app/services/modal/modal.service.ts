@@ -3,8 +3,8 @@ import { Injectable, signal } from '@angular/core';
 export interface ModalConfig {
   title?: string;
   description?: string;
-  save?: (event: Event) => void;
-  discard?: (event: Event) => void;
+  save?: (data?: any) => void;
+  discard?: (event?: Event) => void;
 }
 
 const DEFAULT_CONFIG: ModalConfig = {

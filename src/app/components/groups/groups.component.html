@@ -8,7 +8,7 @@
       @for (group of groups(); track $index) {
         <div class="group-grid-item" (click)="redirectGroup(group)">
           <div class="group-grid-icons">
-            <div class="group-grid-users-icons">
+            <div class="group-users-icons">
               @for (user of group.users.slice(0, 4); track $index) {
                 <app-profile-image-picker
                   [currentImageUrl]="user.profile_picture"
@@ -27,7 +27,7 @@
           <p></p>
         </div>
       }
-      <div class="group-grid-item">
+      <div class="group-grid-item" (click)="openGroupModal()">
         <p>+</p>
       </div>
     </section>
@@ -35,7 +35,7 @@
     <section class="list-container">
       @for (group of groups(); track $index) {
         <div class="group-list-item" (click)="redirectGroup(group)">
-          <div class="group-list-users-icons">
+          <div class="group-users-icons">
             @for (user of group.users.slice(0, 4); track $index) {
               <app-profile-image-picker
                 [currentImageUrl]="user.profile_picture"
@@ -55,12 +55,11 @@
           </div>
         </div>
       }
-      <div class="group-list-item">
+      <div class="group-list-item" (click)="openGroupModal()">
         <p>+</p>
       </div>
     </section>
   }
 </section>
 
-<input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
-<button (click)="createGroup(groupName.value)">{{ 'groups.createGroup' | translate }}</button>
+<app-group-modal></app-group-modal>

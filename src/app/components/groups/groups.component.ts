@@ -5,12 +5,14 @@ import { Router } from '@angular/router';
 import { LoggerService } from '../../services/logger/logger.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
+import { ModalService } from '../../services/modal/modal.service';
+import { GroupModalComponent } from '../modals/group-modal/group-modal.component';
 
 type ViewState = 'grid' | 'list';
 
 @Component({
   selector: 'app-groups',
-  imports: [CommonModule, TranslatePipe, ProfileImagePickerComponent],
+  imports: [CommonModule, TranslatePipe, ProfileImagePickerComponent, GroupModalComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
   standalone: true
@@ -19,6 +21,7 @@ export class GroupsComponent implements OnInit {
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
+  private readonly modalService = inject(ModalService);
   protected groups = signal<Group[]>([]);
   protected view: ViewState = 'grid';
 
@@ -37,9 +40,9 @@ export class GroupsComponent implements OnInit {
     }
   }
 
-  protected async createGroup(groupName: string): Promise<void> {
+  protected async createGroup(groupName: string, groupDescription: string, groupTime: string): Promise<void> {
     try {
-      const newGroup = await this.groupsService.createGroup(groupName);
+      const newGroup = await this.groupsService.createGroup(groupName, groupDescription, groupTime);
       if (newGroup) this.groups.update(current => [...current, newGroup]);
       this.logger.debug('Created group:', newGroup);
     } catch (error) {
@@ -54,6 +57,16 @@ export class GroupsComponent implements OnInit {
   protected changeView(view: ViewState): void {
     localStorage.setItem('groupsView', view);
     this.view = view;
+  }
+
+  protected openGroupModal() {
+    this.modalService.open({
+      title: '',
+      description: '',
+      save: (data: { name: string; description: string; time: string }) => 
+        this.createGroup(data.name, data.description, data.time),
+      discard: () => console.log('cancelled'),
+    });
   }
 
 }

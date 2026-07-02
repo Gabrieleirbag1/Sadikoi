@@ -27,17 +27,11 @@
     gap: 10px;
 }
 
-.group-grid-users-icons {
+.group-users-icons {
     display: grid;
     grid-template-columns: repeat(2, 30px);
     grid-template-rows: repeat(2, 30px);
     gap: 5px;
-}
-
-.group-grid-users-icons img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
 }
 
 .list-container {

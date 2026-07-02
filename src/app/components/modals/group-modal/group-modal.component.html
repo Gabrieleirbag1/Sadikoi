@@ -1,1 +1,30 @@
-<p>group-modal.component works!</p>
+@if (isOpen()) {
+  <div class="modal" tabindex="-1" role="dialog" style="display: block">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ config().title }}</h5>
+          <button type="button" class="close" aria-label="Close" (click)="discard($event)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{ config().description }}</p>
+          @if (state === 'chose') {
+            <button (click)="changeGroupModalState('create')">Créer un groupe</button>
+            <button (click)="changeGroupModalState('join')">Rejoindre un groupe</button>
+          } @else if (state === 'create') {
+            <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
+            <input type="text" [placeholder]="'groups.groupDescription' | translate" #groupDescription />
+            <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime value="15:00:00"/>
+            <button (click)="save()">
+              {{ 'groups.createGroup' | translate }}
+            </button>
+          } @else if (state === 'join') {
+            <app-join-group></app-join-group>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
