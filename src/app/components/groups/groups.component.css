@@ -39,3 +39,25 @@
     height: 30px;
     border-radius: 50%;
 }
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.group-list-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.group-list-item-info {
+    display: flex;
+    flex-direction: column;
+}
