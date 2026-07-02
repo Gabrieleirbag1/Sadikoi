@@ -2,12 +2,13 @@
     @for (group of groups(); track $index) {
         <div class="group-item" (click)="redirectGroup(group)">
             <div class="group-users-icons">
-                @for (user of group.users; track $index) {
+                @for (user of group.users.slice(0, 3); track $index) {
                     <app-profile-image-picker 
-                        [currentImageUrl]="profilePictureUrl + user.profile_picture"
-                        [onlyDisplay]="true">
+                        [currentImageUrl]="user.profile_picture"
+                        [onlyDisplay]="true"
+                        [imgClass]="'group-user-icon'">
                     </app-profile-image-picker>
-                }
+                }               
             </div>
             <p>{{ group.name }}</p>
         </div>

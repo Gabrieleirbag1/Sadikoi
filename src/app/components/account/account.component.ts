@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { form, FormField } from "@angular/forms/signals";
 import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -22,7 +21,6 @@ export class AccountComponent implements OnInit {
   private readonly modalService = inject(ModalService);
 
   protected devices = signal<Device[] | null>(null);
-  protected profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
   protected user: User | null = null;
   protected userPfpUrl: string | null = null;
   private selectedFile: File | null = null;
@@ -59,7 +57,7 @@ export class AccountComponent implements OnInit {
         this.userPfpUrl = this.user.profile_picture;
         return;
       }
-      this.userPfpUrl = this.profilePictureUrl + '/' + this.user.profile_picture + '?t=' + this.timestamp;
+      this.userPfpUrl = this.user.profile_picture + '?t=' + this.timestamp;
     } else {
       this.userPfpUrl = null;
     }

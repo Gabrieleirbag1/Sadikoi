@@ -1,5 +1,6 @@
 import { Component, computed, inject, model } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-profile-image-picker',
@@ -10,12 +11,13 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class ProfileImagePickerComponent {
   private readonly sanitizer = inject(DomSanitizer);
 
-  readonly currentImageUrl = model<string | null | undefined>(null);
-  readonly defaultImageUrl = model<string>('/default-profile.svg');
-  readonly fileSelected = model<File | null>(null);
-  readonly onlyDisplay = model<boolean>(false);
-
-  protected previewUrl = model<string | null>(null);
+  protected readonly currentImageUrl = model<string | null | undefined>(null);
+  protected readonly defaultImageUrl = model<string>('/default-profile.svg');
+  protected readonly fileSelected = model<File | null>(null);
+  protected readonly onlyDisplay = model<boolean>(false);
+  protected readonly imgClass = model<string>('');
+  protected readonly profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
+  protected readonly previewUrl = model<string | null>(null);
 
   protected readonly displayUrl = computed<SafeUrl | string>(() => {
     const preview = this.previewUrl();
@@ -23,8 +25,9 @@ export class ProfileImagePickerComponent {
       return this.sanitizer.bypassSecurityTrustUrl(preview);
     }
 
-    const current = this.currentImageUrl();
+    let current = this.currentImageUrl();
     if (current) {
+      current = this.profilePictureUrl + current;
       return this.sanitizer.bypassSecurityTrustUrl(current);
     }
 

@@ -11,3 +11,9 @@
   object-fit: cover;
   background-color: #f0f0f0;
 }
+
+.group-user-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+}

@@ -10,3 +10,15 @@
     padding: 10px;
     cursor: pointer;
 }
+
+.group-users-icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+    gap: 5px;
+}
+
+.group-users-icons img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
