@@ -31,6 +31,7 @@
   },
   "groups": {
     "groupName": "Nom du groupe",
+    "groupDescription": "Description du groupe",
     "createGroup": "Créer un groupe",
     "enterGroupCode": "Entrer le code du groupe",
     "joinGroup": "Rejoindre le groupe"

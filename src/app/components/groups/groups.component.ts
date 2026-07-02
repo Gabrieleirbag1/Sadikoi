@@ -3,7 +3,6 @@ import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoggerService } from '../../services/logger/logger.service';
-import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { ModalService } from '../../services/modal/modal.service';
 import { GroupModalComponent } from '../modals/group-modal/group-modal.component';
@@ -12,7 +11,7 @@ type ViewState = 'grid' | 'list';
 
 @Component({
   selector: 'app-groups',
-  imports: [CommonModule, TranslatePipe, ProfileImagePickerComponent, GroupModalComponent],
+  imports: [CommonModule, ProfileImagePickerComponent, GroupModalComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
   standalone: true
