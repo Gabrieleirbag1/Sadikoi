@@ -11,11 +11,12 @@ import { environment } from '../../../environments/environment.development';
 export class ProfileImagePickerComponent {
   private readonly sanitizer = inject(DomSanitizer);
 
-  protected readonly currentImageUrl = model<string | null | undefined>(null);
-  protected readonly defaultImageUrl = model<string>('/default-profile.svg');
-  protected readonly fileSelected = model<File | null>(null);
-  protected readonly onlyDisplay = model<boolean>(false);
-  protected readonly imgClass = model<string>('');
+  public readonly currentImageUrl = model<string | null | undefined>(null);
+  public readonly defaultImageUrl = model<string>('/default-profile.svg');
+  public readonly fileSelected = model<File | null>(null);
+  public readonly onlyDisplay = model<boolean>(false);
+  public readonly imgClass = model<string>('');
+  
   protected readonly profilePictureUrl: string | null = environment.apiUrl + '/auth/profile-picture/';
   protected readonly previewUrl = model<string | null>(null);
 
