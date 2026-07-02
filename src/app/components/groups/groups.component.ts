@@ -6,6 +6,8 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 
+type ViewState = 'grid' | 'list';
+
 @Component({
   selector: 'app-groups',
   imports: [CommonModule, TranslatePipe, ProfileImagePickerComponent],
@@ -18,10 +20,11 @@ export class GroupsComponent implements OnInit {
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
   protected groups = signal<Group[]>([]);
-  
+  protected view: ViewState = 'grid';
 
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
+    this.changeView(localStorage.getItem('groupsView') as ViewState || 'grid');
   }
 
   protected async fetchGroups(): Promise<void> {
@@ -46,6 +49,11 @@ export class GroupsComponent implements OnInit {
 
   protected redirectGroup(group: Group): void {
     this.router.navigate([`/group/${group.id}`], { state: { group } });
+  }
+
+  protected changeView(view: ViewState): void {
+    localStorage.setItem('groupsView', view);
+    this.view = view;
   }
 
 }

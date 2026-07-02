@@ -1,23 +1,40 @@
-.groups-container {
+.groups-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 30px;
 }
 
-.group-item {
+.group-grid-item {
+    display: flex;
+    flex-direction: column;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
 }
 
-.group-users-icons {
+.group-grid-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.group-grid-users-icons {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+    grid-template-columns: repeat(2, 30px);
+    grid-template-rows: repeat(2, 30px);
     gap: 5px;
 }
 
-.group-users-icons img {
+.group-grid-users-icons img {
     width: 30px;
     height: 30px;
     border-radius: 50%;

@@ -17,3 +17,9 @@
   height: 30px;
   border-radius: 20px;
 }
+
+.group-item-icon {
+  width: 65px;
+  height: 65px;
+  border-radius: 25px;
+}

@@ -1,21 +1,44 @@
+<div class="groups-header">
+    <button (click)="changeView('grid')">
+        grid view
+    </button>
+    <button (click)="changeView('list')">
+        list view
+    </button>
+</div>
 <section class="groups-container">
-    @for (group of groups(); track $index) {
-        <div class="group-item" (click)="redirectGroup(group)">
-            <div class="group-users-icons">
-                @for (user of group.users.slice(0, 3); track $index) {
-                    <app-profile-image-picker 
-                        [currentImageUrl]="user.profile_picture"
-                        [onlyDisplay]="true"
-                        [imgClass]="'group-user-icon'">
-                    </app-profile-image-picker>
-                }               
+    @if (view == "grid") {
+        <section class="grid-container">
+            @for (group of groups(); track $index) {
+                <div class="group-grid-item" (click)="redirectGroup(group)">
+                    <div class="group-grid-icons">
+                        <div class="group-grid-users-icons">
+                            @for (user of group.users.slice(0, 4); track $index) {
+                                <app-profile-image-picker 
+                                    [currentImageUrl]="user.profile_picture"
+                                    [onlyDisplay]="true"
+                                    [imgClass]="'group-user-icon'">
+                                </app-profile-image-picker>
+                            }               
+                        </div>
+                        <div class="group-grid-item-icon">
+                            <app-profile-image-picker 
+                                [onlyDisplay]="true"
+                                [imgClass]="'group-item-icon'">
+                            </app-profile-image-picker>
+                        </div>
+                    </div>
+                    <p>{{ group.name }}</p>
+                    <p>Last message</p>
+                </div>
+            }
+            <div class="group-grid-item">
+                <p>+</p>
             </div>
-            <p>{{ group.name }}</p>
-        </div>
+        </section>
+    } @else {
+        <section class="list-container"></section>
     }
-    <div class="group-item">
-        <p>+</p>
-    </div>
 </section>
 
 <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
