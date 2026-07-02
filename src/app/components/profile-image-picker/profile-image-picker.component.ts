@@ -10,9 +10,10 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class ProfileImagePickerComponent {
   private readonly sanitizer = inject(DomSanitizer);
 
-  readonly currentImageUrl = model<string | null>(null);
+  readonly currentImageUrl = model<string | null | undefined>(null);
   readonly defaultImageUrl = model<string>('/default-profile.svg');
   readonly fileSelected = model<File | null>(null);
+  readonly onlyDisplay = model<boolean>(false);
 
   protected previewUrl = model<string | null>(null);
 

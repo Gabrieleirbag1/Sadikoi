@@ -1,4 +1,6 @@
 <div class="profile-image-picker">
   <img [src]="displayUrl()" alt="Profile Picture" width="200">
-  <input type="file" accept="image/*" (change)="onFileChange($event)"/>
+  @if (!onlyDisplay()) {
+    <input type="file" accept="image/*" (change)="onFileChange($event)"/>
+  }
 </div>

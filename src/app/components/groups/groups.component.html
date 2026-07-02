@@ -1,8 +1,21 @@
-<p>groups.component works!</p>
-<input type="text" [placeholder]="'groups.groupName' | translate" #groupName>
+<section class="groups-container">
+    @for (group of groups(); track $index) {
+        <div class="group-item" (click)="redirectGroup(group)">
+            <div class="group-users-icons">
+                @for (user of group.users; track $index) {
+                    <app-profile-image-picker 
+                        [currentImageUrl]="profilePictureUrl + user.profile_picture"
+                        [onlyDisplay]="true">
+                    </app-profile-image-picker>
+                }
+            </div>
+            <p>{{ group.name }}</p>
+        </div>
+    }
+    <div class="group-item">
+        <p>+</p>
+    </div>
+</section>
+
+<input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
 <button (click)="createGroup(groupName.value)">{{ 'groups.createGroup' | translate }}</button>
-@for (group of groups(); track $index) {
-    <button (click)="redirectGroup(group)">
-        <p>{{ group.name }}</p>
-    </button>
-}

@@ -4,10 +4,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoggerService } from '../../services/logger/logger.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-groups',
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, ProfileImagePickerComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
   standalone: true
@@ -17,6 +19,8 @@ export class GroupsComponent implements OnInit {
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
   protected groups = signal<Group[]>([]);
+  protected profilePictureUrl: string = environment.apiUrl + '/auth/profile-picture/';
+  
 
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
