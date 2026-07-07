@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ChatComponent } from "../chat/chat.component";
 import { TranslatePipe } from '@ngx-translate/core';
+import { ProfileImagePickerComponent } from "../profile-image-picker/profile-image-picker.component";
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe],
+  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent],
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })

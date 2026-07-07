@@ -1,5 +1,6 @@
-<p>question.component works!</p>
-<p>{{ 'question.question' | translate }} {{ question()?.content }}</p>
+<div class="question-container">
+  <span>{{ question()?.content }}</span>
+</div>
 @if (question()?.votes) {
   <p>{{ 'question.youHaveVoted' | translate }} {{ question()?.item }}</p>
   @for (vote of question()?.votes; track $index) {
@@ -18,18 +19,37 @@
 
 } @else {
   @if (question()?.canWrite) {
-      <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
-      <button (click)="submitVote(usersId, answerInput.value)">{{ 'question.submitAnswer' | translate }}</button>
+    <div class="answer-container">
+      <div class="answer-input-container">
+        <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
+      </div>
+      <div class="submit-vote-container">
+        <button (click)="submitVote(usersId, answerInput.value)">{{ 'question.submitAnswer' | translate }}</button>
+      </div>
+    </div>
   } @else {
-    @for (user of group()?.users; track $index) {
-      @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
-        <input type="checkbox" disabled />
-      } @else {
-        <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />
+    <div class="vote-container">
+      @for (user of group()?.users; track $index) {
+        <div class="user-vote-container">
+          <div class="user-vote">
+            <app-profile-image-picker
+              [currentImageUrl]="user.profile_picture"
+              [onlyDisplay]="true"
+              [imgClass]="'group-user-icon'"
+            >
+            </app-profile-image-picker>
+            @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
+              <input type="checkbox" disabled />
+            } @else {
+              <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />
+            }
+            <span>{{ user.username }}</span>
+          </div>
+        </div>
       }
-      <label>{{ user.username }}</label>
-      <br/>
-    }
-    <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
+    </div>
+    <div class="submit-vote-container">
+      <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
+    </div>
   }
 }
