@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { GroupsComponent } from "../groups/groups.component";
 import { AccountComponent } from "../account/account.component";
-import { FeedbackComponent } from "../feedback/feedback.component";
 import { CommonModule } from '@angular/common';
 
 type HomeState = 'groups' | 'account';
 @Component({
   selector: 'app-home',
-  imports: [GroupsComponent, AccountComponent, FeedbackComponent, CommonModule],
+  imports: [GroupsComponent, AccountComponent, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   standalone: true

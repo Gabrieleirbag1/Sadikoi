@@ -1,10 +1,12 @@
-@if (homeState === 'groups') {
-  <app-groups></app-groups>
-} @else if (homeState === 'account') {
-  <app-account></app-account>
-}
+<section>
+  @if (homeState === 'groups') {
+    <app-groups></app-groups>
+  } @else if (homeState === 'account') {
+    <app-account></app-account>
+  }
+</section>
 <!-- <app-feedback></app-feedback> -->
 <footer class="home-footer">
-  <button class="footer-button" (click)="homeState = 'groups'">HOME</button>
-  <button class="footer-button" (click)="homeState = 'account'">ACCOUNT</button>
+  <button class="footer-button" (click)="changeHomeState('groups')">HOME</button>
+  <button class="footer-button" (click)="changeHomeState('account')">ACCOUNT</button>
 </footer>
