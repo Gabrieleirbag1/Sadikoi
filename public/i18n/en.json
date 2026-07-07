@@ -40,7 +40,6 @@
   },
   "group": {
     "getGroupInvitation": "Get Group Invitation",
-    "groupInvitation": "Group Invitation:",
     "loadingGroup": "Loading group...",
     "name": "Name:",
     "description": "Description:",
@@ -48,7 +47,6 @@
     "updateGroup": "Update Group"
   },
   "question": {
-    "question": "Question:",
     "youHaveVoted": "You have already voted. Item",
     "enterYourAnswer": "Enter your answer...",
     "submitAnswer": "Submit Answer"

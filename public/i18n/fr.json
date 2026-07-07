@@ -40,7 +40,6 @@
   },
   "group": {
     "getGroupInvitation": "Obtenir l'invitation au groupe",
-    "groupInvitation": "Invitation au groupe:",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom:",
     "description": "Description:",
@@ -48,7 +47,6 @@
     "updateGroup": "Mettre à jour le groupe"
   },
   "question": {
-    "question": "Question:",
     "youHaveVoted": "Vous avez déjà voté. Élément",
     "enterYourAnswer": "Entrez votre réponse...",
     "submitAnswer": "Soumettre la réponse"
