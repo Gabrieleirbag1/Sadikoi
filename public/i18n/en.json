@@ -44,7 +44,8 @@
     "name": "Name:",
     "description": "Description:",
     "dailyResetTime": "Daily Reset Time:",
-    "updateGroup": "Update Group"
+    "updateGroup": "Update Group",
+    "users": "Users:"
   },
   "question": {
     "youHaveVoted": "You have already voted. Item",

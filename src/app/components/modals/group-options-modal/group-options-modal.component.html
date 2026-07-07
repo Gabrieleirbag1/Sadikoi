@@ -10,30 +10,65 @@
         </div>
         <div class="modal-body">
           <p>{{ config().description }}</p>
-          <form (submit)="updateGroup($event)">
-            <label for="name">{{ 'group.name' | translate }}</label>
-            <input id="name" type="text" [formField]="groupForm.name" />
+          <div class="group-options-container">
+            <div class="group-options-form">
+              <form (submit)="updateGroup($event)">
+                <label for="name">{{ 'group.name' | translate }}</label>
+                <input id="name" type="text" [formField]="groupForm.name" />
 
-            <label for="description">{{ 'group.description' | translate }}</label>
-            <textarea id="description" [formField]="groupForm.description"></textarea>
+                <label for="description">{{ 'group.description' | translate }}</label>
+                <textarea id="description" [formField]="groupForm.description"></textarea>
 
-            <label for="daily_reset_timestamp">{{ 'group.dailyResetTime' | translate }}</label>
-            <input
-              id="daily_reset_timestamp"
-              type="time"
-              [formField]="groupForm.daily_reset_timestamp"
-            />
-            <p>{{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }}</p>
+                <label for="daily_reset_timestamp">{{ 'group.dailyResetTime' | translate }}</label>
+                <input
+                  id="daily_reset_timestamp"
+                  type="time"
+                  [formField]="groupForm.daily_reset_timestamp"
+                />
+                <p>{{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }}</p>
 
-            <button type="submit">{{ 'group.updateGroup' | translate }}</button>
-          </form>
-
-          @for (user of group()?.users; track $index) {
-            <div>
-              <span>{{ user.username }}</span>
-              <button type="button" (click)="removeUser(user)">X</button>
+                <button type="submit">{{ 'group.updateGroup' | translate }}</button>
+              </form>
             </div>
-          }
+            <div class="group-users-list">
+            <span>{{ 'group.users' | translate }}</span>
+            @for (user of group()?.users; track $index) {
+              <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+                            <div class="group-user">
+                <span>{{ user.username }}</span>
+                <button type="button" (click)="removeUser(user)">X</button>
+              </div>
+              
+            }
+            </div>
+          </div>
         </div>
       </div>
     </div>
