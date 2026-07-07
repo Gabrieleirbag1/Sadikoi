@@ -146,6 +146,18 @@ export class AuthService {
     }
   }
 
+  public async deleteUser(userInfo: string): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(this.httpClient.delete<ApiResponse>(`${environment.apiUrl}auth/account/${userInfo}`, { withCredentials: true }));
+      this.logger.debug('User deletion successful:', response);
+      this.clearSessionAndRedirect();
+      return true;
+    } catch (error) {
+      this.logger.error('User deletion failed:', error);
+      return false;
+    }
+  }
+
   public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
     const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
 
@@ -178,8 +190,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, payload, { withCredentials: true }));
       this.logger.debug('Logout successful:', response);
-      this.setAuthSession(response.content, false);
-      localStorage.removeItem('user');
+      this.clearSessionAndRedirect();
     } catch (error) {
       this.logger.error('Logout failed:', error);
     } finally {
@@ -191,8 +202,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/security/logout-devices/`, { withCredentials: true }));
       this.logger.debug('Logout all devices successful:', response);
-      this.setAuthSession(response.content, false);
-      localStorage.removeItem('user');
+      this.clearSessionAndRedirect();
     } catch (error) {
       this.logger.error('Logout all devices failed:', error);
     } finally {
