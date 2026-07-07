@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { HomeFooterComponent } from './home-footer.component';
+
+describe('HomeFooterComponent', () => {
+  let component: HomeFooterComponent;
+  let fixture: ComponentFixture<HomeFooterComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HomeFooterComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HomeFooterComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
