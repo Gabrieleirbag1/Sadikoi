@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GroupOptionsComponent } from './group-options.component';
+import { GroupOptionsComponent } from './group-options-modal.component';
 
 describe('GroupOptionsComponent', () => {
   let component: GroupOptionsComponent;

@@ -1,21 +1,26 @@
 import { Component, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
-import { LoggerService } from '../../services/logger/logger.service';
-import { GroupsService } from '../../services/groups/groups.service';
+import { LoggerService } from '../../../services/logger/logger.service';
+import { GroupsService } from '../../../services/groups/groups.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ModalService } from '../../../services/modal/modal.service';
 
 @Component({
-  selector: 'app-group-options',
+  selector: 'app-group-options-modal',
   imports: [FormField, DatePipe, TranslatePipe],
-  templateUrl: './group-options.component.html',
-  styleUrl: './group-options.component.css',
+  templateUrl: './group-options-modal.component.html',
+  styleUrl: './group-options-modal.component.css',
 })
 export class GroupOptionsComponent implements OnChanges {
+  private readonly modalService = inject(ModalService);
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
-  readonly group = model<Group | null>(null); 
 
+  public readonly isOpen = this.modalService.isOpen;
+  public readonly config = this.modalService.config;
+
+  public readonly group = model<Group | null>(null); 
   protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
   protected groupForm = form(this.groupModel);
 
@@ -28,6 +33,18 @@ export class GroupOptionsComponent implements OnChanges {
         daily_reset_timestamp: g.daily_reset_timestamp ?? '',
       });
     }
+  }
+
+  protected discard(event: Event): void {
+    const discardFn = this.config().discard;
+    this.modalService.close();
+    discardFn?.(event);
+  }
+
+  protected save(event: Event): void {
+    const saveFn = this.config().save;
+    this.modalService.close();
+    saveFn?.(event);
   }
 
   protected async updateGroup(event: Event): Promise<void> {
