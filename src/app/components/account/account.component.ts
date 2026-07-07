@@ -4,21 +4,23 @@ import { form, FormField } from "@angular/forms/signals";
 import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
-import { ModalService } from '../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ModalComponent } from '../modals/modal/modal.component';
+import { ModalService } from '../../services/modal/modal.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account',
-  imports: [CommonModule, FormField, ProfileImagePickerComponent, TranslatePipe],
+  imports: [CommonModule, FormField, ProfileImagePickerComponent, TranslatePipe, ModalComponent],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css',
 })
 export class AccountComponent implements OnInit {
   @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
-  
+  private readonly router = inject(Router);
+  private readonly modalService = inject(ModalService);
   private readonly authService = inject(AuthService);
   private readonly logger = inject(LoggerService);
-  private readonly modalService = inject(ModalService);
 
   protected devices = signal<Device[] | null>(null);
   protected user: User | null = null;
@@ -120,12 +122,36 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  openModal() {
-    console.log('Opening modal...');
+  protected redirectLogout(): void {
+    this.router.navigate(['/auth']);
+  }
+
+  private async deleteAccount(): Promise<void> {
+    if (!this.user) return;
+    const success = await this.authService.deleteUser(this.user.username);
+    if (success) {
+      this.logger.debug('Account deleted successfully');
+    } else {
+      this.logger.error('Failed to delete account');
+    }
+  }
+
+  protected openDeleteModal() {
     this.modalService.open({
-      title: 'Confirm deletion',
-      description: 'This action cannot be undone.',
-      save: () => console.log('confirmed'),
+      title: 'Delete Account',
+      description: 'Are you sure you want to delete your account? This action cannot be undone.',
+      save: () => 
+        this.deleteAccount(),
+      discard: () => console.log('cancelled'),
+    });
+  }
+
+  protected openLogoutAllDevicesModal() {
+    this.modalService.open({
+      title: 'Logout All Devices',
+      description: 'Are you sure you want to logout from all devices?',
+      save: () => 
+        this.logoutAllDevices(),
       discard: () => console.log('cancelled'),
     });
   }
