@@ -48,7 +48,6 @@
     "users": "Users:"
   },
   "question": {
-    "youHaveVoted": "You have already voted. Item",
     "enterYourAnswer": "Enter your answer...",
     "submitAnswer": "Submit Answer"
   },

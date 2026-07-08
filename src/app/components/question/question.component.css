@@ -33,3 +33,31 @@
   display: flex;
   justify-content: center;
 }
+
+.question-votes-and-chat-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 5vw;
+}
+
+.question-votes-and-chat-container section {
+  height: 60vh;
+}
+
+.question-votes-container {
+  display: flex;
+  width: 57vw;
+}
+
+.voter-container {
+  height: 100px;
+  width: 100px;
+}
+
+.chat-container {
+  width: 38vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
