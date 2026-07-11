@@ -58,7 +58,8 @@ export class GroupComponent implements OnInit {
       const invitation = await this.groupsService.getGroupInvitation(this.group()!.id);
       this.logger.debug('Fetched group invitation:', invitation);
       if (invitation) {
-        await navigator.clipboard.writeText(invitation);
+        const invitationUrl = `${window.location.origin}/group/invitations/${invitation}`;
+        await navigator.clipboard.writeText(invitationUrl);
         this.logger.info('Invitation copied to clipboard');
       } else {
         this.logger.warn('No invitation to copy');
