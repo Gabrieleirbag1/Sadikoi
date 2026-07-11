@@ -64,7 +64,11 @@ export class QuestionComponent implements OnInit{
       const group = this.group();
       if (!group) throw new Error('No group available for voting');
       const response = await this.questionService.submitVote(group.id, votedUsersId, writtenAnswer);
-      this.logger.debug('Vote submitted successfully', response);
+      if (response) {
+        this.question.update(q => q ? { ...q, votes: response } : q);
+        this.setVoteBubble();
+        this.logger.debug('Vote submitted successfully', response);
+      }
       if (response) this.question.update(q => q ? { ...q, votes: response } : q);
     } catch (error) {
       this.logger.error('Error submitting vote:', error);
