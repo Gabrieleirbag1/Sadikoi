@@ -25,6 +25,7 @@
     padding: 10px;
     cursor: pointer;
     height: 20vh;
+    background-color: #fff;
 }
 
 .group-grid-icons {
@@ -57,6 +58,7 @@
     padding: 10px;
     cursor: pointer;
     height: 12vh;
+    background-color: #fff;
 }
 
 .group-list-item-info {

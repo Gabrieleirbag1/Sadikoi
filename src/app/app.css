@@ -1,3 +1,9 @@
-.main-content{
-    margin: 30px;
+.main-content {
+  padding: 30px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-color: #faf8f8;
+  background-position: center;
 }
