@@ -1,43 +1,74 @@
 @if (user) {
-    <form (submit)="updateAccount($event)">
-        <label>{{ 'auth.profilePicture' | translate }}</label>
-        <app-profile-image-picker 
-            [currentImageUrl]="userPfpUrl" 
-            (fileSelectedChange)="handleFileSelected($event)">
-        </app-profile-image-picker>
+  <section>
+    <div class="account-container">
+      <form (submit)="updateAccount($event)">
+        <div class="form-container">
+          <div class="form-fields">
+            <div class="form-fields-component form-fields-left">
+              <label for="username">{{ 'auth.username' | translate }}</label>
+              <input id="username" type="text" [formField]="authForm.username" />
 
-        <label for="username">{{ 'auth.username' | translate }}</label>
-        <input id="username" type="text" [formField]="authForm.username" />
+              <label for="email">{{ 'auth.email' | translate }}</label>
+              <input id="email" type="email" [formField]="authForm.email" />
 
-        <label for="email">{{ 'auth.email' | translate }}</label>
-        <input id="email" type="email" [formField]="authForm.email"/>
+              <label for="password">{{ 'auth.newPassword' | translate }}</label>
+              <input id="password" type="password" [formField]="authForm.password" />
 
-        <label for="password">{{ 'auth.newPassword' | translate }}</label>
-        <input id="password" type="password" [formField]="authForm.password"/>
+              <label for="confirmPassword">{{ 'auth.confirmNewPassword' | translate }}</label>
+              <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword" />
+            </div>
+            <div class="form-fields-component form-fields-right">
+              <label>{{ 'auth.profilePicture' | translate }}</label>
+              <app-profile-image-picker
+                [currentImageUrl]="userPfpUrl"
+                (fileSelectedChange)="handleFileSelected($event)"
+              >
+              </app-profile-image-picker>
+              <label for="language">{{ 'account.language' | translate }}</label>
+              <select id="language" [formField]="authForm.language">
+                <option value="en">{{ 'languages.english' | translate }}</option>
+                <option value="fr">{{ 'languages.francais' | translate }}</option>
+              </select>
+              <p>{{ 'account.dateCreated' | translate }} {{ user.date_created | date }}</p>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit">{{ 'account.updateAccount' | translate }}</button>
+            <button type="button" (click)="redirectLogout()">
+              {{ 'account.logout' | translate }}
+            </button>
+            <button type="button" (click)="openDeleteModal()">
+              {{ 'account.deleteAccount' | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
 
-        <label for="confirmPassword">{{ 'auth.confirmNewPassword' | translate }}</label>
-        <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword"/>
-
-        <label for="language">{{ 'account.language' | translate }}</label>
-        <select id="language" [formField]="authForm.language">
-            <option value="en">{{ 'languages.english' | translate }}</option>
-            <option value="fr">{{ 'languages.francais' | translate }}</option>
-        </select>
-        <p> {{ 'account.dateCreated' | translate }} {{ user.date_created | date }} </p>
-
-        <button type="submit">{{ 'account.updateAccount' | translate }}</button>
-    </form>
-
-    <h1>{{ 'account.devices' | translate }}</h1>
-    <button (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
-    <button (click)="logoutAllDevices()">{{ 'account.logoutAllDevices' | translate }}</button>
-    @if (devices()) {
-        @for (device of devices(); track $index) {
-            <p>{{ 'account.device' | translate }} {{ device.device_name }}</p>
-            <button (click)="revokeDevice(device.device_id)">{{ 'account.revokeDevice' | translate }}</button>
+    <div class="devices-container">
+      <h1>{{ 'account.devices' | translate }}</h1>
+      <div class="devices-actions">
+        <button (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
+        <button (click)="openLogoutAllDevicesModal()">
+          {{ 'account.logoutAllDevices' | translate }}
+        </button>
+      </div>
+      <div class="devices-list">
+        @if (devices()) {
+          @for (device of devices(); track $index) {
+            <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled />
+              <button (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+          }
+        } @else {
+          <p>{{ 'account.noDevicesFound' | translate }}</p>
         }
-    } @else {
-        <p>{{ 'account.noDevicesFound' | translate }}</p>
-    }
+      </div>
+    </div>
+  </section>
 }
-<button (click)="openModal()" class="btn btn-primary">{{ 'account.openModal' | translate }}</button>
+<app-modal></app-modal>

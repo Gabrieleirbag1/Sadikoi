@@ -1,8 +1,65 @@
-<p>groups.component works!</p>
-<input type="text" [placeholder]="'groups.groupName' | translate" #groupName>
-<button (click)="createGroup(groupName.value)">{{ 'groups.createGroup' | translate }}</button>
-@for (group of groups(); track $index) {
-    <button (click)="redirectGroup(group)">
-        <p>{{ group.name }}</p>
-    </button>
-}
+<div class="groups-header">
+  <button (click)="changeView('grid')">grid view</button>
+  <button (click)="changeView('list')">list view</button>
+</div>
+<section class="groups-container">
+  @if (view == 'grid') {
+    <section class="grid-container">
+      @for (group of groups(); track $index) {
+        <div class="group-grid-item" (click)="redirectGroup(group)">
+          <div class="group-grid-icons">
+            <div class="group-users-icons">
+              @for (user of group.users.slice(0, 4); track $index) {
+                <app-profile-image-picker
+                  [currentImageUrl]="user.profile_picture"
+                  [onlyDisplay]="true"
+                  [imgClass]="'group-user-icon'"
+                >
+                </app-profile-image-picker>
+              }
+            </div>
+            <div class="group-grid-item-icon">
+              <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
+              </app-profile-image-picker>
+            </div>
+          </div>
+          <p>{{ group.name }}</p>
+          <p></p>
+        </div>
+      }
+      <div class="group-grid-item" (click)="openGroupModal()">
+        <p>+</p>
+      </div>
+    </section>
+  } @else {
+    <section class="list-container">
+      @for (group of groups(); track $index) {
+        <div class="group-list-item" (click)="redirectGroup(group)">
+          <div class="group-users-icons">
+            @for (user of group.users.slice(0, 4); track $index) {
+              <app-profile-image-picker
+                [currentImageUrl]="user.profile_picture"
+                [onlyDisplay]="true"
+                [imgClass]="'group-user-icon'"
+              >
+              </app-profile-image-picker>
+            }
+          </div>
+          <div class="group-list-item-info">
+            <p>{{ group.name }}</p>
+            <p>last message</p>
+          </div>
+          <div class="group-list-item-icon">
+            <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
+            </app-profile-image-picker>
+          </div>
+        </div>
+      }
+      <div class="group-list-item" (click)="openGroupModal()">
+        <p>+</p>
+      </div>
+    </section>
+  }
+</section>
+
+<app-group-modal></app-group-modal>

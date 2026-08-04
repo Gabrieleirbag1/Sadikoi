@@ -1,26 +1,30 @@
-<p>chat.component works!</p>
-
-@for (message of messages(); track $index) {
-  <div class="message">
-    <strong>{{ message.sender.username }}</strong>
-    @if (isGifMessage(message.content)) {
-      <img [src]="message.content" alt="GIF" class="message-gif" />
-    } @else {
-      <p>{{ message.content }}</p>
+<section class="chat-container">
+  <div class="chat-messages-container">
+    @for (message of messages(); track $index) {
+      <div class="message">
+        <strong>{{ message.sender.username }}</strong>
+        @if (isGifMessage(message.content)) {
+          <img [src]="message.content" alt="GIF" class="message-gif" />
+        } @else {
+          <p>{{ message.content }}</p>
+        }
+      </div>
+    } @empty {
+      <p>{{ 'chat.noMessagesDisplay' | translate }}</p>
     }
   </div>
-} @empty {
-  <p>{{ 'chat.noMessagesDisplay' | translate }}</p>
-}
 
-<div class="chat-input-area">
-  @if (showGifPicker()) {
-    <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
-  }
+  <div class="chat-input-area">
+    @if (showGifPicker()) {
+      <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
+    }
 
-  <button (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
-    {{ 'chat.gif' | translate }}
-  </button>
-  <input type="text" [placeholder]="'chat.typeYourMessage' | translate" #messageContent />
-  <button (click)="sendMessage(messageContent.value, messageContent)">{{ 'chat.send' | translate }}</button>
-</div>
+    <button (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
+      {{ 'chat.gif' | translate }}
+    </button>
+    <input type="text" [placeholder]="'chat.typeYourMessage' | translate" #messageContent />
+    <button (click)="sendMessage(messageContent.value, messageContent)">
+      {{ 'chat.send' | translate }}
+    </button>
+  </div>
+</section>

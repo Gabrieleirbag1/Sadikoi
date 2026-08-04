@@ -4,10 +4,16 @@ import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ChatComponent } from "../chat/chat.component";
 import { TranslatePipe } from '@ngx-translate/core';
+import { ProfileImagePickerComponent } from "../profile-image-picker/profile-image-picker.component";
+
+interface VoteBubble {
+  votedUser: User;
+  voters: User[];
+}
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe],
+  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent],
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })
@@ -17,6 +23,7 @@ export class QuestionComponent implements OnInit{
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
   protected question = signal<Question | null>(null);
+  protected voteBubbles: VoteBubble[] = [];
 
   readonly group = model<Group | null>(null);
 
@@ -25,12 +32,26 @@ export class QuestionComponent implements OnInit{
     await this.fetchQuestion();
   }
 
+  private setVoteBubble() {
+    for (const vote of this.question()?.votes || []) {
+      for (const targetUser of vote.targets) {
+        const existingBubble = this.voteBubbles?.find((bubble: VoteBubble) => bubble.votedUser.id === targetUser.id);
+        if (existingBubble) {
+          existingBubble.voters.push(vote.voterUser);
+        } else {
+          this.voteBubbles?.push({ votedUser: targetUser, voters: [vote.voterUser] });
+        }
+      }
+    }
+  }
+
   protected async fetchQuestion(): Promise<void> {
     try {
       const group = this.group();
       if (!group) throw new Error('Group is not set')
       const question = await this.questionService.getQuestion(group.id);
       this.question.set(question);
+      this.setVoteBubble();
       this.logger.debug('Fetched question:', this.question());
     } catch (error) {
       this.logger.error('Error fetching question:', error);
@@ -43,7 +64,11 @@ export class QuestionComponent implements OnInit{
       const group = this.group();
       if (!group) throw new Error('No group available for voting');
       const response = await this.questionService.submitVote(group.id, votedUsersId, writtenAnswer);
-      this.logger.debug('Vote submitted successfully', response);
+      if (response) {
+        this.question.update(q => q ? { ...q, votes: response } : q);
+        this.setVoteBubble();
+        this.logger.debug('Vote submitted successfully', response);
+      }
       if (response) this.question.update(q => q ? { ...q, votes: response } : q);
     } catch (error) {
       this.logger.error('Error submitting vote:', error);

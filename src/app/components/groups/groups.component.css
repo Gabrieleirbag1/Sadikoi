@@ -1,0 +1,67 @@
+.groups-container {
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.groups-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.group-grid-item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    height: 20vh;
+    background-color: #fff;
+}
+
+.group-grid-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.group-users-icons {
+    display: grid;
+    grid-template-columns: repeat(2, 30px);
+    grid-template-rows: repeat(2, 30px);
+    gap: 5px;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.group-list-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 10px;
+    cursor: pointer;
+    height: 12vh;
+    background-color: #fff;
+}
+
+.group-list-item-info {
+    display: flex;
+    flex-direction: column;
+}

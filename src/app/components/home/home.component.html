@@ -1,5 +1,8 @@
-<p>home.component works!</p>
-<app-groups></app-groups>
-<app-join-group></app-join-group>
-<app-account></app-account>
-<app-feedback></app-feedback>
+<section class="main-container">
+  @if (homeState() === 'groups') {
+    <app-groups></app-groups>
+  } @else if (homeState() === 'account') {
+    <app-account></app-account>
+  }
+</section>
+<app-home-footer [(homeState)]="homeState" />

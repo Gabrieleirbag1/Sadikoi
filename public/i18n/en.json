@@ -20,33 +20,34 @@
   "account": {
     "updateAccount": "Update Account",
     "language": "Language:",
-    "dateCreated": "date:",
+    "dateCreated": "Date Created:",
     "devices": "DEVICES",
     "getDevices": "Get Devices",
     "logoutAllDevices": "Logout All Devices",
     "device": "Device:",
     "revokeDevice": "Revoke Device",
     "noDevicesFound": "No devices found.",
-    "openModal": "open modal"
+    "openModal": "open modal",
+    "logout": "Logout",
+    "deleteAccount": "Delete Account"
   },
   "groups": {
     "groupName": "Group Name",
+    "groupDescription": "Group Description",
     "createGroup": "Create Group",
     "enterGroupCode": "Enter group code",
     "joinGroup": "Join Group"
   },
   "group": {
     "getGroupInvitation": "Get Group Invitation",
-    "groupInvitation": "Group Invitation:",
     "loadingGroup": "Loading group...",
     "name": "Name:",
     "description": "Description:",
     "dailyResetTime": "Daily Reset Time:",
-    "updateGroup": "Update Group"
+    "updateGroup": "Update Group",
+    "users": "Users:"
   },
   "question": {
-    "question": "Question:",
-    "youHaveVoted": "You have already voted. Item",
     "enterYourAnswer": "Enter your answer...",
     "submitAnswer": "Submit Answer"
   },
@@ -81,7 +82,7 @@
     "submitSuggestion": "Submit Suggestion"
   },
   "modal": {
-    "save": "Save changes",
+    "save": "Confirm",
     "close": "Close"
   },
   "languages": {

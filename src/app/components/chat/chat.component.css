@@ -1,0 +1,13 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 38vw;
+    background-color: #fff;
+}
+
+.chat-messages-container {
+    overflow-y: auto;
+    margin-bottom: 20px;
+}

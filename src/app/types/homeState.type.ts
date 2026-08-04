@@ -1,0 +1,1 @@
+type HomeState = 'groups' | 'account' | 'group';

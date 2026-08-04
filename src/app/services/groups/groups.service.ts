@@ -33,8 +33,8 @@ export class GroupsService {
     }
   }
 
-  public async createGroup(groupName: string): Promise<Group | null> {
-    const payload = { name: groupName };
+  public async createGroup(groupName: string, groupDescription: string, groupTime: string): Promise<Group | null> {
+    const payload = { name: groupName, description: groupDescription, daily_reset_timestamp: groupTime };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/`, payload, { withCredentials: true }));
       this.logger.debug('Group created successfully:', response);

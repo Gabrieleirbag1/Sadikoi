@@ -1,13 +1,21 @@
-<p>group.component works!</p>
-{{group()?.name}}
-@if (group()) {
-  <app-question [group]="group()"></app-question>
-
-  <button (click)="fetchInvitation()">{{ 'group.getGroupInvitation' | translate }}</button>
-  @if (invitation()) {
-    <p>{{ 'group.groupInvitation' | translate }} {{ invitation() }}</p>
+<section class="main-container">
+  <header class="group-header">
+    <div>
+      <span>{{group()?.name}}</span>
+    </div>
+    <div>
+      <button (click)="fetchInvitation()">{{ 'group.getGroupInvitation' | translate }}</button>
+      <button (click)="openGroupOptionsModal()">Group options</button>
+    </div>
+  </header>
+  @if (group()) {
+    <app-question [group]="group()"></app-question>
+  } @else {
+      <p>{{ 'group.loadingGroup' | translate }}</p>
   }
-} @else {
-    <p>{{ 'group.loadingGroup' | translate }}</p>
-}
-<app-group-options [group]="group()" (groupChange)="group.set($event)" />
+</section>
+<app-home-footer [(homeState)]="homeState" [redirect]="true"></app-home-footer>
+<app-group-options-modal 
+  [group]="group()" 
+  (groupChange)="group.set($event)">
+</app-group-options-modal>

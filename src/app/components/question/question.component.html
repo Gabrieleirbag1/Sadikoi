@@ -1,35 +1,91 @@
-<p>question.component works!</p>
-<p>{{ 'question.question' | translate }} {{ question()?.content }}</p>
+<div class="question-container">
+  <span>{{ question()?.content }}</span>
+</div>
 @if (question()?.votes) {
-  <p>{{ 'question.youHaveVoted' | translate }} {{ question()?.item }}</p>
-  @for (vote of question()?.votes; track $index) {
-    @if (vote.writtenAnswer) {
-      <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
-    } @else {
-      <p>
-        @for (targetUser of vote.targets; track $index) {
-          {{ targetUser.username }}
-        }
-        voted by {{ vote.voterUser.username }}
-      </p>
-    }
-  }
-  <app-chat [group]="group()"></app-chat>
+  <div class="question-votes-and-chat-container">
+    <section class="question-votes-container">
+      <p>{{ question()?.item }}</p>
 
+      @if (question()?.canWrite) {
+        <div class="written-answers-container">
+          @for (vote of question()?.votes; track $index) {
+            @if (vote.writtenAnswer) {
+              <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
+            } @else {}
+          }
+        </div>
+      } @else {
+        @for (bubble of voteBubbles; track $index) {
+          <div class="user-vote-container">
+            <div class="user-vote">
+              <app-profile-image-picker
+                [currentImageUrl]="bubble.votedUser.profile_picture"
+                [onlyDisplay]="true"
+                [imgClass]="'group-user-icon'"
+              >
+              </app-profile-image-picker>
+              <span>{{ bubble.votedUser.username }}</span>
+            </div>
+          </div>
+          @for (voter of bubble.voters; track $index) {
+            <div class="voter-container user-vote-container">
+              <div class="user-vote">
+                <app-profile-image-picker
+                  [currentImageUrl]="voter.profile_picture"
+                  [onlyDisplay]="true"
+                  [imgClass]="'group-user-icon'"
+                >
+                </app-profile-image-picker>
+                <span>{{ voter.username }}</span>
+              </div>
+            </div>
+          }
+        }
+      }
+    </section>
+    <section>
+      <app-chat [group]="group()"></app-chat>
+    </section>
+  </div>
 } @else {
   @if (question()?.canWrite) {
-      <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
-      <button (click)="submitVote(usersId, answerInput.value)">{{ 'question.submitAnswer' | translate }}</button>
+    <div class="answer-container">
+      <div class="answer-input-container">
+        <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
+      </div>
+      <div class="submit-vote-container">
+        <button (click)="submitVote(usersId, answerInput.value)">
+          {{ 'question.submitAnswer' | translate }}
+        </button>
+      </div>
+    </div>
   } @else {
-    @for (user of group()?.users; track $index) {
-      @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
-        <input type="checkbox" disabled />
-      } @else {
-        <input type="checkbox" (change)="toggleVote(user.id)" [checked]="usersId.includes(user.id)" />
+    <div class="vote-container">
+      @for (user of group()?.users; track $index) {
+        <div class="user-vote-container">
+          <div class="user-vote">
+            <app-profile-image-picker
+              [currentImageUrl]="user.profile_picture"
+              [onlyDisplay]="true"
+              [imgClass]="'group-user-icon'"
+            >
+            </app-profile-image-picker>
+            @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
+              <input type="checkbox" disabled />
+            } @else {
+              <input
+                type="checkbox"
+                (change)="toggleVote(user.id)"
+                [checked]="usersId.includes(user.id)"
+              />
+            }
+            <span>{{ user.username }}</span>
+          </div>
+        </div>
       }
-      <label>{{ user.username }}</label>
-      <br/>
-    }
-    <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
+    </div>
+    <div class="submit-vote-container">
+      <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
+    </div>
   }
 }

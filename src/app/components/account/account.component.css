@@ -1,0 +1,56 @@
+section {
+    display: flex;
+    height: 70vh;
+    gap: 30px;
+}
+
+.account-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 50vw;
+}
+
+.form-fields {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.form-fields-component {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.devices-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.devices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.device-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
