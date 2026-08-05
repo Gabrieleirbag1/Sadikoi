@@ -4,6 +4,7 @@
       <span>{{group()?.name}}</span>
     </div>
     <div>
+      <app-calendar [group]="group()"></app-calendar>
       <button (click)="fetchInvitation()">{{ 'group.getGroupInvitation' | translate }}</button>
       <button (click)="openGroupOptionsModal()">Group options</button>
     </div>

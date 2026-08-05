@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, model, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuestionService } from '../../services/question/question.service';
 
@@ -32,8 +32,9 @@ export class CalendarComponent implements OnInit {
   protected viewMonth!: number; // 0-11
   protected days: CalendarDay[] = [];
   protected selectedDate: Date | null = null;
-  /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
-  private disabledDates = new Set<string>();
+  private disabledDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
+  public readonly group = model<Group | null>(null); 
+  
 
   get title(): string {
     return `${MONTH_NAMES[this.viewMonth]} ${this.viewYear}`;
@@ -93,7 +94,9 @@ export class CalendarComponent implements OnInit {
 
   private async fetchQuestionsForDate(year: number, month: number): Promise<void> {
     try {
-      const questions = await this.questionService.getQuestionByDate(1, month + 1, year);
+      const group = this.group();
+      if (!group) throw new Error('Group is not set');
+      const questions = await this.questionService.getQuestionByDate(group.id, month + 1, year);
       if (questions) {
         const questionList = Array.isArray(questions) ? questions : [questions];
         const disabledDates = questionList.map(q => {
