@@ -6,23 +6,26 @@
   </div>
 
   <div class="calendar__weekdays">
-    <span *ngFor="let day of weekdays">{{ day }}</span>
+    @for (day of weekdays; track day) {
+      <span>{{ day }}</span>
+    }
   </div>
 
   <div class="calendar__days">
-    <button
-      *ngFor="let day of days"
-      type="button"
-      class="calendar__day"
-      [class.calendar__day--muted]="!day.isCurrentMonth"
-      [class.calendar__day--today]="day.isToday"
-      [class.calendar__day--selected]="day.isSelected"
-      [class.calendar__day--disabled]="day.disabled"
-      [disabled]="day.disabled"
-      (click)="selectDay(day)"
-    >
-      {{ day.date }}
-    </button>
+    @for (day of days; track day.year + '-' + day.month + '-' + day.date) {
+      <button
+        type="button"
+        class="calendar__day"
+        [class.calendar__day--muted]="!day.isCurrentMonth"
+        [class.calendar__day--today]="day.isToday"
+        [class.calendar__day--selected]="day.isSelected"
+        [class.calendar__day--disabled]="day.disabled"
+        [disabled]="day.disabled"
+        (click)="selectDay(day)"
+      >
+        {{ day.date }}
+      </button>
+    }
   </div>
 
   <div class="calendar__footer">
