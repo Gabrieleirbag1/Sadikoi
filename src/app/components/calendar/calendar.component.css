@@ -87,6 +87,16 @@
   background: #1d4ed8;
 }
 
+.calendar__day--disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.calendar__day--disabled:hover {
+  background: transparent;
+}
+
 .calendar__footer {
   display: flex;
   justify-content: space-between;
