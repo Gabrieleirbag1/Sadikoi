@@ -14,7 +14,7 @@ export class QuestionService {
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/`, { withCredentials: true }));
-      this.logger.debug('Questions fetched successfully:', response);
+      this.logger.debug('Question fetched successfully:', response);
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to fetch questions:', error);
