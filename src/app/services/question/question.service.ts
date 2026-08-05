@@ -22,6 +22,17 @@ export class QuestionService {
     }
   }
 
+  public async getQuestionByDate(groupId: number, month: number, year: number): Promise<Question | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/${month}/${year}/`, { withCredentials: true }));
+      this.logger.debug('Questions fetched successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Failed to fetch questions by month:', error);
+      throw error;
+    }
+  }
+
   public async submitVote(groupId: number, votedUsersId: number[], writtenAnswer?: string): Promise<Vote[] | null> {
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}questions/${groupId}/vote/`, { votedUsers: votedUsersId, writtenAnswer }, { withCredentials: true }));
