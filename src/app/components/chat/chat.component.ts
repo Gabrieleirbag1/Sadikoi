@@ -1,4 +1,4 @@
-import { Component, inject, Input, signal } from '@angular/core';
+import { Component, inject, model, signal } from '@angular/core';
 import { ChatService } from '../../services/chat/chat.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -20,10 +20,12 @@ export class ChatComponent {
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
 
-  @Input() group: Group | null = null;
+  public readonly group = model<Group | null>(null); 
+
 
   async ngOnInit(): Promise<void> {
-    if (this.group) this.loadMessages(this.group.id);
+    const g = this.group();
+    if (g) this.loadMessages(g.id);
   }
 
   private async loadMessages(groupId: number): Promise<void> {
@@ -38,8 +40,9 @@ export class ChatComponent {
   protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
     if (!content.trim()) return;
     try {
-      if (!this.group) throw new Error('Group is not set');
-      const newMessage = await this.chatService.sendMessage(this.group.id, content);
+      const g = this.group();
+      if (!g) throw new Error('Group is not set');
+      const newMessage = await this.chatService.sendMessage(g.id, content);
       if (newMessage) this.messages.update(messages => [...messages, newMessage]);
       if (input) input.value = '';
     } catch (error) {
