@@ -32,7 +32,7 @@ export class CalendarComponent implements OnInit {
   protected viewMonth!: number; // 0-11
   protected days: CalendarDay[] = [];
   protected selectedDate: Date | null = null;
-  private disabledDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
+  private enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
   
 
@@ -88,7 +88,6 @@ export class CalendarComponent implements OnInit {
 
   protected loadMonth(year: number, month: number): void {
     this.fetchQuestionsForDate(year, month);
-    this.disabledDates = new Set();
     this.buildDays();
   }
 
@@ -99,11 +98,11 @@ export class CalendarComponent implements OnInit {
       const questions = await this.questionService.getQuestionByDate(group.id, month + 1, year);
       if (questions) {
         const questionList = Array.isArray(questions) ? questions : [questions];
-        const disabledDates = questionList.map(q => {
+        const enableDates = questionList.map(q => {
           const date = new Date(q.date);
           return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         });
-        this.setDisabledDates(disabledDates);
+        this.setEnableDates(enableDates);
       }
     } catch (error) {
       console.error('Error fetching questions for date:', error);
@@ -111,8 +110,8 @@ export class CalendarComponent implements OnInit {
   }
 
   /** Call this once your API responds, with dates formatted 'YYYY-MM-DD'. */
-  protected setDisabledDates(dates: string[]): void {
-    this.disabledDates = new Set(dates);
+  protected setEnableDates(dates: string[]): void {
+    this.enableDates = new Set(dates);
   }
 
   private buildDays(): void {
@@ -178,7 +177,7 @@ export class CalendarComponent implements OnInit {
       isCurrentMonth,
       isToday,
       isSelected,
-      disabled: this.disabledDates.has(key),
+      disabled: this.enableDates.has(key),
     };
   }
 
