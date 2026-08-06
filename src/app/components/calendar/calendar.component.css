@@ -69,8 +69,25 @@
   background: #f0f0f0;
 }
 
+/* Prev/next month days: same look as before, just faded numbers, no strikethrough. */
 .calendar__day--muted {
   color: #ccc;
+  cursor: not-allowed;
+}
+
+.calendar__day--muted:hover {
+  background: transparent;
+}
+
+/* Current-month days with no enabled question: distinct disabled style (no strikethrough, no hover). */
+.calendar__day--disabled {
+  color: #bbb;
+  background: #f7f7f7;
+  cursor: not-allowed;
+}
+
+.calendar__day--disabled:hover {
+  background: #f7f7f7;
 }
 
 .calendar__day--today {
@@ -85,16 +102,6 @@
 
 .calendar__day--selected:hover {
   background: #1d4ed8;
-}
-
-.calendar__day--disabled {
-  color: #ccc;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
-
-.calendar__day--disabled:hover {
-  background: transparent;
 }
 
 .calendar__footer {

@@ -12,14 +12,14 @@
   </div>
 
   <div class="calendar__days">
-    @for (day of days; track day.year + '-' + day.month + '-' + day.date) {
+    @for (day of days(); track day.year + '-' + day.month + '-' + day.date) {
       <button
         type="button"
         class="calendar__day"
         [class.calendar__day--muted]="!day.isCurrentMonth"
         [class.calendar__day--today]="day.isToday"
         [class.calendar__day--selected]="day.isSelected"
-        [class.calendar__day--disabled]="day.disabled"
+        [class.calendar__day--disabled]="day.disabled && day.isCurrentMonth"
         [disabled]="day.disabled"
         (click)="selectDay(day)"
       >

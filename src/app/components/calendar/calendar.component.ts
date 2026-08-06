@@ -1,4 +1,4 @@
-import { Component, inject, model, OnInit } from '@angular/core';
+import { Component, inject, model, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuestionService } from '../../services/question/question.service';
 
@@ -30,9 +30,9 @@ export class CalendarComponent implements OnInit {
   protected weekdays = WEEKDAYS;
   protected viewYear!: number;
   protected viewMonth!: number; // 0-11
-  protected days: CalendarDay[] = [];
+  protected days = signal<CalendarDay[]>([]);
   protected selectedDate: Date | null = null;
-  private enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
+  public enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
   
 
@@ -53,6 +53,7 @@ export class CalendarComponent implements OnInit {
       this.viewMonth = 11;
       this.viewYear--;
     }
+    console.log(`Loading month: ${this.viewYear}-${this.viewMonth }`);
     this.loadMonth(this.viewYear, this.viewMonth);
   }
 
@@ -86,8 +87,9 @@ export class CalendarComponent implements OnInit {
     this.buildDays();
   }
 
-  protected loadMonth(year: number, month: number): void {
-    this.fetchQuestionsForDate(year, month);
+  protected async loadMonth(year: number, month: number): Promise<void> {
+    await this.fetchQuestionsForDate(year, month);
+    console.log(this.enableDates);
     this.buildDays();
   }
 
@@ -147,7 +149,7 @@ export class CalendarComponent implements OnInit {
       nextDate++;
     }
 
-    this.days = cells;
+    this.days.set(cells);
   }
 
   private makeCell(
@@ -170,6 +172,12 @@ export class CalendarComponent implements OnInit {
 
     const key = this.toKey(year, month, date);
 
+    if (this.enableDates.has(key)) {
+      console.log(`Date ${key} is enabled.`);
+    } else {
+      // console.log(`Date ${key} is disabled.`);
+    }
+
     return {
       date,
       month,
@@ -177,7 +185,7 @@ export class CalendarComponent implements OnInit {
       isCurrentMonth,
       isToday,
       isSelected,
-      disabled: this.enableDates.has(key),
+      disabled: !this.enableDates.has(key),
     };
   }
 
