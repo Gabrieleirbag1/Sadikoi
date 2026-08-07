@@ -32,6 +32,7 @@ export class CalendarComponent implements OnInit {
   protected viewMonth!: number; // 0-11
   protected days = signal<CalendarDay[]>([]);
   protected selectedDate: Date | null = null;
+  private questionsByDate = new Map<string, Question>();
   public enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
 
@@ -70,6 +71,10 @@ export class CalendarComponent implements OnInit {
     }
     this.selectedDate = new Date(day.year, day.month, day.date);
     this.buildDays();
+
+    const key = this.toKey(day.year, day.month, day.date);
+    const question = this.questionsByDate.get(key);
+    console.log('Question:', question);
   }
 
   protected goToToday(): void {
@@ -90,16 +95,19 @@ export class CalendarComponent implements OnInit {
     this.buildDays();
   }
 
-  private async fetchQuestionsForDate(year: number, month: number): Promise<void> {
+private async fetchQuestionsForDate(year: number, month: number): Promise<void> {
     try {
       const group = this.group();
       if (!group) throw new Error('Group is not set');
       const questions = await this.questionService.getQuestionByDate(group.id, month + 1, year);
       if (questions) {
         const questionList = Array.isArray(questions) ? questions : [questions];
+        this.questionsByDate.clear(); // NEW: reset map for the newly loaded month
         const enableDates = questionList.map(q => {
           const date = new Date(q.date);
-          return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+          const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+          this.questionsByDate.set(key, q); // NEW: store the actual question object
+          return key;
         });
         this.setEnableDates(enableDates);
       }
@@ -179,7 +187,6 @@ export class CalendarComponent implements OnInit {
       disabled: !this.enableDates.has(key),
     };
   }
-
   private toKey(year: number, month: number, date: number): string {
     const mm = String(month + 1).padStart(2, '0');
     const dd = String(date).padStart(2, '0');
