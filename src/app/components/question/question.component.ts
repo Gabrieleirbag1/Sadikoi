@@ -44,7 +44,9 @@ export class QuestionComponent implements OnInit{
       for (const targetUser of vote.targets) {
         const existingBubble = this.voteBubbles?.find((bubble: VoteBubble) => bubble.votedUser.id === targetUser.id);
         if (existingBubble) {
-          existingBubble.voters.push(vote.voterUser);
+          if (!existingBubble.voters.some(voter => voter.id === vote.voterUser.id)) { // this check prevents duplicate voters in the same bubble
+            existingBubble.voters.push(vote.voterUser);
+          }
         } else {
           this.voteBubbles?.push({ votedUser: targetUser, voters: [vote.voterUser] });
         }

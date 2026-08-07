@@ -3,20 +3,15 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
+import { DatetimeService } from '../datetime/datetime.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionService {
+  private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
-
-  private convertDateToLocalTimezone(date: string): string {
-    return date;
-    const localDate = new Date(date);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${localDate.getFullYear()}-${pad(localDate.getMonth() + 1)}-${pad(localDate.getDate())}`;
-  }
 
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
@@ -24,7 +19,7 @@ export class QuestionService {
       this.logger.debug('Question fetched successfully:', response);
       const question = response.content;
       if (question && question.date) {
-        question.date = this.convertDateToLocalTimezone(question.date);
+        question.date = this.datetimeService.convertUTCDateToLocal(question.date);
       }
       return question || null;
     } catch (error) {
@@ -38,11 +33,10 @@ export class QuestionService {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/${month}/${year}/`, { withCredentials: true }));
       this.logger.debug('Questions fetched successfully:', response);
       const questions = response.content;
-      const dailyResetTimestamp = "15:00"
       if (questions && Array.isArray(questions)) {
         questions.forEach((question: Question) => {
           if (question.date) {
-            question.date = this.convertDateToLocalTimezone(question.date);
+            question.date = this.datetimeService.convertUTCDateToLocal(question.date);
           }
         });
       }
