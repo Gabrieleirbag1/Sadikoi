@@ -1,4 +1,4 @@
-import { Component, inject, Input, model, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, model, OnInit, signal, SimpleChanges } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -30,6 +30,13 @@ export class QuestionComponent implements OnInit{
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
     await this.fetchQuestion();
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    const question = this.question();
+    if (changes['question'] && question) {
+      this.setVoteBubble();
+    }
   }
 
   private setVoteBubble() {
