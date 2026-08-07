@@ -1,7 +1,7 @@
 <div class="question-container">
   <span>{{ question()?.content }}</span>
 </div>
-@if (question()?.votes) {
+@if (question()?.votes?.length) {
   <div class="question-votes-and-chat-container">
     <section class="question-votes-container">
       <p>{{ question()?.item }}</p>
