@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
@@ -22,6 +22,9 @@ export class GroupComponent implements OnInit {
   private readonly modalService = inject(ModalService);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
+  protected showClendarFlag = signal<boolean>(false);
+
+  @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
   async ngOnInit(): Promise<void> {
     // const navState = window.history.state;
@@ -77,6 +80,18 @@ export class GroupComponent implements OnInit {
       save: () => console.log('confirmed'),
       discard: () => console.log('cancelled'),
     });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showClendarFlag()) return;
+    if (this.calendarAnchor && !this.calendarAnchor.nativeElement.contains(event.target as Node)) {
+      this.showClendarFlag.set(false);
+    }
+  }
+
+  protected showCalendar(): void {
+    this.showClendarFlag.set(!this.showClendarFlag());
   }
 
 }

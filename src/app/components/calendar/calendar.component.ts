@@ -34,7 +34,6 @@ export class CalendarComponent implements OnInit {
   protected selectedDate: Date | null = null;
   public enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
-  
 
   get title(): string {
     return `${MONTH_NAMES[this.viewMonth]} ${this.viewYear}`;
@@ -53,7 +52,6 @@ export class CalendarComponent implements OnInit {
       this.viewMonth = 11;
       this.viewYear--;
     }
-    console.log(`Loading month: ${this.viewYear}-${this.viewMonth }`);
     this.loadMonth(this.viewYear, this.viewMonth);
   }
 
@@ -89,7 +87,6 @@ export class CalendarComponent implements OnInit {
 
   protected async loadMonth(year: number, month: number): Promise<void> {
     await this.fetchQuestionsForDate(year, month);
-    console.log(this.enableDates);
     this.buildDays();
   }
 
@@ -171,12 +168,6 @@ export class CalendarComponent implements OnInit {
       year === this.selectedDate.getFullYear();
 
     const key = this.toKey(year, month, date);
-
-    if (this.enableDates.has(key)) {
-      console.log(`Date ${key} is enabled.`);
-    } else {
-      // console.log(`Date ${key} is disabled.`);
-    }
 
     return {
       date,
