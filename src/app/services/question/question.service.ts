@@ -11,22 +11,40 @@ export class QuestionService {
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
 
+  private convertDateToLocalTimezone(date: string): string {
+    const utcDate = new Date(date);
+    const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+    return localDate.toISOString().split('T')[0]; // Returns 'YYYY-MM-DD'
+  }
+
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/`, { withCredentials: true }));
       this.logger.debug('Question fetched successfully:', response);
-      return response.content || null;
+      const question = response.content;
+      if (question && question.date) {
+        question.date = this.convertDateToLocalTimezone(question.date);
+      }
+      return question || null;
     } catch (error) {
       this.logger.error('Failed to fetch questions:', error);
       throw error;
     }
   }
 
-  public async getQuestionByDate(groupId: number, month: number, year: number): Promise<Question | null> {
+  public async getQuestionsByDate(groupId: number, month: number, year: number): Promise<Question | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/${month}/${year}/`, { withCredentials: true }));
       this.logger.debug('Questions fetched successfully:', response);
-      return response.content || null;
+      const questions = response.content;
+      if (questions && Array.isArray(questions)) {
+        questions.forEach((question: Question) => {
+          if (question.date) {
+            question.date = this.convertDateToLocalTimezone(question.date);
+          }
+        });
+      }
+      return questions || null;
     } catch (error) {
       this.logger.error('Failed to fetch questions by month:', error);
       throw error;

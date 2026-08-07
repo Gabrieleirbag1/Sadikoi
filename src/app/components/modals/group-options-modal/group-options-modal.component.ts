@@ -30,7 +30,7 @@ export class GroupOptionsComponent implements OnChanges {
       this.groupModel.set({
         name: g.name ?? '',
         description: g.description ?? '',
-        daily_reset_timestamp: g.daily_reset_timestamp ?? '',
+        daily_reset_timestamp: this.convertResetTimeStampToLocalTimezone(g.daily_reset_timestamp ?? ''),
       });
     }
   }
@@ -53,7 +53,8 @@ export class GroupOptionsComponent implements OnChanges {
     try {
       const g = this.group();
       if (!g) throw new Error('Group is not defined');
-      const response = await this.groupService.updateGroup(g.id, val.name, val.description, val.daily_reset_timestamp);
+      const timestamp = this.convertLocalTimestampToUtc(val.daily_reset_timestamp);
+      const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp);
       this.group.set(response);
     } catch (error) {
       this.logger.error('Error updating group:', error);
@@ -70,4 +71,24 @@ export class GroupOptionsComponent implements OnChanges {
       this.logger.error('Error removing user from group:', error);
     }
   }
+
+  private convertResetTimeStampToLocalTimezone(time: string): string {
+    const [hours, minutes, seconds = '00'] = time.split(':');
+    const now = new Date();
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), Number(hours), Number(minutes), Number(seconds)));
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  private convertLocalTimestampToUtc(time: string): string {
+    const [hours, minutes] = time.split(':');
+    const now = new Date();
+
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Number(hours), Number(minutes));
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
+  }
+
 }

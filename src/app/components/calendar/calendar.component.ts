@@ -100,7 +100,7 @@ private async fetchQuestionsForDate(year: number, month: number): Promise<void> 
     try {
       const group = this.group();
       if (!group) throw new Error('Group is not set');
-      const questions = await this.questionService.getQuestionByDate(group.id, month + 1, year);
+      const questions = await this.questionService.getQuestionsByDate(group.id, month + 1, year);
       if (questions) {
         const questionList = Array.isArray(questions) ? questions : [questions];
         this.questionsByDate.clear(); // NEW: reset map for the newly loaded month
