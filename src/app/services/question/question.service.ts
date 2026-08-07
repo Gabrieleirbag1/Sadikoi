@@ -12,9 +12,10 @@ export class QuestionService {
   private readonly httpClient = inject(HttpClient);
 
   private convertDateToLocalTimezone(date: string): string {
-    const utcDate = new Date(date);
-    const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-    return localDate.toISOString().split('T')[0]; // Returns 'YYYY-MM-DD'
+    return date;
+    const localDate = new Date(date);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${localDate.getFullYear()}-${pad(localDate.getMonth() + 1)}-${pad(localDate.getDate())}`;
   }
 
   public async getQuestion(groupId: number): Promise<Question | null> {
@@ -37,6 +38,7 @@ export class QuestionService {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/${month}/${year}/`, { withCredentials: true }));
       this.logger.debug('Questions fetched successfully:', response);
       const questions = response.content;
+      const dailyResetTimestamp = "15:00"
       if (questions && Array.isArray(questions)) {
         questions.forEach((question: Question) => {
           if (question.date) {

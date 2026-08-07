@@ -2,6 +2,7 @@ import { Component, inject, viewChild, ElementRef } from '@angular/core';
 import { ModalService } from '../../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { JoinGroupComponent } from '../../join-group/join-group.component';
+import { DatetimeService } from '../../../services/datetime/datetime.service';
 
 type GroupModalState = 'chose' | 'create' | 'join';
 
@@ -13,9 +14,11 @@ type GroupModalState = 'chose' | 'create' | 'join';
 })
 export class GroupModalComponent {
   private readonly modalService = inject(ModalService);
+  private readonly datetimeService = inject(DatetimeService);
 
-  readonly isOpen = this.modalService.isOpen;
-  readonly config = this.modalService.config;
+  protected readonly defaultTimeValue = this.datetimeService.convertUTCTimeStampToLocal("15:00:00");
+  public readonly isOpen = this.modalService.isOpen;
+  public readonly config = this.modalService.config;
 
   protected state: GroupModalState = 'chose';
 
