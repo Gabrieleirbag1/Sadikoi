@@ -25,9 +25,8 @@ export class DatetimeService {
   }
 
   public convertUTCDateToLocal(date: string): string {
-    const utcDate = new Date(date);
-    const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-    return localDate.toISOString().split('T')[0]; // Returns 'YYYY-MM-DD'
+    const localDate = new Date(date.trim() + 'Z');
+    return localDate.toLocaleString('sv-SE'); 
   }
 
 }
