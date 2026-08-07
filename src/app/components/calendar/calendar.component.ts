@@ -35,6 +35,7 @@ export class CalendarComponent implements OnInit {
   private questionsByDate = new Map<string, Question>();
   public enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
+  public readonly question = model<Question | null>(null);
 
   get title(): string {
     return `${MONTH_NAMES[this.viewMonth]} ${this.viewYear}`;
@@ -74,7 +75,7 @@ export class CalendarComponent implements OnInit {
 
     const key = this.toKey(day.year, day.month, day.date);
     const question = this.questionsByDate.get(key);
-    console.log('Question:', question);
+    this.question.set(question || null);
   }
 
   protected goToToday(): void {

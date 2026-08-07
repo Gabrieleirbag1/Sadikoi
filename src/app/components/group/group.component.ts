@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, model, OnInit, signal, ViewChild } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
@@ -23,6 +23,7 @@ export class GroupComponent implements OnInit {
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
   protected showClendarFlag = signal<boolean>(false);
+  public readonly question = model<Question | null>(null);
 
   @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
@@ -83,7 +84,7 @@ export class GroupComponent implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
+  public onDocumentClick(event: MouseEvent) {
     if (!this.showClendarFlag()) return;
     if (this.calendarAnchor && !this.calendarAnchor.nativeElement.contains(event.target as Node)) {
       this.showClendarFlag.set(false);

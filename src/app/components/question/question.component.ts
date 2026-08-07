@@ -22,7 +22,7 @@ export class QuestionComponent implements OnInit{
   private readonly questionService = inject(QuestionService);
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
-  protected question = signal<Question | null>(null);
+  readonly question = model<Question | null>(null); // now the model, no more internal signal
   protected voteBubbles: VoteBubble[] = [];
 
   readonly group = model<Group | null>(null);
