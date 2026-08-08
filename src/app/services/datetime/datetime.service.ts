@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 export class DatetimeService {
 
   public convertUTCTimeStampToLocal(time: string): string {
+    if (!time?.trim()) return '';
+
     const [hours, minutes, seconds = '00'] = time.split(':');
     const now = new Date();
     const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), Number(hours), Number(minutes), Number(seconds)));
@@ -15,6 +17,8 @@ export class DatetimeService {
   }
 
   public convertLocalTimestampToUtc(time: string): string {
+    if (!time?.trim()) return '';
+
     const [hours, minutes] = time.split(':');
     const now = new Date();
 
