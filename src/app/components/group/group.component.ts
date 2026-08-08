@@ -22,9 +22,8 @@ export class GroupComponent implements OnInit {
   private readonly modalService = inject(ModalService);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
-  protected showClendarFlag = signal<boolean>(false);
+  protected showCalendarFlag = signal<boolean>(false);
   public readonly question = model<Question | null>(null);
-
   @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
   async ngOnInit(): Promise<void> {
