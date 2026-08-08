@@ -6,7 +6,7 @@
     <div>
       <div class="calendar-anchor" #calendarAnchor>
         <button (click)="showCalendar()">Show Calendar</button>
-        @if (showClendarFlag()) {
+        @if (showCalendarFlag()) {
           <div class="calendar-popover">
             <app-calendar [group]="group()" [(question)]="question"></app-calendar>
           </div>
