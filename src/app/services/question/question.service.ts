@@ -23,7 +23,7 @@ export class QuestionService {
       }
       return question || null;
     } catch (error) {
-      this.logger.error('Failed to fetch questions:', error);
+      this.logger.error('Failed to fetch question:', error);
       throw error;
     }
   }
