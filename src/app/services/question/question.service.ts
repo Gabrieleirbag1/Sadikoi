@@ -3,21 +3,46 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
+import { DatetimeService } from '../datetime/datetime.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuestionService {
+  private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
 
   public async getQuestion(groupId: number): Promise<Question | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/`, { withCredentials: true }));
-      this.logger.debug('Questions fetched successfully:', response);
-      return response.content || null;
+      this.logger.debug('Question fetched successfully:', response);
+      const question = response.content;
+      if (question && question.date) {
+        question.date = this.datetimeService.convertUTCDateToLocal(question.date);
+      }
+      return question || null;
     } catch (error) {
-      this.logger.error('Failed to fetch questions:', error);
+      this.logger.error('Failed to fetch question:', error);
+      throw error;
+    }
+  }
+
+  public async getQuestionsByDate(groupId: number, month: number, year: number): Promise<Question | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/${month}/${year}/`, { withCredentials: true }));
+      this.logger.debug('Questions fetched successfully:', response);
+      const questions = response.content;
+      if (questions && Array.isArray(questions)) {
+        questions.forEach((question: Question) => {
+          if (question.date) {
+            question.date = this.datetimeService.convertUTCDateToLocal(question.date);
+          }
+        });
+      }
+      return questions || null;
+    } catch (error) {
+      this.logger.error('Failed to fetch questions by month:', error);
       throw error;
     }
   }

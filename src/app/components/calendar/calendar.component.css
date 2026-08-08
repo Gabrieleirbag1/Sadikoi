@@ -1,0 +1,126 @@
+.calendar {
+  width: 280px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 13px;
+  color: #222;
+}
+
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.calendar__title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.calendar__nav {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  color: #444;
+}
+
+.calendar__nav:hover {
+  background: #f0f0f0;
+}
+
+.calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendar__day {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #222;
+}
+
+.calendar__day:hover {
+  background: #f0f0f0;
+}
+
+/* Prev/next month days: same look as before, just faded numbers, no strikethrough. */
+.calendar__day--muted {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.calendar__day--muted:hover {
+  background: transparent;
+}
+
+/* Current-month days with no enabled question: distinct disabled style (no strikethrough, no hover). */
+.calendar__day--disabled {
+  color: #bbb;
+  background: #f7f7f7;
+  cursor: not-allowed;
+}
+
+.calendar__day--disabled:hover {
+  background: #f7f7f7;
+}
+
+.calendar__day--today {
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.calendar__day--selected {
+  background: #2563eb;
+  color: #fff;
+}
+
+.calendar__day--selected:hover {
+  background: #1d4ed8;
+}
+
+.calendar__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+.calendar__link {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.calendar__link:hover {
+  text-decoration: underline;
+}

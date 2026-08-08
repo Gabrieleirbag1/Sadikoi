@@ -7,6 +7,7 @@ interface Question {
   enableMultipleVoting: boolean,
   voteNumberLimit: number,
   canWrite: boolean,
+  date?: string,
   item: string,
   votes?: Vote[],
 }

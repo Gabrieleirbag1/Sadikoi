@@ -5,6 +5,7 @@ import { LoggerService } from '../../../services/logger/logger.service';
 import { GroupsService } from '../../../services/groups/groups.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ModalService } from '../../../services/modal/modal.service';
+import { DatetimeService } from '../../../services/datetime/datetime.service';
 
 @Component({
   selector: 'app-group-options-modal',
@@ -14,6 +15,7 @@ import { ModalService } from '../../../services/modal/modal.service';
 })
 export class GroupOptionsComponent implements OnChanges {
   private readonly modalService = inject(ModalService);
+  private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
 
@@ -30,7 +32,7 @@ export class GroupOptionsComponent implements OnChanges {
       this.groupModel.set({
         name: g.name ?? '',
         description: g.description ?? '',
-        daily_reset_timestamp: g.daily_reset_timestamp ?? '',
+        daily_reset_timestamp: this.datetimeService.convertUTCTimeStampToLocal(g.daily_reset_timestamp ?? ''),
       });
     }
   }
@@ -53,7 +55,8 @@ export class GroupOptionsComponent implements OnChanges {
     try {
       const g = this.group();
       if (!g) throw new Error('Group is not defined');
-      const response = await this.groupService.updateGroup(g.id, val.name, val.description, val.daily_reset_timestamp);
+      const timestamp = this.datetimeService.convertLocalTimestampToUtc(val.daily_reset_timestamp);
+      const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp);
       this.group.set(response);
     } catch (error) {
       this.logger.error('Error updating group:', error);
@@ -70,4 +73,5 @@ export class GroupOptionsComponent implements OnChanges {
       this.logger.error('Error removing user from group:', error);
     }
   }
+
 }

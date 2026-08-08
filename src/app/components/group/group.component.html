@@ -4,12 +4,20 @@
       <span>{{group()?.name}}</span>
     </div>
     <div>
+      <div class="calendar-anchor" #calendarAnchor>
+        <button (click)="showCalendar()">Show Calendar</button>
+        @if (showCalendarFlag()) {
+          <div class="calendar-popover">
+            <app-calendar [group]="group()" [(question)]="question"></app-calendar>
+          </div>
+        }
+      </div>
       <button (click)="fetchInvitation()">{{ 'group.getGroupInvitation' | translate }}</button>
       <button (click)="openGroupOptionsModal()">Group options</button>
     </div>
   </header>
   @if (group()) {
-    <app-question [group]="group()"></app-question>
+    <app-question [group]="group()" [(question)]="question"></app-question>
   } @else {
       <p>{{ 'group.loadingGroup' | translate }}</p>
   }

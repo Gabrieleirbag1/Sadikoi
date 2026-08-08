@@ -21,7 +21,7 @@
           } @else if (state === 'create') {
             <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
             <input type="text" [placeholder]="'groups.groupDescription' | translate" #groupDescription />
-            <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime value="15:00:00"/>
+            <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime [value]="defaultTimeValue" />
             <button (click)="save()">
               {{ 'groups.createGroup' | translate }}
             </button>

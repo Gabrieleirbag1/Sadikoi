@@ -1,4 +1,4 @@
-import { Component, inject, Input, model, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, model, OnInit, signal, SimpleChanges } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -22,7 +22,7 @@ export class QuestionComponent implements OnInit{
   private readonly questionService = inject(QuestionService);
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
-  protected question = signal<Question | null>(null);
+  readonly question = model<Question | null>(null); // now the model, no more internal signal
   protected voteBubbles: VoteBubble[] = [];
 
   readonly group = model<Group | null>(null);
@@ -32,12 +32,21 @@ export class QuestionComponent implements OnInit{
     await this.fetchQuestion();
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    const question = this.question();
+    if (changes['question'] && question) {
+      this.setVoteBubble();
+    }
+  }
+
   private setVoteBubble() {
     for (const vote of this.question()?.votes || []) {
       for (const targetUser of vote.targets) {
         const existingBubble = this.voteBubbles?.find((bubble: VoteBubble) => bubble.votedUser.id === targetUser.id);
         if (existingBubble) {
-          existingBubble.voters.push(vote.voterUser);
+          if (!existingBubble.voters.some(voter => voter.id === vote.voterUser.id)) { // this check prevents duplicate voters in the same bubble
+            existingBubble.voters.push(vote.voterUser);
+          }
         } else {
           this.voteBubbles?.push({ votedUser: targetUser, voters: [vote.voterUser] });
         }

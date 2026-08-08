@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, model, OnInit, signal, ViewChild } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 import { ModalService } from '../../services/modal/modal.service';
+import { CalendarComponent } from "../calendar/calendar.component";
 
 @Component({
   selector: 'app-group',
-  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe, HomeFooterComponent],
+  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe, HomeFooterComponent, CalendarComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
@@ -21,6 +22,9 @@ export class GroupComponent implements OnInit {
   private readonly modalService = inject(ModalService);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
+  protected showCalendarFlag = signal<boolean>(false);
+  public readonly question = model<Question | null>(null);
+  @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
   async ngOnInit(): Promise<void> {
     // const navState = window.history.state;
@@ -76,6 +80,18 @@ export class GroupComponent implements OnInit {
       save: () => console.log('confirmed'),
       discard: () => console.log('cancelled'),
     });
+  }
+
+  @HostListener('document:click', ['$event'])
+  public onDocumentClick(event: MouseEvent) {
+    if (!this.showClendarFlag()) return;
+    if (this.calendarAnchor && !this.calendarAnchor.nativeElement.contains(event.target as Node)) {
+      this.showClendarFlag.set(false);
+    }
+  }
+
+  protected showCalendar(): void {
+    this.showClendarFlag.set(!this.showClendarFlag());
   }
 
 }

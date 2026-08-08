@@ -6,6 +6,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { ModalService } from '../../services/modal/modal.service';
 import { GroupModalComponent } from '../modals/group-modal/group-modal.component';
+import { DatetimeService } from '../../services/datetime/datetime.service';
 
 type ViewState = 'grid' | 'list';
 
@@ -17,6 +18,7 @@ type ViewState = 'grid' | 'list';
   standalone: true
 })
 export class GroupsComponent implements OnInit {
+  private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
@@ -41,7 +43,7 @@ export class GroupsComponent implements OnInit {
 
   protected async createGroup(groupName: string, groupDescription: string, groupTime: string): Promise<void> {
     try {
-      const newGroup = await this.groupsService.createGroup(groupName, groupDescription, groupTime);
+      const newGroup = await this.groupsService.createGroup(groupName, groupDescription, this.datetimeService.convertLocalTimestampToUtc(groupTime));
       if (newGroup) this.groups.update(current => [...current, newGroup]);
       this.logger.debug('Created group:', newGroup);
     } catch (error) {
