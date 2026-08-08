@@ -28,7 +28,7 @@ export class QuestionService {
     }
   }
 
-  public async getQuestionsByDate(groupId: number, month: number, year: number): Promise<Question | null> {
+  public async getQuestionsByDate(groupId: number, month: number, year: number): Promise<Question[] | null> {
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}questions/${groupId}/${month}/${year}/`, { withCredentials: true }));
       this.logger.debug('Questions fetched successfully:', response);

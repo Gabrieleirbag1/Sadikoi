@@ -96,7 +96,7 @@ export class CalendarComponent implements OnInit {
     this.buildDays();
   }
 
-private async fetchQuestionsForDate(year: number, month: number): Promise<void> {
+  private async fetchQuestionsForDate(year: number, month: number): Promise<void> {
     try {
       const group = this.group();
       if (!group) throw new Error('Group is not set');
@@ -104,11 +104,13 @@ private async fetchQuestionsForDate(year: number, month: number): Promise<void> 
       if (questions) {
         const questionList = Array.isArray(questions) ? questions : [questions];
         this.questionsByDate.clear(); // NEW: reset map for the newly loaded month
-        const enableDates = questionList.map(q => {
-          const date = new Date(q.date);
+        const enableDates: string[] = [];
+        questionList.forEach(q => {
+          if (!q || q.date == null) return; // skip items without a date
+          const date = new Date(q.date as string | number | Date);
           const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-          this.questionsByDate.set(key, q); // NEW: store the actual question object
-          return key;
+          this.questionsByDate.set(key, q);
+          enableDates.push(key);
         });
         this.setEnableDates(enableDates);
       }

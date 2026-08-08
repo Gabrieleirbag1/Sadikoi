@@ -84,14 +84,14 @@ export class GroupComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   public onDocumentClick(event: MouseEvent) {
-    if (!this.showClendarFlag()) return;
+    if (!this.showCalendarFlag()) return;
     if (this.calendarAnchor && !this.calendarAnchor.nativeElement.contains(event.target as Node)) {
-      this.showClendarFlag.set(false);
+      this.showCalendarFlag.set(false);
     }
   }
 
   protected showCalendar(): void {
-    this.showClendarFlag.set(!this.showClendarFlag());
+    this.showCalendarFlag.set(!this.showCalendarFlag());
   }
 
 }
