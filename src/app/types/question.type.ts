@@ -8,6 +8,6 @@ interface Question {
   voteNumberLimit: number,
   canWrite: boolean,
   date?: string,
-  item: string,
+  item_name: string,
   votes?: Vote[],
 }

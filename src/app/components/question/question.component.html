@@ -4,7 +4,7 @@
 @if (question()?.votes?.length) {
   <div class="question-votes-and-chat-container">
     <section class="question-votes-container">
-      <p>{{ question()?.item }}</p>
+      <p>{{ question()?.item_name }}</p>
 
       @if (question()?.canWrite) {
         <div class="written-answers-container">
