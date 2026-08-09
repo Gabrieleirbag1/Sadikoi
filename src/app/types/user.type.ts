@@ -5,4 +5,5 @@ interface User {
   profile_picture?: string;
   date_created: string;
   language: Language;
+  items?: Item[];
 }
