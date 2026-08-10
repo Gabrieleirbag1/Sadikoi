@@ -1,10 +1,9 @@
 <div class="question-container">
-  <span>{{ question()?.content }}</span>
+  <span>{{ question()?.content }}|</span><span>{{ question()?.item_name }}</span>
 </div>
 @if (question()?.votes?.length) {
   <div class="question-votes-and-chat-container">
     <section class="question-votes-container">
-      <p>{{ question()?.item_name }}</p>
 
       @if (question()?.canWrite) {
         <div class="written-answers-container">
@@ -25,6 +24,9 @@
               >
               </app-profile-image-picker>
               <span>{{ bubble.votedUser.username }}</span>
+              @for (item of bubble.votedUser.items; track $index) {
+                <span>{{ item.item_name }}</span>
+              }
             </div>
           </div>
           @for (voter of bubble.voters; track $index) {
