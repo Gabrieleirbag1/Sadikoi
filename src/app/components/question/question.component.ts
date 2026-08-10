@@ -35,11 +35,12 @@ export class QuestionComponent implements OnInit{
   public ngOnChanges(changes: SimpleChanges): void {
     const question = this.question();
     if (changes['question'] && question) {
-      this.setVoteBubble();
+      this.populateVoteBubbles();
     }
   }
 
-  private setVoteBubble() {
+  private populateVoteBubbles() {
+    this.voteBubbles = [];
     for (const vote of this.question()?.votes || []) {
       for (const targetUser of vote.targets) {
         const existingBubble = this.voteBubbles?.find((bubble: VoteBubble) => bubble.votedUser.id === targetUser.id);
@@ -60,7 +61,7 @@ export class QuestionComponent implements OnInit{
       if (!group) throw new Error('Group is not set')
       const question = await this.questionService.getQuestion(group.id);
       this.question.set(question);
-      this.setVoteBubble();
+      this.populateVoteBubbles();
       this.logger.debug('Fetched question:', this.question());
     } catch (error) {
       this.logger.error('Error fetching question:', error);
@@ -75,7 +76,7 @@ export class QuestionComponent implements OnInit{
       const response = await this.questionService.submitVote(group.id, votedUsersId, writtenAnswer);
       if (response) {
         this.question.update(q => q ? { ...q, votes: response } : q);
-        this.setVoteBubble();
+        this.populateVoteBubbles();
         this.logger.debug('Vote submitted successfully', response);
       }
       if (response) this.question.update(q => q ? { ...q, votes: response } : q);
