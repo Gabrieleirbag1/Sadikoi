@@ -1,6 +1,6 @@
 import { Component, inject, model, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { QuestionService } from '../../services/question/question.service';
+import { QuestionService } from '../../../services/question/question.service';
 
 interface CalendarDay {
   date: number;

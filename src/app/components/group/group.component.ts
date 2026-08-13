@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 import { ModalService } from '../../services/modal/modal.service';
-import { CalendarComponent } from "../calendar/calendar.component";
+import { CalendarComponent } from "../tooltips/calendar/calendar.component";
 
 @Component({
   selector: 'app-group',

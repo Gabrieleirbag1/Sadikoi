@@ -15,10 +15,19 @@ export class JoinGroupComponent {
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
 
+  private getGroupCode(groupCode: string): string {
+    if (groupCode.includes('/')) {
+      const url = new URL(groupCode);
+      return url.pathname.split('/').pop() || '';
+    }
+    return groupCode;
+  }
+
   public async joinGroup(groupCode: string): Promise<void> {
-    this.logger.debug('Joining group with code:', groupCode);
+    const cleanedGroupCode = this.getGroupCode(groupCode);
+    this.logger.debug('Joining group with code:', cleanedGroupCode);
     try {
-      const response = await this.groupsService.answerGroupInvitation(groupCode);
+      const response = await this.groupsService.answerGroupInvitation(cleanedGroupCode);
       this.logger.debug('Join group response:', response);
       if (response) this.router.navigate(['/group', response.id], { state: { group: response } });
     } catch (error) {
