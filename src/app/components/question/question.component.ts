@@ -1,10 +1,11 @@
-import { Component, inject, Input, model, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, model, OnInit, signal, SimpleChanges } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ChatComponent } from "../chat/chat.component";
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from "../profile-image-picker/profile-image-picker.component";
+import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
 
 interface VoteBubble {
   votedUser: User;
@@ -13,7 +14,7 @@ interface VoteBubble {
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent, UserProfileComponent],
   templateUrl: './question.component.html',
   styleUrl: './question.component.css',
 })
@@ -22,10 +23,10 @@ export class QuestionComponent implements OnInit{
   private readonly questionService = inject(QuestionService);
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
-  readonly question = model<Question | null>(null); // now the model, no more internal signal
   protected voteBubbles: VoteBubble[] = [];
-
-  readonly group = model<Group | null>(null);
+  protected showUserProfileFlag = signal<boolean>(false);
+  public readonly question = model<Question | null>(null);
+  public readonly group = model<Group | null>(null);
 
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -91,6 +92,11 @@ export class QuestionComponent implements OnInit{
     } else {
       this.usersId.push(userId);
     }
+  }
+
+  protected showUserProfile(): void {
+    this.showUserProfileFlag.set(!this.showUserProfileFlag());
+    this.logger.debug('Show user profile flag:', this.showUserProfileFlag());
   }
 
 }
