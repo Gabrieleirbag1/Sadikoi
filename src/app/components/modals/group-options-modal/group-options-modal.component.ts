@@ -1,4 +1,4 @@
-import { Component, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { LoggerService } from '../../../services/logger/logger.service';
@@ -6,18 +6,22 @@ import { GroupsService } from '../../../services/groups/groups.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ModalService } from '../../../services/modal/modal.service';
 import { DatetimeService } from '../../../services/datetime/datetime.service';
+import { UserProfileComponent } from '../../tooltips/user-profile/user-profile.component';
+import { UserProfileService } from '../../../services/user-profile/user-profile.service';
 
 @Component({
   selector: 'app-group-options-modal',
-  imports: [FormField, DatePipe, TranslatePipe],
+  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent],
   templateUrl: './group-options-modal.component.html',
-  styleUrl: './group-options-modal.component.css',
+  styleUrls: ['./group-options-modal.component.css', '../../tooltips/user-profile/user-profile-tooltip.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroupOptionsComponent implements OnChanges {
   private readonly modalService = inject(ModalService);
   private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
+  protected readonly userProfileService = inject(UserProfileService);
 
   public readonly isOpen = this.modalService.isOpen;
   public readonly config = this.modalService.config;

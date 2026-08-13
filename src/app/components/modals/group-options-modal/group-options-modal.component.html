@@ -31,13 +31,23 @@
               </form>
             </div>
             <div class="group-users-list">
-            <span>{{ 'group.users' | translate }}</span>
-            @for (user of group()?.users; track $index) {
-              <div class="group-user">
-                <span>{{ user.username }}</span>
-                <button type="button" (click)="removeUser(user)">X</button>
-              </div>
-            }
+              <span>{{ 'group.users' | translate }}</span>
+              @for (user of group()?.users; track user.id) {
+                <div
+                  class="group-user user-profile-anchor"
+                  (mouseenter)="userProfileService.show(user)"
+                  (mouseleave)="userProfileService.hide()"
+                >
+                  <span>{{ user.username }}</span>
+                  <button type="button" (click)="removeUser(user)">X</button>
+
+                  @if (userProfileService.isOpenFor(user)) {
+                    <div class="user-profile-popover" role="tooltip">
+                      <app-user-profile [user]="user"></app-user-profile>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </div>
