@@ -4,7 +4,6 @@
 @if (question()?.votes?.length) {
   <div class="question-votes-and-chat-container">
     <section class="question-votes-container">
-
       @if (question()?.canWrite) {
         <div class="written-answers-container">
           @for (vote of question()?.votes; track $index) {
@@ -16,7 +15,7 @@
       } @else {
         @for (bubble of voteBubbles; track $index) {
           <div class="user-vote-container">
-            <div class="user-vote" (click)="showUserProfile()">
+            <div class="user-vote" (click)="showUserProfile(bubble.votedUser)">
               <app-profile-image-picker
                 [currentImageUrl]="bubble.votedUser.profile_picture"
                 [onlyDisplay]="true"
@@ -25,16 +24,18 @@
               </app-profile-image-picker>
               <span>{{ bubble.votedUser.username }}</span>
               @for (item of bubble.votedUser.items; track $index) {
-                <p>{{ item.item_name }} - {{ item.streak}}</p>
+                <p>{{ item.item_name }} - {{ item.streak }}</p>
               }
             </div>
-          </div>
-          <div class="user-profile-anchor" (mouseleave)="showUserProfileFlag.set(false)">
-            @if (showUserProfileFlag()) {
-              <div class="user-profile-popover">
-                <app-user-profile [user]="bubble.votedUser"></app-user-profile>
-              </div>
-            }
+
+            <div class="user-profile-anchor" (mouseleave)="showUserProfileFlag.set(false)">
+              @if (showUserProfileFlag() && userProfile?.id === bubble.votedUser.id) {
+                <div class="user-profile-popover">
+                  <app-user-profile [user]="userProfile"></app-user-profile>
+                </div>
+              }
+            </div>
+
           </div>
           @for (voter of bubble.voters; track $index) {
             <div class="voter-container user-vote-container">

@@ -25,6 +25,7 @@ export class QuestionComponent implements OnInit{
   protected usersId: number[] = [];
   protected voteBubbles: VoteBubble[] = [];
   protected showUserProfileFlag = signal<boolean>(false);
+  protected userProfile: User | null = null;
   public readonly question = model<Question | null>(null);
   public readonly group = model<Group | null>(null);
 
@@ -94,7 +95,8 @@ export class QuestionComponent implements OnInit{
     }
   }
 
-  protected showUserProfile(): void {
+  protected showUserProfile(userProfile: User): void {
+    this.userProfile = userProfile;
     this.showUserProfileFlag.set(!this.showUserProfileFlag());
     this.logger.debug('Show user profile flag:', this.showUserProfileFlag());
   }
