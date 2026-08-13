@@ -1,1 +1,18 @@
-<p>user-profile.component works!</p>
+<div class="user-profile-container">
+    <app-profile-image-picker
+        [currentImageUrl]="user()?.profile_picture"
+        [onlyDisplay]="true"
+        [imgClass]="'group-user-icon'"
+    ></app-profile-image-picker>
+    <p>{{ user()?.username }}</p>
+
+    <div class="items-container">
+    @for (item of user()?.items; track $index) {
+        <span>{{ item.item_name }}</span>
+        -
+        <span>{{ item.streak }}</span>
+    }
+    </div>
+
+    <p>{{ user()?.date_created }}</p>
+</div>
