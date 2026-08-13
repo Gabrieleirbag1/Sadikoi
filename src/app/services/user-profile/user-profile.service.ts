@@ -5,14 +5,21 @@ export class UserProfileService {
   protected readonly activeUser = signal<User | null>(null);
   protected readonly activeScope = signal<string | null>(null);
   protected readonly open = signal(false);
+  private hoverTimeout: any;
 
   public show(user: User, scope: string): void {
-    this.activeUser.set(user);
-    this.activeScope.set(scope);
-    this.open.set(true);
+    this.hoverTimeout = setTimeout(() => {
+        this.activeUser.set(user);
+        this.activeScope.set(scope);
+        this.open.set(true);
+    }, 1000);
   }
 
   public hide(scope: string): void {
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+    }
+
     if (this.activeScope() !== scope) {
       return;
     }
