@@ -1,4 +1,4 @@
-import { Component, inject, model, OnInit, signal, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, model, OnInit, SimpleChanges } from '@angular/core';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -6,6 +6,7 @@ import { ChatComponent } from "../chat/chat.component";
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from "../profile-image-picker/profile-image-picker.component";
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
+import { UserProfileService } from '../../services/user-profile/user-profile.service';
 
 interface VoteBubble {
   votedUser: User;
@@ -16,16 +17,16 @@ interface VoteBubble {
   selector: 'app-question',
   imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent, UserProfileComponent],
   templateUrl: './question.component.html',
-  styleUrl: './question.component.css',
+  styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionComponent implements OnInit{
   private readonly logger = inject(LoggerService)
   private readonly questionService = inject(QuestionService);
+  protected readonly userProfileService = inject(UserProfileService);
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
   protected voteBubbles: VoteBubble[] = [];
-  protected showUserProfileFlag = signal<boolean>(false);
-  protected userProfile: User | null = null;
   public readonly question = model<Question | null>(null);
   public readonly group = model<Group | null>(null);
 
@@ -93,12 +94,6 @@ export class QuestionComponent implements OnInit{
     } else {
       this.usersId.push(userId);
     }
-  }
-
-  protected showUserProfile(userProfile: User): void {
-    this.userProfile = userProfile;
-    this.showUserProfileFlag.set(!this.showUserProfileFlag());
-    this.logger.debug('Show user profile flag:', this.showUserProfileFlag());
   }
 
 }

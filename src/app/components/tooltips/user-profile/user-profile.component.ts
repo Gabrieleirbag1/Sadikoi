@@ -1,4 +1,4 @@
-import { Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ProfileImagePickerComponent } from "../../profile-image-picker/profile-image-picker.component";
 
 @Component({
@@ -6,7 +6,8 @@ import { ProfileImagePickerComponent } from "../../profile-image-picker/profile-
   imports: [ProfileImagePickerComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileComponent {
-  public readonly user = model<User | null>(null);
+  public readonly user = input<User | null>(null);
 }
