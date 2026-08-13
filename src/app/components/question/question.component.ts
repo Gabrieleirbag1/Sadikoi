@@ -24,6 +24,7 @@ export class QuestionComponent implements OnInit{
   private readonly logger = inject(LoggerService)
   private readonly questionService = inject(QuestionService);
   protected readonly userProfileService = inject(UserProfileService);
+  protected readonly tooltipScope = 'question';
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
   protected voteBubbles: VoteBubble[] = [];

@@ -16,8 +16,8 @@
         @for (bubble of voteBubbles; track bubble.votedUser.id) {
           <div
             class="user-vote-container user-profile-anchor"
-            (mouseenter)="userProfileService.show(bubble.votedUser)"
-            (mouseleave)="userProfileService.hide()"
+            (mouseenter)="userProfileService.show(bubble.votedUser, tooltipScope)"
+            (mouseleave)="userProfileService.hide(tooltipScope)"
           >
             <div class="user-vote">
               <app-profile-image-picker
@@ -32,7 +32,7 @@
               }
             </div>
 
-            @if (userProfileService.isOpenFor(bubble.votedUser)) {
+            @if (userProfileService.isOpenFor(bubble.votedUser, tooltipScope)) {
               <div class="user-profile-popover" role="tooltip">
                 <app-user-profile [user]="bubble.votedUser"></app-user-profile>
               </div>

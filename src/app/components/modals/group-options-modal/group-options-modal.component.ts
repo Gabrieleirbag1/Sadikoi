@@ -22,6 +22,7 @@ export class GroupOptionsComponent implements OnChanges {
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
   protected readonly userProfileService = inject(UserProfileService);
+  protected readonly tooltipScope = 'group-options-modal';
 
   public readonly isOpen = this.modalService.isOpen;
   public readonly config = this.modalService.config;
