@@ -48,12 +48,19 @@
     gap: 10px;
 }
 
+.group-users-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    width: 40%;
+    overflow-y: auto;
+}
+
 .group-users-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 40%;
-    overflow-y: auto;
 }
 
 .group-user {
@@ -64,4 +71,8 @@
     border: 2px solid #ccc;
     border-radius: 5px;
     padding: 5px;
+}
+
+.leave-group-button {
+    width: 100%;
 }

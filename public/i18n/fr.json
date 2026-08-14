@@ -47,6 +47,11 @@
     "updateGroup": "Mettre à jour le groupe",
     "users": "Utilisateurs :"
   },
+  "groupOptions": {
+    "groupOptions": "Options du groupe",
+    "leaveGroup": "Quitter le groupe",
+    "deleteGroup": "Supprimer le groupe"
+  },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",
     "submitAnswer": "Soumettre la réponse"

@@ -27,28 +27,50 @@
                 />
                 <p>{{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }}</p>
 
-                <button type="submit" (click)="save($event)">{{ 'group.updateGroup' | translate }}</button>
+                <button type="submit" (click)="save($event)">
+                  {{ 'group.updateGroup' | translate }}
+                </button>
               </form>
             </div>
-            <div class="group-users-list">
-              <span>{{ 'group.users' | translate }}</span>
-              @for (user of group()?.users; track user.id) {
-                <div
-                  class="group-user user-profile-anchor"
-                  (mouseenter)="userProfileService.show(user, tooltipScope)"
-                  (mouseleave)="userProfileService.hide(tooltipScope)"
-                >
-                  <span>{{ user.username }}</span>
-                  <span>{{ user.role }}</span>
-                  <button type="button" (click)="removeUser(user)" [disabled]="user.role === 'admin'">X</button>
+            <div class="group-users-list-container">
+              <div class="group-users-list">
+                <span>{{ 'group.users' | translate }}</span>
+                @for (user of group()?.users; track user.id) {
+                  <div
+                    class="group-user user-profile-anchor"
+                    (mouseenter)="userProfileService.show(user, tooltipScope)"
+                    (mouseleave)="userProfileService.hide(tooltipScope)"
+                  >
+                    <span>{{ user.username }}</span>
+                    <span>{{ user.role }}</span>
+                    <button
+                      type="button"
+                      (click)="removeUser(user)"
+                      [disabled]="user.role === 'admin'"
+                    >
+                      X
+                    </button>
 
-                  @if (userProfileService.isOpenFor(user, tooltipScope)) {
-                    <div class="user-profile-popover" role="tooltip">
-                      <app-user-profile [user]="user"></app-user-profile>
-                    </div>
-                  }
-                </div>
-              }
+                    @if (userProfileService.isOpenFor(user, tooltipScope)) {
+                      <div class="user-profile-popover" role="tooltip">
+                        <app-user-profile [user]="user"></app-user-profile>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+              <div>
+                @if (connectedUser) {
+                  <button
+                    type="button"
+                    class="leave-group-button"
+                    (click)="removeUser(connectedUser)"
+                    [disabled]="connectedUser.role === 'admin'"
+                  >
+                    {{ 'groupOptions.leaveGroup' | translate }}
+                  </button>
+                }
+              </div>
             </div>
           </div>
         </div>

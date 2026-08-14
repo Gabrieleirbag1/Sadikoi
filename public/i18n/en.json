@@ -47,6 +47,11 @@
     "updateGroup": "Update Group",
     "users": "Users:"
   },
+  "groupOptions": {
+    "groupOptions": "Group Options",
+    "leaveGroup": "Leave Group",
+    "deleteGroup": "Delete Group"
+  },
   "question": {
     "enterYourAnswer": "Enter your answer...",
     "submitAnswer": "Submit Answer"
