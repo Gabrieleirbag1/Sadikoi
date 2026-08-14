@@ -6,4 +6,5 @@ interface User {
   date_created: string;
   language: Language;
   items?: Item[];
+  role?: string;
 }

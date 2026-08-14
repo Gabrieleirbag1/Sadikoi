@@ -39,7 +39,8 @@
                   (mouseleave)="userProfileService.hide(tooltipScope)"
                 >
                   <span>{{ user.username }}</span>
-                  <button type="button" (click)="removeUser(user)">X</button>
+                  <span>{{ user.role }}</span>
+                  <button type="button" (click)="removeUser(user)" [disabled]="user.role === 'admin'">X</button>
 
                   @if (userProfileService.isOpenFor(user, tooltipScope)) {
                     <div class="user-profile-popover" role="tooltip">

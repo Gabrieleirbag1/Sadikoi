@@ -23,6 +23,7 @@ export class GroupOptionsComponent implements OnChanges {
   private readonly groupService = inject(GroupsService);
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly tooltipScope = 'group-options-modal';
+  protected connectedUser: User | null = null;
 
   public readonly isOpen = this.modalService.isOpen;
   public readonly config = this.modalService.config;
@@ -30,6 +31,10 @@ export class GroupOptionsComponent implements OnChanges {
   public readonly group = model<Group | null>(null); 
   protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
   protected groupForm = form(this.groupModel);
+
+  async ngOnInit(): Promise<void> {
+    this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     const g = this.group();
