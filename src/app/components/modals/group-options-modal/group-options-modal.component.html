@@ -51,6 +51,8 @@
                       X
                     </button>
 
+                    <button (click)="promoteUser(user)">Promote</button>
+
                     @if (userProfileService.isOpenFor(user, tooltipScope)) {
                       <div class="user-profile-popover" role="tooltip">
                         <app-user-profile [user]="user"></app-user-profile>

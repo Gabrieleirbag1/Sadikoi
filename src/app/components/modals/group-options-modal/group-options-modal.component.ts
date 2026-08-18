@@ -84,4 +84,15 @@ export class GroupOptionsComponent implements OnChanges {
     }
   }
 
+  protected async promoteUser(user: User): Promise<void> {
+    try {
+      const group = this.group();
+      if (!group) throw new Error('Group is not defined');
+      const response = await this.groupService.promoteUserGroupRole(group.id, user.id);
+      this.group.set(response);
+    } catch (error) {
+      this.logger.error('Error promoting user role:', error);
+    }
+  }
+
 }

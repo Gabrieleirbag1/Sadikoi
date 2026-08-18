@@ -66,6 +66,17 @@ export class GroupsService {
       throw error;
     }
   }
+
+  public async promoteUserGroupRole(groupId: number, userId: number): Promise<Group | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/role/`, { user_info: userId }, { withCredentials: true }));
+      this.logger.debug('User role promoted successfully:', response);
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Failed to promote user role:', error);
+      throw error;
+    }
+  }
   
   public async getGroupInvitation(groupId: number): Promise<string | null> {
     try {
