@@ -51,7 +51,7 @@
                       X
                     </button>
 
-                    <button (click)="promoteUser(user)">Promote</button>
+                    <button (click)="promoteUser(user)" [disabled]="user.role === 'admin'">Promote</button>
 
                     @if (userProfileService.isOpenFor(user, tooltipScope)) {
                       <div class="user-profile-popover" role="tooltip">
