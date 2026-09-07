@@ -46,12 +46,12 @@
                     <button
                       type="button"
                       (click)="confirmRemoveUser(user)"
-                      [disabled]="user.role === 'admin'"
+                      [disabled]="user.role === 'admin' || user.id === connectedUser?.id"
                     >
                       X
                     </button>
 
-                    <button (click)="promoteUser(user)" [disabled]="user.role === 'admin'">Promote</button>
+                    <button (click)="promoteUser(user)" [disabled]="user.role === 'admin' || user.id === connectedUser?.id">Promote</button>
 
                     @if (userProfileService.isOpenFor(user, tooltipScope)) {
                       <div class="user-profile-popover" role="tooltip">
