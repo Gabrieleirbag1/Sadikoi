@@ -45,6 +45,10 @@ export class CalendarComponent implements OnInit {
     const today = new Date();
     this.viewYear = today.getFullYear();
     this.viewMonth = today.getMonth();
+    const question = this.question();
+    if (question && question.date) {
+      this.selectedDate = new Date(question.date);
+    }
     this.loadMonth(this.viewYear, this.viewMonth);
   }
 

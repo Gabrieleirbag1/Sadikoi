@@ -74,7 +74,7 @@ export class GroupComponent implements OnInit {
   }
 
   protected openGroupOptionsModal(): void {
-    this.modalService.open({
+    this.modalService.open('group-options-modal', {
       title: 'Group Options',
       description: '',
       save: () => console.log('confirmed'),

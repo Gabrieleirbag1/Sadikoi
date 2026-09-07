@@ -61,15 +61,3 @@
   flex-direction: column;
   justify-content: space-between;
 }
-
-.user-profile-anchor {
-    position: relative;
-    display: inline-flex;
-}
-
-.user-profile-popover {
-    position: absolute;
-    right: 0;
-    z-index: 1000;
-    border-radius: 8px;
-}

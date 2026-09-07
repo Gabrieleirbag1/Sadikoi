@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { ModalService } from '../../../services/modal/modal.service';
+import { Component, inject, input } from '@angular/core';
+import { ModalConfig, ModalService } from '../../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -11,23 +11,25 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class ModalComponent {
   private readonly modalService = inject(ModalService);
 
-  constructor() {
-    console.log('ModalComponent: isOpen signal:', this.modalService.isOpen());
-    console.log('ModalComponent: config signal:', this.modalService.config());
+  public readonly id = input.required<string>();
+
+  protected isOpen(): boolean {
+    return this.modalService.isOpen(this.id());
   }
 
-  readonly isOpen = this.modalService.isOpen;
-  readonly config = this.modalService.config;
+  protected config(): ModalConfig {
+    return this.modalService.config(this.id());
+  }
 
   protected discard(event: Event): void {
     const discardFn = this.config().discard;
-    this.modalService.close();
+    this.modalService.close(this.id());
     discardFn?.(event);
   }
 
   protected save(event: Event): void {
     const saveFn = this.config().save;
-    this.modalService.close();
+    this.modalService.close(this.id());
     saveFn?.(event);
   }
 }

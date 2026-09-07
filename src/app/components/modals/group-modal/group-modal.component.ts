@@ -1,5 +1,5 @@
 import { Component, inject, viewChild, ElementRef } from '@angular/core';
-import { ModalService } from '../../../services/modal/modal.service';
+import { ModalConfig, ModalService } from '../../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { JoinGroupComponent } from '../../join-group/join-group.component';
 import { DatetimeService } from '../../../services/datetime/datetime.service';
@@ -15,10 +15,17 @@ type GroupModalState = 'chose' | 'create' | 'join';
 export class GroupModalComponent {
   private readonly modalService = inject(ModalService);
   private readonly datetimeService = inject(DatetimeService);
+  private readonly modalId = 'group-modal';
 
   protected readonly defaultTimeValue = this.datetimeService.convertUTCTimeStampToLocal("15:00:00");
-  public readonly isOpen = this.modalService.isOpen;
-  public readonly config = this.modalService.config;
+
+  protected isOpen(): boolean {
+    return this.modalService.isOpen(this.modalId);
+  }
+
+  protected config(): ModalConfig {
+    return this.modalService.config(this.modalId);
+  }
 
   protected state: GroupModalState = 'chose';
 
@@ -28,14 +35,14 @@ export class GroupModalComponent {
 
   protected discard(event: Event): void {
     const discardFn = this.config().discard;
-    this.modalService.close();
+    this.modalService.close(this.modalId);
     discardFn?.(event);
     this.state = 'chose';
   }
 
   protected save(): void {
     const saveFn = this.config().save;
-    this.modalService.close();
+    this.modalService.close(this.modalId);
     saveFn?.({
       name: this.groupName()?.nativeElement.value ?? '',
       description: this.groupDescription()?.nativeElement.value ?? '',

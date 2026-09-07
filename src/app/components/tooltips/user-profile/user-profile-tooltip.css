@@ -1,0 +1,10 @@
+.user-profile-anchor {
+  position: relative;
+}
+
+.user-profile-popover {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  z-index: 1000;
+  border-radius: 8px;
+}
