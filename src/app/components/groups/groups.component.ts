@@ -61,7 +61,7 @@ export class GroupsComponent implements OnInit {
   }
 
   protected openGroupModal() {
-    this.modalService.open({
+    this.modalService.open('group-modal', {
       title: '',
       description: '',
       save: (data: { name: string; description: string; time: string }) => 

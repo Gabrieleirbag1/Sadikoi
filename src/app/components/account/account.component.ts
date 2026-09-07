@@ -137,7 +137,7 @@ export class AccountComponent implements OnInit {
   }
 
   protected openDeleteModal() {
-    this.modalService.open({
+    this.modalService.open('delete-account', {
       title: 'Delete Account',
       description: 'Are you sure you want to delete your account? This action cannot be undone.',
       save: () => 
@@ -147,7 +147,7 @@ export class AccountComponent implements OnInit {
   }
 
   protected openLogoutAllDevicesModal() {
-    this.modalService.open({
+    this.modalService.open('logout-all-devices', {
       title: 'Logout All Devices',
       description: 'Are you sure you want to logout from all devices?',
       save: () => 

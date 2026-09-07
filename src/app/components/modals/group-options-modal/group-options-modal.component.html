@@ -45,7 +45,7 @@
                     <span>{{ user.role }}</span>
                     <button
                       type="button"
-                      (click)="removeUser(user)"
+                      (click)="confirmRemoveUser(user)"
                       [disabled]="user.role === 'admin'"
                     >
                       X
@@ -66,7 +66,7 @@
                   <button
                     type="button"
                     class="leave-group-button"
-                    (click)="removeUser(connectedUser)"
+                    (click)="confirmRemoveUser(connectedUser)"
                     [disabled]="connectedUser.role === 'admin'"
                   >
                     {{ 'groupOptions.leaveGroup' | translate }}
@@ -79,4 +79,5 @@
       </div>
     </div>
   </div>
+  <app-modal [id]="removeUserConfirmId"></app-modal>
 }
