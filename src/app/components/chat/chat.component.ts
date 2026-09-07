@@ -1,9 +1,11 @@
-import { Component, inject, model, signal } from '@angular/core';
+import { Component, DestroyRef, inject, model, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../services/chat/chat.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { GifPickerComponent } from '../gif-picker/gif-picker.component';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
+import { WebsocketService } from '../../services/websocket/websocket.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -16,16 +18,24 @@ export class ChatComponent {
   private readonly logger = inject(LoggerService);
   private readonly chatService = inject(ChatService);
   private readonly klipyService = inject(KlipyService);
+  private readonly websocketService = inject(WebsocketService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
 
-  public readonly group = model<Group | null>(null); 
+  public readonly group = model<Group | null>(null);
 
 
   async ngOnInit(): Promise<void> {
     const g = this.group();
     if (g) this.loadMessages(g.id);
+
+    this.websocketService.listen<Message>('new_message').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(message => {
+      if (!this.messages().some(m => m.id === message.id)) {
+        this.messages.update(messages => [...messages, message]);
+      }
+    });
   }
 
   private async loadMessages(groupId: number): Promise<void> {
