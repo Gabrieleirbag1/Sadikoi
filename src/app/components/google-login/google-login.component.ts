@@ -38,8 +38,6 @@ export class GoogleLoginComponent implements OnInit {
 
   handleCredentialResponse(response: any) {
     // response.credential is the JWT token
-    this.logger.debug('Encoded JWT ID token: ' + response.credential);
-
     this.ngZone.run(async () => {
       const success = await this.authService.googleLogin(response.credential);
       if (success) {
