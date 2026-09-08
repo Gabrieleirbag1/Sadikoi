@@ -40,10 +40,17 @@ export class QuestionComponent implements OnInit{
     await this.fetchQuestion();
 
     this.websocketService.listen<{ question_id: number; votes: Vote[] }>('new_vote').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
-      if (payload.question_id === this.question()?.id) {
-        this.question.update(q => q ? { ...q, votes: payload.votes } : q);
-        this.populateVoteBubbles();
+      if (payload.question_id !== this.question()?.id) {
+        return;
       }
+      // if the connected user hasn't voted yet, keep them on the voting screen instead of
+      // switching them to the vote-bubbles view when other users' votes come in
+      const hasVoted = payload.votes.some(vote => vote.voterUser.id === this.connectedUser?.id);
+      if (!hasVoted) {
+        return;
+      }
+      this.question.update(q => q ? { ...q, votes: payload.votes } : q);
+      this.populateVoteBubbles();
     });
 
     this.websocketService.listen<{ group_id: number }>('new_question').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
