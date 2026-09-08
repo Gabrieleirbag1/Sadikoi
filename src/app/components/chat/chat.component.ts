@@ -53,7 +53,7 @@ export class ChatComponent {
       const g = this.group();
       if (!g) throw new Error('Group is not set');
       const newMessage = await this.chatService.sendMessage(g.id, content);
-      if (newMessage) this.messages.update(messages => [...messages, newMessage]);
+      // if (newMessage) this.messages.update(messages => [...messages, newMessage]);
       if (input) input.value = '';
     } catch (error) {
       this.logger.error('Error sending message:', error);
