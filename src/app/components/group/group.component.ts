@@ -1,4 +1,5 @@
-import { Component, ElementRef, HostListener, inject, model, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, inject, model, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
@@ -8,6 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 import { ModalService } from '../../services/modal/modal.service';
 import { CalendarComponent } from "../tooltips/calendar/calendar.component";
+import { WebsocketService } from '../../services/websocket/websocket.service';
 
 @Component({
   selector: 'app-group',
@@ -15,11 +17,13 @@ import { CalendarComponent } from "../tooltips/calendar/calendar.component";
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
-export class GroupComponent implements OnInit {
+export class GroupComponent implements OnInit, OnDestroy {
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
+  private readonly websocketService = inject(WebsocketService);
+  private readonly destroyRef = inject(DestroyRef);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
   protected showCalendarFlag = signal<boolean>(false);
@@ -40,6 +44,25 @@ export class GroupComponent implements OnInit {
     } else {
       this.logger.error('Invalid group ID in URL');
     }
+
+    if (this.group()) {
+      this.websocketService.joinGroup(String(this.group()!.id));
+    }
+
+    this.websocketService.listen<Group>('group_updated').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
+    this.websocketService.listen<Group>('member_joined').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
+    this.websocketService.listen<Group>('member_left').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
+    this.websocketService.listen<Group>('role_updated').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
+    this.websocketService.listen<{ group_id: number }>('group_deleted').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
+      if (payload.group_id === this.group()?.id) {
+        this.router.navigate(['/groups']);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    const g = this.group();
+    if (g) this.websocketService.leaveGroup(String(g.id));
   }
 
   protected async fetchGroup(groupId: number): Promise<void> {

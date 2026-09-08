@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, model, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, model, OnInit, SimpleChanges } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -7,6 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from "../profile-image-picker/profile-image-picker.component";
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
+import { WebsocketService } from '../../services/websocket/websocket.service';
 
 interface VoteBubble {
   votedUser: User;
@@ -23,6 +25,8 @@ interface VoteBubble {
 export class QuestionComponent implements OnInit{
   private readonly logger = inject(LoggerService)
   private readonly questionService = inject(QuestionService);
+  private readonly websocketService = inject(WebsocketService);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly tooltipScope = 'question';
   protected connectedUser: User | null = null;
@@ -34,6 +38,26 @@ export class QuestionComponent implements OnInit{
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
     await this.fetchQuestion();
+
+    this.websocketService.listen<{ question_id: number; votes: Vote[] }>('new_vote').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
+      if (payload.question_id !== this.question()?.id) {
+        return;
+      }
+      // if the connected user hasn't voted yet, keep them on the voting screen instead of
+      // switching them to the vote-bubbles view when other users' votes come in
+      const hasVoted = payload.votes.some(vote => vote.voterUser.id === this.connectedUser?.id);
+      if (!hasVoted) {
+        return;
+      }
+      this.question.update(q => q ? { ...q, votes: payload.votes } : q);
+      this.populateVoteBubbles();
+    });
+
+    this.websocketService.listen<{ group_id: number }>('new_question').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
+      if (payload.group_id === this.group()?.id) {
+        this.fetchQuestion();
+      }
+    });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
