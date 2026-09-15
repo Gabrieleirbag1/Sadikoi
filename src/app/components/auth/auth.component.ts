@@ -18,7 +18,7 @@ export class AuthComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   protected isAuthenticated = this.authService.isAuthenticated();
-  protected displayMode = signal<'register' | 'login'>('login');
+  protected displayMode = signal<'register' | 'login' | 'verifyDevice'>('login');
 
   protected authModel = signal({
     username: '',
@@ -37,7 +37,7 @@ export class AuthComponent {
     this.selectedFile = file;
   }
 
-  protected setDisplayMode(displayMode: 'register' | 'login'): void {
+  protected setDisplayMode(displayMode: 'register' | 'login' | 'verifyDevice'): void {
     this.displayMode.set(displayMode);
   }
 
@@ -56,25 +56,34 @@ export class AuthComponent {
       alert('Passwords do not match!');
       return;
     }
-    const success = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
-    if (success) {
+    const response = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
+    if (response && response.body) {
       if (this.imagePicker) {
         this.imagePicker.clearPreview();
       }
-      this.setDisplayMode('login'); 
       if (val.login) {
-        this.isAuthenticated = true;
-        this.router.navigate(['/']);
+        if (response.status === 203) {
+          this.setDisplayMode('verifyDevice');
+        }
+      }
+      else {
+        this.setDisplayMode('login'); 
       }
     }
   }
 
   private async login(): Promise<void> {
     const val = this.authModel();
-    const success = await this.authService.login(val.username, val.password, val.remember);
-    if (success) {
-      this.isAuthenticated = true;
-      this.router.navigate(['/']);
+    const response = await this.authService.login(val.username, val.password, val.remember);
+    if (response && response.body) {
+      if (response.body.success) {
+        if (response.status === 203) {
+          this.setDisplayMode('verifyDevice');
+        } else {
+          this.isAuthenticated = true;
+          this.router.navigate(['/']);
+        }
+      }
     }
   }
 
