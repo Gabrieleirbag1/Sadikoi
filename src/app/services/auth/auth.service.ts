@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -96,7 +96,7 @@ export class AuthService {
     this.router.navigate(['/auth']);
   }
 
-  public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<boolean> {
+  public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<HttpResponse<ApiResponse> | null> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -111,13 +111,16 @@ export class AuthService {
     }
 
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, formData, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/register/`, formData, { withCredentials: true, observe: 'response' }));
       this.logger.debug('Registration successful:', response);
-      if (login) this.setAuthSession(response.content, true);
-      return true;
+      if (!response.body) {
+        this.logger.error('Registration failed: No response body', response);
+        return null;
+      }
+      return response;
     } catch (error) {
       this.logger.error('Registration failed:', error);
-      return false;
+      return null;
     }
   }
 
@@ -158,17 +161,25 @@ export class AuthService {
     }
   }
 
-  public async login(username_or_email: string, password: string, remember: boolean): Promise<boolean> {
+  public async login(username_or_email: string, password: string, remember: boolean): Promise<HttpResponse<ApiResponse> | null> {
     const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
 
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true, observe: 'response' }));
+      if (!response.body) {
+        this.logger.error('Login failed: No response body', response);
+        return null;
+      }
+      if (response.status === 203) {
+        this.logger.debug('Device verification required:', response);
+        return response;
+      }
       this.logger.debug('Login successful:', response);
-      this.setAuthSession(response.content, true);
-      return true;
+      this.setAuthSession(response.body.content, true);
+      return response;
     } catch (error) {
       this.logger.error('Login failed:', error);
-      return false;
+      return null;
     }
   }
 
