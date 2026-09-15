@@ -12,7 +12,7 @@ type DisplayMode = 'register' | 'login' | 'verifyDevice';
   selector: 'app-auth',
   imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent, TranslatePipe],
   templateUrl: './auth.component.html',
-  styleUrl: './auth.component.css',
+  styleUrls: ['./auth.component.css', "./paper.css"],
 })
 export class AuthComponent {
   @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
