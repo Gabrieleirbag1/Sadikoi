@@ -58,10 +58,14 @@
           </div>
           <app-google-login></app-google-login>
         }
-        <label for="deviceVerification">Verify Device please enter code:</label>
-        <input id="deviceVerification" type="text" #deviceVerification />
-        <button (click)="verifyDevice(deviceVerification.value)">Verify Device</button>
-        <button (click)="askForNewCode()">Ask for a new Code</button>
+        @if (displayMode() === 'verifyDevice') {
+          <div>
+            <label for="deviceVerification">Verify Device please enter code:</label>
+            <input id="deviceVerification" type="text" #deviceVerification />
+            <button (click)="verifyDevice(deviceVerification.value)">Verify Device</button>
+            <button (click)="askForNewCode()">Ask for a new Code</button>
+          </div>
+        }
       </div>
     </div>
   }
