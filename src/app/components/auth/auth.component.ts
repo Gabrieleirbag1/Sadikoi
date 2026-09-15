@@ -6,6 +6,8 @@ import { form, FormField } from '@angular/forms/signals';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
+type DisplayMode = 'register' | 'login' | 'verifyDevice';
+
 @Component({
   selector: 'app-auth',
   imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent, TranslatePipe],
@@ -18,7 +20,7 @@ export class AuthComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   protected isAuthenticated = this.authService.isAuthenticated();
-  protected displayMode = signal<'register' | 'login' | 'verifyDevice'>('login');
+  protected displayMode = signal<DisplayMode>('login');
 
   protected authModel = signal({
     username: '',
@@ -37,11 +39,11 @@ export class AuthComponent {
     this.selectedFile = file;
   }
 
-  protected setDisplayMode(displayMode: 'register' | 'login' | 'verifyDevice'): void {
+  protected setDisplayMode(displayMode: DisplayMode): void {
     this.displayMode.set(displayMode);
   }
 
-  protected async onSubmit(event: Event, mode: 'register' | 'login'): Promise<void> {
+  protected async onSubmit(event: Event, mode: DisplayMode): Promise<void> {
     event.preventDefault();
     if (mode === 'register') {
       await this.register();
