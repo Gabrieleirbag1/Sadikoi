@@ -14,10 +14,23 @@
         <img src="presentation.png" alt="Presentation Image" />
       </div>
       <div class="auth-form-container">
-        <div>
-          <button (click)="setDisplayMode('register')">{{ 'auth.register' | translate }}</button>
-          <button (click)="setDisplayMode('login')">{{ 'auth.login' | translate }}</button>
+        <div class="auth-mode-switcher" role="tablist" aria-label="Authentication mode">
+          <button [class.active]="displayMode() === 'login'" (click)="setDisplayMode('login')">
+            {{ 'auth.login' | translate }}
+          </button>
+          <button [class.active]="displayMode() === 'register'" (click)="setDisplayMode('register')">
+            {{ 'auth.register' | translate }}
+          </button>
         </div>
+
+        @if (displayMode() !== 'verifyDevice') {
+          <h1>{{ displayMode() === 'login' ? ('auth.login' | translate) : ('auth.register' | translate) }}</h1>
+          <div class="social-login">
+            <app-google-login></app-google-login>
+          </div>
+          <div class="auth-divider" aria-hidden="true"><span>or</span></div>
+        }
+
         @if (displayMode() === 'register') {
           <div class="form-container">
             <form (submit)="onSubmit($event, 'register')">
@@ -66,12 +79,11 @@
                 </div>
               </div>
 
-              <button class="btn-block background-secondary" type="submit">
+              <button class="paper-btn btn-block background-secondary" type="submit">
                 {{ 'auth.register' | translate }}
               </button>
             </form>
           </div>
-          <app-google-login></app-google-login>
         } @else if (displayMode() === 'login') {
           <div class="form-container">
             <form (submit)="onSubmit($event, 'login')">
@@ -97,19 +109,19 @@
                 />
                 <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
               </div>
-              <button type="submit" class="btn-block background-secondary">
+              <button type="submit" class="paper-btn btn-block background-secondary">
                 {{ 'auth.login' | translate }}
               </button>
             </form>
           </div>
-          <app-google-login></app-google-login>
         }
         @if (displayMode() === 'verifyDevice') {
-          <div>
+          <div class="verification-container">
+            <h1>Verify device</h1>
             <label for="deviceVerification">Verify Device please enter code:</label>
             <input id="deviceVerification" type="text" #deviceVerification />
-            <button (click)="verifyDevice(deviceVerification.value)">Verify Device</button>
-            <button (click)="askForNewCode()">Ask for a new Code</button>
+            <button class="paper-btn" (click)="verifyDevice(deviceVerification.value)">Verify Device</button>
+            <button class="paper-btn" (click)="askForNewCode()">Ask for a new Code</button>
           </div>
         }
       </div>

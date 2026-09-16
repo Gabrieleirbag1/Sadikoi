@@ -3,20 +3,17 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
-import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 type DisplayMode = 'register' | 'login' | 'verifyDevice';
 
 @Component({
   selector: 'app-auth',
-  imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent, TranslatePipe],
+  imports: [GoogleLoginComponent, FormField, TranslatePipe],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
 export class AuthComponent {
-  @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
-
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   protected isAuthenticated = this.authService.isAuthenticated();
@@ -60,9 +57,6 @@ export class AuthComponent {
     }
     const response = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
     if (response && response.body) {
-      if (this.imagePicker) {
-        this.imagePicker.clearPreview();
-      }
       if (val.login) {
         if (response.status === 203) {
           this.setDisplayMode('verifyDevice');

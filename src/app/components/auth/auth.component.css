@@ -39,13 +39,70 @@
     object-fit: cover;
 }
 
-
-form:has(input:invalid) {
-  border-color: var(--danger);
+.auth-mode-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.card {
-  background-color: #f5f5f5;
+.auth-mode-switcher button,
+.auth-footer button {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth-mode-switcher button.active,
+.auth-footer button {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+h1 {
+  margin: 0 0 22px;
+  color: var(--primary);
+  text-align: center;
+  font-size: clamp(28px, 6vw, 38px);
+}
+
+.social-login {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  text-align: center;
+}
+
+.social-login span {
+  color: var(--primary);
+  font-size: 20px;
+}
+
+.social-login app-google-login {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+  color: var(--muted);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--primary-light);
 }
 
 .form-container form{

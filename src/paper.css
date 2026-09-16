@@ -1572,7 +1572,6 @@ ul.breadcrumb li + li::before {
   padding: 8px;
 }
 
-button,
 .paper-btn,
 [type=button] {
   border-bottom-left-radius: 15px 255px;
@@ -1586,8 +1585,6 @@ button,
   color: var(--primary);
   border-color: #41403e;
   border-color: var(--primary);
-  background-color: #41403e;
-  background-color: var(--main-background);
   align-self: center;
   background-image: none;
   border-style: solid;
@@ -1599,7 +1596,6 @@ button,
   padding: 0.75rem;
 }
 @media only screen and (max-width: 520px) {
-  button,
 .paper-btn,
 [type=button] {
     display: inline-block;
@@ -1630,13 +1626,11 @@ button.btn-block,
   display: block;
   width: 100%;
 }
-button:hover,
 .paper-btn:hover,
 [type=button]:hover {
   transform: translate3d(0, 2px, 0);
   box-shadow: 2px 8px 8px -5px rgba(0, 0, 0, 0.3);
 }
-button:focus,
 .paper-btn:focus,
 [type=button]:focus {
   border-color: #41403e;
@@ -1645,7 +1639,6 @@ button:focus,
   border-width: 2px;
   box-shadow: 2px 8px 4px -6px rgba(0, 0, 0, 0.3);
 }
-button:active,
 .paper-btn:active,
 [type=button]:active {
   border-color: rgba(0, 0, 0, 0.2);
