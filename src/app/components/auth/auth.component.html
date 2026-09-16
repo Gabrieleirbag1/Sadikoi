@@ -9,7 +9,7 @@
   </div>
 
   @if (!isAuthenticated) {
-    <div class="auth-container">
+    <div class="auth-container shadow shadow-large shadow-hover">
       <div class="side-image-container">
         <img src="presentation.png" alt="Presentation Image" />
       </div>
@@ -21,39 +21,77 @@
         @if (displayMode() === 'register') {
           <div>
             <form (submit)="onSubmit($event, 'register')">
-              <label for="username">{{ 'auth.username' | translate }}</label>
-              <input id="username" type="text" [formField]="authForm.username" />
+              <div  class="register-form-container">
+                <div class="register-form-fields-container">
+                  <div>
+                    <label for="username">{{ 'auth.username' | translate }}</label>
+                    <input id="username" type="text" [formField]="authForm.username" />
+                  </div>
 
-              <label for="email">{{ 'auth.email' | translate }}</label>
-              <input id="email" type="email" [formField]="authForm.email" />
+                  <div>
+                    <label for="email">{{ 'auth.email' | translate }}</label>
+                    <input id="email" type="email" [formField]="authForm.email" />
+                  </div>
 
-              <label for="password">{{ 'auth.password' | translate }}</label>
-              <input id="password" type="password" [formField]="authForm.password" />
+                  <div>
+                    <label for="password">{{ 'auth.password' | translate }}</label>
+                    <input id="password" type="password" [formField]="authForm.password" />
+                  </div>
 
-              <label for="confirmPassword">{{ 'auth.confirmPassword' | translate }}</label>
-              <input id="confirmPassword" type="password" [formField]="authForm.confirmPassword" />
+                  <div>
+                    <label for="confirmPassword">{{ 'auth.confirmPassword' | translate }}</label>
+                    <input
+                      id="confirmPassword"
+                      type="password"
+                      [formField]="authForm.confirmPassword"
+                    />
+                  </div>
 
-              <label>{{ 'auth.profilePicture' | translate }}</label>
-              <app-profile-image-picker
-                (fileSelectedChange)="handleFileSelected($event)"
-              ></app-profile-image-picker>
+                  <div class="checkbox-container">
+                    <input class="form-check-input" id="login" type="checkbox" [formField]="authForm.login" />
+                    <label for="login">{{ 'auth.autoLogin' | translate }}</label>
+                  </div>
+                </div>
 
-              <label for="login">{{ 'auth.autoLogin' | translate }}</label>
-              <input id="login" type="checkbox" [formField]="authForm.login" />
+                <div class="profile-image-picker-container">
+                  <label>{{ 'auth.profilePicture' | translate }}</label>
+                  <app-profile-image-picker
+                    (fileSelectedChange)="handleFileSelected($event)"
+                    [imgClass]="'register-user-icon'"
+                  ></app-profile-image-picker>
+                </div>
+              </div>
 
-              <button type="submit">{{ 'auth.register' | translate }}</button>
+              <button class="btn-block background-secondary" type="submit">
+                {{ 'auth.register' | translate }}
+              </button>
             </form>
           </div>
+          <app-google-login></app-google-login>
+
         } @else if (displayMode() === 'login') {
-          <div>
+          <div class="login-form-container">
             <form (submit)="onSubmit($event, 'login')">
-              <label for="username">{{ 'auth.usernameOrEmail' | translate }}</label>
-              <input id="username" type="text" [formField]="authForm.username" />
-              <label for="password">{{ 'auth.password' | translate }}</label>
-              <input id="password" type="password" [formField]="authForm.password" />
-              <input type="checkbox" id="remember" [formField]="authForm.remember" />
-              <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
-              <button type="submit">{{ 'auth.login' | translate }}</button>
+              <div>
+                <label for="username">{{ 'auth.usernameOrEmail' | translate }}</label>
+                <input
+                  id="username"
+                  type="text"
+                  [formField]="authForm.username"
+                  placeholder="pierre.bouliste@example.fr"
+                />
+              </div>
+              <div>
+                <label for="password">{{ 'auth.password' | translate }}</label>
+                <input id="password" type="password" [formField]="authForm.password" />
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" class="form-check-input" id="remember" [formField]="authForm.remember" />
+                <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
+              </div>
+              <button type="submit" class="btn-block background-secondary">
+                {{ 'auth.login' | translate }}
+              </button>
             </form>
           </div>
           <app-google-login></app-google-login>
@@ -70,16 +108,3 @@
     </div>
   }
 </section>
-
-<form class="card shadow shadow-large shadow-hover">
-  <div class="card-header">Sign In</div>
-  <div class="card-body">
-    <div class="form-group">
-      <input class="input-block" type="text" placeholder="Username" id="paperInputs1" minlength="2">
-    </div>
-    <div class="form-group">
-      <input class="input-block" type="password" placeholder="Password" id="paperInputs1" minlength="4">
-    </div>      
-    <button class="btn-block background-secondary">Sign In</button>
-  </div>
-</form>
