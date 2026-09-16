@@ -15,7 +15,8 @@
     "confirmNewPassword": "Confirmer le nouveau mot de passe :",
     "profilePicture": "Photo de profil :",
     "rememberMe": "Se souvenir de moi",
-    "autoLogin": "Connexion"
+    "autoLogin": "Connexion",
+    "or": "ou"
   },
   "account": {
     "updateAccount": "Mettre à jour le compte",

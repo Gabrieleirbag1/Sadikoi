@@ -15,7 +15,8 @@
     "confirmNewPassword": "Confirm New Password:",
     "profilePicture": "Profile Picture:",
     "rememberMe": "Remember Me",
-    "autoLogin": "Login"
+    "autoLogin": "Login",
+    "or": "or"
   },
   "account": {
     "updateAccount": "Update Account",
