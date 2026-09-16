@@ -19,9 +19,9 @@
           <button (click)="setDisplayMode('login')">{{ 'auth.login' | translate }}</button>
         </div>
         @if (displayMode() === 'register') {
-          <div>
+          <div class="form-container">
             <form (submit)="onSubmit($event, 'register')">
-              <div  class="register-form-container">
+              <div class="register-form-container">
                 <div class="register-form-fields-container">
                   <div>
                     <label for="username">{{ 'auth.username' | translate }}</label>
@@ -33,6 +33,23 @@
                     <input id="email" type="email" [formField]="authForm.email" />
                   </div>
 
+                  <div class="checkbox-container">
+                    <input
+                      class="form-check-input"
+                      id="login"
+                      type="checkbox"
+                      [formField]="authForm.login"
+                    />
+                    <label for="login">{{ 'auth.autoLogin' | translate }}</label>
+                  </div>
+                </div>
+
+                <div class="register-form-fields-container">
+                  <!-- <label>{{ 'auth.profilePicture' | translate }}</label>
+                  <app-profile-image-picker
+                    (fileSelectedChange)="handleFileSelected($event)"
+                    [imgClass]="'register-user-icon'"
+                  ></app-profile-image-picker> -->
                   <div>
                     <label for="password">{{ 'auth.password' | translate }}</label>
                     <input id="password" type="password" [formField]="authForm.password" />
@@ -46,19 +63,6 @@
                       [formField]="authForm.confirmPassword"
                     />
                   </div>
-
-                  <div class="checkbox-container">
-                    <input class="form-check-input" id="login" type="checkbox" [formField]="authForm.login" />
-                    <label for="login">{{ 'auth.autoLogin' | translate }}</label>
-                  </div>
-                </div>
-
-                <div class="profile-image-picker-container">
-                  <label>{{ 'auth.profilePicture' | translate }}</label>
-                  <app-profile-image-picker
-                    (fileSelectedChange)="handleFileSelected($event)"
-                    [imgClass]="'register-user-icon'"
-                  ></app-profile-image-picker>
                 </div>
               </div>
 
@@ -68,9 +72,8 @@
             </form>
           </div>
           <app-google-login></app-google-login>
-
         } @else if (displayMode() === 'login') {
-          <div class="login-form-container">
+          <div class="form-container">
             <form (submit)="onSubmit($event, 'login')">
               <div>
                 <label for="username">{{ 'auth.usernameOrEmail' | translate }}</label>
@@ -86,7 +89,12 @@
                 <input id="password" type="password" [formField]="authForm.password" />
               </div>
               <div class="checkbox-container">
-                <input type="checkbox" class="form-check-input" id="remember" [formField]="authForm.remember" />
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="remember"
+                  [formField]="authForm.remember"
+                />
                 <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
               </div>
               <button type="submit" class="btn-block background-secondary">
