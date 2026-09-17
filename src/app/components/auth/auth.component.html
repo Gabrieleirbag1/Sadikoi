@@ -1,10 +1,14 @@
 <section class="main-container">
   <div>
     @if (isAuthenticated) {
-      <p>{{ 'auth.authenticated' | translate }}</p>
-      <label for="forgetDevice">{{ 'auth.forgetDevice' | translate }}</label>
-      <input type="checkbox" id="forgetDevice" #forgetDevice />
-      <button (click)="logout(forgetDevice.checked)">{{ 'auth.logout' | translate }}</button>
+      <div class="logout-container border shadow shadow-large shadow-hover">
+        <p>{{ 'auth.authenticated' | translate }}</p>
+        <div class="checkbox-container">
+          <input type="checkbox" id="forgetDevice" #forgetDevice />
+          <label for="forgetDevice">{{ 'auth.forgetDevice' | translate }}</label>
+        </div>
+        <button class="paper-btn background-danger"(click)="logout(forgetDevice.checked)">{{ 'auth.logout' | translate }}</button>
+      </div>
     }
   </div>
 

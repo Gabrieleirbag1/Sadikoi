@@ -184,3 +184,15 @@ h1 {
   justify-content: space-between;
   gap: 20px;
 }
+
+.logout-container {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  gap: 30px;
+  padding: 20px;
+  margin: 20vh 30vw;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+  border: 2px solid var(--primary);
+}
