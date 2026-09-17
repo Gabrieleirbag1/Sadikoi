@@ -86,6 +86,7 @@ export class AuthComponent {
   protected logout(forgetDevice: boolean): void {
     this.authService.logout(forgetDevice);
     this.isAuthenticated = false;
+    sessionStorage.removeItem('homeState');
   }
 
   protected onDigitInput(current: HTMLInputElement, next: HTMLInputElement | null) {
