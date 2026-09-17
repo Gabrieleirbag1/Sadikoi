@@ -88,6 +88,28 @@ export class AuthComponent {
     this.isAuthenticated = false;
   }
 
+  protected onDigitInput(current: HTMLInputElement, next: HTMLInputElement | null) {
+    current.value = current.value.replace(/[^0-9]/g, '').slice(-1);
+    if (current.value && next) {
+      next.focus();
+    }
+  }
+
+  protected onKeydown(event: KeyboardEvent, current: HTMLInputElement, prev: HTMLInputElement | null) {
+    if (event.key === 'Backspace' && !current.value && prev) {
+      prev.focus();
+    }
+  }
+
+  protected onPaste(event: ClipboardEvent, inputs: HTMLInputElement[]) {
+    event.preventDefault();
+    const digits = (event.clipboardData?.getData('text') || '').replace(/[^0-9]/g, '');
+    if (!digits) return;
+    inputs.forEach((input, i) => (input.value = digits[i] || ''));
+    const lastIndex = Math.min(digits.length, inputs.length) - 1;
+    if (lastIndex >= 0) inputs[lastIndex].focus();
+  }
+
   protected async verifyDevice(code: string): Promise<void> {
     const val = this.authModel();
     const success = await this.authService.verifyDevice(val.username, code);

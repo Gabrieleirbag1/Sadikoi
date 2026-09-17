@@ -13,117 +13,219 @@
       <div class="side-image-container">
         <img src="presentation.png" alt="Presentation Image" />
       </div>
-      <div class="auth-form-container">
+      <div class="auth-main-container">
         <div class="auth-mode-switcher" role="tablist" aria-label="Authentication mode">
           <button [class.active]="displayMode() === 'login'" (click)="setDisplayMode('login')">
             {{ 'auth.login' | translate }}
           </button>
-          <button [class.active]="displayMode() === 'register'" (click)="setDisplayMode('register')">
+          <button
+            [class.active]="displayMode() === 'register'"
+            (click)="setDisplayMode('register')"
+          >
             {{ 'auth.register' | translate }}
           </button>
         </div>
+        <div class="auth-form-container">
+          @if (displayMode() !== 'verifyDevice') {
+            <h1>
+              {{
+                displayMode() === 'login'
+                  ? ('auth.login' | translate)
+                  : ('auth.register' | translate)
+              }}
+            </h1>
+            <div class="social-login">
+              <app-google-login></app-google-login>
+            </div>
+            <div class="auth-divider" aria-hidden="true">
+              <span>{{ 'auth.or' | translate }}</span>
+            </div>
+          }
 
-        @if (displayMode() !== 'verifyDevice') {
-          <h1>{{ displayMode() === 'login' ? ('auth.login' | translate) : ('auth.register' | translate) }}</h1>
-          <div class="social-login">
-            <app-google-login></app-google-login>
-          </div>
-          <div class="auth-divider" aria-hidden="true"><span>{{ 'auth.or' | translate }}</span></div>
-        }
+          @if (displayMode() === 'register') {
+            <div class="form-container">
+              <form (submit)="onSubmit($event, 'register')">
+                <div class="register-form-container">
+                  <div class="register-form-fields-container">
+                    <div>
+                      <label for="username">{{ 'auth.username' | translate }}</label>
+                      <input
+                        id="username"
+                        type="text"
+                        [formField]="authForm.username"
+                        placeholder="Pierre Bouliste"
+                      />
+                    </div>
 
-        @if (displayMode() === 'register') {
-          <div class="form-container">
-            <form (submit)="onSubmit($event, 'register')">
-              <div class="register-form-container">
-                <div class="register-form-fields-container">
-                  <div>
-                    <label for="username">{{ 'auth.username' | translate }}</label>
-                    <input id="username" type="text" [formField]="authForm.username" />
+                    <div>
+                      <label for="email">{{ 'auth.email' | translate }}</label>
+                      <input
+                        id="email"
+                        type="email"
+                        [formField]="authForm.email"
+                        placeholder="pierre.bouliste@example.com"
+                      />
+                    </div>
+
+                    <div class="checkbox-container">
+                      <input
+                        class="form-check-input"
+                        id="login"
+                        type="checkbox"
+                        [formField]="authForm.login"
+                      />
+                      <label for="login">{{ 'auth.autoLogin' | translate }}</label>
+                    </div>
                   </div>
 
-                  <div>
-                    <label for="email">{{ 'auth.email' | translate }}</label>
-                    <input id="email" type="email" [formField]="authForm.email" />
-                  </div>
+                  <div class="register-form-fields-container">
+                    <!-- <label>{{ 'auth.profilePicture' | translate }}</label>
+                    <app-profile-image-picker
+                      (fileSelectedChange)="handleFileSelected($event)"
+                      [imgClass]="'register-user-icon'"
+                    ></app-profile-image-picker> -->
+                    <div>
+                      <label for="password">{{ 'auth.password' | translate }}</label>
+                      <input id="password" type="password" [formField]="authForm.password" />
+                    </div>
 
-                  <div class="checkbox-container">
-                    <input
-                      class="form-check-input"
-                      id="login"
-                      type="checkbox"
-                      [formField]="authForm.login"
-                    />
-                    <label for="login">{{ 'auth.autoLogin' | translate }}</label>
+                    <div>
+                      <label for="confirmPassword">{{ 'auth.confirmPassword' | translate }}</label>
+                      <input
+                        id="confirmPassword"
+                        type="password"
+                        [formField]="authForm.confirmPassword"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div class="register-form-fields-container">
-                  <!-- <label>{{ 'auth.profilePicture' | translate }}</label>
-                  <app-profile-image-picker
-                    (fileSelectedChange)="handleFileSelected($event)"
-                    [imgClass]="'register-user-icon'"
-                  ></app-profile-image-picker> -->
-                  <div>
-                    <label for="password">{{ 'auth.password' | translate }}</label>
-                    <input id="password" type="password" [formField]="authForm.password" />
-                  </div>
-
-                  <div>
-                    <label for="confirmPassword">{{ 'auth.confirmPassword' | translate }}</label>
-                    <input
-                      id="confirmPassword"
-                      type="password"
-                      [formField]="authForm.confirmPassword"
-                    />
-                  </div>
+                <button class="paper-btn btn-block background-secondary" type="submit">
+                  {{ 'auth.register' | translate }}
+                </button>
+              </form>
+            </div>
+          } @else if (displayMode() === 'login') {
+            <div class="form-container">
+              <form (submit)="onSubmit($event, 'login')">
+                <div>
+                  <label for="username">{{ 'auth.usernameOrEmail' | translate }}</label>
+                  <input
+                    id="username"
+                    type="text"
+                    [formField]="authForm.username"
+                    placeholder="pierre.bouliste@example.com"
+                  />
                 </div>
-              </div>
+                <div>
+                  <label for="password">{{ 'auth.password' | translate }}</label>
+                  <input id="password" type="password" [formField]="authForm.password" />
+                </div>
+                <div class="checkbox-container">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="remember"
+                    [formField]="authForm.remember"
+                  />
+                  <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
+                </div>
+                <button type="submit" class="paper-btn btn-block background-secondary">
+                  {{ 'auth.login' | translate }}
+                </button>
+              </form>
+            </div>
+          }
+          @if (displayMode() === 'verifyDevice') {
+            <div class="verification-container">
+              <h1>{{ 'auth.verifyDevice' | translate }}</h1>
+              <label id="otpLabel">{{ 'auth.verifyDeviceRequest' | translate }}</label>
 
-              <button class="paper-btn btn-block background-secondary" type="submit">
-                {{ 'auth.register' | translate }}
-              </button>
-            </form>
-          </div>
-        } @else if (displayMode() === 'login') {
-          <div class="form-container">
-            <form (submit)="onSubmit($event, 'login')">
-              <div>
-                <label for="username">{{ 'auth.usernameOrEmail' | translate }}</label>
+              <div
+                class="otp-group"
+                role="group"
+                aria-labelledby="otpLabel"
+                (paste)="onPaste($event, [d0, d1, d2, d3, d4, d5])"
+              >
                 <input
-                  id="username"
+                  #d0
+                  class="otp-box"
                   type="text"
-                  [formField]="authForm.username"
-                  placeholder="pierre.bouliste@example.fr"
+                  inputmode="numeric"
+                  maxlength="1"
+                  autocomplete="one-time-code"
+                  aria-label="Digit 1 of 6"
+                  (input)="onDigitInput(d0, d1)"
+                  (keydown)="onKeydown($event, d0, null)"
                 />
-              </div>
-              <div>
-                <label for="password">{{ 'auth.password' | translate }}</label>
-                <input id="password" type="password" [formField]="authForm.password" />
-              </div>
-              <div class="checkbox-container">
                 <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="remember"
-                  [formField]="authForm.remember"
+                  #d1
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="Digit 2 of 6"
+                  (input)="onDigitInput(d1, d2)"
+                  (keydown)="onKeydown($event, d1, d0)"
                 />
-                <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
+                <input
+                  #d2
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="Digit 3 of 6"
+                  (input)="onDigitInput(d2, d3)"
+                  (keydown)="onKeydown($event, d2, d1)"
+                />
+                <input
+                  #d3
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="Digit 4 of 6"
+                  (input)="onDigitInput(d3, d4)"
+                  (keydown)="onKeydown($event, d3, d2)"
+                />
+                <input
+                  #d4
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="Digit 5 of 6"
+                  (input)="onDigitInput(d4, d5)"
+                  (keydown)="onKeydown($event, d4, d3)"
+                />
+                <input
+                  #d5
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="Digit 6 of 6"
+                  (input)="onDigitInput(d5, null)"
+                  (keydown)="onKeydown($event, d5, d4)"
+                />
               </div>
-              <button type="submit" class="paper-btn btn-block background-secondary">
-                {{ 'auth.login' | translate }}
-              </button>
-            </form>
-          </div>
-        }
-        @if (displayMode() === 'verifyDevice') {
-          <div class="verification-container">
-            <h1>Verify device</h1>
-            <label for="deviceVerification">Verify Device please enter code:</label>
-            <input id="deviceVerification" type="text" #deviceVerification />
-            <button class="paper-btn" (click)="verifyDevice(deviceVerification.value)">Verify Device</button>
-            <button class="paper-btn" (click)="askForNewCode()">Ask for a new Code</button>
-          </div>
-        }
+
+              <div class="verification-buttons">
+                <button
+                  class="paper-btn background-secondary"
+                  (click)="
+                    verifyDevice(d0.value + d1.value + d2.value + d3.value + d4.value + d5.value)
+                  "
+                >
+                  {{ 'auth.verifyDevice' | translate }}
+                </button>
+                <button class="paper-btn background-secondary" (click)="askForNewCode()">
+                  {{ 'auth.askForNewCode' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
   }

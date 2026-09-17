@@ -16,6 +16,9 @@
     "profilePicture": "Profile Picture:",
     "rememberMe": "Remember Me",
     "autoLogin": "Login",
+    "verifyDevice": "Verify Device",
+    "verifyDeviceRequest": "Please enter the code sent to your email.",
+    "askForNewCode": "Ask for a new Code",
     "or": "or"
   },
   "account": {
