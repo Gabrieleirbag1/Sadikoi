@@ -1,8 +1,8 @@
 <footer class="home-footer">
   <span    
     class="icon-button"
-    [class.active]="homeState() === 'groups'"
-    [attr.aria-pressed]="homeState() === 'groups'"
+    [class.active]="homeState() === 'groups' || homeState() === 'group'"
+    [attr.aria-pressed]="homeState() === 'groups'|| homeState() === 'group'"
     role="button"
     tabindex="0"
     (click)="changeHomeState('groups')"

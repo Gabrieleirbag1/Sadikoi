@@ -22,7 +22,7 @@
       <p>{{ 'group.loadingGroup' | translate }}</p>
   }
 </section>
-<app-home-footer [(homeState)]="homeState" [redirect]="true"></app-home-footer>
+<app-home-footer [(homeState)]="homeState" [groupId]="group()?.id ?? null" [redirect]="true"></app-home-footer>
 <app-group-options-modal 
   [group]="group()" 
   (groupChange)="group.set($event)">
