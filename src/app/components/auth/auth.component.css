@@ -128,6 +128,17 @@ h1 {
   gap: 10px;
 }
 
+.checkbox-label-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.checkbox-label-container a {
+  cursor: pointer;
+}
+
 #remember, #login {
   width: min-content;
   margin-bottom: 3px;

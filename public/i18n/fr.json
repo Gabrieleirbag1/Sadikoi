@@ -19,7 +19,8 @@
     "verifyDevice": "Vérifier l'appareil",
     "verifyDeviceRequest": "Veuillez entrer le code envoyé à votre e-mail.",
     "askForNewCode": "Demander un nouveau code",
-    "or": "ou"
+    "or": "ou",
+    "forgotPassword": "Mot de passe oublié ?"
   },
   "account": {
     "updateAccount": "Mettre à jour le compte",
