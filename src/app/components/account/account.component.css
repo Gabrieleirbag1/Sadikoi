@@ -20,7 +20,15 @@ section {
 .form-fields {
     display: flex;
     justify-content: space-between;
-    gap: 20px;
+    gap: 10%;
+}
+
+.form-fields-left {
+    width: 60%;
+}
+
+.form-fields-right {
+    width: 30%;
 }
 
 .form-fields-component {
@@ -31,7 +39,20 @@ section {
 
 .form-actions {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
+}
+
+.update-actions {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+}
+
+.danger-actions {
+    display: flex;
+    width: 30%;
+    gap: 10px;
+    justify-content: space-between;
 }
 
 .devices-actions {
