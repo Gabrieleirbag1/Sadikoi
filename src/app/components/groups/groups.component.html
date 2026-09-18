@@ -1,6 +1,24 @@
 <div class="groups-header">
-  <button (click)="changeView('grid')">grid view</button>
-  <button (click)="changeView('list')">list view</button>
+  <span
+    class="icon-button"
+    [class.active]="view === 'grid'"
+    [attr.aria-pressed]="view === 'grid'"
+    role="button"
+    tabindex="0"
+    (click)="changeView('grid')"
+  >
+    <img src="images/icons/grid.svg" width="24" height="24" alt="Grid View" />
+  </span>
+  <span
+    class="icon-button"
+    [class.active]="view === 'list'"
+    [attr.aria-pressed]="view === 'list'"
+    role="button"
+    tabindex="0"
+    (click)="changeView('list')"
+  >
+    <img src="images/icons/list.svg" width="24" height="24" alt="List View" />
+  </span>
 </div>
 <section class="groups-container">
   @if (view == 'grid') {
