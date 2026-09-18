@@ -54,10 +54,10 @@
     </div>
 
     <div class="devices-container">
-      <h1>{{ 'account.devices' | translate }}</h1>
+      <h2>{{ 'account.devices' | translate }}</h2>
       <div class="devices-actions">
-        <button (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
-        <button (click)="openLogoutAllDevicesModal()">
+        <button type="button" class="background-secondary" (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
+        <button type="button" class="background-danger" (click)="openLogoutAllDevicesModal()">
           {{ 'account.logoutAllDevices' | translate }}
         </button>
       </div>
