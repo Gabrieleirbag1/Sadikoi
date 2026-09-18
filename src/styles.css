@@ -22,6 +22,15 @@ body {
     transform: scale(0.95);
 }
 
+.modal-close {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.modal-close:hover {
+    color: #ff0000;
+}
+
 .icon-button img {
     transition: filter 150ms ease;
 }
