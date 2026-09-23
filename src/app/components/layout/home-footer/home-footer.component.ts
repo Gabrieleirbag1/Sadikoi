@@ -1,9 +1,10 @@
 import { Component, inject, input, model, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home-footer',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './home-footer.component.html',
   styleUrl: './home-footer.component.css',
 })

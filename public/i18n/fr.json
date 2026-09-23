@@ -47,15 +47,21 @@
     "groupDescription": "Description du groupe",
     "createGroup": "Créer un groupe",
     "enterGroupCode": "Entrer le code du groupe",
-    "joinGroup": "Rejoindre le groupe"
+    "joinGroup": "Rejoindre le groupe",
+    "gridView": "Vue en grille",
+    "listView": "Vue en liste"
   },
   "group": {
+    "getGroupInvitation": "Obtenir l'invitation au groupe",
+    "groupOptions": "Options du groupe",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
     "description": "Description :",
     "dailyResetTime": "Heure de réinitialisation quotidienne :",
     "updateGroup": "Mettre à jour le groupe",
-    "users": "Utilisateurs :"
+    "users": "Utilisateurs :",
+    "home": "Accueil",
+    "account": "Compte"
   },
   "groupOptions": {
     "groupOptions": "Options du groupe",

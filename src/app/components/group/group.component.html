@@ -4,10 +4,10 @@
       <span>{{ group()?.name }}</span>
     </div>
     <div>
-      <span class="icon-button" role="button" tabindex="0" (click)="fetchInvitation()">
+      <span class="icon-button" role="button" tabindex="0" (click)="fetchInvitation()" title="{{ 'group.getGroupInvitation' | translate }}">
         <img src="images/icons/invite.svg" width="24" height="24" alt="List View" />
       </span>
-      <span class="icon-button" role="button" tabindex="0" (click)="openGroupOptionsModal()">
+      <span class="icon-button" role="button" tabindex="0" (click)="openGroupOptionsModal()" title="{{ 'group.groupOptions' | translate }}">
         <img src="images/icons/settings.svg" width="24" height="24" alt="List View" />
       </span>
     </div>

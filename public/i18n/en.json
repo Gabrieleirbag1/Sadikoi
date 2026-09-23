@@ -47,15 +47,21 @@
     "groupDescription": "Group Description",
     "createGroup": "Create Group",
     "enterGroupCode": "Enter group code",
-    "joinGroup": "Join Group"
+    "joinGroup": "Join Group",
+    "gridView": "Grid View",
+    "listView": "List View"
   },
   "group": {
+    "getGroupInvitation": "Get Group Invitation",
+    "groupOptions": "Group Options",
     "loadingGroup": "Loading group...",
     "name": "Name:",
     "description": "Description:",
     "dailyResetTime": "Daily Reset Time:",
     "updateGroup": "Update Group",
-    "users": "Users:"
+    "users": "Users:",
+    "home": "Home",
+    "account": "Account"
   },
   "groupOptions": {
     "groupOptions": "Group Options",
