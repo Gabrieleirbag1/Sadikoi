@@ -1,29 +1,28 @@
 <section class="main-container">
   <header class="group-header">
     <div>
-      <span>{{group()?.name}}</span>
+      <span>{{ group()?.name }}</span>
     </div>
     <div>
-      <div class="calendar-anchor" #calendarAnchor>
-        <button (click)="showCalendar()">Show Calendar</button>
-        @if (showCalendarFlag()) {
-          <div class="calendar-popover">
-            <app-calendar [group]="group()" [(question)]="question"></app-calendar>
-          </div>
-        }
-      </div>
-      <button (click)="fetchInvitation()">{{ 'group.getGroupInvitation' | translate }}</button>
-      <button (click)="openGroupOptionsModal()">Group options</button>
+      <span class="icon-button" role="button" tabindex="0" (click)="fetchInvitation()">
+        <img src="images/icons/invite.svg" width="24" height="24" alt="List View" />
+      </span>
+      <span class="icon-button" role="button" tabindex="0" (click)="openGroupOptionsModal()">
+        <img src="images/icons/settings.svg" width="24" height="24" alt="List View" />
+      </span>
     </div>
   </header>
   @if (group()) {
     <app-question [group]="group()" [(question)]="question"></app-question>
+    <
   } @else {
-      <p>{{ 'group.loadingGroup' | translate }}</p>
+    <p>{{ 'group.loadingGroup' | translate }}</p>
   }
 </section>
-<app-home-footer [(homeState)]="homeState" [groupId]="group()?.id ?? null" [redirect]="true"></app-home-footer>
-<app-group-options-modal 
-  [group]="group()" 
-  (groupChange)="group.set($event)">
+<app-home-footer
+  [(homeState)]="homeState"
+  [groupId]="group()?.id ?? null"
+  [redirect]="true"
+></app-home-footer>
+<app-group-options-modal [group]="group()" (groupChange)="group.set($event)">
 </app-group-options-modal>

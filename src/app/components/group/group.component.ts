@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, HostListener, inject, model, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, model, OnDestroy, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
@@ -8,12 +8,11 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 import { ModalService } from '../../services/modal/modal.service';
-import { CalendarComponent } from "../tooltips/calendar/calendar.component";
 import { WebsocketService } from '../../services/websocket/websocket.service';
 
 @Component({
   selector: 'app-group',
-  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe, HomeFooterComponent, CalendarComponent],
+  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe, HomeFooterComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
@@ -26,9 +25,7 @@ export class GroupComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
-  protected showCalendarFlag = signal<boolean>(false);
   public readonly question = model<Question | null>(null);
-  @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
   async ngOnInit(): Promise<void> {
     // const navState = window.history.state;
@@ -103,18 +100,6 @@ export class GroupComponent implements OnInit, OnDestroy {
       save: () => console.log('confirmed'),
       discard: () => console.log('cancelled'),
     });
-  }
-
-  @HostListener('document:click', ['$event'])
-  public onDocumentClick(event: MouseEvent) {
-    if (!this.showCalendarFlag()) return;
-    if (this.calendarAnchor && !this.calendarAnchor.nativeElement.contains(event.target as Node)) {
-      this.showCalendarFlag.set(false);
-    }
-  }
-
-  protected showCalendar(): void {
-    this.showCalendarFlag.set(!this.showCalendarFlag());
   }
 
 }

@@ -50,7 +50,6 @@
     "joinGroup": "Rejoindre le groupe"
   },
   "group": {
-    "getGroupInvitation": "Obtenir l'invitation au groupe",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
     "description": "Description :",

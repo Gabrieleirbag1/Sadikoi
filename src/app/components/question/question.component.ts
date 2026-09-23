@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, model, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, inject, model, OnInit, SimpleChanges, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { ProfileImagePickerComponent } from "../profile-image-picker/profile-ima
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
+import { CalendarComponent } from '../tooltips/calendar/calendar.component';
 
 interface VoteBubble {
   votedUser: User;
@@ -17,7 +18,7 @@ interface VoteBubble {
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent, UserProfileComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent, UserProfileComponent, CalendarComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,8 +33,10 @@ export class QuestionComponent implements OnInit{
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
   protected voteBubbles: VoteBubble[] = [];
+  protected showCalendarFlag = signal(false);
   public readonly question = model<Question | null>(null);
   public readonly group = model<Group | null>(null);
+  @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -119,6 +122,17 @@ export class QuestionComponent implements OnInit{
     } else {
       this.usersId.push(userId);
     }
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    if (this.showCalendarFlag() && !this.calendarAnchor?.nativeElement.contains(event.target as Node)) {
+      this.showCalendarFlag.set(false);
+    }
+  }
+
+  protected showCalendar(): void {
+    this.showCalendarFlag.update(isOpen => !isOpen);
   }
 
 }
