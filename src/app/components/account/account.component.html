@@ -1,5 +1,5 @@
 @if (user) {
-  <section>
+  <section class="account-section">
     <div class="account-container">
       <form (submit)="updateAccount($event)">
         <div class="form-container">
@@ -54,17 +54,100 @@
     </div>
 
     <div class="devices-container">
-      <h2>{{ 'account.devices' | translate }}</h2>
-      <div class="devices-actions">
-        <button type="button" class="background-secondary" (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
-        <button type="button" class="background-danger" (click)="openLogoutAllDevicesModal()">
-          {{ 'account.logoutAllDevices' | translate }}
-        </button>
+      <div>
+        <h2>{{ 'account.devices' | translate }}</h2>
+        <div class="devices-actions">
+          <button type="button" class="background-secondary" (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
+          <button type="button" class="background-danger" (click)="openLogoutAllDevicesModal()">
+            {{ 'account.logoutAllDevices' | translate }}
+          </button>
+        </div>
       </div>
       <div class="devices-list">
         @if (devices()) {
           @for (device of devices(); track $index) {
             <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+            v
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
+              <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+                {{ 'account.revokeDevice' | translate }}
+              </button>
+            </div>
+                        <div class="device-container">
               <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
               <input type="checkbox" [checked]="device.authorized" disabled /> 
               <!-- allows to know if the device is authorized keeping the devices list-->
