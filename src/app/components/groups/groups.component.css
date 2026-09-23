@@ -20,8 +20,6 @@
 .group-grid-item {
     display: flex;
     flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     padding: 10px;
     cursor: pointer;
     height: 20vh;
@@ -53,8 +51,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 20px;
     padding: 10px;
     cursor: pointer;
     height: 12vh;

@@ -24,7 +24,7 @@
   @if (view == 'grid') {
     <section class="grid-container">
       @for (group of groups(); track $index) {
-        <div class="group-grid-item" (click)="redirectGroup(group)">
+        <div class="group-grid-item border" (click)="redirectGroup(group)">
           <div class="group-grid-icons">
             <div class="group-users-icons">
               @for (user of group.users.slice(0, 4); track $index) {
@@ -45,14 +45,14 @@
           <p></p>
         </div>
       }
-      <div class="group-grid-item" (click)="openGroupModal()">
+      <div class="group-grid-item border" (click)="openGroupModal()">
         <p>+</p>
       </div>
     </section>
   } @else {
     <section class="list-container">
       @for (group of groups(); track $index) {
-        <div class="group-list-item" (click)="redirectGroup(group)">
+        <div class="group-list-item border" (click)="redirectGroup(group)">
           <div class="group-users-icons">
             @for (user of group.users.slice(0, 4); track $index) {
               <app-profile-image-picker
@@ -73,7 +73,7 @@
           </div>
         </div>
       }
-      <div class="group-list-item" (click)="openGroupModal()">
+      <div class="group-list-item border" (click)="openGroupModal()">
         <p>+</p>
       </div>
     </section>

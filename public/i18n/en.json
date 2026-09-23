@@ -29,12 +29,18 @@
     "devices": "DEVICES",
     "getDevices": "Get Devices",
     "logoutAllDevices": "Logout All Devices",
+    "logoutAllDevicesTitle": "Logout all devices?",
+    "logoutAllDevicesDescription": "This will log you out of every authorized device.",
     "device": "Device:",
     "revokeDevice": "Revoke Device",
+    "revokeDeviceTitle": "Revoke this device?",
+    "revokeDeviceDescription": "This device will no longer be authorized to access your account.",
     "noDevicesFound": "No devices found.",
     "openModal": "open modal",
     "logout": "Logout",
-    "deleteAccount": "Delete Account"
+    "deleteAccount": "Delete Account",
+    "deleteAccountTitle": "Delete your account?",
+    "deleteAccountDescription": "This action cannot be undone."
   },
   "groups": {
     "groupName": "Group Name",

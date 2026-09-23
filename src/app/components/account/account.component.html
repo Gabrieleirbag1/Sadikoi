@@ -70,7 +70,7 @@
               <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
               <input type="checkbox" [checked]="device.authorized" disabled /> 
               <!-- allows to know if the device is authorized keeping the devices list-->
-              <button type="button" class="background-danger" (click)="revokeDevice(device.device_id)">
+              <button type="button" class="background-danger" (click)="openRevokeDeviceModal(device.device_id)">
                 {{ 'account.revokeDevice' | translate }}
               </button>
             </div>
@@ -84,3 +84,4 @@
 }
 <app-modal id="delete-account"></app-modal>
 <app-modal id="logout-all-devices"></app-modal>
+<app-modal id="revoke-device"></app-modal>

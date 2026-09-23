@@ -29,12 +29,18 @@
     "devices": "APPAREILS",
     "getDevices": "Obtenir les appareils",
     "logoutAllDevices": "Déconnexion de tous les appareils",
+    "logoutAllDevicesTitle": "Déconnecter tous les appareils ?",
+    "logoutAllDevicesDescription": "Vous serez déconnecté de tous les appareils autorisés.",
     "device": "Appareil :",
     "revokeDevice": "Révoquer l'appareil",
+    "revokeDeviceTitle": "Révoquer cet appareil ?",
+    "revokeDeviceDescription": "Cet appareil ne sera plus autorisé à accéder à votre compte.",
     "noDevicesFound": "Aucun appareil trouvé.",
     "openModal": "ouvrir modal",
     "logout": "Déconnexion",
-    "deleteAccount": "Supprimer le compte"
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountTitle": "Supprimer votre compte ?",
+    "deleteAccountDescription": "Cette action est irréversible."
   },
   "groups": {
     "groupName": "Nom du groupe",
