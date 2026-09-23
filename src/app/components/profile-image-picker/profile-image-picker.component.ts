@@ -36,6 +36,14 @@ export class ProfileImagePickerComponent {
     return this.defaultImageUrl();
   });
 
+  protected onImageError(event: Event): void {
+    const image = event.target as HTMLImageElement;
+    if (image.src.endsWith(this.defaultImageUrl())) {
+      return;
+    }
+    image.src = this.defaultImageUrl();
+  }
+
   public clearPreview(): void {
     this.previewUrl.set(null);
     this.fileSelected.set(null);
