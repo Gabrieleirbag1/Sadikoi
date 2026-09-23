@@ -9,10 +9,11 @@ import { DatetimeService } from '../../../services/datetime/datetime.service';
 import { UserProfileComponent } from '../../tooltips/user-profile/user-profile.component';
 import { UserProfileService } from '../../../services/user-profile/user-profile.service';
 import { ModalComponent } from '../modal/modal.component';
+import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
 
 @Component({
   selector: 'app-group-options-modal',
-  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent, ModalComponent],
+  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent, ModalComponent, ProfileImagePickerComponent],
   templateUrl: './group-options-modal.component.html',
   styleUrls: ['./group-options-modal.component.css', '../../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

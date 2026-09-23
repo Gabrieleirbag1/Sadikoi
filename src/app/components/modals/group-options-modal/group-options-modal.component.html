@@ -3,13 +3,11 @@
     <div class="modal-dialog border" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">{{ config().title }}</h5>
-          <button type="button" class="close" aria-label="Close" (click)="discard($event)">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <h1 class="modal-title">{{ config().title }}</h1>
+          <span class="modal-close" (click)="discard($event)">X</span>
         </div>
         <div class="modal-body">
-          <p>{{ config().description }}</p>
+          <span>{{ config().description }}</span>
           <div class="group-options-container">
             <div class="group-options-form">
               <form (submit)="updateGroup($event)">
@@ -27,9 +25,22 @@
                 />
                 <p>{{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }}</p>
 
-                <button type="submit" (click)="save($event)">
-                  {{ 'group.updateGroup' | translate }}
-                </button>
+                <div class="group-options-form-buttons">
+                  <button type="submit" class="paper-btn btn-secondary" (click)="save($event)">
+                    {{ 'group.updateGroup' | translate }}
+                  </button>
+
+                  @if (connectedUser) {
+                    <button
+                      type="button"
+                      class="background-danger"
+                      (click)="confirmRemoveUser(connectedUser)"
+                      [disabled]="connectedUser.role === 'admin'"
+                    >
+                      {{ 'groupOptions.leaveGroup' | translate }}
+                    </button>
+                  }
+                </div>
               </form>
             </div>
             <div class="group-users-list-container">
@@ -37,40 +48,44 @@
                 <span>{{ 'group.users' | translate }}</span>
                 @for (user of group()?.users; track user.id) {
                   <div
-                    class="group-user user-profile-anchor"
+                    class="group-user user-profile-anchor border"
                     (mouseenter)="userProfileService.show(user, tooltipScope)"
                     (mouseleave)="userProfileService.hide(tooltipScope)"
                   >
-                    <span>{{ user.username }}</span>
-                    <span>{{ user.role }}</span>
-                    <button
-                      type="button"
-                      (click)="confirmRemoveUser(user)"
-                      [disabled]="user.role === 'admin' || user.id === connectedUser?.id"
-                    >
-                      X
-                    </button>
-
-                    <button (click)="promoteUser(user)" [disabled]="user.role === 'admin' || user.id === connectedUser?.id">Promote</button>
-
+                    <div class="group-user-info">
+                      <app-profile-image-picker
+                        [currentImageUrl]="user.profile_picture"
+                        [onlyDisplay]="true"
+                        [imgClass]="'group-user-icon'"
+                      >
+                      </app-profile-image-picker>
+                      <span>{{ user.username }}</span>
+                      </div>
+                    <div class="group-options-form-buttons">
+                      <span>{{ user.role }}</span>
+                      <button
+                        type="button"
+                        class="background-success"
+                        (click)="promoteUser(user)"
+                        [disabled]="user.role === 'admin' || user.id === connectedUser?.id"
+                      >
+                        Promote
+                      </button>
+                      <button
+                        type="button"
+                        class="background-danger"
+                        (click)="confirmRemoveUser(user)"
+                        [disabled]="user.role === 'admin' || user.id === connectedUser?.id"
+                      >
+                        {{ 'groupOptions.removeUser' | translate }}
+                      </button>
+                    </div>
                     @if (userProfileService.isOpenFor(user, tooltipScope)) {
                       <div class="user-profile-popover" role="tooltip">
                         <app-user-profile [user]="user"></app-user-profile>
                       </div>
                     }
                   </div>
-                }
-              </div>
-              <div>
-                @if (connectedUser) {
-                  <button
-                    type="button"
-                    class="leave-group-button"
-                    (click)="confirmRemoveUser(connectedUser)"
-                    [disabled]="connectedUser.role === 'admin'"
-                  >
-                    {{ 'groupOptions.leaveGroup' | translate }}
-                  </button>
                 }
               </div>
             </div>

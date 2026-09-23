@@ -21,7 +21,7 @@
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
+    max-width: 80vw;
     width: 100%;
 }
 
@@ -34,17 +34,17 @@
 .group-options-container {
     display: flex;
     gap: 30px;
-    max-height: 40vh;
 }
 
 .group-options-form {
-    width: 60%;
+    width: 40%;
 }
 
 .group-options-form form{
     display: flex;
     flex-direction: column;
     gap: 10px;
+    height: 50vh;
 }
 
 .group-users-list-container {
@@ -52,8 +52,15 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 10px;
-    width: 40%;
+    width: 60%;
     overflow-y: auto;
+    padding-left: 20px;
+    border-left: 2px solid #41403e;
+    border-left-color: var(--primary);
+    border-top-left-radius: 15px 255px;
+    border-bottom-left-radius: 15px 255px;
+    max-height: 50vh;
+    height: 50vh;
 }
 
 .group-users-list {
@@ -67,11 +74,19 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
     padding: 5px;
 }
 
-.leave-group-button {
-    width: 100%;
+.group-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.group-options-form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }

@@ -66,7 +66,8 @@
   "groupOptions": {
     "groupOptions": "Options du groupe",
     "leaveGroup": "Quitter le groupe",
-    "deleteGroup": "Supprimer le groupe"
+    "deleteGroup": "Supprimer le groupe",
+    "removeUser": "Supprimer l'utilisateur"
   },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",
