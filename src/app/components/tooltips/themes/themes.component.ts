@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, model, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, model, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -15,8 +15,12 @@ interface ThemeOption {
   templateUrl: './themes.component.html',
   styleUrl: './themes.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:click)': 'closeOnOutsideClick($event)',
+  },
 })
 export class ThemesComponent implements OnInit {
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly httpClient = inject(HttpClient);
 
   public readonly selectedThemes = model<string[]>([]);
@@ -38,6 +42,12 @@ export class ThemesComponent implements OnInit {
 
   protected toggle(): void {
     this.isOpen.update(open => !open);
+  }
+
+  protected closeOnOutsideClick(event: MouseEvent): void {
+    if (this.isOpen() && !this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.isOpen.set(false);
+    }
   }
 
   protected toggleTheme(themeId: string, checked: boolean): void {
