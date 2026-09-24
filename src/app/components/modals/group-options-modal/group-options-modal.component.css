@@ -83,6 +83,13 @@
     gap: 10px;
 }
 
+.group-user-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20vw;
+}
+
 .group-options-form-buttons {
     display: flex;
     flex-direction: row;
