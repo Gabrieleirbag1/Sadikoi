@@ -43,9 +43,9 @@ export class GroupsComponent implements OnInit {
     }
   }
 
-  protected async createGroup(groupName: string, groupDescription: string, groupTime: string): Promise<void> {
+  protected async createGroup(groupName: string, groupDescription: string, groupTime: string, themes: string[]): Promise<void> {
     try {
-      const newGroup = await this.groupsService.createGroup(groupName, groupDescription, this.datetimeService.convertLocalTimestampToUtc(groupTime));
+      const newGroup = await this.groupsService.createGroup(groupName, groupDescription, this.datetimeService.convertLocalTimestampToUtc(groupTime), themes);
       if (newGroup) this.groups.update(current => [...current, newGroup]);
       this.logger.debug('Created group:', newGroup);
     } catch (error) {
@@ -66,8 +66,8 @@ export class GroupsComponent implements OnInit {
     this.modalService.open('group-modal', {
       title: '',
       description: '',
-      save: (data: { name: string; description: string; time: string }) => 
-        this.createGroup(data.name, data.description, data.time),
+      save: (data: { name: string; description: string; time: string; themes: string[] }) =>
+        this.createGroup(data.name, data.description, data.time, data.themes),
       discard: () => console.log('cancelled'),
     });
   }

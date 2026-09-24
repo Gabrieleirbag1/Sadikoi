@@ -21,7 +21,21 @@
             <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
             <input type="text" [placeholder]="'groups.groupDescription' | translate" #groupDescription />
             <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime [value]="defaultTimeValue" />
-            <button (click)="save()">
+            <fieldset>
+              <legend>Themes</legend>
+              @for (theme of themes(); track theme.id) {
+                <label>
+                  <input
+                    type="checkbox"
+                    [checked]="theme.checked"
+                    [disabled]="theme.checked && selectedThemeCount() === 1"
+                    (change)="toggleTheme(theme.id, $any($event.target).checked)"
+                  />
+                  {{ theme.fr }}
+                </label>
+              }
+            </fieldset>
+            <button (click)="save()" [disabled]="selectedThemeCount() === 0">
               {{ 'groups.createGroup' | translate }}
             </button>
           } @else if (state === 'join') {
