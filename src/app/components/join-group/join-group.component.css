@@ -1,0 +1,41 @@
+.join-group-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.join-group-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.join-group-input-wrapper {
+    position: relative;
+}
+
+.join-group-input-wrapper input {
+    padding-right: 48px;
+}
+
+.join-group-paste-button {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    transform: translateY(-50%);
+}
+
+.join-group-paste-button img {
+    width: 24px;
+    height: 24px;
+}

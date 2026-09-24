@@ -1,2 +1,19 @@
-<input type="text" [placeholder]="'groups.enterGroupCode' | translate" #groupCode>
-<button (click)="joinGroup(groupCode.value)">{{ 'groups.joinGroup' | translate }}</button>
+<div class="join-group-container">
+  <div class="join-group-form">
+    <div class="join-group-input-wrapper">
+      <input type="text" [placeholder]="'groups.enterGroupCode' | translate" #groupCode />
+      <button
+        type="button"
+        class="join-group-paste-button"
+        (click)="autoPaste(groupCode)"
+        [attr.aria-label]="'groups.pasteGroupCode' | translate"
+        [title]="'groups.pasteGroupCode' | translate"
+      >
+        <img src="images/icons/paste.svg" width="24" height="24" alt="" />
+      </button>
+    </div>
+  </div>
+  <button type="button" class="background-secondary" (click)="joinGroup(groupCode.value)">
+    {{ 'groups.joinGroup' | translate }}
+  </button>
+</div>
