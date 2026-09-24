@@ -1,5 +1,5 @@
 @if (user) {
-  <section>
+  <section class="account-section">
     <div class="account-container">
       <form (submit)="updateAccount($event)">
         <div class="form-container">
@@ -21,6 +21,7 @@
               <label>{{ 'auth.profilePicture' | translate }}</label>
               <app-profile-image-picker
                 [currentImageUrl]="userPfpUrl"
+                [imgClass]="'account-user-icon'"
                 (fileSelectedChange)="handleFileSelected($event)"
               >
               </app-profile-image-picker>
@@ -33,33 +34,43 @@
             </div>
           </div>
           <div class="form-actions">
-            <button type="submit">{{ 'account.updateAccount' | translate }}</button>
-            <button type="button" (click)="redirectLogout()">
-              {{ 'account.logout' | translate }}
-            </button>
-            <button type="button" (click)="openDeleteModal()">
-              {{ 'account.deleteAccount' | translate }}
-            </button>
+            <div class="update-actions">
+              <button type="submit" class="paper-btn background-secondary">
+                {{ 'account.updateAccount' | translate }}
+              </button>
+
+            </div>
+            <div class="danger-actions">
+              <button type="button" class="background-danger"(click)="redirectLogout()">
+                {{ 'account.logout' | translate }}
+              </button>
+              <button type="button" class="background-danger" (click)="openDeleteModal()">
+                {{ 'account.deleteAccount' | translate }}
+              </button>
+            </div>
           </div>
         </div>
       </form>
     </div>
 
     <div class="devices-container">
-      <h1>{{ 'account.devices' | translate }}</h1>
-      <div class="devices-actions">
-        <button (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
-        <button (click)="openLogoutAllDevicesModal()">
-          {{ 'account.logoutAllDevices' | translate }}
-        </button>
+      <div>
+        <h2>{{ 'account.devices' | translate }}</h2>
+        <div class="devices-actions">
+          <button type="button" class="background-secondary" (click)="getDevices()">{{ 'account.getDevices' | translate }}</button>
+          <button type="button" class="background-danger" (click)="openLogoutAllDevicesModal()">
+            {{ 'account.logoutAllDevices' | translate }}
+          </button>
+        </div>
       </div>
       <div class="devices-list">
         @if (devices()) {
           @for (device of devices(); track $index) {
             <div class="device-container">
               <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
-              <input type="checkbox" [checked]="device.authorized" disabled />
-              <button (click)="revokeDevice(device.device_id)">
+              <input type="checkbox" [checked]="device.authorized" disabled /> 
+              <!-- allows to know if the device is authorized keeping the devices list-->
+              <button type="button" class="background-danger" (click)="openRevokeDeviceModal(device.device_id)">
                 {{ 'account.revokeDevice' | translate }}
               </button>
             </div>
@@ -73,3 +84,4 @@
 }
 <app-modal id="delete-account"></app-modal>
 <app-modal id="logout-all-devices"></app-modal>
+<app-modal id="revoke-device"></app-modal>

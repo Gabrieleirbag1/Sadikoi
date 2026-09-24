@@ -1,4 +1,24 @@
 <footer class="home-footer">
-  <button class="footer-button" (click)="changeHomeState('groups')">HOME</button>
-  <button class="footer-button" (click)="changeHomeState('account')">ACCOUNT</button>
+  <span    
+    class="icon-button"
+    [class.active]="homeState() === 'groups' || homeState() === 'group'"
+    [attr.aria-pressed]="homeState() === 'groups'|| homeState() === 'group'"
+    role="button"
+    tabindex="0"
+    (click)="changeHomeState('groups')"
+    title="{{ 'group.home' | translate }}"
+  >
+    <img src="images/icons/home.svg" width="32" height="32" alt="Groups" />
+  </span>
+  <span
+    class="icon-button"
+    [class.active]="homeState() === 'account'"
+    [attr.aria-pressed]="homeState() === 'account'"
+    role="button"
+    tabindex="0"
+    (click)="changeHomeState('account')"
+    title="{{ 'group.account' | translate }}"
+  >
+    <img src="images/icons/account.svg" width="32" height="32" alt="Account" />
+  </span>
 </footer>

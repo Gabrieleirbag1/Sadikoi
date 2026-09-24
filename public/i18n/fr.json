@@ -15,7 +15,12 @@
     "confirmNewPassword": "Confirmer le nouveau mot de passe :",
     "profilePicture": "Photo de profil :",
     "rememberMe": "Se souvenir de moi",
-    "autoLogin": "Connexion :"
+    "autoLogin": "Connexion",
+    "verifyDevice": "Vérifier l'appareil",
+    "verifyDeviceRequest": "Veuillez entrer le code envoyé à votre e-mail.",
+    "askForNewCode": "Demander un nouveau code",
+    "or": "ou",
+    "forgotPassword": "Mot de passe oublié ?"
   },
   "account": {
     "updateAccount": "Mettre à jour le compte",
@@ -24,33 +29,45 @@
     "devices": "APPAREILS",
     "getDevices": "Obtenir les appareils",
     "logoutAllDevices": "Déconnexion de tous les appareils",
+    "logoutAllDevicesTitle": "Déconnecter tous les appareils ?",
+    "logoutAllDevicesDescription": "Vous serez déconnecté de tous les appareils autorisés.",
     "device": "Appareil :",
     "revokeDevice": "Révoquer l'appareil",
+    "revokeDeviceTitle": "Révoquer cet appareil ?",
+    "revokeDeviceDescription": "Cet appareil ne sera plus autorisé à accéder à votre compte.",
     "noDevicesFound": "Aucun appareil trouvé.",
     "openModal": "ouvrir modal",
     "logout": "Déconnexion",
-    "deleteAccount": "Supprimer le compte"
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountTitle": "Supprimer votre compte ?",
+    "deleteAccountDescription": "Cette action est irréversible."
   },
   "groups": {
     "groupName": "Nom du groupe",
     "groupDescription": "Description du groupe",
     "createGroup": "Créer un groupe",
     "enterGroupCode": "Entrer le code du groupe",
-    "joinGroup": "Rejoindre le groupe"
+    "joinGroup": "Rejoindre le groupe",
+    "gridView": "Vue en grille",
+    "listView": "Vue en liste"
   },
   "group": {
     "getGroupInvitation": "Obtenir l'invitation au groupe",
+    "groupOptions": "Options du groupe",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
     "description": "Description :",
     "dailyResetTime": "Heure de réinitialisation quotidienne :",
     "updateGroup": "Mettre à jour le groupe",
-    "users": "Utilisateurs :"
+    "users": "Utilisateurs :",
+    "home": "Accueil",
+    "account": "Compte"
   },
   "groupOptions": {
     "groupOptions": "Options du groupe",
     "leaveGroup": "Quitter le groupe",
-    "deleteGroup": "Supprimer le groupe"
+    "deleteGroup": "Supprimer le groupe",
+    "removeUser": "Supprimer l'utilisateur"
   },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",

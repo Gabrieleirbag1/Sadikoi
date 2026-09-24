@@ -9,10 +9,12 @@ import { DatetimeService } from '../../../services/datetime/datetime.service';
 import { UserProfileComponent } from '../../tooltips/user-profile/user-profile.component';
 import { UserProfileService } from '../../../services/user-profile/user-profile.service';
 import { ModalComponent } from '../modal/modal.component';
+import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
+import { ThemesComponent } from '../../tooltips/themes/themes.component';
 
 @Component({
   selector: 'app-group-options-modal',
-  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent, ModalComponent],
+  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent, ModalComponent, ProfileImagePickerComponent, ThemesComponent],
   templateUrl: './group-options-modal.component.html',
   styleUrls: ['./group-options-modal.component.css', '../../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,11 +24,18 @@ export class GroupOptionsComponent implements OnChanges {
   private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
+  private readonly modalId = 'group-options-modal';
+
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly tooltipScope = 'group-options-modal';
-  protected connectedUser: User | null = null;
-  private readonly modalId = 'group-options-modal';
   protected readonly removeUserConfirmId = 'remove-user-confirm';
+
+  protected connectedUser: User | null = null;
+
+  public readonly group = model<Group | null>(null);
+  protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
+  protected groupForm = form(this.groupModel);
+  protected selectedThemes: string[] = [];
 
   protected isOpen(): boolean {
     return this.modalService.isOpen(this.modalId);
@@ -35,10 +44,6 @@ export class GroupOptionsComponent implements OnChanges {
   protected config(): ModalConfig {
     return this.modalService.config(this.modalId);
   }
-
-  public readonly group = model<Group | null>(null);
-  protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
-  protected groupForm = form(this.groupModel);
 
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -52,6 +57,7 @@ export class GroupOptionsComponent implements OnChanges {
         description: g.description ?? '',
         daily_reset_timestamp: this.datetimeService.convertUTCTimeStampToLocal(g.daily_reset_timestamp ?? ''),
       });
+      this.selectedThemes = [...(g.themes ?? [])];
     }
   }
 
@@ -74,7 +80,7 @@ export class GroupOptionsComponent implements OnChanges {
       const g = this.group();
       if (!g) throw new Error('Group is not defined');
       const timestamp = this.datetimeService.convertLocalTimestampToUtc(val.daily_reset_timestamp);
-      const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp);
+      const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp, this.selectedThemes);
       this.group.set(response);
     } catch (error) {
       this.logger.error('Error updating group:', error);

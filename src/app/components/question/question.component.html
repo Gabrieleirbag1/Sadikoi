@@ -1,5 +1,17 @@
 <div class="question-container">
-  <span>{{ question()?.content }}|</span><span>{{ question()?.item_name }}</span>
+  <div class="question-content">
+    <span>{{ question()?.content }}</span><span>{{ question()?.item_name }}</span>
+  </div>
+  <div class="calendar-anchor" #calendarAnchor>
+    <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()">
+      <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />
+    </span>
+    @if (showCalendarFlag()) {
+      <div class="calendar-popover">
+        <app-calendar [group]="group()" [(question)]="question"></app-calendar>
+      </div>
+    }
+  </div>
 </div>
 @if (question()?.votes?.length) {
   <div class="question-votes-and-chat-container">

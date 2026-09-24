@@ -1,14 +1,15 @@
-import { Component, inject, viewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { ModalConfig, ModalService } from '../../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { JoinGroupComponent } from '../../join-group/join-group.component';
 import { DatetimeService } from '../../../services/datetime/datetime.service';
+import { ThemesComponent } from '../../tooltips/themes/themes.component';
 
 type GroupModalState = 'chose' | 'create' | 'join';
 
 @Component({
   selector: 'app-group-modal',
-  imports: [TranslatePipe, JoinGroupComponent],
+  imports: [TranslatePipe, JoinGroupComponent, ThemesComponent],
   templateUrl: './group-modal.component.html',
   styleUrl: './group-modal.component.css',
 })
@@ -16,8 +17,14 @@ export class GroupModalComponent {
   private readonly modalService = inject(ModalService);
   private readonly datetimeService = inject(DatetimeService);
   private readonly modalId = 'group-modal';
-
+  
   protected readonly defaultTimeValue = this.datetimeService.convertUTCTimeStampToLocal("15:00:00");
+  protected selectedThemes: string[] = [];
+
+  protected state: GroupModalState = 'chose';
+  protected groupName = viewChild<ElementRef<HTMLInputElement>>('groupName');
+  protected groupDescription = viewChild<ElementRef<HTMLInputElement>>('groupDescription');
+  protected groupTime = viewChild<ElementRef<HTMLInputElement>>('groupTime');
 
   protected isOpen(): boolean {
     return this.modalService.isOpen(this.modalId);
@@ -26,12 +33,6 @@ export class GroupModalComponent {
   protected config(): ModalConfig {
     return this.modalService.config(this.modalId);
   }
-
-  protected state: GroupModalState = 'chose';
-
-  protected groupName = viewChild<ElementRef<HTMLInputElement>>('groupName');
-  protected groupDescription = viewChild<ElementRef<HTMLInputElement>>('groupDescription');
-  protected groupTime = viewChild<ElementRef<HTMLInputElement>>('groupTime');
 
   protected discard(event: Event): void {
     const discardFn = this.config().discard;
@@ -47,6 +48,7 @@ export class GroupModalComponent {
       name: this.groupName()?.nativeElement.value ?? '',
       description: this.groupDescription()?.nativeElement.value ?? '',
       time: this.groupTime()?.nativeElement.value ?? '15:00:00',
+      themes: this.selectedThemes
     });
     this.state = 'chose';
   }

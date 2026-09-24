@@ -1,6 +1,21 @@
 <div class="profile-image-picker">
-  <img [src]="displayUrl()" alt="Profile Picture" width="200" [class]="imgClass()" />
+  <img
+    [src]="displayUrl()"
+    alt="Profile Picture"
+    width="200"
+    class="border"
+    [class]="imgClass()"
+    (click)="openFilePicker()"
+    (error)="onImageError($event)"
+    [class.clickable]="!onlyDisplay()"
+  />
   @if (!onlyDisplay()) {
-    <input type="file" accept="image/*" (change)="onFileChange($event)"/>
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      (change)="onFileChange($event)"
+      class="visually-hidden"
+    />
   }
 </div>

@@ -33,8 +33,8 @@ export class GroupsService {
     }
   }
 
-  public async createGroup(groupName: string, groupDescription: string, groupTime: string): Promise<Group | null> {
-    const payload = { name: groupName, description: groupDescription, daily_reset_timestamp: groupTime };
+  public async createGroup(groupName: string, groupDescription: string, groupTime: string, themes: string[]): Promise<Group | null> {
+    const payload = { name: groupName, description: groupDescription, daily_reset_timestamp: groupTime, themes };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/`, payload, { withCredentials: true }));
       this.logger.debug('Group created successfully:', response);
@@ -45,9 +45,9 @@ export class GroupsService {
     }
   }
 
-  public async updateGroup(groupId: number, name: string, decription: string, daily_reset_timestamp: string): Promise<Group | null> {
+  public async updateGroup(groupId: number, name: string, decription: string, daily_reset_timestamp: string, themes: string[]): Promise<Group | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}groups/${groupId}/`, { name, description: decription, daily_reset_timestamp }, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}groups/${groupId}/`, { name, description: decription, daily_reset_timestamp, themes }, { withCredentials: true }));
       this.logger.debug('Group updated successfully:', response);
       return response.content || null;
     } catch (error) {

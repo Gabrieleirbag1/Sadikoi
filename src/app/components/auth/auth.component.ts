@@ -3,20 +3,17 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
-import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 type DisplayMode = 'register' | 'login' | 'verifyDevice';
 
 @Component({
   selector: 'app-auth',
-  imports: [GoogleLoginComponent, FormField, ProfileImagePickerComponent, TranslatePipe],
+  imports: [GoogleLoginComponent, FormField, TranslatePipe],
   templateUrl: './auth.component.html',
-  styleUrl: './auth.component.css',
+  styleUrl: './auth.component.css'
 })
 export class AuthComponent {
-  @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
-
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   protected isAuthenticated = this.authService.isAuthenticated();
@@ -60,9 +57,6 @@ export class AuthComponent {
     }
     const response = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
     if (response && response.body) {
-      if (this.imagePicker) {
-        this.imagePicker.clearPreview();
-      }
       if (val.login) {
         if (response.status === 203) {
           this.setDisplayMode('verifyDevice');
@@ -92,6 +86,29 @@ export class AuthComponent {
   protected logout(forgetDevice: boolean): void {
     this.authService.logout(forgetDevice);
     this.isAuthenticated = false;
+    sessionStorage.removeItem('homeState');
+  }
+
+  protected onDigitInput(current: HTMLInputElement, next: HTMLInputElement | null) {
+    current.value = current.value.replace(/[^0-9]/g, '').slice(-1);
+    if (current.value && next) {
+      next.focus();
+    }
+  }
+
+  protected onKeydown(event: KeyboardEvent, current: HTMLInputElement, prev: HTMLInputElement | null) {
+    if (event.key === 'Backspace' && !current.value && prev) {
+      prev.focus();
+    }
+  }
+
+  protected onPaste(event: ClipboardEvent, inputs: HTMLInputElement[]) {
+    event.preventDefault();
+    const digits = (event.clipboardData?.getData('text') || '').replace(/[^0-9]/g, '');
+    if (!digits) return;
+    inputs.forEach((input, i) => (input.value = digits[i] || ''));
+    const lastIndex = Math.min(digits.length, inputs.length) - 1;
+    if (lastIndex >= 0) inputs[lastIndex].focus();
   }
 
   protected async verifyDevice(code: string): Promise<void> {

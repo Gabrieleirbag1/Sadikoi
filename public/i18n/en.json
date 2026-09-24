@@ -15,7 +15,12 @@
     "confirmNewPassword": "Confirm New Password:",
     "profilePicture": "Profile Picture:",
     "rememberMe": "Remember Me",
-    "autoLogin": "Login:"
+    "autoLogin": "Login",
+    "verifyDevice": "Verify Device",
+    "verifyDeviceRequest": "Please enter the code sent to your email.",
+    "askForNewCode": "Ask for a new Code",
+    "or": "or",
+    "forgotPassword": "Forgot Password?"
   },
   "account": {
     "updateAccount": "Update Account",
@@ -24,33 +29,45 @@
     "devices": "DEVICES",
     "getDevices": "Get Devices",
     "logoutAllDevices": "Logout All Devices",
+    "logoutAllDevicesTitle": "Logout all devices?",
+    "logoutAllDevicesDescription": "This will log you out of every authorized device.",
     "device": "Device:",
     "revokeDevice": "Revoke Device",
+    "revokeDeviceTitle": "Revoke this device?",
+    "revokeDeviceDescription": "This device will no longer be authorized to access your account.",
     "noDevicesFound": "No devices found.",
     "openModal": "open modal",
     "logout": "Logout",
-    "deleteAccount": "Delete Account"
+    "deleteAccount": "Delete Account",
+    "deleteAccountTitle": "Delete your account?",
+    "deleteAccountDescription": "This action cannot be undone."
   },
   "groups": {
     "groupName": "Group Name",
     "groupDescription": "Group Description",
     "createGroup": "Create Group",
     "enterGroupCode": "Enter group code",
-    "joinGroup": "Join Group"
+    "joinGroup": "Join Group",
+    "gridView": "Grid View",
+    "listView": "List View"
   },
   "group": {
     "getGroupInvitation": "Get Group Invitation",
+    "groupOptions": "Group Options",
     "loadingGroup": "Loading group...",
     "name": "Name:",
     "description": "Description:",
     "dailyResetTime": "Daily Reset Time:",
     "updateGroup": "Update Group",
-    "users": "Users:"
+    "users": "Users:",
+    "home": "Home",
+    "account": "Account"
   },
   "groupOptions": {
     "groupOptions": "Group Options",
     "leaveGroup": "Leave Group",
-    "deleteGroup": "Delete Group"
+    "deleteGroup": "Delete Group",
+    "removeUser": "Remove User"
   },
   "question": {
     "enterYourAnswer": "Enter your answer...",

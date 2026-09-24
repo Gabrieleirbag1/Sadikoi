@@ -1,11 +1,10 @@
 @if (isOpen()) {
   <div class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog border" role="document">
       <div class="modal-content">
         <div class="modal-header">
           @if (state != 'chose') {
             <button type="button" (click)="changeGroupModalState('chose')">
-                <
             </button>
           }
           <h5 class="modal-title">{{ config().title }}</h5>
@@ -22,7 +21,8 @@
             <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
             <input type="text" [placeholder]="'groups.groupDescription' | translate" #groupDescription />
             <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime [value]="defaultTimeValue" />
-            <button (click)="save()">
+            <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
+            <button (click)="save()" [disabled]="selectedThemes.length === 0">
               {{ 'groups.createGroup' | translate }}
             </button>
           } @else if (state === 'join') {

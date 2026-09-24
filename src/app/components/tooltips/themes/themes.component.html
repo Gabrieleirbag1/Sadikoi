@@ -1,0 +1,21 @@
+<div class="themes-picker">
+	<button type="button" class="themes-button" (click)="toggle()" [attr.aria-expanded]="isOpen()">
+		Choose themes
+	</button>
+
+	@if (isOpen()) {
+		<div class="themes-popover" role="dialog" aria-label="Choose themes">
+			@for (theme of themes(); track theme.id) {
+				<label>
+					<input
+						type="checkbox"
+						[checked]="selectedThemes().includes(theme.id)"
+						[disabled]="selectedThemes().includes(theme.id) && selectedThemeCount() === 1"
+						(change)="toggleTheme(theme.id, $any($event.target).checked)"
+					/>
+					{{ theme.fr }}
+				</label>
+			}
+		</div>
+	}
+</div>

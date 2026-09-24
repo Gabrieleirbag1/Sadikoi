@@ -1,12 +1,32 @@
 <div class="groups-header">
-  <button (click)="changeView('grid')">grid view</button>
-  <button (click)="changeView('list')">list view</button>
+  <span
+    class="icon-button"
+    [class.active]="view === 'grid'"
+    [attr.aria-pressed]="view === 'grid'"
+    role="button"
+    tabindex="0"
+    (click)="changeView('grid')"
+    title="{{ 'group.gridView' | translate }}"
+  >
+    <img src="images/icons/grid.svg" width="24" height="24" alt="Grid View" />
+  </span>
+  <span
+    class="icon-button"
+    [class.active]="view === 'list'"
+    [attr.aria-pressed]="view === 'list'"
+    role="button"
+    tabindex="0"
+    (click)="changeView('list')"
+    title="{{ 'group.listView' | translate }}"
+  >
+    <img src="images/icons/list.svg" width="24" height="24" alt="List View" />
+  </span>
 </div>
 <section class="groups-container">
   @if (view == 'grid') {
     <section class="grid-container">
       @for (group of groups(); track $index) {
-        <div class="group-grid-item" (click)="redirectGroup(group)">
+        <div class="group-grid-item border" (click)="redirectGroup(group)">
           <div class="group-grid-icons">
             <div class="group-users-icons">
               @for (user of group.users.slice(0, 4); track $index) {
@@ -27,14 +47,14 @@
           <p></p>
         </div>
       }
-      <div class="group-grid-item" (click)="openGroupModal()">
+      <div class="group-grid-item border" (click)="openGroupModal()">
         <p>+</p>
       </div>
     </section>
   } @else {
     <section class="list-container">
       @for (group of groups(); track $index) {
-        <div class="group-list-item" (click)="redirectGroup(group)">
+        <div class="group-list-item border" (click)="redirectGroup(group)">
           <div class="group-users-icons">
             @for (user of group.users.slice(0, 4); track $index) {
               <app-profile-image-picker
@@ -55,7 +75,7 @@
           </div>
         </div>
       }
-      <div class="group-list-item" (click)="openGroupModal()">
+      <div class="group-list-item border" (click)="openGroupModal()">
         <p>+</p>
       </div>
     </section>

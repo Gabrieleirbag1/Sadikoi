@@ -1,8 +1,15 @@
 .question-container {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   margin: 20px 0;
+}
+
+.question-content {
+  display: flex;
+  gap: 8px;
+  grid-column: 2;
+  justify-content: center;
 }
 
 .question-container span {
@@ -60,4 +67,20 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.calendar-anchor {
+  position: relative;
+  display: inline-flex;
+  grid-column: 3;
+  justify-self: end;
+}
+
+.calendar-popover {
+    position: absolute;
+    top: calc(100% + 8px); /* sits below the button, with a gap */
+    right: 0;
+    z-index: 1000;
+    border-radius: 8px;
+    padding: 12px;
 }

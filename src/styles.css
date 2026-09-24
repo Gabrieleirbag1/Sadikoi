@@ -6,3 +6,31 @@ body {
 .main-container {
     height: 75vh;
 }
+
+.icon-button {
+    cursor: pointer;
+}
+
+
+.icon-button img:hover,
+.icon-button.active img {
+    filter: brightness(0) saturate(100%) invert(36%) sepia(94%) saturate(1777%) hue-rotate(199deg) brightness(95%) contrast(101%);
+}
+
+.icon-button img:active {
+    filter: brightness(0) saturate(100%) invert(36%) sepia(94%) saturate(1777%) hue-rotate(199deg) brightness(95%) contrast(101%);
+    transform: scale(0.95);
+}
+
+.modal-close {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.modal-close:hover {
+    color: #ff0000;
+}
+
+.icon-button img {
+    transition: filter 150ms ease;
+}

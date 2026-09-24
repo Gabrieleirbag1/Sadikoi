@@ -4,7 +4,7 @@ import { form, FormField } from "@angular/forms/signals";
 import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ModalComponent } from '../modals/modal/modal.component';
 import { ModalService } from '../../services/modal/modal.service';
 import { Router } from '@angular/router';
@@ -21,6 +21,7 @@ export class AccountComponent implements OnInit {
   private readonly modalService = inject(ModalService);
   private readonly authService = inject(AuthService);
   private readonly logger = inject(LoggerService);
+  private readonly translate = inject(TranslateService);
 
   protected devices = signal<Device[] | null>(null);
   protected user: User | null = null;
@@ -122,6 +123,33 @@ export class AccountComponent implements OnInit {
     }
   }
 
+  protected openLogoutAllDevicesModal(): void {
+    this.openModal(
+      'logout-all-devices',
+      this.translate.instant('account.logoutAllDevicesTitle'),
+      this.translate.instant('account.logoutAllDevicesDescription'),
+      () => this.logoutAllDevices(),
+    );
+  }
+
+  protected openRevokeDeviceModal(deviceId: string): void {
+    this.openModal(
+      'revoke-device',
+      this.translate.instant('account.revokeDeviceTitle'),
+      this.translate.instant('account.revokeDeviceDescription'),
+      () => this.revokeDevice(deviceId),
+    );
+  }
+
+  protected openDeleteModal(): void {
+    this.openModal(
+      'delete-account',
+      this.translate.instant('account.deleteAccountTitle'),
+      this.translate.instant('account.deleteAccountDescription'),
+      () => this.deleteAccount(),
+    );
+  }
+
   protected redirectLogout(): void {
     this.router.navigate(['/auth']);
   }
@@ -136,22 +164,11 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  protected openDeleteModal() {
-    this.modalService.open('delete-account', {
-      title: 'Delete Account',
-      description: 'Are you sure you want to delete your account? This action cannot be undone.',
-      save: () => 
-        this.deleteAccount(),
-      discard: () => console.log('cancelled'),
-    });
-  }
-
-  protected openLogoutAllDevicesModal() {
-    this.modalService.open('logout-all-devices', {
-      title: 'Logout All Devices',
-      description: 'Are you sure you want to logout from all devices?',
-      save: () => 
-        this.logoutAllDevices(),
+  protected openModal(modalId: string, title: string, description: string, saveCallback: () => void) {
+    this.modalService.open(modalId, {
+      title,
+      description,
+      save: saveCallback,
       discard: () => console.log('cancelled'),
     });
   }

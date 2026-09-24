@@ -1,7 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { GroupsComponent } from "../groups/groups.component";
 import { AccountComponent } from "../account/account.component";
-import { CommonModule } from '@angular/common';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 
 @Component({
