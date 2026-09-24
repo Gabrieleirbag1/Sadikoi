@@ -4,7 +4,9 @@
       <div class="modal-content">
         <div class="modal-header">
           @if (state != 'chose') {
-            <button type="button" (click)="changeGroupModalState('chose')"><</button>
+            <span class="modal-back" (click)="changeGroupModalState('chose')">
+              <
+            </span>
           }
           <h5 class="modal-title">{{ config().title }}</h5>
           <span class="modal-close" (click)="discard($event)">X</span>
