@@ -5,4 +5,5 @@ interface Group {
   users: User[];
   date_created: string;
   daily_reset_timestamp: string;
+  themes: string[];
 }

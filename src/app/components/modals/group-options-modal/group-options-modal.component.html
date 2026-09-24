@@ -23,6 +23,7 @@
                   type="time"
                   [formField]="groupForm.daily_reset_timestamp"
                 />
+                <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
                 <p>{{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }}</p>
 
                 <div class="group-options-form-buttons">
