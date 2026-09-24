@@ -77,7 +77,7 @@
         <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
       </div>
       <div class="submit-vote-container">
-        <button (click)="submitVote(usersId, answerInput.value)">
+        <button type="button" class="background-success" (click)="submitVote(usersId, answerInput.value)">
           {{ 'question.submitAnswer' | translate }}
         </button>
       </div>
@@ -108,7 +108,7 @@
       }
     </div>
     <div class="submit-vote-container">
-      <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
+      <button type="button" class="background-success" (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
     </div>
   }
 }

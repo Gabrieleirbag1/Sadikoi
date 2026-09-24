@@ -18,7 +18,6 @@
 
 .join-group-input-wrapper input {
     padding-right: 48px;
-    font-size: 20px;
 }
 
 .join-group-paste-button {
@@ -41,6 +40,6 @@
     height: 24px;
 }
 
-button {
+button, input {
     font-size: 20px;
 }
