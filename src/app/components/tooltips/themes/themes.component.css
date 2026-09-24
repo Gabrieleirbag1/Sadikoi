@@ -1,9 +1,7 @@
 .themes-picker {
-	position: relative;
-}
-
-.themes-button {
+	display: block;
 	width: 100%;
+	position: relative;
 }
 
 .themes-popover {
@@ -26,4 +24,8 @@
 	display: flex;
 	gap: 8px;
 	align-items: center;
+}
+
+.themes-button {
+    width: 100%;
 }

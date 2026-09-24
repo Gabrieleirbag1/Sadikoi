@@ -4,25 +4,27 @@
       <div class="modal-content">
         <div class="modal-header">
           @if (state != 'chose') {
-            <button type="button" (click)="changeGroupModalState('chose')">
-            </button>
+            <button type="button" (click)="changeGroupModalState('chose')"><</button>
           }
           <h5 class="modal-title">{{ config().title }}</h5>
-          <button type="button" class="close" aria-label="Close" (click)="discard($event)">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <span class="modal-close" (click)="discard($event)">X</span>
         </div>
+        @if (state === 'chose') {
+          <div class="group-modal-header-buttons">
+            <button type="button" class="background-secondary" (click)="changeGroupModalState('create')">Créer un groupe</button>
+            <button type="button" class="background-warning" (click)="changeGroupModalState('join')">Rejoindre un groupe</button>
+          </div>
+        }
         <div class="modal-body">
           <p>{{ config().description }}</p>
-          @if (state === 'chose') {
-            <button (click)="changeGroupModalState('create')">Créer un groupe</button>
-            <button (click)="changeGroupModalState('join')">Rejoindre un groupe</button>
-          } @else if (state === 'create') {
+          @if (state === 'create') {
             <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
             <input type="text" [placeholder]="'groups.groupDescription' | translate" #groupDescription />
-            <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime [value]="defaultTimeValue" />
-            <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
-            <button (click)="save()" [disabled]="selectedThemes.length === 0">
+            <div class="group-modal-time-and-themes">
+              <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime [value]="defaultTimeValue" />
+              <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
+            </div>
+            <button type="button" class="background-secondary" (click)="save()" [disabled]="selectedThemes.length === 0">
               {{ 'groups.createGroup' | translate }}
             </button>
           } @else if (state === 'join') {

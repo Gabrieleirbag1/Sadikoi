@@ -30,3 +30,32 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.group-modal-header-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.group-modal-header-buttons button {
+    font-size: 25px;
+}
+
+.group-modal-time-and-themes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.group-modal-time-and-themes input,
+.group-modal-time-and-themes app-themes {
+    width: 100%;
+    min-width: 0;
+}
+
+.group-modal-time-and-themes {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
