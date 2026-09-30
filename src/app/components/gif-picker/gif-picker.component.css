@@ -15,6 +15,12 @@
   box-shadow: 15px 28px 25px -18px rgba(0,0,0,0.2);
 }
 
+.gif-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .gif-search-input {
   width: 100%;
   box-sizing: border-box;
@@ -26,9 +32,9 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4px;
-  max-height: 240px;
+  height: 240px;
   overflow-y: auto;
-  min-height: 60px;
+  align-content: start;
 }
 
 .gif-thumb {

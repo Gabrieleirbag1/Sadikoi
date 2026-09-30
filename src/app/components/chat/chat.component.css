@@ -98,8 +98,9 @@
 .chat-input-area {
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
+    margin: 10px 20px;
 }
 
 .chat-input-area input {
@@ -107,7 +108,17 @@
     min-width: 0;
 }
 
+/* Same box for the input and the buttons so they line up */
 .chat-input-area button,
 .chat-input-area input {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
     font-size: 20px;
+    line-height: 1.3;
+}
+
+/* The picker is absolutely positioned; its host must not take part in the flex layout (gap) */
+app-gif-picker {
+    display: contents;
 }

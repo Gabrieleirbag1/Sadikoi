@@ -1,4 +1,4 @@
-import { afterNextRender, Component, DestroyRef, effect, ElementRef, inject, Injector, model, signal, viewChild } from '@angular/core';
+import { afterNextRender, Component, HostListener, DestroyRef, effect, ElementRef, inject, Injector, model, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../services/chat/chat.service';
 import { CommonModule } from '@angular/common';
@@ -71,6 +71,16 @@ export class ChatComponent {
     } catch (error) {
       this.logger.error('Error sending message:', error);
     }
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected closeGifPickerOnOutsideClick(event: Event): void {
+    if (!this.showGifPicker()) return;
+    // composedPath is fixed at dispatch time, so it stays valid even if the click removed its target
+    const inside = event.composedPath().some(
+      el => el instanceof Element && (el.tagName === 'APP-GIF-PICKER' || el.classList.contains('gif-btn')),
+    );
+    if (!inside) this.showGifPicker.set(false);
   }
 
   protected toggleGifPicker(): void {
