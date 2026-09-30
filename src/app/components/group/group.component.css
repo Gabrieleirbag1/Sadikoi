@@ -1,13 +1,19 @@
 .group-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    margin: 20px 0;
 }
 
-.group-header div {
+.group-header-title {
     display: flex;
     align-items: center;
+    grid-column: 2;
+}
+
+.group-header-actions {
+    display: flex;
     justify-content: flex-end;
+    grid-column: 3;
     gap: 10px;
-    width: 50%;
 }
