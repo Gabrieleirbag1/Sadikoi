@@ -3,11 +3,11 @@
     <span>{{ question()?.content }}</span><span>{{ question()?.item_name }}</span>
   </div>
   <div class="calendar-anchor" #calendarAnchor>
-    <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()">
+    <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()" title="{{ 'group.calendar' | translate }}">
       <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />
     </span>
     @if (showCalendarFlag()) {
-      <div class="calendar-popover">
+      <div class="calendar-popover" role="tooltip">
         <app-calendar [group]="group()" [(question)]="question"></app-calendar>
       </div>
     }

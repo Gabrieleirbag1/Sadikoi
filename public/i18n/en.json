@@ -52,7 +52,7 @@
     "listView": "List View"
   },
   "group": {
-    "getGroupInvitation": "Get Group Invitation",
+    "getGroupInvitation": "Copy group invitation link",
     "groupOptions": "Group Options",
     "loadingGroup": "Loading group...",
     "name": "Name:",
@@ -61,7 +61,8 @@
     "updateGroup": "Update Group",
     "users": "Users:",
     "home": "Home",
-    "account": "Account"
+    "account": "Account",
+    "calendar": "Calendar"
   },
   "groupOptions": {
     "groupOptions": "Group Options",

@@ -52,7 +52,7 @@
     "listView": "Vue en liste"
   },
   "group": {
-    "getGroupInvitation": "Obtenir l'invitation au groupe",
+    "getGroupInvitation": "Copier le lien d'invitation au groupe",
     "groupOptions": "Options du groupe",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
@@ -61,7 +61,8 @@
     "updateGroup": "Mettre à jour le groupe",
     "users": "Utilisateurs :",
     "home": "Accueil",
-    "account": "Compte"
+    "account": "Compte",
+    "calendar": "Calendrier"
   },
   "groupOptions": {
     "groupOptions": "Options du groupe",
