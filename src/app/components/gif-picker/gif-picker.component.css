@@ -1,25 +1,25 @@
 .gif-picker {
+  position: absolute;
   bottom: 100%;
   left: 0;
   width: 320px;
-  background: #1e1e2e;
-  border: 1px solid #3a3a5c;
-  border-radius: 12px;
+  margin-bottom: 10px;
+  background: var(--main-background, #fff);
+  border: 2px solid var(--primary);
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
   padding: 10px;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  box-shadow: 15px 28px 25px -18px rgba(0,0,0,0.2);
 }
 
 .gif-search-input {
   width: 100%;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #3a3a5c;
-  background: #12121f;
-  color: #fff;
-  font-size: 14px;
   box-sizing: border-box;
   margin-bottom: 8px;
+  font-size: 16px;
 }
 
 .gif-grid {
@@ -47,7 +47,7 @@
 .gif-spinner, .gif-empty {
   grid-column: 1 / -1;
   text-align: center;
-  color: #888;
+  color: var(--muted);
   padding: 16px 0;
   font-size: 13px;
 }
