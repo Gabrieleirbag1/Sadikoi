@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
-import { form, FormField } from '@angular/forms/signals';
+import { ChangeDetectionStrategy, Component, computed, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { disabled, form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { LoggerService } from '../../../services/logger/logger.service';
 import { GroupsService } from '../../../services/groups/groups.service';
@@ -34,7 +34,16 @@ export class GroupOptionsComponent implements OnChanges {
 
   public readonly group = model<Group | null>(null);
   protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
-  protected groupForm = form(this.groupModel);
+  private readonly connectedUserId = signal<number | null>(null);
+  protected readonly isAdmin = computed(() =>
+    this.group()?.users.find(user => user.id === this.connectedUserId())?.role === 'admin'
+  );
+  // Only admins can edit the group: the fields are disabled (greyed out) for everyone else.
+  protected groupForm = form(this.groupModel, path => {
+    disabled(path.name, () => !this.isAdmin());
+    disabled(path.description, () => !this.isAdmin());
+    disabled(path.daily_reset_timestamp, () => !this.isAdmin());
+  });
   protected selectedThemes: string[] = [];
 
   protected isOpen(): boolean {
@@ -47,6 +56,7 @@ export class GroupOptionsComponent implements OnChanges {
 
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    this.connectedUserId.set(this.connectedUser?.id ?? null);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -75,6 +85,7 @@ export class GroupOptionsComponent implements OnChanges {
 
   protected async updateGroup(event: Event): Promise<void> {
     event.preventDefault();
+    if (!this.isAdmin()) return;
     const val = this.groupModel();
     try {
       const g = this.group();

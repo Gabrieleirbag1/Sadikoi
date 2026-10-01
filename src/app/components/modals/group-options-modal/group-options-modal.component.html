@@ -23,13 +23,15 @@
                   type="time"
                   [formField]="groupForm.daily_reset_timestamp"
                 />
-                <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
+                <app-themes [(selectedThemes)]="selectedThemes" [disabled]="!isAdmin()"></app-themes>
                 <p>{{ 'account.dateCreated' | translate }} {{ group()?.date_created | date }}</p>
 
                 <div class="group-options-form-buttons">
-                  <button type="submit" class="paper-btn btn-secondary" (click)="save($event)">
-                    {{ 'group.updateGroup' | translate }}
-                  </button>
+                  @if (connectedUser) {
+                    <button type="submit" class="paper-btn btn-secondary" (click)="save($event)" [disabled]="!isAdmin()">
+                      {{ 'group.updateGroup' | translate }}
+                    </button>
+                  }
 
                   @if (connectedUser) {
                     <button
