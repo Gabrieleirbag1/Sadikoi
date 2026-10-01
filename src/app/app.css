@@ -18,3 +18,12 @@ app-header {
   box-sizing: border-box;
   padding: 30px 30px 0;
 }
+
+/* Hide the scrollbars of the page and of main while keeping them scrollable. */
+.main-content {
+  scrollbar-width: none;
+}
+
+.main-content::-webkit-scrollbar {
+  display: none;
+}

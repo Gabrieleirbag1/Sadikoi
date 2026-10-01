@@ -70,3 +70,12 @@ body {
     scrollbar-color: var(--primary) transparent;
   }
 }
+
+/* Hide the page's own scrollbar (scrolling still works). */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
