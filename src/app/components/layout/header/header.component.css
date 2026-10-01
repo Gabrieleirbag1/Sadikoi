@@ -1,8 +1,36 @@
+/* The PaperCSS variables are scoped to .main-content, which doesn't wrap the header, so define them here. */
+:host {
+    --header-bg: #f8f7f5;
+    --header-text: #41403e;
+}
+
 .header-container {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    padding: 8px 20px 14px;
+    /* Le fond s'arrête 9px avant le bas (1px de recouvrement),
+       la bande SVG de 10px fournit le reste en suivant la courbe. */
+    background: linear-gradient(var(--header-bg), var(--header-bg)) top left / 100% calc(100% - 9px) no-repeat;
+}
+
+/* Hand-drawn underline: le SVG contient
+   1) un remplissage de la couleur du header au-dessus de la courbe,
+   2) un seul trait ondulé. */
+.header-container::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 10px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 10' preserveAspectRatio='none'%3E%3Cpath fill='%23f8f7f5' d='M0 0 L0 5 L2 5 C 80 2, 160 8, 260 4 S 430 7, 520 4 S 700 2, 790 6 S 940 4, 998 5 L1000 5 L1000 0 Z'/%3E%3Cpath fill='none' stroke='%23a9a8a6' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke' d='M2 5 C 80 2, 160 8, 260 4 S 430 7, 520 4 S 700 2, 790 6 S 940 4, 998 5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+.header-title {
+    font-family: 'Patrick Hand SC', 'Neucha', cursive;
+    letter-spacing: 0.12em;
+    color: var(--header-text);
 }
