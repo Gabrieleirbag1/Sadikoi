@@ -69,13 +69,13 @@
   background: #f0f0f0;
 }
 
-/* Prev/next month days: same look as before, just faded numbers, no strikethrough. */
-.calendar__day--muted {
+/* Prev/next month days: faded only when they have no question (disabled); clickable ones look normal. */
+.calendar__day--muted:disabled {
   color: #ccc;
   cursor: not-allowed;
 }
 
-.calendar__day--muted:hover {
+.calendar__day--muted:disabled:hover {
   background: transparent;
 }
 
