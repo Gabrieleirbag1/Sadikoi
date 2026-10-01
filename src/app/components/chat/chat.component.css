@@ -122,3 +122,21 @@
 app-gif-picker {
     display: contents;
 }
+
+.day-separator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.day-separator::before,
+.day-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.3;
+}

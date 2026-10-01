@@ -1,7 +1,12 @@
 <section class="chat-container">
   <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()">
     @for (message of messages(); track message.id) {
-      @let isFirstOfRun = messages()[$index - 1]?.sender?.id !== message.sender.id;
+      @let previous = messages()[$index - 1];
+      @let isNewDay = !previous || dayKey(previous) !== dayKey(message);
+      @let isFirstOfRun = isNewDay || previous.sender.id !== message.sender.id;
+      @if (isNewDay) {
+        <div class="day-separator"><time [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'fullDate' }}</time></div>
+      }
       <div class="message-row" [class.own]="isOwnMessage(message)">
         @if (isFirstOfRun) {
           <app-profile-image-picker

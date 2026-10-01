@@ -122,6 +122,11 @@ export class ChatComponent {
     if (el) el.scrollTo({ top: el.scrollHeight, behavior });
   }
 
+  /** Calendar day of a message, used to know where to insert a date separator. */
+  protected dayKey(message: Message): string {
+    return new Date(message.timestamp).toDateString();
+  }
+
   protected isOwnMessage(message: Message): boolean {
     return message.sender.id === this.connectedUser?.id;
   }
