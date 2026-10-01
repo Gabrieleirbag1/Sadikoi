@@ -1,4 +1,4 @@
-import { Component, inject, model, OnInit, signal } from '@angular/core';
+import { Component, inject, model, OnInit, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuestionService } from '../../../services/question/question.service';
 
@@ -36,6 +36,8 @@ export class CalendarComponent implements OnInit {
   public enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
   public readonly question = model<Question | null>(null);
+  /** Emitted when the user goes back to the current day ("Today" / "Clear"). */
+  public readonly showCurrent = output<void>();
 
   get title(): string {
     return `${MONTH_NAMES[this.viewMonth]} ${this.viewYear}`;
@@ -87,11 +89,13 @@ export class CalendarComponent implements OnInit {
     this.viewYear = today.getFullYear();
     this.viewMonth = today.getMonth();
     this.selectedDate = today;
+    this.showCurrent.emit();
     this.loadMonth(this.viewYear, this.viewMonth);
   }
 
   protected clearSelection(): void {
     this.selectedDate = null;
+    this.showCurrent.emit();
     this.buildDays();
   }
 

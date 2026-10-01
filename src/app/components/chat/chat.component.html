@@ -31,6 +31,7 @@
     }
   </div>
 
+  @if (!readOnly()) {
   <div class="chat-input-area">
     @if (showGifPicker()) {
       <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
@@ -49,4 +50,5 @@
       >
     </button>
   </div>
+  }
 </section>

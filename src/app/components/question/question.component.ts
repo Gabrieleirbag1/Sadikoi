@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, inject, model, OnInit, SimpleChanges, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, computed, inject, model, OnInit, SimpleChanges, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
@@ -35,6 +35,13 @@ export class QuestionComponent implements OnInit{
   protected voteBubbles: VoteBubble[] = [];
   protected showCalendarFlag = signal(false);
   public readonly question = model<Question | null>(null);
+  /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
+  private readonly currentQuestion = signal<Question | null>(null);
+  protected readonly isPastQuestion = computed(() => {
+    const current = this.currentQuestion();
+    const displayed = this.question();
+    return !!current && !!displayed && current.id !== displayed.id;
+  });
   public readonly group = model<Group | null>(null);
   @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
@@ -53,6 +60,7 @@ export class QuestionComponent implements OnInit{
         return;
       }
       this.question.update(q => q ? { ...q, votes: payload.votes } : q);
+      this.currentQuestion.update(q => q ? { ...q, votes: payload.votes } : q);
       this.populateVoteBubbles();
     });
 
@@ -91,6 +99,7 @@ export class QuestionComponent implements OnInit{
       const group = this.group();
       if (!group) throw new Error('Group is not set')
       const question = await this.questionService.getQuestion(group.id);
+      this.currentQuestion.set(question);
       this.question.set(question);
       this.populateVoteBubbles();
       this.logger.debug('Fetched question:', this.question());
@@ -114,6 +123,12 @@ export class QuestionComponent implements OnInit{
     } catch (error) {
       this.logger.error('Error submitting vote:', error);
     }
+  }
+
+  /** Go back to the group's current question (calendar "Today" / "Clear"). */
+  protected showCurrentQuestion(): void {
+    this.question.set(this.currentQuestion());
+    this.populateVoteBubbles();
   }
 
   protected toggleVote(userId: number): void {

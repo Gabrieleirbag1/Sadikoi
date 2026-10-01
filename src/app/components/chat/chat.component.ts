@@ -1,4 +1,4 @@
-import { afterNextRender, Component, HostListener, DestroyRef, effect, ElementRef, inject, Injector, model, signal, viewChild } from '@angular/core';
+import { afterNextRender, Component, HostListener, computed, DestroyRef, effect, ElementRef, inject, Injector, input, model, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../services/chat/chat.service';
 import { CommonModule } from '@angular/common';
@@ -32,8 +32,20 @@ export class ChatComponent {
   private readonly connectedUser: User = JSON.parse(localStorage.getItem('user') || '{}');
 
   public readonly group = model<Group | null>(null);
+  /** The question whose day's messages are displayed; null/undefined means the current one. */
+  public readonly question = input<Question | null>(null);
+  /** True when the displayed day is not the current one: messages can be read but not sent. */
+  public readonly readOnly = input(false);
+  // computed so that vote updates (same id) don't trigger a reload
+  private readonly questionId = computed(() => this.question()?.id);
 
   constructor() {
+    effect(() => {
+      const g = this.group();
+      const questionId = this.questionId();
+      if (g) this.loadMessages(g.id, questionId);
+    });
+
     effect(() => {
       this.messages();
       afterNextRender(() => this.autoScroll(), { injector: this.injector });
@@ -41,19 +53,20 @@ export class ChatComponent {
   }
 
   async ngOnInit(): Promise<void> {
-    const g = this.group();
-    if (g) this.loadMessages(g.id);
-
     this.websocketService.listen<Message>('new_message').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(message => {
+      // live messages belong to the current day only
+      if (this.readOnly()) return;
       if (!this.messages().some(m => m.id === message.id)) {
         this.messages.update(messages => [...messages, message]);
       }
     });
   }
 
-  private async loadMessages(groupId: number): Promise<void> {
+  private async loadMessages(groupId: number, questionId?: number): Promise<void> {
     try {
-      const response = await this.chatService.getMessages(groupId);
+      const response = await this.chatService.getMessages(groupId, questionId);
+      // ignore a stale response if another day was selected meanwhile
+      if (questionId !== this.questionId()) return;
       this.messages.set(response);
     } catch (error) {
       this.logger.error('Error loading messages:', error);
@@ -61,11 +74,11 @@ export class ChatComponent {
   }
 
   protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
-    if (!content.trim()) return;
+    if (!content.trim() || this.readOnly()) return;
     try {
       const g = this.group();
       if (!g) throw new Error('Group is not set');
-      const newMessage = await this.chatService.sendMessage(g.id, content);
+      const newMessage = await this.chatService.sendMessage(g.id, content, this.questionId());
       // if (newMessage) this.messages.update(messages => [...messages, newMessage]);
       if (input) input.value = '';
     } catch (error) {

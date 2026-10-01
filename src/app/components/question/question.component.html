@@ -8,7 +8,7 @@
     </span>
     @if (showCalendarFlag()) {
       <div class="calendar-popover" role="tooltip">
-        <app-calendar [group]="group()" [(question)]="question"></app-calendar>
+        <app-calendar [group]="group()" [(question)]="question" (showCurrent)="showCurrentQuestion()"></app-calendar>
       </div>
     }
   </div>
@@ -67,7 +67,7 @@
       }
     </section>
     <section>
-      <app-chat [group]="group()"></app-chat>
+      <app-chat [group]="group()" [question]="question()" [readOnly]="isPastQuestion()"></app-chat>
     </section>
   </div>
 } @else {

@@ -11,9 +11,11 @@ export class ChatService {
   private readonly logger = inject(LoggerService)
   private readonly httpClient = inject(HttpClient);
 
-  public async getMessages(groupId: number): Promise<Message[]> {
+  public async getMessages(groupId: number, questionId?: number): Promise<Message[]> {
     try {
-      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { withCredentials: true }));
+      const params: Record<string, number> = questionId !== undefined ? { question_id: questionId } : {};
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { params, withCredentials: true }));
+      this.logger.debug('Fetched messages:', response.content);
       return response.content || [];
     } catch (error) {
       this.logger.error('Failed to fetch messages:', error);
@@ -21,9 +23,9 @@ export class ChatService {
     }
   }
 
-  public async sendMessage(groupId: number, content: string): Promise<Message | null> {
+  public async sendMessage(groupId: number, content: string, questionId?: number): Promise<Message | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { content}, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { content, question_id: questionId }, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to send message:', error);
