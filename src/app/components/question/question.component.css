@@ -27,7 +27,16 @@
 }
 
 .vote-container {
-  height: 50vh;
+  position: relative;
+  height: 55vh;
+}
+
+/* Submit button floats at the bottom center of the vote box, only shown once someone is selected. */
+.submit-vote-floating {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
 }
 
 .answer-input-container {
@@ -55,12 +64,6 @@
 .question-votes-container {
   display: flex;
   width: 57vw;
-  background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
-  linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-color: #faf8f8;
-  background-position: center;
 }
 
 .voter-container {
@@ -89,4 +92,14 @@
     z-index: 1000;
     border-radius: 8px;
     padding: 12px;
+}
+
+.agario-container {
+  background-image:
+  linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+  linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-color: #faf8f8;
+  background-position: center;
+  padding: 20px;
 }
