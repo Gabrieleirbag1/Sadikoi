@@ -44,7 +44,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    height: 50vh;
 }
 
 .group-users-list-container {
