@@ -235,8 +235,9 @@ export class VoteBubblesComponent {
 
     for (let i = 0; i < count; i++) {
       const p = this.pellets[i];
-      const x = p.x * w + Math.sin(t * 0.6 + p.phase) * 2;
-      const y = p.y * h + Math.cos(t * 0.5 + p.phase) * 2;
+      // Centre stays inside the box: a pellet on the edge is at most half cut, never more.
+      const x = Math.min(w, Math.max(0, p.x * w + Math.sin(t * 0.6 + p.phase) * 2));
+      const y = Math.min(h, Math.max(0, p.y * h + Math.cos(t * 0.5 + p.phase) * 2));
       ctx.beginPath();
       ctx.arc(x, y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
