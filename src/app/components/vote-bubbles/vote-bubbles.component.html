@@ -22,7 +22,7 @@
   </ul>
 
   @if (userProfileService.isOpenFor(hoveredUser(), tooltipScope)) {
-    <div class="user-profile-popover vote-bubbles-tooltip" role="tooltip" [style.left.px]="tooltipPos().x" [style.top.px]="tooltipPos().y">
+    <div class="user-profile-popover vote-bubbles-tooltip" role="tooltip" [class.flip-x]="tooltipPos().flipX" [class.flip-y]="tooltipPos().flipY" [style.left.px]="tooltipPos().x" [style.top.px]="tooltipPos().y">
       <app-user-profile [user]="hoveredUser()"></app-user-profile>
     </div>
   }

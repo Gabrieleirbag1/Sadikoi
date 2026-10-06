@@ -13,6 +13,9 @@ export interface VoteBubbleData {
   voters: User[];
 }
 
+/** Approximate tooltip footprint, only used to decide when to flip it away from an edge. */
+const TOOLTIP_WIDTH = 280;
+const TOOLTIP_HEIGHT = 180;
 const DEFAULT_PICTURE = '/default-profile.svg';
 /** Angle (rad) de la ligne de séparation : la photo occupe le haut-gauche, le pseudo le bas-droite. */
 const SPLIT_ANGLE = -Math.PI / 6;
@@ -58,7 +61,7 @@ export class VoteBubblesComponent {
     })),
   );
   protected readonly hoveredUser = computed(() => this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.votedUser ?? null);
-  protected readonly tooltipPos = signal({ x: 0, y: 0 });
+  protected readonly tooltipPos = signal({ x: 0, y: 0, flipX: false, flipY: false });
 
   private readonly engine = new BubbleEngine();
   private readonly images = new Map<string, HTMLImageElement>();
@@ -113,8 +116,7 @@ export class VoteBubblesComponent {
     if (!hit || !event) return;
     const user = this.bubbles().find(b => b.votedUser.id === id)?.votedUser;
     if (!user) return;
-    const rect = this.boxRef().nativeElement.getBoundingClientRect();
-    this.tooltipPos.set({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+    this.placeTooltip(event);
     this.userProfileService.show(user, this.tooltipScope);
   }
 
@@ -123,8 +125,7 @@ export class VoteBubblesComponent {
     if (!hit) return;
     const user = this.bubbles().find(b => b.votedUser.id === hit.id)?.votedUser;
     if (user) {
-      const rect = this.boxRef().nativeElement.getBoundingClientRect();
-      this.tooltipPos.set({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+      this.placeTooltip(event);
       this.userProfileService.showNow(user, this.tooltipScope);
     }
     if (this.isVoting()) this.select(hit.id);
@@ -141,6 +142,17 @@ export class VoteBubblesComponent {
   protected confirm(): void {
     const ids = this.selectedIds();
     if (ids.length && this.isVoting()) this.voted.emit(ids);
+  }
+
+  /** The tooltip keeps its natural size: near the right/bottom edge it flips to the other side of the pointer. */
+  private placeTooltip(event: MouseEvent): void {
+    const rect = this.boxRef().nativeElement.getBoundingClientRect();
+    const x = event.clientX - rect.left, y = event.clientY - rect.top;
+    this.tooltipPos.set({
+      x, y,
+      flipX: x + TOOLTIP_WIDTH > rect.width && x > TOOLTIP_WIDTH / 2,
+      flipY: y + TOOLTIP_HEIGHT > rect.height && y > TOOLTIP_HEIGHT,
+    });
   }
 
   private hit(event: MouseEvent): CandidateState | null {

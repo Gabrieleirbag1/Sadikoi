@@ -45,8 +45,24 @@
 
 .vote-bubbles-tooltip {
   top: auto;
+  /* Fixed natural width: an absolutely positioned box would otherwise shrink (and grow taller) near the edge. */
+  width: max-content;
+  max-width: 280px;
   margin-top: 12px;
   pointer-events: none;
+}
+
+.vote-bubbles-tooltip.flip-x {
+  transform: translateX(-100%);
+}
+
+.vote-bubbles-tooltip.flip-y {
+  margin-top: -12px;
+  transform: translateY(-100%);
+}
+
+.vote-bubbles-tooltip.flip-x.flip-y {
+  transform: translate(-100%, -100%);
 }
 
 .sr-only {
