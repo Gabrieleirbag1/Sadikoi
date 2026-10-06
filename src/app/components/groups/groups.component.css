@@ -11,7 +11,7 @@
 /* Show a whole number of rows: height = n * (row height + gap) - gap, with n as large as fits in 65vh
    (round() is supported by current browsers; 65vh above is the fallback). The 6px is the top padding. */
 .groups-container.view-grid {
-    --row: 20vh;
+    --row: 26vh;
     --gap: 30px;
     height: calc(round(down, 65vh + var(--gap), var(--row) + var(--gap)) - var(--gap) + 6px);
 }
@@ -36,7 +36,7 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 30px;
     padding-bottom: 6px;
 }
@@ -46,16 +46,22 @@
     flex-direction: column;
     padding: 10px;
     cursor: pointer;
-    height: 20vh;
+    height: 26vh;
     background-color: var(--card-bg, #fff);
     transition: transform 150ms ease, background-color 150ms ease;
     min-width: 0;
     box-sizing: border-box;
 }
 
-/* Long group names wrap (anywhere, even without spaces) and are cut after two lines. */
-.group-grid-item > p {
-    margin: 8px 0 0;
+/* Title: bold, centred between the two icons; long text wraps anywhere and is cut with an ellipsis. */
+.group-grid-item-name {
+    margin: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    align-self: center;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
     overflow: hidden;
     overflow-wrap: anywhere;
     display: -webkit-box;
@@ -64,10 +70,25 @@
     -webkit-box-orient: vertical;
 }
 
+.group-grid-item-description {
+    margin: 30px 0 0;
+    flex: 1 1 0;
+    min-height: 0;
+    text-align: center;
+    font-size: 1rem;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
 .group-grid-icons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: flex-start;
     gap: 10px;
     flex: none;
 }
@@ -144,4 +165,13 @@
 
 .group-grid-item:hover, .group-list-item:hover {
     transform: translateY(-3px);
+}
+
+/* Fewer columns on narrower screens so cards never get squeezed. */
+@media (max-width: 900px) {
+    .grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+    .grid-container { grid-template-columns: minmax(0, 1fr); }
 }

@@ -49,7 +49,8 @@
     "enterGroupCode": "Entrer le code du groupe",
     "joinGroup": "Rejoindre le groupe",
     "gridView": "Vue en grille",
-    "listView": "Vue en liste"
+    "listView": "Vue en liste",
+    "noDescription": "Un groupe avec des gens formidables, mais sans description."
   },
   "group": {
     "getGroupInvitation": "Copier le lien d'invitation au groupe",
