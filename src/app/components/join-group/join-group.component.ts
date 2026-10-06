@@ -35,4 +35,13 @@ export class JoinGroupComponent {
       this.router.navigate(['/groups']);
     }
   }
+
+  protected async autoPaste(input: HTMLInputElement): Promise<void> {
+    try {
+      input.value = await navigator.clipboard.readText();
+      input.focus();
+    } catch (error) {
+      this.logger.error('Unable to paste group code:', error);
+    }
+  }
 }

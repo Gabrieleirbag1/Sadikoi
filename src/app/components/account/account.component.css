@@ -4,6 +4,7 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
+    font-size: 20px;
 }
 
 .account-container {
@@ -93,8 +94,6 @@
     flex-direction: row;
     justify-content: space-between;
     gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     padding: 10px;
 }
 

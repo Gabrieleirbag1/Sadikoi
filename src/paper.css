@@ -343,6 +343,11 @@ textarea {
   margin: 0;
 }
 
+textarea {
+  overflow: auto;
+  resize: none;
+}
+
 button,
 input {
   overflow: visible;

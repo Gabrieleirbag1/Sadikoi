@@ -1,13 +1,142 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 100%;
     width: 38vw;
-    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px;
+    gap: 10px;
+    background-color: #fdfbff;
+    border: 2px solid var(--primary);
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
 }
 
 .chat-messages-container {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+}
+
+.message-row {
+    display: flex;
+    align-items: flex-start;
+    align-self: flex-start;
+    gap: 8px;
+    max-width: 85%;
+}
+
+.message-row.own {
+    flex-direction: row-reverse;
+    align-self: flex-end;
+}
+
+.message-row app-profile-image-picker,
+.chat-avatar-spacer {
+    flex-shrink: 0;
+}
+
+.chat-avatar-spacer {
+    width: 36px;
+}
+
+.message {
+    min-width: 0;
+    padding: 6px 12px;
+    border: 2px solid var(--primary);
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    overflow-wrap: anywhere;
+}
+
+.message-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.message-time {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.message-author {
+    font-family: "Patrick Hand SC", sans-serif;
+    font-weight: normal;
+    font-size: 1.1rem;
+    color: var(--secondary);
+}
+
+.message-content {
+    margin: 0;
+}
+
+.message-gif {
+    display: block;
+    max-width: 100%;
+    max-height: 200px;
+    margin: 5px;
+    border-radius: 8px;
+}
+
+.chat-empty {
+    margin: auto;
+    text-align: center;
+    color: var(--muted);
+}
+
+.chat-input-area {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin: 10px 20px;
+}
+
+.chat-input-area input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Same box for the input and the buttons so they line up */
+.chat-input-area button,
+.chat-input-area input {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+/* The picker is absolutely positioned; its host must not take part in the flex layout (gap) */
+app-gif-picker {
+    display: contents;
+}
+
+.day-separator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.day-separator::before,
+.day-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.3;
 }

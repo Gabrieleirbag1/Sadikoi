@@ -1,8 +1,10 @@
-<section class="main-container">
-  @if (homeState() === 'groups') {
-    <app-groups></app-groups>
-  } @else if (homeState() === 'account') {
-    <app-account></app-account>
-  }
-</section>
-<app-home-footer [(homeState)]="homeState" />
+<main>
+  <section class="main-container">
+    @if (homeState() === 'groups') {
+      <app-groups></app-groups>
+    } @else if (homeState() === 'account') {
+      <app-account></app-account>
+    }
+  </section>
+  <app-home-footer [(homeState)]="homeState" />
+</main>

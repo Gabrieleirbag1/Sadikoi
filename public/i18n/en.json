@@ -49,10 +49,11 @@
     "enterGroupCode": "Enter group code",
     "joinGroup": "Join Group",
     "gridView": "Grid View",
-    "listView": "List View"
+    "listView": "List View",
+    "noDescription": "A group with great people, but no description."
   },
   "group": {
-    "getGroupInvitation": "Get Group Invitation",
+    "getGroupInvitation": "Copy group invitation link",
     "groupOptions": "Group Options",
     "loadingGroup": "Loading group...",
     "name": "Name:",
@@ -61,7 +62,8 @@
     "updateGroup": "Update Group",
     "users": "Users:",
     "home": "Home",
-    "account": "Account"
+    "account": "Account",
+    "calendar": "Calendar"
   },
   "groupOptions": {
     "groupOptions": "Group Options",
@@ -119,5 +121,9 @@
     "update": "Update",
     "delete": "Delete",
     "add": "Add"
+  },
+  "voteBubbles": {
+    "selected": "Vote for {{name}}?",
+    "confirm": "Confirm vote"
   }
 }

@@ -42,6 +42,10 @@ export class GroupModalComponent {
   }
 
   protected save(): void {
+    if (!this.groupName()?.nativeElement.value) {
+      this.groupName()?.nativeElement.focus();
+      return;
+    }
     const saveFn = this.config().save;
     this.modalService.close(this.modalId);
     saveFn?.({

@@ -1,30 +1,59 @@
 <section class="chat-container">
-  <div class="chat-messages-container">
-    @for (message of messages(); track $index) {
-      <div class="message">
-        <strong>{{ message.sender.username }}</strong>
-        @if (isGifMessage(message.content)) {
-          <img [src]="message.content" alt="GIF" class="message-gif" />
+  <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()">
+    @for (message of messages(); track message.id) {
+      @let previous = messages()[$index - 1];
+      @let isNewDay = !previous || dayKey(previous) !== dayKey(message);
+      @let isFirstOfRun = isNewDay || previous.sender.id !== message.sender.id;
+      @if (isNewDay) {
+        <div class="day-separator"><time [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'fullDate' }}</time></div>
+      }
+      <div class="message-row" [class.own]="isOwnMessage(message)">
+        @if (isFirstOfRun) {
+          <app-profile-image-picker
+            [currentImageUrl]="message.sender.profile_picture"
+            [onlyDisplay]="true"
+            [imgClass]="'chat-user-icon'"
+          />
         } @else {
-          <p>{{ message.content }}</p>
+          <span class="chat-avatar-spacer"></span>
         }
+        <div class="message" [class.background-secondary]="isOwnMessage(message)">
+        <div class="message-header">
+          @if (isFirstOfRun) {
+            <strong class="message-author">{{ message.sender.username }}</strong>
+          }
+          <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
+        </div>
+        @if (isGifMessage(message.content)) {
+          <img [src]="message.content" alt="GIF" class="message-gif" (load)="autoScroll('instant')" />
+        } @else {
+          <p class="message-content">{{ message.content }}</p>
+        }
+        </div>
       </div>
     } @empty {
-      <p>{{ 'chat.noMessagesDisplay' | translate }}</p>
+      <p class="chat-empty">{{ 'chat.noMessagesDisplay' | translate }}</p>
     }
   </div>
 
+  @if (!readOnly()) {
   <div class="chat-input-area">
     @if (showGifPicker()) {
       <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
     }
 
-    <button (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
+    <button type="button" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
       {{ 'chat.gif' | translate }}
     </button>
-    <input type="text" [placeholder]="'chat.typeYourMessage' | translate" #messageContent />
-    <button (click)="sendMessage(messageContent.value, messageContent)">
-      {{ 'chat.send' | translate }}
+    <input
+      type="text"
+      [placeholder]="'chat.typeYourMessage' | translate"
+      (keydown.enter)="sendMessage(messageContent.value, messageContent)"
+      #messageContent
+    />
+    <button type="button" class="background-secondary" (click)="sendMessage(messageContent.value, messageContent)">
+      >
     </button>
   </div>
+  }
 </section>

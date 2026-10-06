@@ -66,7 +66,7 @@
       <div class="devices-list">
         @if (devices()) {
           @for (device of devices(); track $index) {
-            <div class="device-container">
+            <div class="device-container border">
               <span>{{ device.device_name }} - {{ device.ip_address }} - {{ device.last_login | date }}</span>
               <input type="checkbox" [checked]="device.authorized" disabled /> 
               <!-- allows to know if the device is authorized keeping the devices list-->

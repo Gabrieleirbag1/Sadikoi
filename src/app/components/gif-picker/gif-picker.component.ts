@@ -18,6 +18,7 @@ export class GifPickerComponent {
   protected searchQuery = '';
   protected gifs = signal<KlipyGif[]>([]);
   protected loading = signal(false);
+  protected view = signal<'recent' | 'trending' | 'search'>('trending');
   protected searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   async ngOnInit(): Promise<void> {
@@ -37,6 +38,7 @@ export class GifPickerComponent {
   }
 
   private async loadTrending(): Promise<void> {
+    this.view.set('trending');
     this.loading.set(true);
     try {
       this.gifs.set(await this.klipyService.getTrending());
@@ -46,6 +48,7 @@ export class GifPickerComponent {
   }
 
   private async loadRecent(): Promise<void> {
+    this.view.set('recent');
     this.loading.set(true);
     try {
       this.gifs.set(await this.klipyService.getRecent());
@@ -63,6 +66,7 @@ export class GifPickerComponent {
     if (!this.searchQuery.trim()) {
       return this.loadTrending();
     }
+    this.view.set('search');
     this.loading.set(true);
     try {
       this.gifs.set(await this.klipyService.searchGifs(this.searchQuery));

@@ -1,114 +1,58 @@
-<div class="question-container">
-  <div class="question-content">
-    <span>{{ question()?.content }}</span><span>{{ question()?.item_name }}</span>
-  </div>
-  <div class="calendar-anchor" #calendarAnchor>
-    <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()">
-      <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />
-    </span>
-    @if (showCalendarFlag()) {
-      <div class="calendar-popover">
-        <app-calendar [group]="group()" [(question)]="question"></app-calendar>
-      </div>
-    }
-  </div>
-</div>
-@if (question()?.votes?.length) {
-  <div class="question-votes-and-chat-container">
-    <section class="question-votes-container">
-      @if (question()?.canWrite) {
-        <div class="written-answers-container">
-          @for (vote of question()?.votes; track $index) {
-            @if (vote.writtenAnswer) {
-              <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
-            } @else {}
-          }
+<section class="main-container">
+  <div class="question-container">
+    <div class="question-content">
+      <span>{{ question()?.content }}</span><span>{{ question()?.item_name }}</span>
+    </div>
+    <div class="calendar-anchor" #calendarAnchor>
+      <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()" title="{{ 'group.calendar' | translate }}">
+        <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />
+      </span>
+      @if (showCalendarFlag()) {
+        <div class="calendar-popover" role="tooltip">
+          <app-calendar [group]="group()" [(question)]="question" (showCurrent)="showCurrentQuestion()"></app-calendar>
         </div>
-      } @else {
-        @for (bubble of voteBubbles; track bubble.votedUser.id) {
-          <div
-            class="user-vote-container user-profile-anchor"
-            (mouseenter)="userProfileService.show(bubble.votedUser, tooltipScope)"
-            (mouseleave)="userProfileService.hide(tooltipScope)"
-          >
-            <div class="user-vote">
-              <app-profile-image-picker
-                [currentImageUrl]="bubble.votedUser.profile_picture"
-                [onlyDisplay]="true"
-                [imgClass]="'group-user-icon'"
-              >
-              </app-profile-image-picker>
-              <span>{{ bubble.votedUser.username }}</span>
-              @for (item of bubble.votedUser.items; track item.id) {
-                <p>{{ item.item_name }} - {{ item.streak }}</p>
-              }
-            </div>
-
-            @if (userProfileService.isOpenFor(bubble.votedUser, tooltipScope)) {
-              <div class="user-profile-popover" role="tooltip">
-                <app-user-profile [user]="bubble.votedUser"></app-user-profile>
-              </div>
+      }
+    </div>
+  </div>
+  @if (question()?.votes?.length) {
+    <div class="question-votes-and-chat-container">
+      <section class="question-votes-container">
+        @if (question()?.canWrite) {
+          <div class="written-answers-container">
+            @for (vote of question()?.votes; track $index) {
+              @if (vote.writtenAnswer) {
+                <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
+              } @else {}
             }
           </div>
-          @for (voter of bubble.voters; track $index) {
-            <div class="voter-container user-vote-container">
-              <div class="user-vote">
-                <app-profile-image-picker
-                  [currentImageUrl]="voter.profile_picture"
-                  [onlyDisplay]="true"
-                  [imgClass]="'group-user-icon'"
-                >
-                </app-profile-image-picker>
-                <span>{{ voter.username }}</span>
-              </div>
-            </div>
-          }
+        } @else {
+          <app-vote-bubbles [bubbles]="voteBubbles" phase="results" />
         }
-      }
-    </section>
-    <section>
-      <app-chat [group]="group()"></app-chat>
-    </section>
-  </div>
-} @else {
-  @if (question()?.canWrite) {
-    <div class="answer-container">
-      <div class="answer-input-container">
-        <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
-      </div>
-      <div class="submit-vote-container">
-        <button (click)="submitVote(usersId, answerInput.value)">
-          {{ 'question.submitAnswer' | translate }}
-        </button>
-      </div>
+      </section>
+      <section>
+        <app-chat [group]="group()" [question]="question()" [readOnly]="isPastQuestion()"></app-chat>
+      </section>
     </div>
   } @else {
-    <div class="vote-container">
-      @for (user of group()?.users; track $index) {
-        <div class="user-vote-container">
-          <div class="user-vote">
-            <app-profile-image-picker
-              [currentImageUrl]="user.profile_picture"
-              [onlyDisplay]="true"
-              [imgClass]="'group-user-icon'"
-            >
-            </app-profile-image-picker>
-            @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
-              <input type="checkbox" disabled />
-            } @else {
-              <input
-                type="checkbox"
-                (change)="toggleVote(user.id)"
-                [checked]="usersId.includes(user.id)"
-              />
-            }
-            <span>{{ user.username }}</span>
-          </div>
+    @if (question()?.canWrite) {
+      <div class="answer-container">
+        <div class="answer-input-container">
+          <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
         </div>
-      }
-    </div>
-    <div class="submit-vote-container">
-      <button (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
-    </div>
+        <div class="submit-vote-container">
+          <button type="button" class="background-success" (click)="submitVote(usersId, answerInput.value)">
+            {{ 'question.submitAnswer' | translate }}
+          </button>
+        </div>
+      </div>
+    } @else {
+      <app-vote-bubbles
+        class="vote-bubbles-voting"
+        [bubbles]="votingBubbles()"
+        phase="voting"
+        [multiple]="!!question()?.enableMultipleVoting"
+        (voted)="submitVote($event)"
+      />
+    }
   }
-}
+</section>

@@ -1,9 +1,45 @@
+/* Header + main always fill exactly the viewport; the footer sits right below, past the fold. */
+.app-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+app-header {
+  display: block;
+  flex: none;
+  /* The header's wavy underline is transparent below the curve: let main-content's background show
+     through it instead of the white body (which showed as a white line). */
+  margin-bottom: -9px;
+}
+
 .main-content {
-  padding: 30px;
+  flex: 1 1 0;
+  min-height: 0; /* lets main shrink below its content instead of pushing past 100vh */
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 30px 30px 0;
+  scrollbar-width: none;
+  /* background:
+    radial-gradient(rgb(244, 244, 244) 3px, transparent 4px),
+    radial-gradient(rgb(244, 244, 244) 3px, transparent 4px),
+    linear-gradient(#fff 4px, transparent 0),
+    linear-gradient(45deg, transparent 74px, transparent 75px, #a4a4a4 75px, #a4a4a4 76px, transparent 77px, transparent 109px),
+    linear-gradient(-45deg, transparent 75px, transparent 76px, #a4a4a4 76px, #a4a4a4 77px, transparent 78px, transparent 109px),
+    #fff;
+    background-size: 109px 109px, 109px 109px,100% 6px, 109px 109px, 109px 109px;
+    background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px; */
+  background-color: #fffcf8;
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-color: #faf8f8;
-  background-position: center;
+    radial-gradient(ellipse 55% 45% at 8% 12%, #ffe9decc 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 95% 18%, #ebe4fccc 0%, transparent 70%),
+    radial-gradient(ellipse 55% 50% at 85% 95%, #def5eccc 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 10% 92%, #e0effccc 0%, transparent 70%),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVQoU2N89+7dfwYsQEhIiBEkzDgkFGDzAbIY2Cv4AACvrBgJjYNGfwAAAABJRU5ErkJggg==);
+  background-attachment: fixed, fixed, fixed, fixed, local;
+}
+
+.main-content::-webkit-scrollbar {
+  display: none;
 }

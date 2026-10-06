@@ -93,6 +93,7 @@ export class AuthService {
   public clearSessionAndRedirect(): void {
     this.setAuthSession(null, false);
     localStorage.removeItem('user');
+    sessionStorage.removeItem('homeState')
     this.router.navigate(['/auth']);
   }
 
@@ -249,6 +250,9 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.delete<ApiResponse>(`${environment.apiUrl}auth/security/devices/`, { ...{ withCredentials: true }, body: payload }));
       this.logger.debug(`Device ${deviceId} revoked successfully:`, response);
+      if (deviceId === this.getDeviceId()) {
+        this.clearSessionAndRedirect();
+      }
       return response.success;
     } catch (error) {
       this.logger.error(`Failed to revoke device ${deviceId}:`, error);

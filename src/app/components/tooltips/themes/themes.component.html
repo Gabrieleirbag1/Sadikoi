@@ -1,9 +1,9 @@
 <div class="themes-picker">
-	<button type="button" class="themes-button" (click)="toggle()" [attr.aria-expanded]="isOpen()">
+	<button type="button" class="themes-button" (click)="toggle()" [disabled]="disabled()" [attr.aria-expanded]="isOpen()">
 		Choose themes
 	</button>
 
-	@if (isOpen()) {
+	@if (isOpen() && !disabled()) {
 		<div class="themes-popover" role="dialog" aria-label="Choose themes">
 			@for (theme of themes(); track theme.id) {
 				<label>

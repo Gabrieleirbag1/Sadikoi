@@ -1,4 +1,4 @@
-import { Component, inject, model, OnInit, signal } from '@angular/core';
+import { Component, inject, model, OnInit, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuestionService } from '../../../services/question/question.service';
 
@@ -36,6 +36,8 @@ export class CalendarComponent implements OnInit {
   public enableDates = new Set<string>(); /** Set of disabled dates for the currently loaded month, as 'YYYY-MM-DD' strings. */
   public readonly group = model<Group | null>(null); 
   public readonly question = model<Question | null>(null);
+  /** Emitted when the user goes back to the current day ("Today" / "Clear"). */
+  public readonly showCurrent = output<void>();
 
   get title(): string {
     return `${MONTH_NAMES[this.viewMonth]} ${this.viewYear}`;
@@ -87,11 +89,13 @@ export class CalendarComponent implements OnInit {
     this.viewYear = today.getFullYear();
     this.viewMonth = today.getMonth();
     this.selectedDate = today;
+    this.showCurrent.emit();
     this.loadMonth(this.viewYear, this.viewMonth);
   }
 
   protected clearSelection(): void {
     this.selectedDate = null;
+    this.showCurrent.emit();
     this.buildDays();
   }
 
@@ -104,20 +108,25 @@ export class CalendarComponent implements OnInit {
     try {
       const group = this.group();
       if (!group) throw new Error('Group is not set');
-      const questions = await this.questionService.getQuestionsByDate(group.id, month + 1, year);
-      if (questions) {
+      // Also load the previous and next months so the leading/trailing days of the grid are clickable.
+      const months = [-1, 0, 1].map(offset => new Date(year, month + offset, 1));
+      const results = await Promise.all(
+        months.map(m => this.questionService.getQuestionsByDate(group.id, m.getMonth() + 1, m.getFullYear())),
+      );
+      this.questionsByDate.clear();
+      const enableDates: string[] = [];
+      results.forEach(questions => {
+        if (!questions) return;
         const questionList = Array.isArray(questions) ? questions : [questions];
-        this.questionsByDate.clear(); // NEW: reset map for the newly loaded month
-        const enableDates: string[] = [];
         questionList.forEach(q => {
           if (!q || q.date == null) return; // skip items without a date
           const date = new Date(q.date as string | number | Date);
-          const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+          const key = this.toKey(date.getFullYear(), date.getMonth(), date.getDate());
           this.questionsByDate.set(key, q);
           enableDates.push(key);
         });
-        this.setEnableDates(enableDates);
-      }
+      });
+      this.setEnableDates(enableDates);
     } catch (error) {
       console.error('Error fetching questions for date:', error);
     }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, model, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, model, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -23,6 +23,7 @@ export class ThemesComponent implements OnInit {
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly httpClient = inject(HttpClient);
 
+  public readonly disabled = input(false);
   public readonly selectedThemes = model<string[]>([]);
   protected readonly themes = signal<ThemeOption[]>([]);
   protected readonly isOpen = signal(false);

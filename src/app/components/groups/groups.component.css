@@ -1,6 +1,31 @@
 .groups-container {
     height: 65vh;
     overflow-y: auto;
+    /* Room for the hover lift: without it the scroll container clips the raised card's border. */
+    box-sizing: border-box;
+    padding: 6px 6px 0;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 6px;
+}
+
+/* Show a whole number of rows: height = n * (row height + gap) - gap, with n as large as fits in 65vh
+   (round() is supported by current browsers; 65vh above is the fallback). The 12px = 6px top padding + 6px bottom padding of the lists; if the container were any
+   shorter the content would overflow by a few px and scroll-snap could settle at scrollTop > 0, scrolling the
+   top padding away and clipping the hover lift. */
+.groups-container.view-grid {
+    --row: 26vh;
+    --gap: 30px;
+    height: calc(round(down, 65vh + var(--gap), var(--row) + var(--gap)) - var(--gap) + 12px);
+}
+
+.groups-container.view-list {
+    --row: 12vh;
+    --gap: 10px;
+    height: calc(round(down, 65vh + var(--gap), var(--row) + var(--gap)) - var(--gap) + 12px);
+}
+
+.group-grid-item, .group-list-item {
+    scroll-snap-align: start;
 }
 
 .groups-header {
@@ -13,8 +38,9 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 30px;
+    padding-bottom: 6px;
 }
 
 .group-grid-item {
@@ -22,18 +48,59 @@
     flex-direction: column;
     padding: 10px;
     cursor: pointer;
-    height: 20vh;
-    background-color: #fff;
+    height: 26vh;
+    background-color: var(--card-bg, #fff);
+    transition: transform 150ms ease, background-color 150ms ease;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Title: bold, centred between the two icons; long text wraps anywhere and is cut with an ellipsis. */
+.group-grid-item-name {
+    margin: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    align-self: center;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.group-grid-item-description {
+    margin: 30px 0 0;
+    flex: 1 1 0;
+    min-height: 0;
+    text-align: center;
+    font-size: 1rem;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 .group-grid-icons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: flex-start;
     gap: 10px;
+    flex: none;
+}
+
+.group-grid-item-icon {
+    flex: none;
 }
 
 .group-users-icons {
+    flex: none;
     display: grid;
     grid-template-columns: repeat(2, 30px);
     grid-template-rows: repeat(2, 30px);
@@ -44,6 +111,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-bottom: 6px;
 }
 
 .group-list-item {
@@ -54,10 +122,58 @@
     padding: 10px;
     cursor: pointer;
     height: 12vh;
-    background-color: #fff;
+    background-color: var(--card-bg, #fff);
+    transition: transform 150ms ease, background-color 150ms ease;
+    gap: 10px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.group-list-item > * {
+    flex: none;
 }
 
 .group-list-item-info {
     display: flex;
     flex-direction: column;
+    flex: 1 1 0 !important;
+    min-width: 0;
+}
+
+.group-list-item-name {
+    font-size: 1.2rem;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.group-list-item-description {
+    font-size: 1rem;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Pastel colour per card, cycling through five hues. */
+.group-grid-item:nth-child(5n+1), .group-list-item:nth-child(5n+1) { --card-bg: #fff0e8; }
+.group-grid-item:nth-child(5n+2), .group-list-item:nth-child(5n+2) { --card-bg: #eaf7f1; }
+.group-grid-item:nth-child(5n+3), .group-list-item:nth-child(5n+3) { --card-bg: #f0ebfc; }
+.group-grid-item:nth-child(5n+4), .group-list-item:nth-child(5n+4) { --card-bg: #e9f4fc; }
+.group-grid-item:nth-child(5n+5), .group-list-item:nth-child(5n+5) { --card-bg: #fff7d9; }
+
+.group-grid-item:hover, .group-list-item:hover {
+    transform: translateY(-3px);
+}
+
+/* Fewer columns on narrower screens so cards never get squeezed. */
+@media (max-width: 900px) {
+    .grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+    .grid-container { grid-template-columns: minmax(0, 1fr); }
 }

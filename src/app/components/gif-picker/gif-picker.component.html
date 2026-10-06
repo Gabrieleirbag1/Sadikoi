@@ -1,7 +1,17 @@
 <div class="gif-picker">
-  <div>
-    <button (click)="setView('recent')">{{ 'gifPicker.recent' | translate }}</button>
-    <button (click)="setView('trending')">{{ 'gifPicker.trending' | translate }}</button>
+  <div class="gif-tabs">
+    <button
+      type="button"
+      class="paper-btn btn-small"
+      [class.background-secondary]="view() === 'recent'"
+      (click)="setView('recent')"
+    >{{ 'gifPicker.recent' | translate }}</button>
+    <button
+      type="button"
+      class="paper-btn btn-small"
+      [class.background-secondary]="view() === 'trending'"
+      (click)="setView('trending')"
+    >{{ 'gifPicker.trending' | translate }}</button>
   </div>
   <input
     type="text"

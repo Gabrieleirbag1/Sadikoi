@@ -22,7 +22,7 @@
     <img src="images/icons/list.svg" width="24" height="24" alt="List View" />
   </span>
 </div>
-<section class="groups-container">
+<section class="groups-container" [class.view-grid]="view === 'grid'" [class.view-list]="view === 'list'">
   @if (view == 'grid') {
     <section class="grid-container">
       @for (group of groups(); track $index) {
@@ -38,13 +38,20 @@
                 </app-profile-image-picker>
               }
             </div>
+            <p class="group-grid-item-name">{{ group.name }}</p>
             <div class="group-grid-item-icon">
               <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
               </app-profile-image-picker>
             </div>
           </div>
-          <p>{{ group.name }}</p>
-          <p></p>
+          <p class="group-grid-item-description">
+              @if (group.description.length > 0) {
+                {{ group.description }}
+              } @else {
+                {{ 'groups.noDescription' | translate }}
+              }
+              {{ group.description }}
+          </p>
         </div>
       }
       <div class="group-grid-item border" (click)="openGroupModal()">
@@ -66,8 +73,15 @@
             }
           </div>
           <div class="group-list-item-info">
-            <p>{{ group.name }}</p>
-            <p>last message</p>
+            <p class="group-list-item-name"><b>{{ group.name }}</b></p>
+            <p class="group-list-item-description">
+              @if (group.description.length > 0) {
+                {{ group.description }}
+              } @else {
+                {{ 'groups.noDescription' | translate }}
+              }
+              {{ group.description }}
+            </p>
           </div>
           <div class="group-list-item-icon">
             <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
