@@ -43,6 +43,9 @@ export interface EngineOptions {
   speedFactor: number;
 }
 
+/** Free space between a candidate and its orbiting voters. */
+const ORBIT_GAP = 8;
+
 const DEFAULTS: EngineOptions = {
   minRadius: 38,
   maxRadius: 90,
@@ -143,7 +146,7 @@ export class BubbleEngine {
 
   /** Rayon orbital d'un votant autour de son candidat. */
   public voterOrbitRadius(c: CandidateState): number {
-    return c.r + this.options.voterRadius * 0.6;
+    return c.r + this.options.voterRadius + ORBIT_GAP;
   }
 
   public voterPositions(): VoterPosition[] {
@@ -170,20 +173,14 @@ export class BubbleEngine {
 
   /** Aire proportionnelle au nombre de voix, bornée par la taille de la box. */
   private radiusFor(c: CandidateState): number {
-    const { minRadius, maxRadius, voterRadius } = this.options;
+    const { minRadius, maxRadius } = this.options;
     const votes = c.voters.length;
     const cap = Math.max(minRadius, Math.min(maxRadius, Math.min(this.width, this.height) / 4 || maxRadius));
-    // l'orbite des votants doit rester dans la box
-    const room = cap - voterRadius * 1.6;
-    return Math.max(minRadius * 0.6, Math.min(room, minRadius + Math.sqrt(votes) * (maxRadius - minRadius) * 0.45));
-  }
-
-  private outerRadius(c: CandidateState): number {
-    return c.voters.length ? this.voterOrbitRadius(c) + this.options.voterRadius : c.r;
+    return Math.max(minRadius * 0.6, Math.min(cap, minRadius + Math.sqrt(votes) * (maxRadius - minRadius) * 0.45));
   }
 
   private bounce(c: CandidateState): void {
-    const m = this.outerRadius(c);
+    const m = c.r;
     if (c.x < m) { c.x = m; c.vx = Math.abs(c.vx); }
     else if (c.x > this.width - m) { c.x = this.width - m; c.vx = -Math.abs(c.vx); }
     if (c.y < m) { c.y = m; c.vy = Math.abs(c.vy); }
@@ -191,7 +188,7 @@ export class BubbleEngine {
   }
 
   private clamp(c: CandidateState): void {
-    const m = Math.min(this.outerRadius(c), this.width / 2, this.height / 2);
+    const m = Math.min(c.r, this.width / 2, this.height / 2);
     c.x = Math.min(Math.max(c.x, m), Math.max(m, this.width - m));
     c.y = Math.min(Math.max(c.y, m), Math.max(m, this.height - m));
   }

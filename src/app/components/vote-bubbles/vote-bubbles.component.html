@@ -1,13 +1,15 @@
 <div #box class="vote-bubbles-box border" [class.voting]="isVoting()">
-  <canvas
-    #canvas
-    class="vote-bubbles-canvas"
-    [class.clickable]="isVoting() && hoveredId() !== null"
-    (pointermove)="onPointerMove($event)"
-    (pointerleave)="onPointerLeave()"
-    (click)="onClick($event)"
-    aria-hidden="true"
-  ></canvas>
+  <div class="vote-bubbles-clip">
+    <canvas
+      #canvas
+      class="vote-bubbles-canvas"
+      [class.clickable]="isVoting() && hoveredId() !== null"
+      (pointermove)="onPointerMove($event)"
+      (pointerleave)="onPointerLeave()"
+      (click)="onClick($event)"
+      aria-hidden="true"
+    ></canvas>
+  </div>
 
   <ul class="sr-only">
     @for (candidate of candidates(); track candidate.id) {

@@ -100,7 +100,7 @@ export class VoteBubblesComponent {
     if (!hit || !event) return;
     const user = this.bubbles().find(b => b.votedUser.id === id)?.votedUser;
     if (!user) return;
-    const rect = this.canvasRef().nativeElement.getBoundingClientRect();
+    const rect = this.boxRef().nativeElement.getBoundingClientRect();
     this.tooltipPos.set({ x: event.clientX - rect.left, y: event.clientY - rect.top });
     this.userProfileService.show(user, this.tooltipScope);
   }
@@ -110,7 +110,7 @@ export class VoteBubblesComponent {
     if (!hit) return;
     const user = this.bubbles().find(b => b.votedUser.id === hit.id)?.votedUser;
     if (user) {
-      const rect = this.canvasRef().nativeElement.getBoundingClientRect();
+      const rect = this.boxRef().nativeElement.getBoundingClientRect();
       this.tooltipPos.set({ x: event.clientX - rect.left, y: event.clientY - rect.top });
       this.userProfileService.showNow(user, this.tooltipScope);
     }
@@ -131,7 +131,7 @@ export class VoteBubblesComponent {
   }
 
   private hit(event: MouseEvent): CandidateState | null {
-    const rect = this.canvasRef().nativeElement.getBoundingClientRect();
+    const rect = this.boxRef().nativeElement.getBoundingClientRect();
     return this.engine.hitTest(event.clientX - rect.left, event.clientY - rect.top);
   }
 

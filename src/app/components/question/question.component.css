@@ -103,3 +103,8 @@ app-vote-bubbles {
 app-vote-bubbles.vote-bubbles-voting {
   --vote-bubbles-height: 55vh;
 }
+
+/* The bubbles box fills the results section edge to edge (no .agario-container padding). */
+.question-votes-container:has(app-vote-bubbles) {
+  padding: 0;
+}
