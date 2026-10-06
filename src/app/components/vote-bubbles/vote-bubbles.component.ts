@@ -209,8 +209,10 @@ export class VoteBubblesComponent {
     const { width: w, height: h } = this.engine;
     const count = Math.min(PELLET_COUNT, Math.round((w * h) / 6500));
 
+    const virusRadius = Math.min(Math.max(Math.min(w, h) * 0.085, 26), 52);
+
     for (const v of this.viruses) {
-      const r = Math.min(Math.max(Math.min(w, h) * 0.085, 26), 52);
+      const r = virusRadius;
       const x = v.x * w, y = v.y * h;
       const pulse = 1 + Math.sin(t * 1.6 + v.phase) * 0.025;
       ctx.save();
@@ -238,6 +240,8 @@ export class VoteBubblesComponent {
       // Centre stays inside the box: a pellet on the edge is at most half cut, never more.
       const x = Math.min(w, Math.max(0, p.x * w + Math.sin(t * 0.6 + p.phase) * 2));
       const y = Math.min(h, Math.max(0, p.y * h + Math.cos(t * 0.5 + p.phase) * 2));
+      // Never show a pellet on top of (or poking out of the notches of) a virus.
+      if (this.viruses.some(v => Math.hypot(x - v.x * w, y - v.y * h) < virusRadius * 1.1 + p.r)) continue;
       ctx.beginPath();
       ctx.arc(x, y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
