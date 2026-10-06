@@ -1,0 +1,33 @@
+<div #box class="vote-bubbles-box" [class.voting]="isVoting()">
+  <canvas
+    #canvas
+    class="vote-bubbles-canvas"
+    [class.clickable]="isVoting() && hoveredId() !== null"
+    (pointermove)="onPointerMove($event)"
+    (pointerleave)="onPointerLeave()"
+    (click)="onClick($event)"
+    aria-hidden="true"
+  ></canvas>
+
+  <ul class="sr-only">
+    @for (candidate of candidates(); track candidate.id) {
+      <li>
+        <button type="button" [disabled]="!isVoting()" [attr.aria-pressed]="selectedIds().includes(candidate.id)" (click)="select(candidate.id)">
+          {{ candidate.name }} ({{ candidate.voters.length }})
+        </button>
+      </li>
+    }
+  </ul>
+
+  @if (userProfileService.isOpenFor(hoveredUser(), tooltipScope)) {
+    <div class="user-profile-popover vote-bubbles-tooltip" role="tooltip" [style.left.px]="tooltipPos().x" [style.top.px]="tooltipPos().y">
+      <app-user-profile [user]="hoveredUser()"></app-user-profile>
+    </div>
+  }
+
+  @if (isVoting() && selectedIds().length) {
+    <div class="vote-bubbles-submit">
+      <button type="button" class="background-success" (click)="confirm()">{{ 'question.submitAnswer' | translate }}</button>
+    </div>
+  }
+</div>

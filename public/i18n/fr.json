@@ -120,5 +120,9 @@
     "update": "Mettre à jour",
     "delete": "Supprimer",
     "add": "Ajouter"
+  },
+  "voteBubbles": {
+    "selected": "Voter pour {{name}} ?",
+    "confirm": "Valider le vote"
   }
 }
