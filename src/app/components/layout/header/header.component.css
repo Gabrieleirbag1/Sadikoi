@@ -1,6 +1,6 @@
 /* The PaperCSS variables are scoped to .main-content, which doesn't wrap the header, so define them here. */
 :host {
-    --header-bg: #fff0e3;
+    --header-bg: #faf6f1;
     --header-text: #41403e;
 }
 
@@ -25,7 +25,7 @@
     right: 0;
     bottom: 0;
     height: 10px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 10' preserveAspectRatio='none'%3E%3Cpath fill='%23fff0e3' d='M0 0 L0 5 L2 5 C 80 2, 160 8, 260 4 S 430 7, 520 4 S 700 2, 790 6 S 940 4, 998 5 L1000 5 L1000 0 Z'/%3E%3Cpath fill='none' stroke='%23e6c7b0' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke' d='M2 5 C 80 2, 160 8, 260 4 S 430 7, 520 4 S 700 2, 790 6 S 940 4, 998 5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 10' preserveAspectRatio='none'%3E%3Cpath fill='%23faf6f1' d='M0 0 L0 5 L2 5 C 80 2, 160 8, 260 4 S 430 7, 520 4 S 700 2, 790 6 S 940 4, 998 5 L1000 5 L1000 0 Z'/%3E%3Cpath fill='none' stroke='%23d6cec6' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke' d='M2 5 C 80 2, 160 8, 260 4 S 430 7, 520 4 S 700 2, 790 6 S 940 4, 998 5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
     pointer-events: none;
 }
 

@@ -22,7 +22,7 @@
     <img src="images/icons/list.svg" width="24" height="24" alt="List View" />
   </span>
 </div>
-<section class="groups-container">
+<section class="groups-container" [class.view-grid]="view === 'grid'" [class.view-list]="view === 'list'">
   @if (view == 'grid') {
     <section class="grid-container">
       @for (group of groups(); track $index) {

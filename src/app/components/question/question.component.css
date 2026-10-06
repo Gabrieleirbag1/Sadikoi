@@ -6,6 +6,10 @@
 }
 
 .question-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
   padding: 4px 22px;
   border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
   display: flex;
