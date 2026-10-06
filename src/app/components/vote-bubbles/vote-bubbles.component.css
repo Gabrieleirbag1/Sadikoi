@@ -7,8 +7,6 @@
   width: 100%;
   height: var(--vote-bubbles-height, clamp(320px, 60vh, 600px));
   overflow: hidden;
-  border-radius: 12px;
-  border: 2px solid rgba(0, 0, 0, 0.25);
   background-color: #faf8f8;
   background-image:
     linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),

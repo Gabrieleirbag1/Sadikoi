@@ -94,15 +94,6 @@
     padding: 12px;
 }
 
-.agario-container {
-  background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
-  linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-color: #faf8f8;
-  background-position: center;
-  padding: 20px;
-}
 app-vote-bubbles {
   flex: 1;
   min-width: 0;

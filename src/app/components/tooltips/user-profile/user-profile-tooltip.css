@@ -1,5 +1,6 @@
 .user-profile-anchor {
   position: relative;
+  z-index: 1000;
 }
 
 .user-profile-popover {

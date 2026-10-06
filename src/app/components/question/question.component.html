@@ -16,7 +16,7 @@
   </div>
   @if (question()?.votes?.length) {
     <div class="question-votes-and-chat-container">
-      <section class="question-votes-container agario-container border">
+      <section class="question-votes-container">
         @if (question()?.canWrite) {
           <div class="written-answers-container">
             @for (vote of question()?.votes; track $index) {
