@@ -26,45 +26,7 @@
             }
           </div>
         } @else {
-          @for (bubble of voteBubbles; track bubble.votedUser.id) {
-            <div
-              class="user-vote-container user-profile-anchor"
-              (mouseenter)="userProfileService.show(bubble.votedUser, tooltipScope)"
-              (mouseleave)="userProfileService.hide(tooltipScope)"
-            >
-              <div class="user-vote">
-                <app-profile-image-picker
-                  [currentImageUrl]="bubble.votedUser.profile_picture"
-                  [onlyDisplay]="true"
-                  [imgClass]="'group-user-icon'"
-                >
-                </app-profile-image-picker>
-                <span>{{ bubble.votedUser.username }}</span>
-                @for (item of bubble.votedUser.items; track item.id) {
-                  <p>{{ item.item_name }} - {{ item.streak }}</p>
-                }
-              </div>
-
-              @if (userProfileService.isOpenFor(bubble.votedUser, tooltipScope)) {
-                <div class="user-profile-popover" role="tooltip">
-                  <app-user-profile [user]="bubble.votedUser"></app-user-profile>
-                </div>
-              }
-            </div>
-            @for (voter of bubble.voters; track $index) {
-              <div class="voter-container user-vote-container">
-                <div class="user-vote">
-                  <app-profile-image-picker
-                    [currentImageUrl]="voter.profile_picture"
-                    [onlyDisplay]="true"
-                    [imgClass]="'group-user-icon'"
-                  >
-                  </app-profile-image-picker>
-                  <span>{{ voter.username }}</span>
-                </div>
-              </div>
-            }
-          }
+          <app-vote-bubbles [bubbles]="voteBubbles" phase="results" />
         }
       </section>
       <section>
@@ -84,35 +46,13 @@
         </div>
       </div>
     } @else {
-      <div class="vote-container agario-container border">
-        @for (user of group()?.users; track $index) {
-          <div class="user-vote-container">
-            <div class="user-vote">
-              <app-profile-image-picker
-                [currentImageUrl]="user.profile_picture"
-                [onlyDisplay]="true"
-                [imgClass]="'group-user-icon'"
-              >
-              </app-profile-image-picker>
-              @if (!question()?.enableSelfVote && user.id === connectedUser?.id) {
-                <input type="checkbox" disabled />
-              } @else {
-                <input
-                  type="checkbox"
-                  (change)="toggleVote(user.id)"
-                  [checked]="usersId.includes(user.id)"
-                />
-              }
-              <span>{{ user.username }}</span>
-            </div>
-          </div>
-        }
-        @if (usersId.length) {
-          <div class="submit-vote-floating">
-            <button type="button" class="background-success" (click)="submitVote(usersId)">{{ 'question.submitAnswer' | translate }}</button>
-          </div>
-        }
-      </div>
+      <app-vote-bubbles
+        class="vote-bubbles-voting"
+        [bubbles]="votingBubbles()"
+        phase="voting"
+        [multiple]="!!question()?.enableMultipleVoting"
+        (voted)="submitVote($event)"
+      />
     }
   }
 </section>

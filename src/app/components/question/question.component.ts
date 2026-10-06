@@ -5,11 +5,10 @@ import { CommonModule } from '@angular/common';
 import { LoggerService } from '../../services/logger/logger.service';
 import { ChatComponent } from "../chat/chat.component";
 import { TranslatePipe } from '@ngx-translate/core';
-import { ProfileImagePickerComponent } from "../profile-image-picker/profile-image-picker.component";
-import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { CalendarComponent } from '../tooltips/calendar/calendar.component';
+import { VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
 
 interface VoteBubble {
   votedUser: User;
@@ -18,7 +17,7 @@ interface VoteBubble {
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, ProfileImagePickerComponent, UserProfileComponent, CalendarComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +33,7 @@ export class QuestionComponent implements OnInit{
   protected usersId: number[] = [];
   protected voteBubbles: VoteBubble[] = [];
   protected showCalendarFlag = signal(false);
+  protected readonly selectedVoteId = signal<number | null>(null);
   public readonly question = model<Question | null>(null);
   /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
   private readonly currentQuestion = signal<Question | null>(null);
@@ -43,6 +43,13 @@ export class QuestionComponent implements OnInit{
     return !!current && !!displayed && current.id !== displayed.id;
   });
   public readonly group = model<Group | null>(null);
+  /** Candidates shown on the voting screen: every group member, without voters yet. */
+  protected readonly votingBubbles = computed<VoteBubble[]>(() => {
+    const allowSelf = this.question()?.enableSelfVote;
+    return (this.group()?.users ?? [])
+      .filter(user => allowSelf || user.id !== this.connectedUser?.id)
+      .map(user => ({ votedUser: user, voters: [] }));
+  });
   @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
   async ngOnInit(): Promise<void> {

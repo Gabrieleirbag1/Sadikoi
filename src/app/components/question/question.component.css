@@ -103,3 +103,12 @@
   background-position: center;
   padding: 20px;
 }
+app-vote-bubbles {
+  flex: 1;
+  min-width: 0;
+  --vote-bubbles-height: 100%;
+}
+
+app-vote-bubbles.vote-bubbles-voting {
+  --vote-bubbles-height: 55vh;
+}
