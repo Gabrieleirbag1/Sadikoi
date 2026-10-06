@@ -9,6 +9,9 @@
 app-header {
   display: block;
   flex: none;
+  /* The header's wavy underline is transparent below the curve: let main-content's background show
+     through it instead of the white body (which showed as a white line). */
+  margin-bottom: -9px;
 }
 
 .main-content {
@@ -27,8 +30,14 @@ app-header {
     #fff;
     background-size: 109px 109px, 109px 109px,100% 6px, 109px 109px, 109px 109px;
     background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px; */
-  background-color:#fff;
-  background-image:linear-gradient(90deg, transparent 0%, #ffffffd3 25%, #ffffffd3 75%, transparent 100%), url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVQoU2N89+7dfwYsQEhIiBEkzDgkFGDzAbIY2Cv4AACvrBgJjYNGfwAAAABJRU5ErkJggg==);
+  background-color: #fffcf8;
+  background-image:
+    radial-gradient(ellipse 55% 45% at 8% 12%, #ffe9decc 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 95% 18%, #ebe4fccc 0%, transparent 70%),
+    radial-gradient(ellipse 55% 50% at 85% 95%, #def5eccc 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 10% 92%, #e0effccc 0%, transparent 70%),
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVQoU2N89+7dfwYsQEhIiBEkzDgkFGDzAbIY2Cv4AACvrBgJjYNGfwAAAABJRU5ErkJggg==);
+  background-attachment: fixed, fixed, fixed, fixed, local;
 }
 
 .main-content::-webkit-scrollbar {

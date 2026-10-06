@@ -6,6 +6,8 @@
 }
 
 .question-content {
+  padding: 4px 22px;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
   display: flex;
   gap: 8px;
   grid-column: 2;

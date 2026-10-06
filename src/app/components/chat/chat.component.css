@@ -6,7 +6,7 @@
     box-sizing: border-box;
     padding: 10px;
     gap: 10px;
-    background-color: var(--main-background, #fff);
+    background-color: #fdfbff;
     border: 2px solid var(--primary);
     border-bottom-left-radius: 15px 255px;
     border-bottom-right-radius: 225px 15px;

@@ -23,7 +23,8 @@
     padding: 10px;
     cursor: pointer;
     height: 20vh;
-    background-color: #fff;
+    background-color: var(--card-bg, #fff);
+    transition: transform 150ms ease, background-color 150ms ease;
 }
 
 .group-grid-icons {
@@ -54,7 +55,8 @@
     padding: 10px;
     cursor: pointer;
     height: 12vh;
-    background-color: #fff;
+    background-color: var(--card-bg, #fff);
+    transition: transform 150ms ease, background-color 150ms ease;
 }
 
 .group-list-item-info {
@@ -76,4 +78,15 @@
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+/* Pastel colour per card, cycling through five hues. */
+.group-grid-item:nth-child(5n+1), .group-list-item:nth-child(5n+1) { --card-bg: #fff0e8; }
+.group-grid-item:nth-child(5n+2), .group-list-item:nth-child(5n+2) { --card-bg: #eaf7f1; }
+.group-grid-item:nth-child(5n+3), .group-list-item:nth-child(5n+3) { --card-bg: #f0ebfc; }
+.group-grid-item:nth-child(5n+4), .group-list-item:nth-child(5n+4) { --card-bg: #e9f4fc; }
+.group-grid-item:nth-child(5n+5), .group-list-item:nth-child(5n+5) { --card-bg: #fff7d9; }
+
+.group-grid-item:hover, .group-list-item:hover {
+    transform: translateY(-3px);
 }
