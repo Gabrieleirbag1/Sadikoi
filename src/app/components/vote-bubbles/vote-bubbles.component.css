@@ -20,6 +20,9 @@
   position: absolute;
   inset: 0;
   overflow: hidden; /* voters leaving the box disappear under its border */
+  /* The box border is hand-drawn (irregular, strongly rounded corners): clip along the same curves so decor
+     and bubbles never show outside it. */
+  border-radius: inherit;
 }
 
 .vote-bubbles-canvas {
