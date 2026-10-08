@@ -137,6 +137,19 @@
     "networkError": "Server unreachable. Check your connection.",
     "accountUpdated": "Account updated successfully.",
     "passwordsMismatch": "Passwords do not match.",
-    "groupUpdated": "Group updated successfully."
+    "groupUpdated": "Group updated successfully.",
+    "resetEmailSent": "If an account exists for this email, a reset link has been sent.",
+    "passwordReset": "Password reset. You can now log in."
+  },
+  "forgotPassword": {
+    "title": "Forgot your password?",
+    "description": "Enter your email and we'll send you a link to reset it. The link is valid for 15 minutes.",
+    "send": "Send reset link",
+    "backToLogin": "Back to login"
+  },
+  "resetPassword": {
+    "title": "Choose a new password",
+    "submit": "Reset password",
+    "requestNewLink": "Request a new link"
   }
 }

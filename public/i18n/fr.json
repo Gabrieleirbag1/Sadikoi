@@ -137,6 +137,19 @@
     "networkError": "Serveur injoignable. Vérifie ta connexion.",
     "accountUpdated": "Compte mis à jour avec succès.",
     "passwordsMismatch": "Les mots de passe ne correspondent pas.",
-    "groupUpdated": "Groupe mis à jour avec succès."
+    "groupUpdated": "Groupe mis à jour avec succès.",
+    "resetEmailSent": "Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.",
+    "passwordReset": "Mot de passe réinitialisé. Tu peux te connecter."
+  },
+  "forgotPassword": {
+    "title": "Mot de passe oublié ?",
+    "description": "Saisis ton email et nous t'enverrons un lien pour le réinitialiser. Le lien est valable 15 minutes.",
+    "send": "Envoyer le lien",
+    "backToLogin": "Retour à la connexion"
+  },
+  "resetPassword": {
+    "title": "Choisis un nouveau mot de passe",
+    "submit": "Réinitialiser le mot de passe",
+    "requestNewLink": "Demander un nouveau lien"
   }
 }
