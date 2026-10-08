@@ -8,4 +8,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class ItemImageDisplayComponent {
   public readonly itemName = input<string | null | undefined>(null);
+  public readonly imgClass = input<string>('');
+
 }
