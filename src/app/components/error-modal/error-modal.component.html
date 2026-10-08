@@ -1,0 +1,20 @@
+<div class="toast-container">
+  @for (toast of toasts(); track toast.id) {
+    <div
+      class="toast border"
+      [class.toast-error]="toast.type === 'error'"
+      [class.toast-success]="toast.type === 'success'"
+      [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
+    >
+      <div
+        class="toast-progress"
+        [style.animation-duration.ms]="toast.duration"
+        (animationend)="dismiss(toast.id)"
+      ></div>
+      <div class="toast-body">
+        <span class="toast-message">{{ toast.message }}</span>
+        <span class="toast-close" role="button" tabindex="0" (click)="dismiss(toast.id)" (keydown.enter)="dismiss(toast.id)">X</span>
+      </div>
+    </div>
+  }
+</div>
