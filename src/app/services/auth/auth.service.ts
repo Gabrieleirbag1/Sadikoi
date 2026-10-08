@@ -150,6 +150,26 @@ export class AuthService {
     }
   }
 
+  public async forgotPassword(email: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/forgot-password/`, { email }));
+      return true;
+    } catch (error) {
+      this.logger.error('Forgot password request failed:', error);
+      return false;
+    }
+  }
+
+  public async resetPassword(token: string, password: string, confirmPassword: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/reset-password/`, { token, password, confirm_password: confirmPassword }));
+      return true;
+    } catch (error) {
+      this.logger.error('Reset password failed:', error);
+      return false;
+    }
+  }
+
   public async deleteUser(userInfo: string): Promise<boolean> {
     try {
       const response = await firstValueFrom(this.httpClient.delete<ApiResponse>(`${environment.apiUrl}auth/account/${userInfo}`, { withCredentials: true }));
