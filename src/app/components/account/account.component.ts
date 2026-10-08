@@ -8,6 +8,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ModalComponent } from '../modals/modal/modal.component';
 import { ModalService } from '../../services/modal/modal.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-account',
@@ -22,6 +23,7 @@ export class AccountComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly logger = inject(LoggerService);
   private readonly translate = inject(TranslateService);
+  private readonly notificationService = inject(NotificationService);
 
   protected devices = signal<Device[] | null>(null);
   protected user: User | null = null;
@@ -75,6 +77,7 @@ export class AccountComponent implements OnInit {
     const val = this.authModel();
     if (val.password && val.password !== val.confirmPassword) {
       this.logger.error('Passwords do not match!');
+      this.notificationService.showError(this.translate.instant('notification.passwordsMismatch'));
       return;
     }
     const success = await this.authService.updateUser(val.username, val.email, val.password, val.confirmPassword, this.selectedFile, val.language as Language);
@@ -85,6 +88,7 @@ export class AccountComponent implements OnInit {
       if (this.imagePicker) {
         this.imagePicker.clearPreview();
       }
+      this.notificationService.showSuccess(this.translate.instant('notification.accountUpdated'));
     } else {
       this.logger.error('Failed to update account');
     }
