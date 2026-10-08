@@ -70,7 +70,7 @@
                         type="button"
                         class="background-success"
                         (click)="promoteUser(user)"
-                        [disabled]="user.role === 'admin' || user.id === connectedUser?.id"
+                        [disabled]="!isAdmin() || !connectedUser || (user.role === 'admin' || user.id === connectedUser.id)"
                       >
                         Promote
                       </button>
@@ -78,7 +78,7 @@
                         type="button"
                         class="background-danger"
                         (click)="confirmRemoveUser(user)"
-                        [disabled]="user.role === 'admin' || user.id === connectedUser?.id"
+                        [disabled]="!isAdmin() || !connectedUser || (user.role === 'admin' || user.id === connectedUser.id)"
                       >
                         {{ 'groupOptions.removeUser' | translate }}
                       </button>

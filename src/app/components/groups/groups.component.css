@@ -57,7 +57,6 @@
 
 /* Title: bold, centred between the two icons; long text wraps anywhere and is cut with an ellipsis. */
 .group-grid-item-name {
-    margin: 0;
     flex: 1 1 0;
     min-width: 0;
     align-self: center;
@@ -97,6 +96,14 @@
 
 .group-grid-item-icon {
     flex: none;
+}
+
+.group-item-icon-box {
+    display: flex;
+    box-sizing: content-box;
+    width: fit-content;
+    padding: 4px;
+    background-color: rgba(202, 202, 202, 0.432);
 }
 
 .group-users-icons {
@@ -142,11 +149,11 @@
 
 .group-list-item-name {
     font-size: 1.2rem;
-    margin: 0;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-top: 0;
 }
 
 .group-list-item-description {

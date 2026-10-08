@@ -125,5 +125,11 @@
   "voteBubbles": {
     "selected": "Vote for {{name}}?",
     "confirm": "Confirm vote"
+  },
+  "userProfile": {
+    "showMore": "Show {{count}} more",
+    "showLess": "Show less",
+    "items": "Items",
+    "memberSince": "Member since"
   }
 }

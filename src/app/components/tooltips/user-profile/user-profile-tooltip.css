@@ -3,6 +3,10 @@
   z-index: 1000;
 }
 
+.user-profile-anchor:hover {
+  z-index: 1001;
+}
+
 .user-profile-popover {
   position: absolute;
   top: calc(100% + 0.5rem);

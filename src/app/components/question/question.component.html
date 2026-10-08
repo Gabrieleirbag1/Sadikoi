@@ -1,7 +1,8 @@
 <section class="main-container">
   <div class="question-container">
     <div class="question-content">
-      <span>{{ question()?.content }}</span><span>{{ question()?.item_name }}</span>
+      <span>{{ question()?.content }}</span>
+      <app-item-image-display [itemName]="question()?.item_name" [imgClass]="'group-question-item'"></app-item-image-display>
     </div>
     <div class="calendar-anchor" #calendarAnchor>
       <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()" title="{{ 'group.calendar' | translate }}">

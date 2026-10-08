@@ -7,14 +7,15 @@ import { ProfileImagePickerComponent } from '../profile-image-picker/profile-ima
 import { ModalService } from '../../services/modal/modal.service';
 import { GroupModalComponent } from '../modals/group-modal/group-modal.component';
 import { DatetimeService } from '../../services/datetime/datetime.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
 
 
 type ViewState = 'grid' | 'list';
 
 @Component({
   selector: 'app-groups',
-  imports: [CommonModule, ProfileImagePickerComponent, GroupModalComponent, TranslatePipe],
+  imports: [CommonModule, ProfileImagePickerComponent, GroupModalComponent, ItemImageDisplayComponent, TranslatePipe],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
   standalone: true

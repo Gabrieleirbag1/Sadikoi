@@ -38,10 +38,9 @@
                 </app-profile-image-picker>
               }
             </div>
-            <p class="group-grid-item-name">{{ group.name }}</p>
-            <div class="group-grid-item-icon">
-              <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
-              </app-profile-image-picker>
+            <h2 class="group-grid-item-name">{{ group.name }}</h2>
+            <div class="group-grid-item-icon group-item-icon-box border">
+              <app-item-image-display [itemName]="group.question && group.question.item_name" [imgClass]="''"></app-item-image-display>
             </div>
           </div>
           <p class="group-grid-item-description">
@@ -73,7 +72,7 @@
             }
           </div>
           <div class="group-list-item-info">
-            <p class="group-list-item-name"><b>{{ group.name }}</b></p>
+            <h2 class="group-list-item-name"><b>{{ group.name }}</b></h2>
             <p class="group-list-item-description">
               @if (group.description.length > 0) {
                 {{ group.description }}
@@ -84,8 +83,9 @@
             </p>
           </div>
           <div class="group-list-item-icon">
-            <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
-            </app-profile-image-picker>
+            <div class="group-item-icon-box border">
+              <app-item-image-display [itemName]="group.question && group.question.item_name" [imgClass]="''"></app-item-image-display>
+            </div>
           </div>
         </div>
       }
