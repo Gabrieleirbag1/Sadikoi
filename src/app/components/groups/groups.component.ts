@@ -28,6 +28,8 @@ export class GroupsComponent implements OnInit {
   protected groups = signal<Group[]>([]);
   protected view: ViewState = 'grid';
 
+  protected imagUrl = '/images/icons';
+
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
     this.changeView(localStorage.getItem('groupsView') as ViewState || 'grid');

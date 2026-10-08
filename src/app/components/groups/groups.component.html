@@ -84,8 +84,13 @@
             </p>
           </div>
           <div class="group-list-item-icon">
-            <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
-            </app-profile-image-picker>
+            <div class="border">
+            @if (group.question && group.question.item_name) {
+              <img class="group-item-icon" [src]="'images/items/' + group.question.item_name + '.png'" alt=""/>
+            } @else {
+              <img class="group-item-icon" src="default-item.svg" alt="" />
+            }
+            </div>
           </div>
         </div>
       }

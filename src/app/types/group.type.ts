@@ -7,5 +7,5 @@ interface Group {
   daily_reset_timestamp: string;
   themes: string[];
   has_user_voted_today: boolean;
-  item_names: string[];
+  question: Question;
 }
