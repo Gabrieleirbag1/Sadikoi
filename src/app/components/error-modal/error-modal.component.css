@@ -1,4 +1,7 @@
 .toast-container {
+  --toast-danger: #a7342d;
+  --toast-success: #86a361;
+  --toast-bg: #fffefc;
   position: fixed;
   bottom: 16px;
   left: 50%;
@@ -20,17 +23,17 @@
 }
 
 .toast-error {
-  background-color: var(--danger-light);
-  border-color: var(--danger);
+  background-color: var(--toast-bg);
+  border-color: var(--toast-danger);
 }
 
 .toast-success {
-  background-color: var(--success-light);
-  border-color: var(--success);
+  background-color: var(--toast-bg);
+  border-color: var(--toast-success);
 }
 
 .toast-progress {
-  height: 5px;
+  height: 6px;
   width: 100%;
   transform-origin: left;
   animation-name: toast-progress;
@@ -39,11 +42,11 @@
 }
 
 .toast-error .toast-progress {
-  background-color: var(--danger);
+  background-color: var(--toast-danger);
 }
 
 .toast-success .toast-progress {
-  background-color: var(--success);
+  background-color: var(--toast-success);
 }
 
 .toast:hover .toast-progress {
