@@ -1,18 +1,30 @@
-<div class="user-profile-container">
+<div class="user-profile-container border">
+  <div class="user-profile-header">
     <app-profile-image-picker
-        [currentImageUrl]="user()?.profile_picture"
-        [onlyDisplay]="true"
-        [imgClass]="'group-user-icon'"
+      [currentImageUrl]="user()?.profile_picture"
+      [onlyDisplay]="true"
+      [imgClass]="'group-user-icon'"
     ></app-profile-image-picker>
-    <p>{{ user()?.username }}</p>
-
-    <div class="items-container">
-    @for (item of user()?.items; track $index) {
-        <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
-        -
-        <span>{{ item.streak }}</span>
-    }
+    <div class="user-profile-identity">
+      <strong class="user-profile-name">{{ user()?.username }}</strong>
+      <small class="user-profile-date">{{ 'userProfile.memberSince' | translate }} {{ user()?.date_created | date }}</small>
     </div>
+  </div>
 
-    <p>{{ user()?.date_created }}</p>
+  @if (items().length) {
+    <div class="user-profile-items-title">{{ 'userProfile.items' | translate }}</div>
+    <div class="items-container" [class.expanded]="expanded()">
+      @for (item of visibleItems(); track $index) {
+        <div class="user-profile-item border border-1">
+          <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
+          <span class="user-profile-streak" title="Streak">🔥 {{ item.streak }}</span>
+        </div>
+      }
+    </div>
+    @if (hiddenCount() > 0) {
+      <button type="button" class="paper-btn btn-small user-profile-more" (click)="toggleExpanded()">
+        {{ expanded() ? ('userProfile.showLess' | translate) : ('userProfile.showMore' | translate: { count: hiddenCount() }) }}
+      </button>
+    }
+  }
 </div>
