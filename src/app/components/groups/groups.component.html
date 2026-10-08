@@ -85,11 +85,7 @@
           </div>
           <div class="group-list-item-icon">
             <div class="border">
-            @if (group.question && group.question.item_name) {
-              <img class="group-item-icon" [src]="'images/items/' + group.question.item_name + '.png'" alt=""/>
-            } @else {
-              <img class="group-item-icon" src="default-item.svg" alt="" />
-            }
+              <app-item-image-display [itemName]="group.question && group.question.item_name"></app-item-image-display>
             </div>
           </div>
         </div>

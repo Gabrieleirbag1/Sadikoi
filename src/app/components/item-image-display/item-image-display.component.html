@@ -1,0 +1,5 @@
+@if (itemName()) {
+  <img class="group-item-icon" [src]="'images/items/' + itemName() + '.png'" alt="" />
+} @else {
+  <img class="group-item-icon" src="default-item.svg" alt="" />
+}

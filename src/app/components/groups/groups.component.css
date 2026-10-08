@@ -156,11 +156,6 @@
     text-overflow: ellipsis;
 }
 
-.group-item-icon {
-  width: 65px;
-  height: 65px;
-}
-
 /* Pastel colour per card, cycling through five hues. */
 .group-grid-item:nth-child(5n+1), .group-list-item:nth-child(5n+1) { --card-bg: #fff0e8; }
 .group-grid-item:nth-child(5n+2), .group-list-item:nth-child(5n+2) { --card-bg: #eaf7f1; }
