@@ -24,3 +24,7 @@
     grid-column: 3;
     gap: 10px;
 }
+.group-header-icon {
+  width: 32px;
+  height: 32px;
+}

@@ -98,6 +98,14 @@
     flex: none;
 }
 
+.group-item-icon-box {
+    display: flex;
+    box-sizing: content-box;
+    width: fit-content;
+    padding: 4px;
+    background-color: rgba(202, 202, 202, 0.432);
+}
+
 .group-users-icons {
     flex: none;
     display: grid;

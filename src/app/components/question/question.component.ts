@@ -9,6 +9,7 @@ import { UserProfileService } from '../../services/user-profile/user-profile.ser
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { CalendarComponent } from '../tooltips/calendar/calendar.component';
 import { VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
+import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
 
 interface VoteBubble {
   votedUser: User;
@@ -17,7 +18,7 @@ interface VoteBubble {
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,4 +1,15 @@
 .group-item-icon {
-  width: 65px;
-  height: 65px;
+  display: block;
+  width: 54px;
+  height: 54px;
+}
+
+.group-question-item {
+  width: 42px;
+  height: 42px;
+}
+
+.user-profile-item-icon {
+  width: 24px;
+  height: 24px;
 }

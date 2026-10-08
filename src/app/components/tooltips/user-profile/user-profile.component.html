@@ -8,7 +8,7 @@
 
     <div class="items-container">
     @for (item of user()?.items; track $index) {
-        <span>{{ item.item_name }}</span>
+        <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
         -
         <span>{{ item.streak }}</span>
     }

@@ -39,9 +39,8 @@
               }
             </div>
             <h2 class="group-grid-item-name">{{ group.name }}</h2>
-            <div class="group-grid-item-icon">
-              <app-profile-image-picker [onlyDisplay]="true" [imgClass]="'group-item-icon'">
-              </app-profile-image-picker>
+            <div class="group-grid-item-icon group-item-icon-box border">
+              <app-item-image-display [itemName]="group.question && group.question.item_name" [imgClass]="''"></app-item-image-display>
             </div>
           </div>
           <p class="group-grid-item-description">
@@ -84,8 +83,8 @@
             </p>
           </div>
           <div class="group-list-item-icon">
-            <div class="border">
-              <app-item-image-display [itemName]="group.question && group.question.item_name"></app-item-image-display>
+            <div class="group-item-icon-box border">
+              <app-item-image-display [itemName]="group.question && group.question.item_name" [imgClass]="''"></app-item-image-display>
             </div>
           </div>
         </div>
