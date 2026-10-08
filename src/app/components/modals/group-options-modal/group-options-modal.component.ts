@@ -3,7 +3,8 @@ import { disabled, form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { LoggerService } from '../../../services/logger/logger.service';
 import { GroupsService } from '../../../services/groups/groups.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { NotificationService } from '../../../services/notification/notification.service';
 import { ModalConfig, ModalService } from '../../../services/modal/modal.service';
 import { DatetimeService } from '../../../services/datetime/datetime.service';
 import { UserProfileComponent } from '../../tooltips/user-profile/user-profile.component';
@@ -24,6 +25,8 @@ export class GroupOptionsComponent implements OnChanges {
   private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService);
   private readonly groupService = inject(GroupsService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly translate = inject(TranslateService);
   private readonly modalId = 'group-options-modal';
 
   protected readonly userProfileService = inject(UserProfileService);
@@ -93,6 +96,7 @@ export class GroupOptionsComponent implements OnChanges {
       const timestamp = this.datetimeService.convertLocalTimestampToUtc(val.daily_reset_timestamp);
       const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp, this.selectedThemes);
       this.group.set(response);
+      this.notificationService.showSuccess(this.translate.instant('notification.groupUpdated'));
     } catch (error) {
       this.logger.error('Error updating group:', error);
     }

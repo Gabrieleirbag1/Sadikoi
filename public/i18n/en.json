@@ -136,6 +136,7 @@
     "genericError": "Something went wrong.",
     "networkError": "Server unreachable. Check your connection.",
     "accountUpdated": "Account updated successfully.",
-    "passwordsMismatch": "Passwords do not match."
+    "passwordsMismatch": "Passwords do not match.",
+    "groupUpdated": "Group updated successfully."
   }
 }

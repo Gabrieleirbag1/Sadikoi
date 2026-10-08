@@ -136,6 +136,7 @@
     "genericError": "Une erreur s'est produite.",
     "networkError": "Serveur injoignable. Vérifie ta connexion.",
     "accountUpdated": "Compte mis à jour avec succès.",
-    "passwordsMismatch": "Les mots de passe ne correspondent pas."
+    "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+    "groupUpdated": "Groupe mis à jour avec succès."
   }
 }

@@ -13,9 +13,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status !== 401 && !req.context.get(SKIP_ERROR_TOAST)) {
         const translate = injector.get(TranslateService);
+        const apiMessage = typeof error.error?.message === 'string' ? error.error.message : '';
         const message = error.status === 0
           ? translate.instant('notification.networkError')
-          : error.error?.message ?? translate.instant('notification.genericError');
+          : apiMessage || translate.instant('notification.genericError');
         injector.get(NotificationService).showError(message);
       }
       return throwError(() => error);
