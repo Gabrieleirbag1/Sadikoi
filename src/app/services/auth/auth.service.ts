@@ -6,6 +6,8 @@ import { LoggerService } from '../logger/logger.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password'];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -94,7 +96,15 @@ export class AuthService {
     this.setAuthSession(null, false);
     localStorage.removeItem('user');
     sessionStorage.removeItem('homeState')
-    this.router.navigate(['/auth']);
+    if (!this.isOnPublicRoute()) {
+      this.router.navigate(['/auth']);
+    }
+  }
+
+  // Pages reachable without being logged in: a 401 there must not bounce the user to /auth.
+  private isOnPublicRoute(): boolean {
+    const path = window.location.pathname;
+    return PUBLIC_ROUTE_PREFIXES.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
   }
 
   public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<HttpResponse<ApiResponse> | null> {
