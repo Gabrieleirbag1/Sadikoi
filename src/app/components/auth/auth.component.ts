@@ -1,6 +1,6 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ type DisplayMode = 'register' | 'login' | 'verifyDevice';
 
 @Component({
   selector: 'app-auth',
-  imports: [GoogleLoginComponent, FormField, TranslatePipe],
+  imports: [GoogleLoginComponent, FormField, TranslatePipe, RouterLink],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
