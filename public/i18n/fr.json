@@ -89,10 +89,10 @@
     "noGifsFound": "Aucun GIF trouvé."
   },
   "feedback": {
-    "bugReport": "Rapport de bogue",
+    "bugReport": "Rapport de bug",
     "bugReportTitle": "Titre :",
-    "describeBug": "Décrire le bogue :",
-    "submitBugReport": "Soumettre un rapport de bogue",
+    "describeBug": "Décrire le bug :",
+    "submitBugReport": "Soumettre un rapport de bug",
     "suggestion": "Suggestion",
     "theme": "Thème :",
     "themeOptions": {
@@ -157,7 +157,7 @@
     "title": "Paramètres",
     "notifications": "Notifications",
     "donate": "Soutenir Sadikoi",
-    "feedback": "Retour d'expérience",
+    "feedback": "Feedback",
     "legal": "Informations légales",
     "legalNotice": "Mentions légales",
     "privacy": "Politique de confidentialité",
