@@ -151,5 +151,90 @@
     "title": "Choose a new password",
     "submit": "Reset password",
     "requestNewLink": "Request a new link"
+  },
+  "settings": {
+    "title": "Settings",
+    "notifications": "Notifications",
+    "donate": "Support Sadikoi",
+    "feedback": "Feedback",
+    "legal": "Legal",
+    "legalNotice": "Legal notice",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use",
+    "contact": "Contact",
+    "about": "About (missclick.net)",
+    "credits": "Credits",
+    "gifsPoweredBy": "GIFs powered by"
+  },
+  "legal": {
+    "back": "Back",
+    "updated": "Last updated: October 2026. Draft text, subject to review.",
+    "legal": {
+      "title": "Legal notice",
+      "sections": [
+        {
+          "heading": "Publisher",
+          "body": "Sadikoi is published by Gabriel Garrone under the missclick.net brand. Contact: gabrielgarronedev@gmail.com."
+        },
+        {
+          "heading": "Hosting",
+          "body": "The service is hosted on servers operated for missclick.net (sadikoi.missclick.net)."
+        },
+        {
+          "heading": "Intellectual property",
+          "body": "The Sadikoi name, interface and source materials are the property of their author. GIFs are provided by KLIPY and belong to their respective owners."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "sections": [
+        {
+          "heading": "Data we collect",
+          "body": "Username, email address, password (stored hashed), profile picture, language, device name, and the content you create (groups, questions, votes, messages)."
+        },
+        {
+          "heading": "How we use it",
+          "body": "To run the service: authentication, group features, notifications and support. We do not sell your data."
+        },
+        {
+          "heading": "Third parties",
+          "body": "GIF search is performed through KLIPY, which receives your search terms. Donations are processed by PayPal and are not handled by Sadikoi."
+        },
+        {
+          "heading": "Your rights",
+          "body": "You can access, correct or delete your data and your account at any time from the app or by contacting us."
+        },
+        {
+          "heading": "Contact",
+          "body": "gabrielgarronedev@gmail.com"
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "sections": [
+        {
+          "heading": "Acceptance",
+          "body": "By using Sadikoi you agree to these terms."
+        },
+        {
+          "heading": "Acceptable use",
+          "body": "Do not post unlawful, hateful or harassing content, and do not attempt to disrupt the service."
+        },
+        {
+          "heading": "Accounts",
+          "body": "You are responsible for your account and for keeping your password secure. We may suspend accounts that violate these terms."
+        },
+        {
+          "heading": "Liability",
+          "body": "The service is provided as is, without warranty. We are not liable for indirect damages arising from its use."
+        },
+        {
+          "heading": "Changes",
+          "body": "These terms may be updated; continued use means acceptance of the new version."
+        }
+      ]
+    }
   }
 }

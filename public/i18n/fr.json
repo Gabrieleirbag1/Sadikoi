@@ -151,5 +151,90 @@
     "title": "Choisis un nouveau mot de passe",
     "submit": "Réinitialiser le mot de passe",
     "requestNewLink": "Demander un nouveau lien"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "notifications": "Notifications",
+    "donate": "Soutenir Sadikoi",
+    "feedback": "Retour d'expérience",
+    "legal": "Informations légales",
+    "legalNotice": "Mentions légales",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "contact": "Contact",
+    "about": "À propos (missclick.net)",
+    "credits": "Crédits",
+    "gifsPoweredBy": "GIFs fournis par"
+  },
+  "legal": {
+    "back": "Retour",
+    "updated": "Dernière mise à jour : octobre 2026. Texte provisoire, à valider.",
+    "legal": {
+      "title": "Mentions légales",
+      "sections": [
+        {
+          "heading": "Éditeur",
+          "body": "Sadikoi est édité par Gabriel Garrone sous la marque missclick.net. Contact : gabrielgarronedev@gmail.com."
+        },
+        {
+          "heading": "Hébergement",
+          "body": "Le service est hébergé sur des serveurs exploités pour missclick.net (sadikoi.missclick.net)."
+        },
+        {
+          "heading": "Propriété intellectuelle",
+          "body": "Le nom Sadikoi, l'interface et les contenus sources appartiennent à leur auteur. Les GIFs sont fournis par KLIPY et appartiennent à leurs propriétaires respectifs."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "sections": [
+        {
+          "heading": "Données collectées",
+          "body": "Nom d'utilisateur, adresse e-mail, mot de passe (stocké haché), photo de profil, langue, nom de l'appareil et contenus que vous créez (groupes, questions, votes, messages)."
+        },
+        {
+          "heading": "Utilisation",
+          "body": "Pour faire fonctionner le service : authentification, fonctionnalités de groupe, notifications et assistance. Nous ne vendons pas vos données."
+        },
+        {
+          "heading": "Tiers",
+          "body": "La recherche de GIFs passe par KLIPY, qui reçoit vos termes de recherche. Les dons sont traités par PayPal et non par Sadikoi."
+        },
+        {
+          "heading": "Vos droits",
+          "body": "Vous pouvez accéder à vos données, les corriger ou les supprimer, ainsi que votre compte, à tout moment depuis l'application ou en nous contactant."
+        },
+        {
+          "heading": "Contact",
+          "body": "gabrielgarronedev@gmail.com"
+        }
+      ]
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "sections": [
+        {
+          "heading": "Acceptation",
+          "body": "En utilisant Sadikoi, vous acceptez ces conditions."
+        },
+        {
+          "heading": "Usage acceptable",
+          "body": "Ne publiez pas de contenu illégal, haineux ou harcelant et ne tentez pas de perturber le service."
+        },
+        {
+          "heading": "Comptes",
+          "body": "Vous êtes responsable de votre compte et de la sécurité de votre mot de passe. Les comptes qui enfreignent ces conditions peuvent être suspendus."
+        },
+        {
+          "heading": "Responsabilité",
+          "body": "Le service est fourni en l'état, sans garantie. Nous ne sommes pas responsables des dommages indirects liés à son utilisation."
+        },
+        {
+          "heading": "Modifications",
+          "body": "Ces conditions peuvent évoluer ; l'utilisation continue vaut acceptation de la nouvelle version."
+        }
+      ]
+    }
   }
 }
