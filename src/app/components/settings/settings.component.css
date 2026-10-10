@@ -60,6 +60,7 @@
 }
 
 .settings-section {
+    display: block;
     padding: 12px 0;
     border-bottom: 1px dashed var(--settings-border);
 }
