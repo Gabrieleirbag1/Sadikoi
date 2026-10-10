@@ -1,0 +1,61 @@
+@if (settings.isOpen()) {
+  <div class="settings-backdrop" (click)="settings.close()"></div>
+  <aside class="settings-panel" role="dialog" aria-modal="true" [attr.aria-label]="'settings.title' | translate">
+    <div class="settings-header">
+      <h2>{{ 'settings.title' | translate }}</h2>
+      <button type="button" class="settings-close" [attr.aria-label]="'modal.close' | translate" (click)="settings.close()">&times;</button>
+    </div>
+
+    <div class="settings-body">
+      <button type="button" class="settings-item settings-notifications" (click)="toggleNotifications()">
+        <img src="images/icons/bell.svg" width="22" height="22" alt="" />
+        {{ 'settings.notifications' | translate }}
+      </button>
+
+      <section class="settings-section">
+        <h3>{{ 'settings.donate' | translate }}</h3>
+        <form action="https://www.paypal.com/donate" method="post" target="_blank">
+          <input type="hidden" name="hosted_button_id" value="A37WU32WXPJLN" />
+          <input
+            type="image"
+            src="https://www.paypalobjects.com/en_US/FR/i/btn/btn_donateCC_LG.gif"
+            name="submit"
+            title="PayPal - The safer, easier way to pay online!"
+            alt="Donate with PayPal button"
+          />
+        </form>
+      </section>
+
+      <section class="settings-section">
+        <details>
+          <summary>{{ 'settings.feedback' | translate }}</summary>
+          <app-feedback></app-feedback>
+        </details>
+      </section>
+
+      <nav class="settings-section" [attr.aria-label]="'settings.legal' | translate">
+        <h3>{{ 'settings.legal' | translate }}</h3>
+        <a class="settings-item" routerLink="/legal" (click)="settings.close()">{{ 'settings.legalNotice' | translate }}</a>
+        <a class="settings-item" routerLink="/privacy" (click)="settings.close()">{{ 'settings.privacy' | translate }}</a>
+        <a class="settings-item" routerLink="/terms" (click)="settings.close()">{{ 'settings.terms' | translate }}</a>
+      </nav>
+
+      <section class="settings-section">
+        <a class="settings-item" [href]="contactHref">{{ 'settings.contact' | translate }}</a>
+        <a class="settings-item" [href]="missclickUrl" target="_blank" rel="noopener noreferrer">{{ 'settings.about' | translate }}</a>
+      </section>
+
+      <section class="settings-section settings-credits">
+        <h3>{{ 'settings.credits' | translate }}</h3>
+        <p>
+          {{ 'settings.gifsPoweredBy' | translate }}
+          <a [href]="klipyUrl" target="_blank" rel="noopener noreferrer">KLIPY</a>
+        </p>
+      </section>
+    </div>
+
+    <footer class="settings-footer">
+      Sadikoi v{{ version }} &middot; &copy; {{ year }}
+    </footer>
+  </aside>
+}

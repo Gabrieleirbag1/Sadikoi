@@ -30,6 +30,21 @@ export const routes: Routes = [
         loadComponent: () => import('./components/answer.invitation/answer.invitation.component').then(m => m.AnswerInvitationComponent)
     },
     {
+        path: 'legal',
+        data: { doc: 'legal' },
+        loadComponent: () => import('./components/legal/legal-page.component').then(m => m.LegalPageComponent)
+    },
+    {
+        path: 'privacy',
+        data: { doc: 'privacy' },
+        loadComponent: () => import('./components/legal/legal-page.component').then(m => m.LegalPageComponent)
+    },
+    {
+        path: 'terms',
+        data: { doc: 'terms' },
+        loadComponent: () => import('./components/legal/legal-page.component').then(m => m.LegalPageComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }
