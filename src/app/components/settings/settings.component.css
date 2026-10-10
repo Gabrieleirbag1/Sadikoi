@@ -109,6 +109,16 @@
 
 .settings-credits p {
     margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.klipy-logo {
+    display: block;
+    height: 28px;
+    width: auto;
 }
 
 .settings-footer {
