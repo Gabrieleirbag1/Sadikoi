@@ -1,15 +1,19 @@
-<div>
-    <label for="theme">{{ 'feedback.theme' | translate }}</label>
-    <select id="theme" #theme>
-        <option>{{ 'feedback.themeOptions.party' | translate }}</option>
-        <option>{{ 'feedback.themeOptions.spicy' | translate }}</option>
-        <option>{{ 'feedback.themeOptions.family' | translate }}</option>
-        <option>{{ 'feedback.themeOptions.popCulture' | translate }}</option>
-        <option>{{ 'feedback.themeOptions.other' | translate }}</option>
-    </select>
+<div class="feedback-form">
+    <div>
+        <label for="theme">{{ 'feedback.theme' | translate }}</label>
+        <select id="theme" #theme>
+            <option>{{ 'feedback.themeOptions.party' | translate }}</option>
+            <option>{{ 'feedback.themeOptions.spicy' | translate }}</option>
+            <option>{{ 'feedback.themeOptions.family' | translate }}</option>
+            <option>{{ 'feedback.themeOptions.popCulture' | translate }}</option>
+            <option>{{ 'feedback.themeOptions.other' | translate }}</option>
+        </select>
+    </div>
 
-    <label for="question">{{ 'feedback.question' | translate }}</label>
-    <textarea id="question" #question></textarea>
+    <div>
+        <label for="question">{{ 'feedback.question' | translate }}</label>
+        <textarea id="question" #question></textarea>
+    </div>
 
-    <button (click)="submitSuggestion(theme.value, question.value)">{{ 'feedback.submitSuggestion' | translate }}</button>
+    <button class="paper-btn btn-block background-secondary" (click)="submitSuggestion(theme.value, question.value)">{{ 'feedback.submitSuggestion' | translate }}</button>
 </div>

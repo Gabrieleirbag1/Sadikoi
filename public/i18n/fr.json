@@ -139,7 +139,8 @@
     "passwordsMismatch": "Les mots de passe ne correspondent pas.",
     "groupUpdated": "Groupe mis à jour avec succès.",
     "resetEmailSent": "Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.",
-    "passwordReset": "Mot de passe réinitialisé. Tu peux te connecter."
+    "passwordReset": "Mot de passe réinitialisé. Tu peux te connecter.",
+    "feedbackSent": "Merci pour votre retour !"
   },
   "forgotPassword": {
     "title": "Mot de passe oublié ?",

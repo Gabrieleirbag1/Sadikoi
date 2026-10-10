@@ -139,7 +139,8 @@
     "passwordsMismatch": "Passwords do not match.",
     "groupUpdated": "Group updated successfully.",
     "resetEmailSent": "If an account exists for this email, a reset link has been sent.",
-    "passwordReset": "Password reset. You can now log in."
+    "passwordReset": "Password reset. You can now log in.",
+    "feedbackSent": "Thanks for your feedback!"
   },
   "forgotPassword": {
     "title": "Forgot your password?",

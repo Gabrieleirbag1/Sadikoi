@@ -90,11 +90,6 @@
     color: var(--settings-accent);
 }
 
-summary {
-    cursor: pointer;
-    font-weight: bold;
-}
-
 /* Notifications are only managed from the settings on mobile. */
 .settings-notifications {
     display: none;

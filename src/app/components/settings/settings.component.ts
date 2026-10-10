@@ -23,6 +23,7 @@ export class SettingsComponent {
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
     this.settings.close();
+    this.settings.closeFeedback();
   }
 
   protected toggleNotifications(): void {

@@ -27,10 +27,9 @@
       </section>
 
       <section class="settings-section">
-        <details>
-          <summary>{{ 'settings.feedback' | translate }}</summary>
-          <app-feedback></app-feedback>
-        </details>
+        <button type="button" class="settings-item" (click)="settings.openFeedback()">
+          {{ 'settings.feedback' | translate }}
+        </button>
       </section>
 
       <nav class="settings-section" [attr.aria-label]="'settings.legal' | translate">
@@ -59,3 +58,5 @@
     </footer>
   </aside>
 }
+
+<app-feedback></app-feedback>

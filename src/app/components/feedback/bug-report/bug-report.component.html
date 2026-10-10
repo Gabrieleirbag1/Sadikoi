@@ -1,9 +1,13 @@
-<div>
-    <label for="title">{{ 'feedback.bugReportTitle' | translate }}</label>
-    <input id="title" type="text" #title>
+<div class="feedback-form">
+    <div>
+        <label for="title">{{ 'feedback.bugReportTitle' | translate }}</label>
+        <input id="title" type="text" #title>
+    </div>
 
-    <label for="description">{{ 'feedback.describeBug' | translate }}</label>
-    <textarea id="description" #description></textarea>
+    <div>
+        <label for="description">{{ 'feedback.describeBug' | translate }}</label>
+        <textarea id="description" #description></textarea>
+    </div>
 
-    <button (click)="submitBugReport(title.value, description.value)">{{ 'feedback.submitBugReport' | translate }}</button>
+    <button class="paper-btn btn-block background-secondary" (click)="submitBugReport(title.value, description.value)">{{ 'feedback.submitBugReport' | translate }}</button>
 </div>

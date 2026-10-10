@@ -1,2 +1,31 @@
-<app-bug-report></app-bug-report>
-<app-suggestion></app-suggestion>
+@if (settings.feedbackOpen()) {
+  <div class="feedback-backdrop" (click)="close()">
+    <div
+      class="feedback-dialog border shadow shadow-large"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'settings.feedback' | translate"
+      (click)="$event.stopPropagation()"
+    >
+      <button type="button" class="feedback-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">&times;</button>
+
+      <div class="feedback-mode-switcher" role="tablist">
+        <button type="button" role="tab" [class.active]="mode() === 'bugReport'" [attr.aria-selected]="mode() === 'bugReport'" (click)="mode.set('bugReport')">
+          {{ 'feedback.bugReport' | translate }}
+        </button>
+        <button type="button" role="tab" [class.active]="mode() === 'suggestion'" [attr.aria-selected]="mode() === 'suggestion'" (click)="mode.set('suggestion')">
+          {{ 'feedback.suggestion' | translate }}
+        </button>
+      </div>
+
+      <div class="feedback-form-container">
+        <h1>{{ 'feedback.' + mode() | translate }}</h1>
+        @if (mode() === 'bugReport') {
+          <app-bug-report (submitted)="close()"></app-bug-report>
+        } @else {
+          <app-suggestion (submitted)="close()"></app-suggestion>
+        }
+      </div>
+    </div>
+  </div>
+}
