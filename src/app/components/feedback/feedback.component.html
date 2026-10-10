@@ -7,13 +7,13 @@
       [attr.aria-label]="'settings.feedback' | translate"
       (click)="$event.stopPropagation()"
     >
-      <button type="button" class="feedback-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">&times;</button>
+      <button class="feedback-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">&times;</button>
 
       <div class="feedback-mode-switcher" role="tablist">
-        <button type="button" role="tab" [class.active]="mode() === 'bugReport'" [attr.aria-selected]="mode() === 'bugReport'" (click)="mode.set('bugReport')">
+        <button role="tab" [class.active]="mode() === 'bugReport'" [attr.aria-selected]="mode() === 'bugReport'" (click)="mode.set('bugReport')">
           {{ 'feedback.bugReport' | translate }}
         </button>
-        <button type="button" role="tab" [class.active]="mode() === 'suggestion'" [attr.aria-selected]="mode() === 'suggestion'" (click)="mode.set('suggestion')">
+        <button role="tab" [class.active]="mode() === 'suggestion'" [attr.aria-selected]="mode() === 'suggestion'" (click)="mode.set('suggestion')">
           {{ 'feedback.suggestion' | translate }}
         </button>
       </div>

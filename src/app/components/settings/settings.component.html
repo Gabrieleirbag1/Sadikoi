@@ -3,11 +3,11 @@
   <aside class="settings-panel" role="dialog" aria-modal="true" [attr.aria-label]="'settings.title' | translate">
     <div class="settings-header">
       <h2>{{ 'settings.title' | translate }}</h2>
-      <button type="button" class="settings-close" [attr.aria-label]="'modal.close' | translate" (click)="settings.close()">&times;</button>
+      <button class="settings-close" [attr.aria-label]="'modal.close' | translate" (click)="settings.close()">&times;</button>
     </div>
 
     <div class="settings-body">
-      <button type="button" class="settings-item settings-notifications" (click)="toggleNotifications()">
+      <button class="settings-item settings-notifications" (click)="toggleNotifications()">
         <img src="images/icons/bell.svg" width="22" height="22" alt="" />
         {{ 'settings.notifications' | translate }}
       </button>
@@ -27,17 +27,17 @@
       </section>
 
       <section class="settings-section">
-        <button type="button" class="settings-item" (click)="settings.openFeedback()">
+        <button class="settings-item" (click)="settings.openFeedback()">
           {{ 'settings.feedback' | translate }}
         </button>
       </section>
 
-      <nav class="settings-section" [attr.aria-label]="'settings.legal' | translate">
+      <div class="settings-section" [attr.aria-label]="'settings.legal' | translate">
         <h3>{{ 'settings.legal' | translate }}</h3>
         <a class="settings-item" routerLink="/legal" (click)="settings.close()">{{ 'settings.legalNotice' | translate }}</a>
         <a class="settings-item" routerLink="/privacy" (click)="settings.close()">{{ 'settings.privacy' | translate }}</a>
         <a class="settings-item" routerLink="/terms" (click)="settings.close()">{{ 'settings.terms' | translate }}</a>
-      </nav>
+      </div>
 
       <section class="settings-section">
         <a class="settings-item" [href]="contactHref">{{ 'settings.contact' | translate }}</a>

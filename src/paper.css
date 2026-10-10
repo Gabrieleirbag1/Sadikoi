@@ -4,6 +4,7 @@
   Global PaperCSS Config
 */
 @import url("https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC&display=swap");
+:root,
 .main-content {
   --primary: #41403e;
   --secondary: #0b74d5;
