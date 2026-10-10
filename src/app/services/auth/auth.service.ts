@@ -6,7 +6,7 @@ import { LoggerService } from '../logger/logger.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
-const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password'];
+const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password', '/legal', '/privacy', '/terms'];
 
 @Injectable({
   providedIn: 'root',

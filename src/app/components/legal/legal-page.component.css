@@ -1,0 +1,21 @@
+.legal-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.legal-back {
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.legal-draft {
+    font-style: italic;
+    opacity: 0.7;
+}
+
+section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+}
