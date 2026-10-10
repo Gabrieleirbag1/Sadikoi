@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
 import { HttpClient } from '@angular/common/http';
