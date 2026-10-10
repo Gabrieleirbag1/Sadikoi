@@ -1,6 +1,7 @@
 import { Component, EventEmitter, inject, model, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { KLIPY_URL } from '../settings/settings.constants';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -12,6 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class GifPickerComponent {
   private readonly klipyService = inject(KlipyService);
+  protected readonly klipyUrl = KLIPY_URL;
 
   readonly gifSelected = model<KlipyGif | null>(null);
 
