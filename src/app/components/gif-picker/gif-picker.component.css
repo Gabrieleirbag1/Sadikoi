@@ -57,3 +57,14 @@
   padding: 16px 0;
   font-size: 13px;
 }
+
+.gif-powered-by {
+  margin-top: 8px;
+  float: right;
+}
+
+.gif-powered-by img {
+  display: block;
+  height: 18px;
+  width: auto;
+}

@@ -207,3 +207,9 @@ h1 {
   background-color: #f5f5f5;
   border: 2px solid var(--primary);
 }
+.auth-legal {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--muted);
+}

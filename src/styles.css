@@ -79,3 +79,9 @@ html {
 html::-webkit-scrollbar {
   display: none;
 }
+
+/* PaperCSS draws a hand-drawn underline on every link via background-image; logos must not get it. */
+.logo-link {
+    display: inline-flex;
+    background-image: none;
+}

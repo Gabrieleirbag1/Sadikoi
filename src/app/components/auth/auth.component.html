@@ -232,6 +232,13 @@
               </div>
             </div>
           }
+          <p class="auth-legal">
+            {{ 'auth.consentPrefix' | translate }}
+            <a routerLink="/terms">{{ 'settings.terms' | translate }}</a>
+            {{ 'auth.consentAnd' | translate }}
+            <a routerLink="/privacy">{{ 'settings.privacy' | translate }}</a>.
+            <a routerLink="/legal">{{ 'settings.legalNotice' | translate }}</a>
+          </p>
         </div>
       </div>
     </div>

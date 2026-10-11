@@ -59,7 +59,7 @@ export class KlipyService {
 
   public async searchGifs(query: string): Promise<KlipyGif[]> {
     try {
-      const params = new URLSearchParams({ q: query, per_page: '50', content_filter: 'off', customer_id: this.user?.id as unknown as string});
+      const params = new URLSearchParams({ q: query, per_page: '50', content_filter: 'medium', customer_id: this.user?.id as unknown as string});
       const res = await fetch(`${this.base}/search?${params}`);
       const json = await res.json();
       return json?.data?.data ?? [];
