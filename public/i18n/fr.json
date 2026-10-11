@@ -20,7 +20,9 @@
     "verifyDeviceRequest": "Veuillez entrer le code envoyé à votre e-mail.",
     "askForNewCode": "Demander un nouveau code",
     "or": "ou",
-    "forgotPassword": "Mot de passe oublié ?"
+    "forgotPassword": "Mot de passe oublié ?",
+    "consentPrefix": "En vous inscrivant ou en vous connectant, vous confirmez avoir au moins 13 ans et acceptez les",
+    "consentAnd": "et la"
   },
   "account": {
     "updateAccount": "Mettre à jour le compte",
@@ -79,7 +81,10 @@
     "noMessagesDisplay": "Aucun message à afficher.",
     "typeYourMessage": "Tapez votre message ici...",
     "send": "Envoyer",
-    "gif": "GIF"
+    "gif": "GIF",
+    "report": "Signaler",
+    "reportSubject": "Signalement d'un message Sadikoi",
+    "reportBody": "Auteur : {{author}}\nGroupe : {{group}}\nMessage n°{{id}}\n\nMotif :"
   },
   "gifPicker": {
     "recent": "Récent",
@@ -165,17 +170,22 @@
     "contact": "Contact",
     "about": "À propos (missclick.net)",
     "credits": "Crédits",
-    "gifsPoweredBy": "GIFs fournis par"
+    "gifsPoweredBy": "GIFs fournis par",
+    "deleteAccount": "Suppression du compte"
   },
   "legal": {
     "back": "Retour",
-    "updated": "Dernière mise à jour : octobre 2026. Texte provisoire, à valider.",
+    "updated": "Dernière mise à jour : 11 octobre 2026.",
     "legal": {
       "title": "Mentions légales",
       "sections": [
         {
           "heading": "Éditeur",
-          "body": "Sadikoi est édité par Gabriel Garrone sous la marque missclick.net. Contact : gabrielgarronedev@gmail.com."
+          "body": "Sadikoi est édité à titre non professionnel par Gabriel Garrone, sous la marque missclick.net. Contact : gabrielgarronedev@gmail.com."
+        },
+        {
+          "heading": "Directeur de la publication",
+          "body": "Gabriel Garrone (gabrielgarronedev@gmail.com)."
         },
         {
           "heading": "Hébergement",
@@ -184,6 +194,10 @@
         {
           "heading": "Propriété intellectuelle",
           "body": "Le nom Sadikoi, l'interface et les contenus sources appartiennent à leur auteur. Les GIFs sont fournis par KLIPY et appartiennent à leurs propriétaires respectifs."
+        },
+        {
+          "heading": "Signalement de contenu",
+          "body": "Tout contenu illicite ou abusif peut être signalé depuis l'application (bouton « Signaler » sur les messages) ou à gabrielgarronedev@gmail.com. Il sera examiné et retiré dans les meilleurs délais."
         }
       ]
     },
@@ -191,20 +205,40 @@
       "title": "Politique de confidentialité",
       "sections": [
         {
-          "heading": "Données collectées",
-          "body": "Nom d'utilisateur, adresse e-mail, mot de passe (stocké haché), photo de profil, langue, nom de l'appareil et contenus que vous créez (groupes, questions, votes, messages)."
+          "heading": "Responsable du traitement",
+          "body": "Gabriel Garrone, sous la marque missclick.net. Contact : gabrielgarronedev@gmail.com."
         },
         {
-          "heading": "Utilisation",
-          "body": "Pour faire fonctionner le service : authentification, fonctionnalités de groupe, notifications et assistance. Nous ne vendons pas vos données."
+          "heading": "Données collectées",
+          "body": "Nom d'utilisateur, adresse e-mail, mot de passe (stocké haché), photo de profil, langue, nom de l'appareil et contenus que vous créez (groupes, questions, votes, messages, GIFs). En cas de connexion avec Google, nous recevons votre nom, votre adresse e-mail et votre photo de profil Google."
+        },
+        {
+          "heading": "Finalités et base légale",
+          "body": "Fournir le service (authentification, fonctionnalités de groupe, notifications, assistance et sécurité), sur la base de l'exécution du contrat d'utilisation et de notre intérêt légitime à sécuriser le service. Les notifications ne sont envoyées qu'avec votre accord. Nous ne vendons pas vos données, ne faisons pas de publicité ni de profilage."
         },
         {
           "heading": "Tiers",
-          "body": "La recherche de GIFs passe par KLIPY, qui reçoit vos termes de recherche. Les dons sont traités par PayPal et non par Sadikoi."
+          "body": "KLIPY (recherche et affichage de GIFs) reçoit vos termes de recherche et un identifiant utilisateur interne. Google (Google Identity Services) traite la connexion avec Google. PayPal traite les dons, qui ne sont pas gérés par Sadikoi. Les notifications transitent par le service de notification de votre navigateur ou de votre appareil."
+        },
+        {
+          "heading": "Stockage local",
+          "body": "L'application utilise le stockage local de votre appareil (session, préférences d'affichage) uniquement pour son fonctionnement. Aucun traceur publicitaire ou de mesure d'audience n'est utilisé."
+        },
+        {
+          "heading": "Conservation",
+          "body": "Vos données sont conservées tant que votre compte existe. À la suppression du compte, elles sont supprimées ou anonymisées, sauf obligation légale contraire."
+        },
+        {
+          "heading": "Âge minimum",
+          "body": "Sadikoi est réservé aux personnes de 13 ans ou plus. Si vous pensez qu'un mineur de moins de 13 ans a créé un compte, contactez-nous pour le faire supprimer."
         },
         {
           "heading": "Vos droits",
-          "body": "Vous pouvez accéder à vos données, les corriger ou les supprimer, ainsi que votre compte, à tout moment depuis l'application ou en nous contactant."
+          "body": "Vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition, de limitation et de portabilité. Vous pouvez les exercer depuis l'application ou à gabrielgarronedev@gmail.com. Vous pouvez aussi introduire une réclamation auprès de la CNIL (cnil.fr)."
+        },
+        {
+          "heading": "Suppression du compte",
+          "body": "Vous pouvez supprimer votre compte à tout moment depuis l'application (Compte, puis « Supprimer le compte »), ou en suivant les instructions de la page /delete-account."
         },
         {
           "heading": "Contact",
@@ -217,23 +251,56 @@
       "sections": [
         {
           "heading": "Acceptation",
-          "body": "En utilisant Sadikoi, vous acceptez ces conditions."
+          "body": "En utilisant Sadikoi, vous acceptez ces conditions et la politique de confidentialité."
+        },
+        {
+          "heading": "Âge minimum",
+          "body": "Vous devez avoir au moins 13 ans pour créer un compte et utiliser Sadikoi."
         },
         {
           "heading": "Usage acceptable",
-          "body": "Ne publiez pas de contenu illégal, haineux ou harcelant et ne tentez pas de perturber le service."
+          "body": "Ne publiez pas de contenu illégal, haineux, sexuellement explicite, violent ou harcelant, ne vous faites pas passer pour quelqu'un d'autre et ne tentez pas de perturber le service."
+        },
+        {
+          "heading": "Contenus et signalement",
+          "body": "Vous êtes responsable des contenus que vous publiez. Vous pouvez signaler tout contenu inapproprié depuis l'application ou à gabrielgarronedev@gmail.com. Les contenus et comptes qui enfreignent ces conditions peuvent être supprimés ou suspendus sans préavis."
         },
         {
           "heading": "Comptes",
-          "body": "Vous êtes responsable de votre compte et de la sécurité de votre mot de passe. Les comptes qui enfreignent ces conditions peuvent être suspendus."
+          "body": "Vous êtes responsable de votre compte et de la sécurité de votre mot de passe. Vous pouvez supprimer votre compte à tout moment depuis l'application."
         },
         {
           "heading": "Responsabilité",
-          "body": "Le service est fourni en l'état, sans garantie. Nous ne sommes pas responsables des dommages indirects liés à son utilisation."
+          "body": "Le service est fourni gratuitement, en l'état, sans garantie de disponibilité. Nous ne sommes pas responsables des dommages indirects liés à son utilisation, dans les limites permises par la loi."
+        },
+        {
+          "heading": "Dons",
+          "body": "Les dons sont facultatifs, volontaires et ne donnent droit à aucune contrepartie ni fonctionnalité."
+        },
+        {
+          "heading": "Droit applicable",
+          "body": "Ces conditions sont soumises au droit français. En cas de litige, vous pouvez nous contacter pour rechercher une solution amiable, puis saisir les tribunaux compétents."
         },
         {
           "heading": "Modifications",
           "body": "Ces conditions peuvent évoluer ; l'utilisation continue vaut acceptation de la nouvelle version."
+        }
+      ]
+    },
+    "deleteAccount": {
+      "title": "Suppression du compte",
+      "sections": [
+        {
+          "heading": "Depuis l'application",
+          "body": "Connectez-vous, ouvrez la page Compte, puis appuyez sur « Supprimer le compte » et confirmez. La suppression est immédiate et irréversible."
+        },
+        {
+          "heading": "Sans accès à l'application",
+          "body": "Écrivez à gabrielgarronedev@gmail.com depuis l'adresse e-mail du compte en indiquant « Suppression de compte » et votre nom d'utilisateur. Nous traiterons votre demande dans un délai d'un mois."
+        },
+        {
+          "heading": "Données supprimées",
+          "body": "Votre compte, vos informations de profil, vos appareils et vos préférences sont supprimés. Les contenus que vous avez publiés dans des groupes sont supprimés ou anonymisés."
         }
       ]
     }

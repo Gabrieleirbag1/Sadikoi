@@ -20,7 +20,9 @@
     "verifyDeviceRequest": "Please enter the code sent to your email.",
     "askForNewCode": "Ask for a new Code",
     "or": "or",
-    "forgotPassword": "Forgot Password?"
+    "forgotPassword": "Forgot Password?",
+    "consentPrefix": "By signing up or signing in, you confirm that you are at least 13 years old and accept the",
+    "consentAnd": "and the"
   },
   "account": {
     "updateAccount": "Update Account",
@@ -79,7 +81,10 @@
     "noMessagesDisplay": "No messages to display.",
     "typeYourMessage": "Type your message here...",
     "send": "Send",
-    "gif": "GIF"
+    "gif": "GIF",
+    "report": "Report",
+    "reportSubject": "Sadikoi message report",
+    "reportBody": "Author: {{author}}\nGroup: {{group}}\nMessage #{{id}}\n\nReason:"
   },
   "gifPicker": {
     "recent": "Recent",
@@ -165,17 +170,22 @@
     "contact": "Contact",
     "about": "About (missclick.net)",
     "credits": "Credits",
-    "gifsPoweredBy": "GIFs powered by"
+    "gifsPoweredBy": "GIFs powered by",
+    "deleteAccount": "Account deletion"
   },
   "legal": {
     "back": "Back",
-    "updated": "Last updated: October 2026. Draft text, subject to review.",
+    "updated": "Last updated: October 11, 2026.",
     "legal": {
       "title": "Legal notice",
       "sections": [
         {
           "heading": "Publisher",
-          "body": "Sadikoi is published by Gabriel Garrone under the missclick.net brand. Contact: gabrielgarronedev@gmail.com."
+          "body": "Sadikoi is published on a non-professional basis by Gabriel Garrone, under the missclick.net brand. Contact: gabrielgarronedev@gmail.com."
+        },
+        {
+          "heading": "Publication director",
+          "body": "Gabriel Garrone (gabrielgarronedev@gmail.com)."
         },
         {
           "heading": "Hosting",
@@ -184,6 +194,10 @@
         {
           "heading": "Intellectual property",
           "body": "The Sadikoi name, interface and source materials are the property of their author. GIFs are provided by KLIPY and belong to their respective owners."
+        },
+        {
+          "heading": "Reporting content",
+          "body": "Any unlawful or abusive content can be reported from the app (\"Report\" button on messages) or at gabrielgarronedev@gmail.com. It will be reviewed and removed promptly."
         }
       ]
     },
@@ -191,20 +205,40 @@
       "title": "Privacy policy",
       "sections": [
         {
-          "heading": "Data we collect",
-          "body": "Username, email address, password (stored hashed), profile picture, language, device name, and the content you create (groups, questions, votes, messages)."
+          "heading": "Data controller",
+          "body": "Gabriel Garrone, under the missclick.net brand. Contact: gabrielgarronedev@gmail.com."
         },
         {
-          "heading": "How we use it",
-          "body": "To run the service: authentication, group features, notifications and support. We do not sell your data."
+          "heading": "Data we collect",
+          "body": "Username, email address, password (stored hashed), profile picture, language, device name, and the content you create (groups, questions, votes, messages, GIFs). If you sign in with Google, we receive your Google name, email address and profile picture."
+        },
+        {
+          "heading": "Purposes and legal basis",
+          "body": "To provide the service (authentication, group features, notifications, support and security), based on performance of the terms of use and our legitimate interest in securing the service. Notifications are only sent with your consent. We do not sell your data, show ads or profile users."
         },
         {
           "heading": "Third parties",
-          "body": "GIF search is performed through KLIPY, which receives your search terms. Donations are processed by PayPal and are not handled by Sadikoi."
+          "body": "KLIPY (GIF search and display) receives your search terms and an internal user identifier. Google (Google Identity Services) handles Sign in with Google. PayPal processes donations, which are not handled by Sadikoi. Notifications go through your browser's or device's notification service."
+        },
+        {
+          "heading": "Local storage",
+          "body": "The app uses your device's local storage (session, display preferences) only to function. No advertising or analytics trackers are used."
+        },
+        {
+          "heading": "Retention",
+          "body": "Your data is kept as long as your account exists. When you delete your account, it is deleted or anonymized, unless the law requires otherwise."
+        },
+        {
+          "heading": "Minimum age",
+          "body": "Sadikoi is intended for people aged 13 or older. If you believe a child under 13 has created an account, contact us to have it deleted."
         },
         {
           "heading": "Your rights",
-          "body": "You can access, correct or delete your data and your account at any time from the app or by contacting us."
+          "body": "You have the right to access, rectify, erase, object to, restrict and port your data. You can exercise them from the app or at gabrielgarronedev@gmail.com. You may also lodge a complaint with your data protection authority (in France, the CNIL: cnil.fr)."
+        },
+        {
+          "heading": "Account deletion",
+          "body": "You can delete your account at any time from the app (Account, then \"Delete account\"), or by following the instructions on the /delete-account page."
         },
         {
           "heading": "Contact",
@@ -217,23 +251,56 @@
       "sections": [
         {
           "heading": "Acceptance",
-          "body": "By using Sadikoi you agree to these terms."
+          "body": "By using Sadikoi you agree to these terms and to the privacy policy."
+        },
+        {
+          "heading": "Minimum age",
+          "body": "You must be at least 13 years old to create an account and use Sadikoi."
         },
         {
           "heading": "Acceptable use",
-          "body": "Do not post unlawful, hateful or harassing content, and do not attempt to disrupt the service."
+          "body": "Do not post unlawful, hateful, sexually explicit, violent or harassing content, do not impersonate others, and do not attempt to disrupt the service."
+        },
+        {
+          "heading": "Content and reporting",
+          "body": "You are responsible for the content you post. You can report inappropriate content from the app or at gabrielgarronedev@gmail.com. Content and accounts that violate these terms may be removed or suspended without notice."
         },
         {
           "heading": "Accounts",
-          "body": "You are responsible for your account and for keeping your password secure. We may suspend accounts that violate these terms."
+          "body": "You are responsible for your account and for keeping your password secure. You can delete your account at any time from the app."
         },
         {
           "heading": "Liability",
-          "body": "The service is provided as is, without warranty. We are not liable for indirect damages arising from its use."
+          "body": "The service is provided free of charge, as is, with no guarantee of availability. We are not liable for indirect damages arising from its use, to the extent permitted by law."
+        },
+        {
+          "heading": "Donations",
+          "body": "Donations are optional, voluntary and give no entitlement to any compensation or feature."
+        },
+        {
+          "heading": "Governing law",
+          "body": "These terms are governed by French law. In case of a dispute, you can contact us to seek an amicable solution, then bring the matter before the competent courts."
         },
         {
           "heading": "Changes",
           "body": "These terms may be updated; continued use means acceptance of the new version."
+        }
+      ]
+    },
+    "deleteAccount": {
+      "title": "Account deletion",
+      "sections": [
+        {
+          "heading": "From the app",
+          "body": "Sign in, open the Account page, then tap \"Delete account\" and confirm. Deletion is immediate and irreversible."
+        },
+        {
+          "heading": "Without access to the app",
+          "body": "Email gabrielgarronedev@gmail.com from the account's email address with \"Account deletion\" and your username. We will process your request within one month."
+        },
+        {
+          "heading": "Data deleted",
+          "body": "Your account, profile information, devices and preferences are deleted. Content you posted in groups is deleted or anonymized."
         }
       ]
     }

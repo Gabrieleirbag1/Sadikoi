@@ -7,7 +7,8 @@ import { GifPickerComponent } from '../gif-picker/gif-picker.component';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CONTACT_EMAIL } from '../settings/settings.constants';
 
 @Component({
   selector: 'app-chat',
@@ -22,6 +23,7 @@ export class ChatComponent {
   private readonly websocketService = inject(WebsocketService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
+  private readonly translate = inject(TranslateService);
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
@@ -129,6 +131,16 @@ export class ChatComponent {
 
   protected isOwnMessage(message: Message): boolean {
     return message.sender.id === this.connectedUser?.id;
+  }
+
+  protected reportHref(message: Message): string {
+    const subject = this.translate.instant('chat.reportSubject');
+    const body = this.translate.instant('chat.reportBody', {
+      author: message.sender.username,
+      group: this.group()?.name ?? '',
+      id: message.id,
+    });
+    return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   protected isGifMessage(content: string): boolean {

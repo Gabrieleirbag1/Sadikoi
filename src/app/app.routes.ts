@@ -45,6 +45,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/legal/legal-page.component').then(m => m.LegalPageComponent)
     },
     {
+        path: 'delete-account',
+        data: { doc: 'deleteAccount' },
+        loadComponent: () => import('./components/legal/legal-page.component').then(m => m.LegalPageComponent)
+    },
+    {
         path: '**',
         redirectTo: ''
     }
