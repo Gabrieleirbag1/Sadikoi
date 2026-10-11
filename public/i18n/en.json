@@ -218,7 +218,7 @@
         },
         {
           "heading": "Third parties",
-          "body": "KLIPY (GIF search and display) receives your search terms and an internal user identifier. Google (Google Identity Services) handles Sign in with Google. PayPal processes donations, which are not handled by Sadikoi. Notifications go through your browser's or device's notification service."
+          "body": "KLIPY (GIF search and display) receives your search terms and an internal user identifier. Google (Google Identity Services) handles Sign in with Google. PayPal and Buy Me a Coffee process donations, which are not handled by Sadikoi. Notifications go through your browser's or device's notification service."
         },
         {
           "heading": "Local storage",

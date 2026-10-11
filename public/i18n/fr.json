@@ -218,7 +218,7 @@
         },
         {
           "heading": "Tiers",
-          "body": "KLIPY (recherche et affichage de GIFs) reçoit vos termes de recherche et un identifiant utilisateur interne. Google (Google Identity Services) traite la connexion avec Google. PayPal traite les dons, qui ne sont pas gérés par Sadikoi. Les notifications transitent par le service de notification de votre navigateur ou de votre appareil."
+          "body": "KLIPY (recherche et affichage de GIFs) reçoit vos termes de recherche et un identifiant utilisateur interne. Google (Google Identity Services) traite la connexion avec Google. PayPal et Buy Me a Coffee traitent les dons, qui ne sont pas gérés par Sadikoi. Les notifications transitent par le service de notification de votre navigateur ou de votre appareil."
         },
         {
           "heading": "Stockage local",

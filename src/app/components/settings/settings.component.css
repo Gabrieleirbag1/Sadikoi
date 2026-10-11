@@ -144,3 +144,13 @@
         animation: none;
     }
 }
+
+.donate-bmc {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.donate-bmc img {
+  height: 48px;
+  width: auto;
+}
