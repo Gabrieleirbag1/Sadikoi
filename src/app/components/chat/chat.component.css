@@ -66,6 +66,11 @@
 
 .message-report {
     margin-left: auto;
+    padding: 0;
+    border: none;
+    background: none;
+    text-decoration: underline;
+    cursor: pointer;
     font-size: 0.75rem;
     color: var(--muted);
 }

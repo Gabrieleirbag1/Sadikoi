@@ -23,7 +23,7 @@
             <strong class="message-author">{{ message.sender.username }}</strong>
           }
           @if (!isOwnMessage(message)) {
-            <a class="message-report" [href]="reportHref(message)">{{ 'chat.report' | translate }}</a>
+            <button type="button" class="message-report" (click)="reportMessage(message)">{{ 'chat.report' | translate }}</button>
           }
           <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
         </div>

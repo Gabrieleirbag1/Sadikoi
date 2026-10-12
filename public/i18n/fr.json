@@ -82,9 +82,7 @@
     "typeYourMessage": "Tapez votre message ici...",
     "send": "Envoyer",
     "gif": "GIF",
-    "report": "Signaler",
-    "reportSubject": "Signalement d'un message Sadikoi",
-    "reportBody": "Auteur : {{author}}\nGroupe : {{group}}\nMessage n°{{id}}\n\nMotif :"
+    "report": "Signaler"
   },
   "gifPicker": {
     "recent": "Récent",
@@ -135,7 +133,8 @@
     "showMore": "Voir {{count}} de plus",
     "showLess": "Voir moins",
     "items": "Objets",
-    "memberSince": "Membre depuis"
+    "memberSince": "Membre depuis",
+    "reportPrompt": "Pourquoi signaler {{username}} ?"
   },
   "notification": {
     "genericError": "Une erreur s'est produite.",
@@ -145,7 +144,8 @@
     "groupUpdated": "Groupe mis à jour avec succès.",
     "resetEmailSent": "Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.",
     "passwordReset": "Mot de passe réinitialisé. Tu peux te connecter.",
-    "feedbackSent": "Merci pour votre retour !"
+    "feedbackSent": "Merci pour votre retour !",
+    "userReported": "Utilisateur signalé. Merci !"
   },
   "forgotPassword": {
     "title": "Mot de passe oublié ?",

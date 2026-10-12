@@ -82,9 +82,7 @@
     "typeYourMessage": "Type your message here...",
     "send": "Send",
     "gif": "GIF",
-    "report": "Report",
-    "reportSubject": "Sadikoi message report",
-    "reportBody": "Author: {{author}}\nGroup: {{group}}\nMessage #{{id}}\n\nReason:"
+    "report": "Report"
   },
   "gifPicker": {
     "recent": "Recent",
@@ -135,7 +133,8 @@
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
     "items": "Items",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "reportPrompt": "Why are you reporting {{username}}?"
   },
   "notification": {
     "genericError": "Something went wrong.",
@@ -145,7 +144,8 @@
     "groupUpdated": "Group updated successfully.",
     "resetEmailSent": "If an account exists for this email, a reset link has been sent.",
     "passwordReset": "Password reset. You can now log in.",
-    "feedbackSent": "Thanks for your feedback!"
+    "feedbackSent": "Thanks for your feedback!",
+    "userReported": "User reported. Thank you!"
   },
   "forgotPassword": {
     "title": "Forgot your password?",

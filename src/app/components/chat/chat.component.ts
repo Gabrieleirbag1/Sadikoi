@@ -8,7 +8,8 @@ import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CONTACT_EMAIL } from '../settings/settings.constants';
+import { AuthService } from '../../services/auth/auth.service';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,6 +25,8 @@ export class ChatComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
   private readonly translate = inject(TranslateService);
+  private readonly authService = inject(AuthService);
+  private readonly notifications = inject(NotificationService);
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
@@ -133,14 +136,18 @@ export class ChatComponent {
     return message.sender.id === this.connectedUser?.id;
   }
 
-  protected reportHref(message: Message): string {
-    const subject = this.translate.instant('chat.reportSubject');
-    const body = this.translate.instant('chat.reportBody', {
-      author: message.sender.username,
-      group: this.group()?.name ?? '',
-      id: message.id,
-    });
-    return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  protected async reportMessage(message: Message): Promise<void> {
+    const reason = window.prompt(this.translate.instant('userProfile.reportPrompt', { username: message.sender.username }));
+    if (reason === null) {
+      return;
+    }
+    const context = `[group: ${this.group()?.name ?? ''}, message: ${message.id}]`;
+    const success = await this.authService.reportUser(message.sender.id, `${context} ${reason.trim()}`);
+    if (success) {
+      this.notifications.showSuccess(this.translate.instant('notification.userReported'));
+    } else {
+      this.notifications.showError(this.translate.instant('notification.genericError'));
+    }
   }
 
   protected isGifMessage(content: string): boolean {
