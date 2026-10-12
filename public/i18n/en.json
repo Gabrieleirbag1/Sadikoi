@@ -133,8 +133,14 @@
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
     "items": "Items",
-    "memberSince": "Member since",
-    "reportPrompt": "Why are you reporting {{username}}?"
+    "memberSince": "Member since"
+  },
+  "reportUser": {
+    "title": "Report {{username}}",
+    "reasonLabel": "Reason (optional)",
+    "placeholder": "Describe the problem…",
+    "submit": "Report",
+    "cancel": "Cancel"
   },
   "notification": {
     "genericError": "Something went wrong.",

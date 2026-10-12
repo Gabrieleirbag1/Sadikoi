@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from "../../profile-image-picker/profile-image-picker.component";
 
 import { ItemImageDisplayComponent } from '../../item-image-display/item-image-display.component';
-import { AuthService } from '../../../services/auth/auth.service';
-import { NotificationService } from '../../../services/notification/notification.service';
+import { ReportUserService } from '../../../services/report-user/report-user.service';
+import { UserProfileService } from '../../../services/user-profile/user-profile.service';
 
 const MAX_VISIBLE_ITEMS = 4;
 
@@ -17,9 +17,8 @@ const MAX_VISIBLE_ITEMS = 4;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileComponent {
-  private readonly authService = inject(AuthService);
-  private readonly notifications = inject(NotificationService);
-  private readonly translate = inject(TranslateService);
+  private readonly reportUserService = inject(ReportUserService);
+  private readonly userProfileService = inject(UserProfileService);
   private readonly connectedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
 
   public readonly user = input<User | null>(null);
@@ -36,21 +35,13 @@ export class UserProfileComponent {
     return !!user && user.id !== this.connectedUser?.id;
   });
 
-  protected async reportUser(): Promise<void> {
+  protected reportUser(): void {
     const user = this.user();
     if (!user) {
       return;
     }
-    const reason = window.prompt(this.translate.instant('userProfile.reportPrompt', { username: user.username }));
-    if (reason === null) {
-      return;
-    }
-    const success = await this.authService.reportUser(user.id, reason.trim());
-    if (success) {
-      this.notifications.showSuccess(this.translate.instant('notification.userReported'));
-    } else {
-      this.notifications.showError(this.translate.instant('notification.genericError'));
-    }
+    this.userProfileService.close();
+    this.reportUserService.open(user);
   }
 
   protected toggleExpanded(): void {

@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./components/layout/header/header.component";
 import { FooterComponent } from "./components/layout/footer/footer.component";
 import { SettingsComponent } from "./components/settings/settings.component";
+import { ReportUserModalComponent } from "./components/modals/report-user-modal/report-user-modal.component";
 import { ErrorModalComponent } from "./components/error-modal/error-modal.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, ErrorModalComponent, SettingsComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ErrorModalComponent, SettingsComponent, ReportUserModalComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

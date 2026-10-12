@@ -8,8 +8,7 @@ import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AuthService } from '../../services/auth/auth.service';
-import { NotificationService } from '../../services/notification/notification.service';
+import { ReportUserService } from '../../services/report-user/report-user.service';
 
 @Component({
   selector: 'app-chat',
@@ -25,8 +24,7 @@ export class ChatComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
   private readonly translate = inject(TranslateService);
-  private readonly authService = inject(AuthService);
-  private readonly notifications = inject(NotificationService);
+  private readonly reportUserService = inject(ReportUserService);
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
@@ -136,18 +134,8 @@ export class ChatComponent {
     return message.sender.id === this.connectedUser?.id;
   }
 
-  protected async reportMessage(message: Message): Promise<void> {
-    const reason = window.prompt(this.translate.instant('userProfile.reportPrompt', { username: message.sender.username }));
-    if (reason === null) {
-      return;
-    }
-    const context = `[group: ${this.group()?.name ?? ''}, message: ${message.id}]`;
-    const success = await this.authService.reportUser(message.sender.id, `${context} ${reason.trim()}`);
-    if (success) {
-      this.notifications.showSuccess(this.translate.instant('notification.userReported'));
-    } else {
-      this.notifications.showError(this.translate.instant('notification.genericError'));
-    }
+  protected reportMessage(message: Message): void {
+    this.reportUserService.open(message.sender, `[group: ${this.group()?.name ?? ''}, message: ${message.id}]`);
   }
 
   protected isGifMessage(content: string): boolean {

@@ -133,8 +133,14 @@
     "showMore": "Voir {{count}} de plus",
     "showLess": "Voir moins",
     "items": "Objets",
-    "memberSince": "Membre depuis",
-    "reportPrompt": "Pourquoi signaler {{username}} ?"
+    "memberSince": "Membre depuis"
+  },
+  "reportUser": {
+    "title": "Signaler {{username}}",
+    "reasonLabel": "Motif (optionnel)",
+    "placeholder": "Décrivez le problème…",
+    "submit": "Signaler",
+    "cancel": "Annuler"
   },
   "notification": {
     "genericError": "Une erreur s'est produite.",
