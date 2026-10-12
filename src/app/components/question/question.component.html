@@ -19,13 +19,7 @@
     <div class="question-votes-and-chat-container">
       <section class="question-votes-container">
         @if (question()?.canWrite) {
-          <div class="written-answers-container">
-            @for (vote of question()?.votes; track $index) {
-              @if (vote.writtenAnswer) {
-                <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
-              } @else {}
-            }
-          </div>
+          <app-vote-bubbles [bubbles]="answerBubbles()" phase="results" />
         } @else {
           <app-vote-bubbles [bubbles]="voteBubbles" phase="results" />
         }

@@ -14,6 +14,7 @@ import { ItemImageDisplayComponent } from '../item-image-display/item-image-disp
 interface VoteBubble {
   votedUser: User;
   voters: User[];
+  answer?: string;
 }
 
 @Component({
@@ -44,6 +45,14 @@ export class QuestionComponent implements OnInit{
     return !!current && !!displayed && current.id !== displayed.id;
   });
   public readonly group = model<Group | null>(null);
+  /** Post-vote view of answer-input questions: one ball per author, with their answer in a speech bubble. */
+  protected readonly answerBubbles = computed<VoteBubble[]>(() => {
+    const byUser = new Map<number, VoteBubble>();
+    for (const vote of this.question()?.votes ?? []) {
+      if (vote.writtenAnswer) byUser.set(vote.voterUser.id, { votedUser: vote.voterUser, voters: [], answer: vote.writtenAnswer });
+    }
+    return [...byUser.values()];
+  });
   /** Candidates shown on the voting screen: every group member, without voters yet. */
   protected readonly votingBubbles = computed<VoteBubble[]>(() => {
     const allowSelf = this.question()?.enableSelfVote;

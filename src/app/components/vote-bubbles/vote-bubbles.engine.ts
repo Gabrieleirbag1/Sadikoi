@@ -9,6 +9,8 @@ export interface BubbleCandidate {
   name: string;
   picture: string | null;
   voters: BubbleVoter[];
+  /** Written answer shown in a speech bubble next to the ball (answer-input questions). */
+  answer?: string;
 }
 
 export interface CandidateState {
@@ -16,6 +18,7 @@ export interface CandidateState {
   name: string;
   picture: string | null;
   voters: BubbleVoter[];
+  answer?: string;
   x: number;
   y: number;
   vx: number;
@@ -92,7 +95,7 @@ export class BubbleEngine {
         const angle = this.random() * Math.PI * 2;
         const speed = this.options.maxSpeed * (0.3 + this.random() * 0.5);
         state = {
-          id: d.id, name: d.name, picture: d.picture, voters: d.voters,
+          id: d.id, name: d.name, picture: d.picture, voters: d.voters, answer: d.answer,
           x: this.width * (0.2 + this.random() * 0.6),
           y: this.height * (0.2 + this.random() * 0.6),
           vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
@@ -104,6 +107,7 @@ export class BubbleEngine {
       state.name = d.name;
       state.picture = d.picture;
       state.voters = d.voters;
+      state.answer = d.answer;
       state.targetR = this.radiusFor(state);
       this.clamp(state);
     }
