@@ -38,7 +38,7 @@
     @if (question()?.canWrite) {
       <div class="answer-container">
         <div class="answer-input-container">
-          <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
+          <textarea class="answer-input" type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput></textarea>
         </div>
         <div class="submit-vote-container">
           <button type="button" class="background-success" (click)="submitVote(usersId, answerInput.value)">
