@@ -65,6 +65,7 @@ export class VoteBubblesComponent {
       voters: b.voters.map<BubbleVoter>(v => ({ id: v.id, name: v.username, picture: this.pictureUrl(v) })),
     })),
   );
+  protected readonly hoveredAnswer = computed(() => this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.answer ?? '');
   protected readonly hoveredUser = computed(() => this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.votedUser ?? null);
   protected readonly tooltipPos = signal({ x: 0, y: 0, flipX: false, flipY: false });
 
@@ -95,6 +96,9 @@ export class VoteBubblesComponent {
 
     effect(() => {
       const data = this.candidates();
+      for (const id of this.speech.keys()) {
+        if (!data.some(c => c.id === id)) this.speech.delete(id);
+      }
       if (this.ready) this.engine.sync(data);
     });
 
@@ -154,10 +158,12 @@ export class VoteBubblesComponent {
   private placeTooltip(event: MouseEvent): void {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left, y = event.clientY - rect.top;
+    const answer = this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.answer;
+    const height = TOOLTIP_HEIGHT + (answer ? Math.min(answer.length / 30, 8) * 18 + 16 : 0);
     this.tooltipPos.set({
       x, y,
       flipX: x + TOOLTIP_WIDTH > rect.width && x > TOOLTIP_WIDTH / 2,
-      flipY: y + TOOLTIP_HEIGHT > rect.height && y > TOOLTIP_HEIGHT,
+      flipY: y + height > rect.height && y > height,
     });
   }
 
@@ -174,12 +180,28 @@ export class VoteBubblesComponent {
 
   private setupResize(): void {
     const box = this.boxRef().nativeElement;
+    let lastKey = '';
+    const measureObstacle = () => {
+      const o = this.obstacleRef().nativeElement.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      // engine/canvas coordinates start inside the border, so remove the border offset
+      this.engine.setObstacles(o.width && o.height
+        ? [{ x: o.left - b.left - box.clientLeft, y: o.top - b.top - box.clientTop, width: o.width, height: o.height }]
+        : []);
+    };
     const resize = () => {
       const width = box.clientWidth;
       const height = box.clientHeight;
       if (!width || !height) return;
-      const canvas = this.canvasRef().nativeElement;
       const dpr = window.devicePixelRatio || 1;
+      const key = `${width}x${height}@${dpr}`;
+      // The card (obstacle) can resize often: only reallocate the canvas when the box really changed.
+      if (key === lastKey) {
+        measureObstacle();
+        return;
+      }
+      lastKey = key;
+      const canvas = this.canvasRef().nativeElement;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -189,13 +211,7 @@ export class VoteBubblesComponent {
         speedFactor: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.3 : 1,
       });
       this.engine.resize(width, height);
-
-      const obstacle = this.obstacleRef().nativeElement;
-      const o = obstacle.getBoundingClientRect();
-      const b = box.getBoundingClientRect();
-      this.engine.setObstacles(o.width && o.height
-        ? [{ x: o.left - b.left, y: o.top - b.top, width: o.width, height: o.height }]
-        : []);
+      measureObstacle();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(box);

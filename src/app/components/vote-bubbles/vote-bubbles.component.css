@@ -52,6 +52,20 @@
   pointer-events: none;
 }
 
+.vote-bubbles-tooltip-answer {
+  margin: 0 0 6px;
+  padding: 8px 10px;
+  max-height: 40vh;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 .vote-bubbles-tooltip.flip-x {
   transform: translateX(-100%);
 }

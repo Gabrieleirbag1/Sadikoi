@@ -8,14 +8,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { CalendarComponent } from '../tooltips/calendar/calendar.component';
-import { VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
+import { VoteBubbleData, VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
-
-interface VoteBubble {
-  votedUser: User;
-  voters: User[];
-  answer?: string;
-}
 
 @Component({
   selector: 'app-question',
@@ -33,8 +27,9 @@ export class QuestionComponent implements OnInit{
   protected readonly tooltipScope = 'question';
   protected connectedUser: User | null = null;
   protected usersId: number[] = [];
-  protected voteBubbles: VoteBubble[] = [];
+  protected voteBubbles: VoteBubbleData[] = [];
   protected showCalendarFlag = signal(false);
+  protected readonly answerText = signal('');
   protected readonly selectedVoteId = signal<number | null>(null);
   public readonly question = model<Question | null>(null);
   /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
@@ -46,15 +41,15 @@ export class QuestionComponent implements OnInit{
   });
   public readonly group = model<Group | null>(null);
   /** Post-vote view of answer-input questions: one ball per author, with their answer in a speech bubble. */
-  protected readonly answerBubbles = computed<VoteBubble[]>(() => {
-    const byUser = new Map<number, VoteBubble>();
+  protected readonly answerBubbles = computed<VoteBubbleData[]>(() => {
+    const byUser = new Map<number, VoteBubbleData>();
     for (const vote of this.question()?.votes ?? []) {
       if (vote.writtenAnswer) byUser.set(vote.voterUser.id, { votedUser: vote.voterUser, voters: [], answer: vote.writtenAnswer });
     }
     return [...byUser.values()];
   });
   /** Candidates shown on the voting screen: every group member, without voters yet. */
-  protected readonly votingBubbles = computed<VoteBubble[]>(() => {
+  protected readonly votingBubbles = computed<VoteBubbleData[]>(() => {
     const allowSelf = this.question()?.enableSelfVote;
     return (this.group()?.users ?? [])
       .filter(user => allowSelf || user.id !== this.connectedUser?.id)
@@ -99,7 +94,7 @@ export class QuestionComponent implements OnInit{
     this.voteBubbles = [];
     for (const vote of this.question()?.votes || []) {
       for (const targetUser of vote.targets) {
-        const existingBubble = this.voteBubbles?.find((bubble: VoteBubble) => bubble.votedUser.id === targetUser.id);
+        const existingBubble = this.voteBubbles?.find((bubble: VoteBubbleData) => bubble.votedUser.id === targetUser.id);
         if (existingBubble) {
           if (!existingBubble.voters.some(voter => voter.id === vote.voterUser.id)) { // this check prevents duplicate voters in the same bubble
             existingBubble.voters.push(vote.voterUser);
@@ -118,6 +113,7 @@ export class QuestionComponent implements OnInit{
       const question = await this.questionService.getQuestion(group.id);
       this.currentQuestion.set(question);
       this.question.set(question);
+      this.answerText.set(''); // the answer textarea is recreated empty for a new question
       this.populateVoteBubbles();
       this.logger.debug('Fetched question:', this.question());
     } catch (error) {
