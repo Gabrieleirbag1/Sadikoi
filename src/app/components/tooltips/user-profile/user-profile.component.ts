@@ -5,7 +5,6 @@ import { ProfileImagePickerComponent } from "../../profile-image-picker/profile-
 
 import { ItemImageDisplayComponent } from '../../item-image-display/item-image-display.component';
 import { ReportUserService } from '../../../services/report-user/report-user.service';
-import { UserProfileService } from '../../../services/user-profile/user-profile.service';
 
 const MAX_VISIBLE_ITEMS = 4;
 
@@ -18,7 +17,6 @@ const MAX_VISIBLE_ITEMS = 4;
 })
 export class UserProfileComponent {
   private readonly reportUserService = inject(ReportUserService);
-  private readonly userProfileService = inject(UserProfileService);
   private readonly connectedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
 
   public readonly user = input<User | null>(null);
@@ -40,7 +38,6 @@ export class UserProfileComponent {
     if (!user) {
       return;
     }
-    this.userProfileService.close();
     this.reportUserService.open(user);
   }
 
