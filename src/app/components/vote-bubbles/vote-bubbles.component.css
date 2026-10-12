@@ -77,3 +77,13 @@
   border: 0;
   list-style: none;
 }
+
+/* Projected content (answer card) sits in the middle of the box; bubbles bounce on it. */
+.vote-bubbles-obstacle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  max-width: calc(100% - 24px);
+  transform: translate(-50%, -50%);
+}

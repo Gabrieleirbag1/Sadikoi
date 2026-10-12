@@ -9,6 +9,8 @@ export interface BubbleCandidate {
   name: string;
   picture: string | null;
   voters: BubbleVoter[];
+  /** Written answer shown in a speech bubble next to the ball (answer-input questions). */
+  answer?: string;
 }
 
 export interface CandidateState {
@@ -16,6 +18,7 @@ export interface CandidateState {
   name: string;
   picture: string | null;
   voters: BubbleVoter[];
+  answer?: string;
   x: number;
   y: number;
   vx: number;
@@ -32,6 +35,13 @@ export interface VoterPosition {
   y: number;
   r: number;
   owner: CandidateState;
+}
+
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 export interface EngineOptions {
@@ -66,6 +76,8 @@ export class BubbleEngine {
   /** Orbite : un tour complet en ~8 s. */
   private orbitSpeed = (Math.PI * 2) / 8;
   private frozenId: number | null = null;
+  /** Solid rectangles (e.g. the answer card) that candidates bounce on. */
+  private obstacles: Rect[] = [];
 
   public constructor(options: Partial<EngineOptions> = {}, private readonly random: () => number = Math.random) {
     this.options = { ...DEFAULTS, ...options };
@@ -92,7 +104,7 @@ export class BubbleEngine {
         const angle = this.random() * Math.PI * 2;
         const speed = this.options.maxSpeed * (0.3 + this.random() * 0.5);
         state = {
-          id: d.id, name: d.name, picture: d.picture, voters: d.voters,
+          id: d.id, name: d.name, picture: d.picture, voters: d.voters, answer: d.answer,
           x: this.width * (0.2 + this.random() * 0.6),
           y: this.height * (0.2 + this.random() * 0.6),
           vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
@@ -104,9 +116,14 @@ export class BubbleEngine {
       state.name = d.name;
       state.picture = d.picture;
       state.voters = d.voters;
+      state.answer = d.answer;
       state.targetR = this.radiusFor(state);
       this.clamp(state);
     }
+  }
+
+  public setObstacles(obstacles: Rect[]): void {
+    this.obstacles = obstacles;
   }
 
   /** Immobilise un candidat (ex. sélectionné) pour faciliter le clic. */
@@ -141,7 +158,40 @@ export class BubbleEngine {
       this.bounce(c);
     }
     this.collide();
-    this.candidates.forEach(c => this.clamp(c));
+    this.candidates.forEach(c => {
+      this.collideObstacles(c);
+      this.clamp(c);
+    });
+  }
+
+  /** Circle vs rectangle: push the ball out and reflect its velocity. */
+  private collideObstacles(c: CandidateState): void {
+    for (const o of this.obstacles) {
+      const cx = Math.min(Math.max(c.x, o.x), o.x + o.width);
+      const cy = Math.min(Math.max(c.y, o.y), o.y + o.height);
+      let dx = c.x - cx, dy = c.y - cy;
+      let dist = Math.hypot(dx, dy);
+      if (dist >= c.r) continue;
+      let nx: number, ny: number, push: number;
+      if (dist > 0) {
+        nx = dx / dist; ny = dy / dist; push = c.r - dist;
+      } else {
+        // centre inside the rectangle: leave through the nearest side
+        const left = c.x - o.x, right = o.x + o.width - c.x, top = c.y - o.y, bottom = o.y + o.height - c.y;
+        const min = Math.min(left, right, top, bottom);
+        nx = min === left ? -1 : min === right ? 1 : 0;
+        ny = min === top ? -1 : min === bottom ? 1 : 0;
+        if (nx !== 0) ny = 0;
+        push = min + c.r;
+      }
+      c.x += nx * push;
+      c.y += ny * push;
+      const dot = c.vx * nx + c.vy * ny;
+      if (dot < 0) {
+        c.vx -= 2 * dot * nx;
+        c.vy -= 2 * dot * ny;
+      }
+    }
   }
 
   /** Rayon orbital d'un votant autour de son candidat. */

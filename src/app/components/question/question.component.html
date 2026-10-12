@@ -19,13 +19,7 @@
     <div class="question-votes-and-chat-container">
       <section class="question-votes-container">
         @if (question()?.canWrite) {
-          <div class="written-answers-container">
-            @for (vote of question()?.votes; track $index) {
-              @if (vote.writtenAnswer) {
-                <p>{{ vote.writtenAnswer }} - {{ vote.voterUser.username }}</p>
-              } @else {}
-            }
-          </div>
+          <app-vote-bubbles [bubbles]="answerBubbles()" phase="results" />
         } @else {
           <app-vote-bubbles [bubbles]="voteBubbles" phase="results" />
         }
@@ -36,16 +30,27 @@
     </div>
   } @else {
     @if (question()?.canWrite) {
-      <div class="answer-container">
-        <div class="answer-input-container">
-          <input type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput />
+      <!-- Answer-type question: the textarea lives inside the bubbles area; bubbles bounce on it and cannot be picked. -->
+      <app-vote-bubbles class="vote-bubbles-voting" [bubbles]="votingBubbles()" phase="results">
+        <div class="answer-card">
+          <textarea
+            class="answer-input"
+            [placeholder]="'question.enterYourAnswer' | translate"
+            (input)="answerText.set(answerInput.value)"
+            #answerInput
+          ></textarea>
+          <div class="submit-vote-container">
+            <button
+              type="button"
+              class="background-success"
+              [disabled]="!answerText().trim()"
+              (click)="submitVote(usersId, answerText().trim())"
+            >
+              {{ 'question.submitAnswer' | translate }}
+            </button>
+          </div>
         </div>
-        <div class="submit-vote-container">
-          <button type="button" class="background-success" (click)="submitVote(usersId, answerInput.value)">
-            {{ 'question.submitAnswer' | translate }}
-          </button>
-        </div>
-      </div>
+      </app-vote-bubbles>
     } @else {
       <app-vote-bubbles
         class="vote-bubbles-voting"

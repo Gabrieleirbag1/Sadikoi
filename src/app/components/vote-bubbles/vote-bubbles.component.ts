@@ -11,6 +11,8 @@ import { BubbleCandidate, BubbleEngine, BubbleVoter, CandidateState } from './vo
 export interface VoteBubbleData {
   votedUser: User;
   voters: User[];
+  /** Written answer: rendered as a speech bubble next to the ball instead of orbiting voters. */
+  answer?: string;
 }
 
 /** Approximate tooltip footprint, only used to decide when to flip it away from an edge. */
@@ -49,6 +51,8 @@ export class VoteBubblesComponent {
 
   protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   protected readonly boxRef = viewChild.required<ElementRef<HTMLElement>>('box');
+  /** Wrapper of the projected content (e.g. the answer card): bubbles bounce on it. */
+  protected readonly obstacleRef = viewChild.required<ElementRef<HTMLElement>>('obstacle');
 
   protected readonly hoveredId = signal<number | null>(null);
   protected readonly isVoting = computed(() => this.phase() === 'voting' && !this.disabled());
@@ -57,6 +61,7 @@ export class VoteBubblesComponent {
       id: b.votedUser.id,
       name: b.votedUser.username,
       picture: this.pictureUrl(b.votedUser),
+      answer: b.answer,
       voters: b.voters.map<BubbleVoter>(v => ({ id: v.id, name: v.username, picture: this.pictureUrl(v) })),
     })),
   );
@@ -65,6 +70,7 @@ export class VoteBubblesComponent {
 
   private readonly engine = new BubbleEngine();
   private readonly images = new Map<string, HTMLImageElement>();
+  private readonly speech = new Map<number, { key: string; lines: string[]; width: number; side: 'left' | 'right' }>();
   private ctx: CanvasRenderingContext2D | null = null;
   private frame = 0;
   private lastTime = 0;
@@ -89,6 +95,9 @@ export class VoteBubblesComponent {
 
     effect(() => {
       const data = this.candidates();
+      for (const id of this.speech.keys()) {
+        if (!data.some(c => c.id === id)) this.speech.delete(id);
+      }
       if (this.ready) this.engine.sync(data);
     });
 
@@ -168,12 +177,28 @@ export class VoteBubblesComponent {
 
   private setupResize(): void {
     const box = this.boxRef().nativeElement;
+    let lastKey = '';
+    const measureObstacle = () => {
+      const o = this.obstacleRef().nativeElement.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      // engine/canvas coordinates start inside the border, so remove the border offset
+      this.engine.setObstacles(o.width && o.height
+        ? [{ x: o.left - b.left - box.clientLeft, y: o.top - b.top - box.clientTop, width: o.width, height: o.height }]
+        : []);
+    };
     const resize = () => {
       const width = box.clientWidth;
       const height = box.clientHeight;
       if (!width || !height) return;
-      const canvas = this.canvasRef().nativeElement;
       const dpr = window.devicePixelRatio || 1;
+      const key = `${width}x${height}@${dpr}`;
+      // The card (obstacle) can resize often: only reallocate the canvas when the box really changed.
+      if (key === lastKey) {
+        measureObstacle();
+        return;
+      }
+      lastKey = key;
+      const canvas = this.canvasRef().nativeElement;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -183,9 +208,11 @@ export class VoteBubblesComponent {
         speedFactor: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.3 : 1,
       });
       this.engine.resize(width, height);
+      measureObstacle();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(box);
+    observer.observe(this.obstacleRef().nativeElement);
     this.destroyRef.onDestroy(() => observer.disconnect());
     resize();
   }
@@ -214,6 +241,99 @@ export class VoteBubblesComponent {
     [...this.engine.candidates]
       .sort((a, b) => b.r - a.r)
       .forEach(c => this.drawBall(ctx, c.x, c.y, c.r, c.name, c.picture, c.id, selected.includes(c.id) && this.isVoting(), c.id === hovered && this.isVoting()));
+    this.engine.candidates.forEach(c => c.answer && this.drawSpeech(ctx, c));
+  }
+
+  /** Speech bubble with the user's written answer, on the side of the ball that has room. */
+  private drawSpeech(ctx: CanvasRenderingContext2D, c: CandidateState): void {
+    const { width: w, height: h } = this.engine;
+    const text = c.answer ?? '';
+    const maxWidth = Math.min(Math.max(w * 0.32, 110), 200);
+    const font = '600 13px sans-serif';
+    const lineHeight = 17, padX = 10, padY = 8, gap = 10, tail = 8;
+
+    let entry = this.speech.get(c.id);
+    const key = `${text}|${maxWidth}`;
+    if (!entry || entry.key !== key) {
+      ctx.font = font;
+      const lines = this.wrap(ctx, text, maxWidth - 2 * padX, 4);
+      const width = Math.max(...lines.map(l => ctx.measureText(l).width)) + 2 * padX;
+      entry = { key, lines, width, side: entry?.side ?? 'right' };
+      this.speech.set(c.id, entry);
+    }
+
+    const bw = entry.width, bh = entry.lines.length * lineHeight + 2 * padY;
+    const fitsRight = c.x + c.r + gap + tail + bw <= w;
+    const fitsLeft = c.x - c.r - gap - tail - bw >= 0;
+    // keep the current side (no flicker) unless it no longer fits and the other one does
+    if (entry.side === 'right' && !fitsRight && fitsLeft) entry.side = 'left';
+    else if (entry.side === 'left' && !fitsLeft && fitsRight) entry.side = 'right';
+    else if (!fitsRight && !fitsLeft) entry.side = c.x < w / 2 ? 'right' : 'left';
+
+    const dir = entry.side === 'right' ? 1 : -1;
+    const x = dir === 1 ? c.x + c.r + gap + tail : c.x - c.r - gap - tail - bw;
+    const y = Math.min(Math.max(c.y - bh / 2, 4), Math.max(4, h - bh - 4));
+    const color = PALETTE[Math.abs(c.id) % PALETTE.length];
+    const tailY = Math.min(Math.max(c.y, y + 12), y + bh - 12);
+    const tailX = dir === 1 ? x : x + bw;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(x, y, bw, bh, 12);
+    ctx.moveTo(tailX, tailY - 7);
+    ctx.lineTo(tailX - dir * tail, tailY);
+    ctx.lineTo(tailX, tailY + 7);
+    ctx.closePath();
+    ctx.shadowColor = 'rgba(0,0,0,.18)';
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+    // hide the stroke segment between bubble and tail
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY - 6);
+    ctx.lineTo(tailX, tailY + 6);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+
+    ctx.font = font;
+    ctx.fillStyle = '#2b2b2b';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    entry.lines.forEach((line, i) => ctx.fillText(line, x + padX, y + padY + lineHeight * (i + 0.5)));
+    ctx.restore();
+  }
+
+  /** Word-wraps text (breaking over-long words) and cuts it with an ellipsis after `maxLines`. */
+  private wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines: number): string[] {
+    const lines: string[] = [];
+    let current = '';
+    const push = () => { lines.push(current); current = ''; };
+    for (const word of text.split(/\s+/).filter(Boolean)) {
+      let w = word;
+      while (ctx.measureText(w).width > maxWidth) {
+        let n = w.length - 1;
+        while (n > 1 && ctx.measureText(w.slice(0, n)).width > maxWidth) n--;
+        if (current) push();
+        lines.push(w.slice(0, n));
+        w = w.slice(n);
+      }
+      const candidate = current ? `${current} ${w}` : w;
+      if (ctx.measureText(candidate).width <= maxWidth) current = candidate;
+      else { push(); current = w; }
+    }
+    if (current) push();
+    if (lines.length > maxLines) {
+      lines.length = maxLines;
+      let last = lines[maxLines - 1];
+      while (last.length > 1 && ctx.measureText(last + '…').width > maxWidth) last = last.slice(0, -1);
+      lines[maxLines - 1] = last + '…';
+    }
+    return lines.length ? lines : [''];
   }
 
   /** Agar.io-style background: scattered food pellets and a couple of green spiky viruses. */

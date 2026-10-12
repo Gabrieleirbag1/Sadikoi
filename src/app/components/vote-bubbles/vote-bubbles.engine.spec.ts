@@ -49,4 +49,18 @@ describe('BubbleEngine', () => {
     expect(engine.hitTest(c.x, c.y)?.id).toBe(1);
     expect(engine.hitTest(-100, -100)).toBeNull();
   });
+
+  it('bounces candidates off obstacles', () => {
+    const engine = new BubbleEngine();
+    engine.resize(600, 400);
+    engine.setObstacles([{ x: 200, y: 150, width: 200, height: 100 }]);
+    engine.sync([candidate(1, 0), candidate(2, 0), candidate(3, 0)]);
+    for (let i = 0; i < 2000; i++) {
+      engine.step(1 / 60);
+      for (const c of engine.candidates) {
+        const cx = Math.min(Math.max(c.x, 200), 400), cy = Math.min(Math.max(c.y, 150), 250);
+        expect(Math.hypot(c.x - cx, c.y - cy)).toBeGreaterThanOrEqual(c.r - 1);
+      }
+    }
+  });
 });

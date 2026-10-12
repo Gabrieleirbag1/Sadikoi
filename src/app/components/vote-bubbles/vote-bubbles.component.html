@@ -11,11 +11,15 @@
     ></canvas>
   </div>
 
+  <div #obstacle class="vote-bubbles-obstacle">
+    <ng-content></ng-content>
+  </div>
+
   <ul class="sr-only">
     @for (candidate of candidates(); track candidate.id) {
       <li>
         <button type="button" [disabled]="!isVoting()" [attr.aria-pressed]="selectedIds().includes(candidate.id)" (click)="select(candidate.id)">
-          {{ candidate.name }} ({{ candidate.voters.length }})
+          {{ candidate.name }}@if (candidate.answer) {: {{ candidate.answer }}} ({{ candidate.voters.length }})
         </button>
       </li>
     }
