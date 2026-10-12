@@ -65,7 +65,6 @@ export class VoteBubblesComponent {
       voters: b.voters.map<BubbleVoter>(v => ({ id: v.id, name: v.username, picture: this.pictureUrl(v) })),
     })),
   );
-  protected readonly hoveredAnswer = computed(() => this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.answer ?? '');
   protected readonly hoveredUser = computed(() => this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.votedUser ?? null);
   protected readonly tooltipPos = signal({ x: 0, y: 0, flipX: false, flipY: false });
 
@@ -158,12 +157,10 @@ export class VoteBubblesComponent {
   private placeTooltip(event: MouseEvent): void {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left, y = event.clientY - rect.top;
-    const answer = this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.answer;
-    const height = TOOLTIP_HEIGHT + (answer ? Math.min(answer.length / 30, 8) * 18 + 16 : 0);
     this.tooltipPos.set({
       x, y,
       flipX: x + TOOLTIP_WIDTH > rect.width && x > TOOLTIP_WIDTH / 2,
-      flipY: y + height > rect.height && y > height,
+      flipY: y + TOOLTIP_HEIGHT > rect.height && y > TOOLTIP_HEIGHT,
     });
   }
 

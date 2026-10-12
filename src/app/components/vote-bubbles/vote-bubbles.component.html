@@ -27,9 +27,6 @@
 
   @if (userProfileService.isOpenFor(hoveredUser(), tooltipScope)) {
     <div class="user-profile-popover vote-bubbles-tooltip" role="tooltip" [class.flip-x]="tooltipPos().flipX" [class.flip-y]="tooltipPos().flipY" [style.left.px]="tooltipPos().x" [style.top.px]="tooltipPos().y">
-      @if (hoveredAnswer()) {
-        <p class="vote-bubbles-tooltip-answer">{{ hoveredAnswer() }}</p>
-      }
       <app-user-profile [user]="hoveredUser()"></app-user-profile>
     </div>
   }
