@@ -51,6 +51,8 @@ export class VoteBubblesComponent {
 
   protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   protected readonly boxRef = viewChild.required<ElementRef<HTMLElement>>('box');
+  /** Wrapper of the projected content (e.g. the answer card): bubbles bounce on it. */
+  protected readonly obstacleRef = viewChild.required<ElementRef<HTMLElement>>('obstacle');
 
   protected readonly hoveredId = signal<number | null>(null);
   protected readonly isVoting = computed(() => this.phase() === 'voting' && !this.disabled());
@@ -187,9 +189,17 @@ export class VoteBubblesComponent {
         speedFactor: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.3 : 1,
       });
       this.engine.resize(width, height);
+
+      const obstacle = this.obstacleRef().nativeElement;
+      const o = obstacle.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      this.engine.setObstacles(o.width && o.height
+        ? [{ x: o.left - b.left, y: o.top - b.top, width: o.width, height: o.height }]
+        : []);
     };
     const observer = new ResizeObserver(resize);
     observer.observe(box);
+    observer.observe(this.obstacleRef().nativeElement);
     this.destroyRef.onDestroy(() => observer.disconnect());
     resize();
   }

@@ -30,16 +30,17 @@
     </div>
   } @else {
     @if (question()?.canWrite) {
-      <div class="answer-container">
-        <div class="answer-input-container">
+      <!-- Answer-type question: the textarea lives inside the bubbles area; bubbles bounce on it and cannot be picked. -->
+      <app-vote-bubbles class="vote-bubbles-voting" [bubbles]="votingBubbles()" phase="results">
+        <div class="answer-card">
           <textarea class="answer-input" type="text" [placeholder]="'question.enterYourAnswer' | translate" #answerInput></textarea>
+          <div class="submit-vote-container">
+            <button type="button" class="background-success" (click)="submitVote(usersId, answerInput.value)">
+              {{ 'question.submitAnswer' | translate }}
+            </button>
+          </div>
         </div>
-        <div class="submit-vote-container">
-          <button type="button" class="background-success" (click)="submitVote(usersId, answerInput.value)">
-            {{ 'question.submitAnswer' | translate }}
-          </button>
-        </div>
-      </div>
+      </app-vote-bubbles>
     } @else {
       <app-vote-bubbles
         class="vote-bubbles-voting"

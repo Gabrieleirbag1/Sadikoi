@@ -11,6 +11,10 @@
     ></canvas>
   </div>
 
+  <div #obstacle class="vote-bubbles-obstacle">
+    <ng-content></ng-content>
+  </div>
+
   <ul class="sr-only">
     @for (candidate of candidates(); track candidate.id) {
       <li>
