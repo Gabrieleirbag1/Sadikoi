@@ -1,15 +1,16 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CaptchaComponent } from '../captcha/captcha.component';
 
 type DisplayMode = 'register' | 'login' | 'verifyDevice';
 
 @Component({
   selector: 'app-auth',
-  imports: [GoogleLoginComponent, FormField, TranslatePipe, RouterLink],
+  imports: [GoogleLoginComponent, FormField, TranslatePipe, RouterLink, CaptchaComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
@@ -29,6 +30,8 @@ export class AuthComponent {
   });
 
   protected authForm = form(this.authModel);
+  protected captchaToken = signal<string | null>(null);
+  private readonly captcha = viewChild(CaptchaComponent);
     
   private selectedFile: File | null = null;
 
@@ -37,15 +40,24 @@ export class AuthComponent {
   }
 
   protected setDisplayMode(displayMode: DisplayMode): void {
+    this.captchaToken.set(null);
     this.displayMode.set(displayMode);
   }
 
   protected async onSubmit(event: Event, mode: DisplayMode): Promise<void> {
     event.preventDefault();
-    if (mode === 'register') {
-      await this.register();
-    } else {
-      await this.login();
+    if (!this.captchaToken()) {
+      return;
+    }
+    try {
+      if (mode === 'register') {
+        await this.register();
+      } else {
+        await this.login();
+      }
+    } finally {
+      // Tokens are single-use: get a fresh one if the user stays on the form.
+      this.captcha()?.reset();
     }
   }
 
@@ -55,7 +67,7 @@ export class AuthComponent {
       alert('Passwords do not match!');
       return;
     }
-    const response = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login);
+    const response = await this.authService.register(val.username, val.password, val.confirmPassword, val.email, this.selectedFile, val.login, this.captchaToken());
     if (response && response.body) {
       if (val.login) {
         if (response.status === 203) {
@@ -70,7 +82,7 @@ export class AuthComponent {
 
   private async login(): Promise<void> {
     const val = this.authModel();
-    const response = await this.authService.login(val.username, val.password, val.remember);
+    const response = await this.authService.login(val.username, val.password, val.remember, this.captchaToken());
     if (response && response.body) {
       if (response.body.success) {
         if (response.status === 203) {
@@ -121,6 +133,10 @@ export class AuthComponent {
 
   protected async askForNewCode(): Promise<void> {
     const val = this.authModel();
-    await this.authService.login(val.username, val.password, val.remember);
+    if (!this.captchaToken()) {
+      return;
+    }
+    await this.authService.login(val.username, val.password, val.remember, this.captchaToken());
+    this.captcha()?.reset();
   }
 }
