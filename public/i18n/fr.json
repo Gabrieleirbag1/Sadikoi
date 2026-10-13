@@ -82,7 +82,7 @@
     "typeYourMessage": "Tapez votre message ici...",
     "send": "Envoyer",
     "gif": "GIF",
-    "report": "Signaler"
+    "report": "!"
   },
   "gifPicker": {
     "recent": "Récent",
@@ -133,7 +133,8 @@
     "showMore": "Voir {{count}} de plus",
     "showLess": "Voir moins",
     "items": "Objets",
-    "memberSince": "Membre depuis"
+    "memberSince": "Membre depuis",
+    "report": "Signaler"
   },
   "reportUser": {
     "title": "Signaler {{username}}",

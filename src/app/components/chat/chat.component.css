@@ -64,15 +64,25 @@
     gap: 12px;
 }
 
+.message-infos {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .message-report {
     margin-left: auto;
     padding: 0;
     border: none;
     background: none;
-    text-decoration: underline;
+    font-weight: bold;
     cursor: pointer;
     font-size: 0.75rem;
     color: var(--muted);
+}
+
+.message-report:hover {
+    color: var(--danger);
 }
 
 .message-time {

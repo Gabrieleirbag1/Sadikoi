@@ -82,7 +82,7 @@
     "typeYourMessage": "Type your message here...",
     "send": "Send",
     "gif": "GIF",
-    "report": "Report"
+    "report": "!"
   },
   "gifPicker": {
     "recent": "Recent",
@@ -133,7 +133,8 @@
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
     "items": "Items",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "report": "Report"
   },
   "reportUser": {
     "title": "Report {{username}}",
