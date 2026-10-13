@@ -219,6 +219,8 @@
                 />
               </div>
 
+              <app-captcha (tokenChange)="captchaToken.set($event)"></app-captcha>
+
               <div class="verification-buttons">
                 <button
                   class="paper-btn background-secondary"
@@ -228,7 +230,11 @@
                 >
                   {{ 'auth.verifyDevice' | translate }}
                 </button>
-                <button class="paper-btn background-secondary" (click)="askForNewCode()">
+                <button
+                  class="paper-btn background-secondary"
+                  [disabled]="!captchaToken()"
+                  (click)="askForNewCode()"
+                >
                   {{ 'auth.askForNewCode' | translate }}
                 </button>
               </div>

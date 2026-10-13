@@ -133,6 +133,10 @@ export class AuthComponent {
 
   protected async askForNewCode(): Promise<void> {
     const val = this.authModel();
-    await this.authService.login(val.username, val.password, val.remember);
+    if (!this.captchaToken()) {
+      return;
+    }
+    await this.authService.login(val.username, val.password, val.remember, this.captchaToken());
+    this.captcha()?.reset();
   }
 }
