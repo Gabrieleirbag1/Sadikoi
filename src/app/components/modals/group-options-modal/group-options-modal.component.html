@@ -85,7 +85,7 @@
                     </div>
                     @if (userProfileService.isOpenFor(user, tooltipScope)) {
                       <div class="user-profile-popover" role="tooltip">
-                        <app-user-profile [user]="user"></app-user-profile>
+                        <app-user-profile [user]="user" [group]="group()"></app-user-profile>
                       </div>
                     }
                   </div>

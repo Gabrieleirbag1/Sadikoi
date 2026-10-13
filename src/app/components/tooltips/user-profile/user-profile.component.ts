@@ -20,6 +20,7 @@ export class UserProfileComponent {
   private readonly connectedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
 
   public readonly user = input<User | null>(null);
+  public readonly group = input<Group | null>(null);
   protected readonly expanded = signal(false);
 
   protected readonly items = computed(() => this.user()?.items ?? []);
@@ -38,7 +39,8 @@ export class UserProfileComponent {
     if (!user) {
       return;
     }
-    this.reportUserService.open(user);
+    const groupId = this.group()?.id ?? undefined;
+    this.reportUserService.open(user, undefined, groupId);
   }
 
   protected toggleExpanded(): void {

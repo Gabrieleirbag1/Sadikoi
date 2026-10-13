@@ -19,9 +19,9 @@
     <div class="question-votes-and-chat-container">
       <section class="question-votes-container">
         @if (question()?.canWrite) {
-          <app-vote-bubbles [bubbles]="answerBubbles()" phase="results" />
+          <app-vote-bubbles [bubbles]="answerBubbles()" phase="results" [group]="group()" />
         } @else {
-          <app-vote-bubbles [bubbles]="voteBubbles" phase="results" />
+          <app-vote-bubbles [bubbles]="voteBubbles" phase="results" [group]="group()" />
         }
       </section>
       <section>
@@ -31,7 +31,7 @@
   } @else {
     @if (question()?.canWrite) {
       <!-- Answer-type question: the textarea lives inside the bubbles area; bubbles bounce on it and cannot be picked. -->
-      <app-vote-bubbles class="vote-bubbles-voting" [bubbles]="votingBubbles()" phase="results">
+      <app-vote-bubbles class="vote-bubbles-voting" [bubbles]="votingBubbles()" [group]="group()" phase="results">
         <div class="answer-card">
           <textarea
             class="answer-input"
@@ -55,6 +55,7 @@
       <app-vote-bubbles
         class="vote-bubbles-voting"
         [bubbles]="votingBubbles()"
+        [group]="group()"
         phase="voting"
         [multiple]="!!question()?.enableMultipleVoting"
         (voted)="submitVote($event)"

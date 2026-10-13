@@ -42,9 +42,9 @@ export class VoteBubblesComponent {
   protected readonly tooltipScope = 'vote-bubbles';
 
   public readonly bubbles = input.required<VoteBubbleData[]>();
+  public readonly group = input<Group | null>(null);
   public readonly phase = input<'voting' | 'results'>('results');
   public readonly disabled = input(false);
-  /** Allow selecting several candidates (question.enableMultipleVoting). */
   public readonly multiple = input(false);
   public readonly selectedIds = model<number[]>([]);
   public readonly voted = output<number[]>();
