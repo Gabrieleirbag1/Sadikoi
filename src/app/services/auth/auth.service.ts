@@ -163,9 +163,9 @@ export class AuthService {
     }
   }
 
-  public async forgotPassword(email: string): Promise<boolean> {
+  public async forgotPassword(email: string, captchaToken: string | null = null): Promise<boolean> {
     try {
-      await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/forgot-password/`, { email }));
+      await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/forgot-password/`, { email, captcha_token: captchaToken }));
       return true;
     } catch (error) {
       this.logger.error('Forgot password request failed:', error);
