@@ -135,7 +135,8 @@ export class ChatComponent {
   }
 
   protected reportMessage(message: Message): void {
-    this.reportUserService.open(message.sender, `[group: ${this.group()?.name ?? ''}, message: ${message.id}]`);
+    const group = this.group();
+    this.reportUserService.open(message.sender, `[group: ${group?.name ?? ''}, message: ${message.id}]`, group?.id, message.id);
   }
 
   protected isGifMessage(content: string): boolean {

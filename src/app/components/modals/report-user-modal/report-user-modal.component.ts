@@ -47,7 +47,7 @@ export class ReportUserModalComponent {
     }
     this.submitting.set(true);
     const reason = [target.context, this.reason().trim()].filter(Boolean).join(' ');
-    const success = await this.authService.reportUser(target.user.id, reason);
+    const success = await this.authService.reportUser(target.user.id, reason, target.groupId ?? null, target.messageId ?? null);
     this.submitting.set(false);
     if (success) {
       this.notifications.showSuccess(this.translate.instant('notification.userReported'));
