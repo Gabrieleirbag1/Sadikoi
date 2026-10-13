@@ -107,7 +107,7 @@ export class AuthService {
     return PUBLIC_ROUTE_PREFIXES.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
   }
 
-  public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean): Promise<HttpResponse<ApiResponse> | null> {
+  public async register(username: string, password: string, confirmPassword: string, email: string, profile_picture: File | null, login: boolean, captchaToken: string | null = null): Promise<HttpResponse<ApiResponse> | null> {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -117,6 +117,9 @@ export class AuthService {
     formData.append('login', String(login));
     formData.append('device_id', this.getDeviceId());
     formData.append('device_name', navigator.platform);
+    if (captchaToken) {
+      formData.append('captcha_token', captchaToken);
+    }
     if (profile_picture) {
       formData.append('profile_picture', profile_picture);
     }
@@ -204,8 +207,8 @@ export class AuthService {
     }
   }
 
-  public async login(username_or_email: string, password: string, remember: boolean): Promise<HttpResponse<ApiResponse> | null> {
-    const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
+  public async login(username_or_email: string, password: string, remember: boolean, captchaToken: string | null = null): Promise<HttpResponse<ApiResponse> | null> {
+    const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform, captcha_token: captchaToken };
 
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/login/`, payload, { withCredentials: true, observe: 'response' }));

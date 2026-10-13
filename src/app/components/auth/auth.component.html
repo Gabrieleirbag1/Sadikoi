@@ -104,7 +104,8 @@
                   </div>
                 </div>
 
-                <button class="paper-btn btn-block background-secondary" type="submit">
+                <app-captcha (tokenChange)="captchaToken.set($event)"></app-captcha>
+                <button class="paper-btn btn-block background-secondary" type="submit" [disabled]="!captchaToken()">
                   {{ 'auth.register' | translate }}
                 </button>
               </form>
@@ -137,7 +138,8 @@
                     <a routerLink="/forgot-password">{{ 'auth.forgotPassword' | translate }}</a>
                   </div>
                 </div>
-                <button type="submit" class="paper-btn btn-block background-secondary">
+                <app-captcha (tokenChange)="captchaToken.set($event)"></app-captcha>
+                <button type="submit" class="paper-btn btn-block background-secondary" [disabled]="!captchaToken()">
                   {{ 'auth.login' | translate }}
                 </button>
               </form>
