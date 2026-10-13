@@ -1,0 +1,27 @@
+@if (reportUserService.target(); as target) {
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="report-user-title" (click)="close()">
+    <div class="modal-dialog border" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h1 id="report-user-title" class="modal-title">{{ 'reportUser.title' | translate: { username: target.user.username } }}</h1>
+        <span class="modal-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">X</span>
+      </div>
+      <div class="modal-body">
+        <label for="report-user-reason">{{ 'reportUser.reasonLabel' | translate }}</label>
+        <textarea
+          id="report-user-reason"
+          rows="4"
+          [attr.maxlength]="maxLength"
+          [value]="reason()"
+          [placeholder]="'reportUser.placeholder' | translate"
+          (input)="onInput($event)"
+        ></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="background-danger" [disabled]="submitting()" (click)="submit()">
+          {{ 'reportUser.submit' | translate }}
+        </button>
+        <button type="button" (click)="close()">{{ 'reportUser.cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+}

@@ -192,6 +192,18 @@ export class AuthService {
     }
   }
 
+  public async reportUser(reportedUserInfo: string | number, reason: string, groupId: number | null, messageId: number | null): Promise<boolean> {
+    const payload = { reported_user_info: String(reportedUserInfo), reason, group_id: groupId, message_id: messageId };
+    try {
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/report-user/`, payload, { withCredentials: true }));
+      this.logger.debug('User reported successfully:', response);
+      return response.success;
+    } catch (error) {
+      this.logger.error('Failed to report user:', error);
+      return false;
+    }
+  }
+
   public async login(username_or_email: string, password: string, remember: boolean): Promise<HttpResponse<ApiResponse> | null> {
     const payload = { username_or_email, password, remember, device_id: this.getDeviceId(), device_name: navigator.platform };
 

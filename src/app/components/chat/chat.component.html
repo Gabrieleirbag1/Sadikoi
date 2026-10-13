@@ -22,10 +22,12 @@
           @if (isFirstOfRun) {
             <strong class="message-author">{{ message.sender.username }}</strong>
           }
-          @if (!isOwnMessage(message)) {
-            <a class="message-report" [href]="reportHref(message)">{{ 'chat.report' | translate }}</a>
-          }
-          <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
+          <div class="message-infos">
+            <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
+            @if (!isOwnMessage(message)) {
+              <span class="message-report" (click)="reportMessage(message)">{{ 'chat.report' | translate }}</span>
+            }
+          </div>
         </div>
         @if (isGifMessage(message.content)) {
           <img [src]="message.content" alt="GIF" class="message-gif" (load)="autoScroll('instant')" />

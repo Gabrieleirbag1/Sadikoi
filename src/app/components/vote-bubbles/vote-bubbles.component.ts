@@ -42,9 +42,9 @@ export class VoteBubblesComponent {
   protected readonly tooltipScope = 'vote-bubbles';
 
   public readonly bubbles = input.required<VoteBubbleData[]>();
+  public readonly group = input<Group | null>(null);
   public readonly phase = input<'voting' | 'results'>('results');
   public readonly disabled = input(false);
-  /** Allow selecting several candidates (question.enableMultipleVoting). */
   public readonly multiple = input(false);
   public readonly selectedIds = model<number[]>([]);
   public readonly voted = output<number[]>();
@@ -65,7 +65,9 @@ export class VoteBubblesComponent {
       voters: b.voters.map<BubbleVoter>(v => ({ id: v.id, name: v.username, picture: this.pictureUrl(v) })),
     })),
   );
-  protected readonly hoveredUser = computed(() => this.bubbles().find(b => b.votedUser.id === this.hoveredId())?.votedUser ?? null);
+  /** User shown in the tooltip: outlives the canvas hover so the pointer can travel onto the tooltip. */
+  private readonly tooltipUserId = signal<number | null>(null);
+  protected readonly tooltipUser = computed(() => this.bubbles().find(b => b.votedUser.id === this.tooltipUserId())?.votedUser ?? null);
   protected readonly tooltipPos = signal({ x: 0, y: 0, flipX: false, flipY: false });
 
   private readonly engine = new BubbleEngine();
@@ -83,6 +85,7 @@ export class VoteBubblesComponent {
     x: 0.12 + Math.random() * 0.76, y: 0.15 + (i + Math.random() * 0.7) * (0.7 / VIRUS_COUNT), phase: Math.random() * Math.PI * 2,
   }));
   private ready = false;
+  private hideTimeout: any;
 
   public constructor() {
     afterNextRender(() => {
@@ -106,7 +109,10 @@ export class VoteBubblesComponent {
       this.engine.freeze(this.isVoting() && ids.length ? ids[ids.length - 1] : null);
     });
 
-    this.destroyRef.onDestroy(() => cancelAnimationFrame(this.frame));
+    this.destroyRef.onDestroy(() => {
+      cancelAnimationFrame(this.frame);
+      clearTimeout(this.hideTimeout);
+    });
   }
 
   protected onPointerMove(event: PointerEvent): void {
@@ -114,18 +120,39 @@ export class VoteBubblesComponent {
   }
 
   protected onPointerLeave(): void {
-    this.setHovered(null);
+    this.hoveredId.set(null);
+    this.scheduleHide();
+  }
+
+  /** Short grace period so the pointer can move from the canvas onto the tooltip. */
+  protected scheduleHide(): void {
+    clearTimeout(this.hideTimeout);
+    this.hideTimeout = setTimeout(() => this.hideTooltip(), 150);
+  }
+
+  protected keepTooltip(): void {
+    clearTimeout(this.hideTimeout);
+  }
+
+  private hideTooltip(): void {
+    this.userProfileService.hide(this.tooltipScope);
+    this.tooltipUserId.set(null);
   }
 
   private setHovered(hit: CandidateState | null, event?: PointerEvent): void {
     const id = hit?.id ?? null;
     if (id === this.hoveredId()) return;
-    this.userProfileService.hide(this.tooltipScope);
+    clearTimeout(this.hideTimeout);
     this.hoveredId.set(id);
-    if (!hit || !event) return;
+    if (!hit || !event) {
+      this.scheduleHide();
+      return;
+    }
+    this.hideTooltip();
     const user = this.bubbles().find(b => b.votedUser.id === id)?.votedUser;
     if (!user) return;
     this.placeTooltip(event);
+    this.tooltipUserId.set(id);
     this.userProfileService.show(user, this.tooltipScope);
   }
 
@@ -134,7 +161,9 @@ export class VoteBubblesComponent {
     if (!hit) return;
     const user = this.bubbles().find(b => b.votedUser.id === hit.id)?.votedUser;
     if (user) {
+      clearTimeout(this.hideTimeout);
       this.placeTooltip(event);
+      this.tooltipUserId.set(hit.id);
       this.userProfileService.showNow(user, this.tooltipScope);
     }
     if (this.isVoting()) this.select(hit.id);

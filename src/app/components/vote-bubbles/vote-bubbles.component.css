@@ -48,8 +48,9 @@
   /* Fixed natural width: an absolutely positioned box would otherwise shrink (and grow taller) near the edge. */
   width: max-content;
   max-width: 280px;
-  margin-top: 12px;
-  pointer-events: none;
+  /* Transparent padding (not margin) bridges the gap to the pointer so hovering the tooltip keeps it open. */
+  padding-top: 12px;
+  pointer-events: auto;
 }
 
 .vote-bubbles-tooltip.flip-x {
@@ -57,7 +58,8 @@
 }
 
 .vote-bubbles-tooltip.flip-y {
-  margin-top: -12px;
+  padding-top: 0;
+  padding-bottom: 12px;
   transform: translateY(-100%);
 }
 

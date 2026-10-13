@@ -9,7 +9,9 @@
 
 .user-profile-popover {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  /* Flush with the anchor (visual gap is padding) so the pointer never leaves the hover area. */
+  top: 100%;
+  padding-top: 0.5rem;
   z-index: 1000;
   border-radius: 8px;
 }

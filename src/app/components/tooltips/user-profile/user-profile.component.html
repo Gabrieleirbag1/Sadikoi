@@ -27,4 +27,8 @@
       </button>
     }
   }
+
+  @if (canReport()) {
+    <button type="button" class="user-profile-report" (click)="reportUser()">{{ 'userProfile.report' | translate }}</button>
+  }
 </div>

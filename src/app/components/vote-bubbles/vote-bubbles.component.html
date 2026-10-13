@@ -25,9 +25,9 @@
     }
   </ul>
 
-  @if (userProfileService.isOpenFor(hoveredUser(), tooltipScope)) {
-    <div class="user-profile-popover vote-bubbles-tooltip" role="tooltip" [class.flip-x]="tooltipPos().flipX" [class.flip-y]="tooltipPos().flipY" [style.left.px]="tooltipPos().x" [style.top.px]="tooltipPos().y">
-      <app-user-profile [user]="hoveredUser()"></app-user-profile>
+  @if (userProfileService.isOpenFor(tooltipUser(), tooltipScope)) {
+    <div class="user-profile-popover vote-bubbles-tooltip" role="tooltip" [class.flip-x]="tooltipPos().flipX" [class.flip-y]="tooltipPos().flipY" [style.left.px]="tooltipPos().x" [style.top.px]="tooltipPos().y" (pointerenter)="keepTooltip()" (pointerleave)="scheduleHide()">
+      <app-user-profile [user]="tooltipUser()" [group]="group()"></app-user-profile>
     </div>
   }
 
