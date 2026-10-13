@@ -192,8 +192,8 @@ export class AuthService {
     }
   }
 
-  public async reportUser(reportedUserInfo: string | number, reason: string): Promise<boolean> {
-    const payload = { reported_user_info: String(reportedUserInfo), reason };
+  public async reportUser(reportedUserInfo: string | number, reason: string, groupId: number | null, messageId: number | null): Promise<boolean> {
+    const payload = { reported_user_info: String(reportedUserInfo), reason, group_id: groupId, message_id: messageId };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/report-user/`, payload, { withCredentials: true }));
       this.logger.debug('User reported successfully:', response);
