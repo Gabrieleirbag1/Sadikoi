@@ -20,8 +20,8 @@ export class BugReportComponent {
     if (!title.trim() || !description.trim()) {
       return;
     }
-    const result = await this.feedbackService.submitBugReport(title, description);
-    if (result === null) {
+    const sent = await this.feedbackService.submitBugReport(title, description);
+    if (!sent) {
       this.notifications.showError(this.translate.instant('notification.genericError'));
       return;
     }

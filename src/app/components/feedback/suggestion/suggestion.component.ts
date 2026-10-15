@@ -20,8 +20,8 @@ export class SuggestionComponent {
     if (!question.trim()) {
       return;
     }
-    const result = await this.feedbackService.submitSuggestion(theme, question);
-    if (result === null) {
+    const sent = await this.feedbackService.submitSuggestion(theme, question);
+    if (!sent) {
       this.notifications.showError(this.translate.instant('notification.genericError'));
       return;
     }
