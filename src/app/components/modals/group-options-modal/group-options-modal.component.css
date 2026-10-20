@@ -154,22 +154,32 @@ button[disabled]:active {
         flex-wrap: wrap;
     }
 
-    /* Member row: name on its own line, role icon and actions below it. */
-    .group-user {
-        flex-wrap: wrap;
+    /* One row per member: avatar + name (cut with an ellipsis), role icon, compact actions. */
+    .group-user-info {
+        flex: 1 1 0;
+        min-width: 0;
     }
 
-    .group-user-info {
-        flex: 1 1 100%;
+    .group-user-info span {
+        max-width: none;
+        min-width: 0;
     }
 
     .group-user .group-options-form-buttons {
+        flex: none;
         flex-wrap: nowrap;
-        margin-left: auto;
+        gap: 6px;
+    }
+
+    .group-user .group-options-form-buttons img {
+        width: 24px;
+        height: 24px;
     }
 
     .group-user .group-options-form-buttons button {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.85rem;
+        max-width: 90px;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+        line-height: 1.1;
     }
 }

@@ -154,7 +154,8 @@ input, select {
         font-size: 0.85rem;
     }
 
-    input, select {
+    .form-fields input,
+    .form-fields select {
         width: 100%;
         box-sizing: border-box;
     }
@@ -207,6 +208,7 @@ input, select {
         margin: 12px 0 0;
     }
 
+    /* One row per device: text, authorized checkbox, revoke button. */
     .device-container span {
         flex: 1;
         min-width: 0;
@@ -214,8 +216,15 @@ input, select {
         overflow-wrap: anywhere;
     }
 
+    .device-container input,
     .device-container button {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.85rem;
+        flex: none;
+    }
+
+    .device-container button {
+        max-width: 96px;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+        line-height: 1.1;
     }
 }
