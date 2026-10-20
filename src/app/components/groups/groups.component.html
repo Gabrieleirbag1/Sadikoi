@@ -53,8 +53,18 @@
           </p>
         </div>
       }
-      <div class="group-grid-item group-add-item border" (click)="openGroupModal()">
-        <p>+</p>
+      <div
+        class="group-grid-item group-add-item border"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'groups.createGroup' | translate"
+        [title]="'groups.createGroup' | translate"
+        (click)="openGroupModal()"
+        (keydown.enter)="openGroupModal()"
+      >
+        <svg class="group-add-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4.5v15M4.5 12h15" />
+        </svg>
       </div>
     </section>
   } @else {
@@ -89,8 +99,18 @@
           </div>
         </div>
       }
-      <div class="group-list-item group-add-item border" (click)="openGroupModal()">
-        <p>+</p>
+      <div
+        class="group-list-item group-add-item border"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'groups.createGroup' | translate"
+        [title]="'groups.createGroup' | translate"
+        (click)="openGroupModal()"
+        (keydown.enter)="openGroupModal()"
+      >
+        <svg class="group-add-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4.5v15M4.5 12h15" />
+        </svg>
       </div>
     </section>
   }
