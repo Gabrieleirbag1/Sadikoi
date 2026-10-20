@@ -1,0 +1,53 @@
+/* Full-screen loader, shared by the static boot loader (index.html) and <app-loading>.
+   Colors are hard-coded: paper.css variables may not be loaded yet at boot. */
+.app-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background-color: #fffcf8;
+  background-image:
+    radial-gradient(ellipse 55% 45% at 8% 12%, #ffe9decc 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 95% 18%, #ebe4fccc 0%, transparent 70%),
+    radial-gradient(ellipse 55% 50% at 85% 95%, #def5eccc 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 10% 92%, #e0effccc 0%, transparent 70%);
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+
+.app-loader--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-loader__spinner {
+  width: 48px;
+  height: 48px;
+  box-sizing: border-box;
+  border: 4px solid #cdcccb;
+  border-top-color: #0b74d5;
+  border-radius: 50%;
+  animation: app-loader-spin 0.8s linear infinite;
+}
+
+.app-loader__label {
+  font-family: "Neucha", sans-serif;
+  font-size: 1.4rem;
+  color: #41403e;
+}
+
+@keyframes app-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loader__spinner {
+    animation-duration: 2s;
+  }
+}

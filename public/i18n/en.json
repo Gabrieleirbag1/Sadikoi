@@ -1,5 +1,8 @@
 {
   "hello": "Hello",
+  "loading": {
+    "label": "Loading..."
+  },
   "auth": {
     "authenticated": "You are logged in!",
     "forgetDevice": "Forget this device on logout",

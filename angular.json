@@ -26,6 +26,7 @@
               }
             ],
             "styles": [
+              "src/loading.css",
               "src/styles.css",
               "src/paper.css"
             ]
