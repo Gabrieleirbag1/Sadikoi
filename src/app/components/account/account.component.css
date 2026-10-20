@@ -146,7 +146,7 @@ input, select {
 
     /* Language sits at the bottom, level with the password fields. */
     .form-fields-right label[for="language"] {
-        margin-top: auto;
+        margin-top: 10px;
     }
 
     .form-fields-right p {
