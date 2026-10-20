@@ -5,10 +5,13 @@ import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupOptionsComponent } from "../modals/group-options-modal/group-options-modal.component";
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 import { ModalService } from '../../services/modal/modal.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
+import { NotificationService } from '../../services/notification/notification.service';
+import { copyToClipboard } from '../../utils/copy-to-clipboard';
 
 @Component({
   selector: 'app-group',
@@ -23,6 +26,8 @@ export class GroupComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(ModalService);
   private readonly websocketService = inject(WebsocketService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly notificationService = inject(NotificationService);
+  private readonly translate = inject(TranslateService);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
   public readonly question = model<Question | null>(null);
@@ -74,22 +79,28 @@ export class GroupComponent implements OnInit, OnDestroy {
   }
 
   protected async fetchInvitation(): Promise<void> {
-    if (!this.group()) {
+    const group = this.group();
+    if (!group) {
       this.logger.error('Group not loaded yet');
       return;
     }
+
+    // Not awaited before copying: the copy must start during the click (required by Safari).
+    const invitationUrl = this.groupsService.getGroupInvitation(group.id).then(invitation => {
+      if (!invitation) throw new Error('No invitation to copy');
+      return `${window.location.origin}/group/invitations/${invitation}`;
+    });
+
     try {
-      const invitation = await this.groupsService.getGroupInvitation(this.group()!.id);
-      this.logger.debug('Fetched group invitation:', invitation);
-      if (invitation) {
-        const invitationUrl = `${window.location.origin}/group/invitations/${invitation}`;
-        await navigator.clipboard.writeText(invitationUrl);
-        this.logger.info('Invitation copied to clipboard');
-      } else {
-        this.logger.warn('No invitation to copy');
-      }
+      await copyToClipboard(invitationUrl);
+      this.logger.info('Invitation copied to clipboard');
+      this.notificationService.showSuccess(this.translate.instant('notification.invitationCopied'));
     } catch (error) {
-      this.logger.error('Error fetching group invitation:', error);
+      this.logger.error('Error copying group invitation:', error);
+      // HTTP errors already get a toast from the error interceptor.
+      if (!(error instanceof HttpErrorResponse)) {
+        this.notificationService.showError(this.translate.instant('notification.invitationCopyFailed'));
+      }
     }
   }
 
