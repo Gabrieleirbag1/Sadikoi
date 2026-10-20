@@ -3,6 +3,8 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { secrets } from '../../../environments/secrets';
 import { LoggerService } from '../../services/logger/logger.service';
+import { LoadingService } from '../../services/loading/loading.service';
+import { waitForIframe } from '../../services/loading/wait-for-iframe';
 
 declare const google: any;
 
@@ -17,6 +19,7 @@ export class GoogleLoginComponent implements OnInit {
   private readonly ngZone = inject(NgZone);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly loading = inject(LoadingService);
 
   ngOnInit(): void {
     this.initializeGoogleSignIn();
@@ -28,8 +31,13 @@ export class GoogleLoginComponent implements OnInit {
       callback: (response: any) => this.handleCredentialResponse(response)
     });
 
+    const button = document.getElementById('google-signin-button');
+    if (button) {
+      // The loader stays up until the button's iframe is displayed.
+      this.loading.track(waitForIframe(button));
+    }
     google.accounts.id.renderButton(
-      document.getElementById('google-signin-button'),
+      button,
       { theme: 'outline', size: 'large' }  // customization attributes
     );
 

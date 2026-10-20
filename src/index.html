@@ -9,6 +9,21 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+  <div id="boot-loader" class="app-loader" role="status" aria-live="polite">
+    <div class="app-loader__spinner"></div>
+    <span class="app-loader__label">Loading...</span>
+  </div>
+  <script>
+    (function () {
+      try {
+        var user = JSON.parse(localStorage.getItem('user') || 'null');
+        if (user && user.language === 'fr') {
+          document.documentElement.lang = 'fr';
+          document.querySelector('#boot-loader .app-loader__label').textContent = 'Chargement...';
+        }
+      } catch (e) {}
+    })();
+  </script>
   <app-root></app-root>
 </body>
 </html>

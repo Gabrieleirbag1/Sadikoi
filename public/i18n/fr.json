@@ -1,5 +1,8 @@
 {
   "hello": "Bonjour",
+  "loading": {
+    "label": "Chargement..."
+  },
   "auth": {
     "authenticated": "Vous êtes connecté!",
     "forgetDevice": "Oublier cet appareil à la déconnexion",

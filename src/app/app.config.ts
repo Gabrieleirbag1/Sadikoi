@@ -7,12 +7,13 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
+import { loadingInterceptor } from './interceptors/loading.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, errorInterceptor]) 
+      withInterceptors([loadingInterceptor, authInterceptor, errorInterceptor])
     ),
     provideRouter(routes),
     provideTranslateService({
