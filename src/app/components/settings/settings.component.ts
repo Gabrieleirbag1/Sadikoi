@@ -3,11 +3,12 @@ import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../services/settings/settings.service';
 import { FeedbackComponent } from '../feedback/feedback.component';
+import { DonationComponent } from '../donation/donation.component';
 import { APP_VERSION, APP_YEAR, CONTACT_EMAIL, KLIPY_URL, MISSCLICK_URL } from './settings.constants';
 
 @Component({
   selector: 'app-settings',
-  imports: [RouterLink, TranslatePipe, FeedbackComponent],
+  imports: [RouterLink, TranslatePipe, FeedbackComponent, DonationComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
 })
@@ -24,6 +25,7 @@ export class SettingsComponent {
   protected onEscape(): void {
     this.settings.close();
     this.settings.closeFeedback();
+    this.settings.closeDonation();
   }
 
   protected toggleNotifications(): void {

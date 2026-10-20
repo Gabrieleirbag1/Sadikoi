@@ -1,0 +1,35 @@
+@if (settings.donationOpen()) {
+  <div class="donation-backdrop" (click)="close()">
+    <div
+      class="donation-dialog border shadow shadow-large"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'settings.donate' | translate"
+      (click)="$event.stopPropagation()"
+    >
+      <button class="donation-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">&times;</button>
+
+      <h1>{{ 'settings.donate' | translate }}</h1>
+
+      <div class="donation-buttons">
+        <form action="https://www.paypal.com/donate" method="post" target="_blank">
+          <input type="hidden" name="hosted_button_id" value="A37WU32WXPJLN" />
+          <input
+            class="donate-paypal"
+            type="image"
+            src="https://www.paypalobjects.com/en_US/FR/i/btn/btn_donateCC_LG.gif"
+            name="submit"
+            title="PayPal - The safer, easier way to pay online!"
+            alt="Donate with PayPal button"
+          />
+        </form>
+        <a class="logo-link donate-bmc" href="https://www.buymeacoffee.com/missclick.net" target="_blank" rel="noopener noreferrer">
+          <img
+            src="https://img.buymeacoffee.com/button-api/?text=Buy me a tea&emoji=🍵&slug=missclick.net&button_colour=ffeb8a&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"
+            alt="Buy me a tea"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+}

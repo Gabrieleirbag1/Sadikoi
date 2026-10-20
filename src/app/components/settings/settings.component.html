@@ -13,24 +13,9 @@
       </button>
 
       <section class="settings-section">
-        <h3>{{ 'settings.donate' | translate }}</h3>
-        <form action="https://www.paypal.com/donate" method="post" target="_blank">
-          <input type="hidden" name="hosted_button_id" value="A37WU32WXPJLN" />
-          <input
-            class="donate-button"
-            type="image"
-            src="https://www.paypalobjects.com/en_US/FR/i/btn/btn_donateCC_LG.gif"
-            name="submit"
-            title="PayPal - The safer, easier way to pay online!"
-            alt="Donate with PayPal button"
-          />
-        </form>
-        <a class="logo-link donate-bmc" href="https://www.buymeacoffee.com/missclick.net" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://img.buymeacoffee.com/button-api/?text=Buy me a tea&emoji=🍵&slug=missclick.net&button_colour=ffeb8a&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"
-            alt="Buy me a tea"
-          />
-        </a>
+        <button class="settings-item" (click)="settings.openDonation()">
+          {{ 'settings.donate' | translate }}
+        </button>
       </section>
 
       <section class="settings-section">
@@ -70,3 +55,4 @@
 }
 
 <app-feedback></app-feedback>
+<app-donation></app-donation>

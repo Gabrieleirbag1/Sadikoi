@@ -6,6 +6,7 @@ import { Injectable, signal } from '@angular/core';
 export class SettingsService {
   readonly isOpen = signal(false);
   readonly feedbackOpen = signal(false);
+  readonly donationOpen = signal(false);
 
   open(): void {
     this.isOpen.set(true);
@@ -26,5 +27,14 @@ export class SettingsService {
 
   closeFeedback(): void {
     this.feedbackOpen.set(false);
+  }
+
+  openDonation(): void {
+    this.isOpen.set(false);
+    this.donationOpen.set(true);
+  }
+
+  closeDonation(): void {
+    this.donationOpen.set(false);
   }
 }
