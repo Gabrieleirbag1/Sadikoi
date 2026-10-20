@@ -1,44 +1,66 @@
-import { DOCUMENT, Injectable, computed, inject, signal } from '@angular/core';
+import { DOCUMENT, Injectable, Injector, inject, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom } from 'rxjs';
 
-const BOOT_TIMEOUT_MS = 8000;
+/** Hard cap: the loader never stays longer than this, whatever is still pending. */
+const MAX_LOADING_MS = 8000;
 const IMAGES_TIMEOUT_MS = 5000;
-/** Navigations faster than this never show the loader (avoids a flash on cached routes). */
-const SHOW_DELAY_MS = 150;
+/** Time without pending work before content is considered settled (catches chained requests). */
+const QUIET_MS = 80;
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoadingService {
-  private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
+  // Router and TranslateService are resolved in init(): the HTTP interceptor injects this service,
+  // and TranslateService itself makes HTTP requests (circular dependency otherwise).
+  private readonly injector = inject(Injector);
   private readonly document = inject(DOCUMENT);
-
-  private readonly navigationVisible = signal(false);
-  private readonly pending = signal(0);
+  private router!: Router;
+  private translate!: TranslateService;
 
   /** Navigation loader (<app-loading>). The boot loader lives in index.html. */
-  readonly visible = computed(() => this.navigationVisible() || this.pending() > 0);
+  readonly visible = signal(false);
 
   private booted = false;
   private initialized = false;
   private lastNavigationId = 0;
-  private showTimer: ReturnType<typeof setTimeout> | null = null;
+  private pendingTasks = 0;
+  private idleWaiters: (() => void)[] = [];
 
-  /** Manual loader, e.g. around a slow request. Each show() needs a matching hide(). */
-  show(): void {
-    this.pending.update(n => n + 1);
+  /**
+   * Registers async work the loader must wait for (HTTP requests, third-party widgets...).
+   * Returns the function to call once it is done. Only delays the boot/navigation loader:
+   * it never shows the loader by itself.
+   */
+  begin(): () => void {
+    this.pendingTasks++;
+    let ended = false;
+    return () => {
+      if (ended) return;
+      ended = true;
+      this.pendingTasks--;
+      if (this.pendingTasks === 0) {
+        const waiters = this.idleWaiters;
+        this.idleWaiters = [];
+        waiters.forEach(resolve => resolve());
+      }
+    };
   }
 
-  hide(): void {
-    this.pending.update(n => Math.max(0, n - 1));
+  /** Same as begin(), for a promise. */
+  track<T>(work: Promise<T>): Promise<T> {
+    const done = this.begin();
+    work.then(done, done);
+    return work;
   }
 
   init(): void {
     if (this.initialized) return;
     this.initialized = true;
+    this.router = this.injector.get(Router);
+    this.translate = this.injector.get(TranslateService);
     this.watchNavigations();
     this.waitForBoot().then(() => this.removeBootLoader());
   }
@@ -51,10 +73,9 @@ export class LoadingService {
       firstValueFrom(this.translate.get('loading.label')),
       this.windowLoaded(),
       this.document.fonts?.ready ?? Promise.resolve(),
-    ]).then(() => this.afterRender())
-      .then(() => this.waitForImages(this.document.body));
+    ]).then(() => this.settle(this.document.body));
 
-    await Promise.race([ready, this.delay(BOOT_TIMEOUT_MS)]).catch(() => undefined);
+    await Promise.race([ready, this.delay(MAX_LOADING_MS)]).catch(() => undefined);
   }
 
   private removeBootLoader(): void {
@@ -71,46 +92,39 @@ export class LoadingService {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.lastNavigationId = event.id;
-        this.startNavigation();
+        // Shown right away: with a delay, the empty page would be visible before its data arrives.
+        if (this.booted) this.visible.set(true);
       } else if (event instanceof NavigationEnd) {
-        this.endNavigation(event.id, true);
+        const content = this.settle(this.document.querySelector('.main-content') ?? this.document.body);
+        Promise.race([content, this.delay(MAX_LOADING_MS)]).finally(() => this.endNavigation(event.id));
       } else if (event instanceof NavigationCancel) {
         // Usually a guard redirect: the follow-up navigation starts right after, so keep the loader up.
-        setTimeout(() => this.endNavigation(event.id, false));
+        setTimeout(() => this.endNavigation(event.id));
       } else if (event instanceof NavigationError) {
-        this.endNavigation(event.id, false);
+        this.endNavigation(event.id);
       }
     });
   }
 
-  private startNavigation(): void {
-    if (!this.booted) return;
-    if (this.navigationVisible() || this.showTimer) return;
-    this.showTimer = setTimeout(() => {
-      this.showTimer = null;
-      this.navigationVisible.set(true);
-    }, SHOW_DELAY_MS);
+  private endNavigation(id: number): void {
+    if (id === this.lastNavigationId) this.visible.set(false);
   }
 
-  private endNavigation(id: number, waitForContent: boolean): void {
-    if (id !== this.lastNavigationId) return; // a newer navigation took over
+  /** Waits until pending work is over, the result is rendered and its images are loaded. */
+  private async settle(root: ParentNode): Promise<void> {
+    do {
+      await this.whenIdle();
+      await this.afterRender();
+      await this.delay(QUIET_MS);
+    } while (this.pendingTasks > 0);
 
-    if (this.showTimer) {
-      // Fast navigation: the loader never appeared.
-      clearTimeout(this.showTimer);
-      this.showTimer = null;
-      return;
-    }
-    if (!this.navigationVisible()) return;
+    await this.waitForImages(root);
+    await this.afterRender();
+  }
 
-    const content = waitForContent
-      ? this.afterRender().then(() =>
-          this.waitForImages(this.document.querySelector('.main-content') ?? this.document.body))
-      : Promise.resolve();
-
-    content.finally(() => {
-      if (id === this.lastNavigationId) this.navigationVisible.set(false);
-    });
+  private whenIdle(): Promise<void> {
+    if (this.pendingTasks === 0) return Promise.resolve();
+    return new Promise(resolve => this.idleWaiters.push(resolve));
   }
 
   private windowLoaded(): Promise<void> {
