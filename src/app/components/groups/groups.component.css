@@ -172,8 +172,11 @@
 .group-grid-item:nth-child(5n+4), .group-list-item:nth-child(5n+4) { --card-bg: #e9f4fc; }
 .group-grid-item:nth-child(5n+5), .group-list-item:nth-child(5n+5) { --card-bg: #fff7d9; }
 
-.group-grid-item:hover, .group-list-item:hover {
-    transform: translateY(-3px);
+/* Hover lift only with a real pointer: on touch screens it would stick after a tap. */
+@media (hover: hover) {
+    .group-grid-item:hover, .group-list-item:hover {
+        transform: translateY(-3px);
+    }
 }
 
 /* Fewer columns on narrower screens so cards never get squeezed. */
@@ -181,6 +184,73 @@
     .grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 560px) {
+/* Mobile (issue #31): the page scrolls as a whole, cards size to their content. */
+@media (max-width: 768px) {
+    .groups-container,
+    .groups-container.view-grid,
+    .groups-container.view-list {
+        height: auto;
+        overflow: visible;
+        scroll-snap-type: none;
+        padding: 0;
+    }
+
+    .groups-header {
+        margin-bottom: 12px;
+    }
+
+    .group-list-item {
+        height: auto;
+        min-height: 84px;
+    }
+
+    .group-list-item-name,
+    .group-list-item-description {
+        text-align: left;
+    }
+
+    .group-list-item-name {
+        margin-bottom: 4px;
+    }
+
+    .grid-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .group-grid-item {
+        height: auto;
+        min-height: 170px;
+    }
+
+    /* Not enough room for the name between the two icons: it goes on its own line below them. */
+    .group-grid-icons {
+        flex-wrap: wrap;
+    }
+
+    .group-grid-item-name {
+        order: 3;
+        flex-basis: 100%;
+        margin: 8px 0 0;
+        font-size: 1.05rem;
+    }
+
+    .group-grid-item-description {
+        margin-top: 6px;
+        font-size: 0.9rem;
+    }
+
+    .group-add-item {
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+    }
+
+    .group-add-item p {
+        margin: 0;
+    }
+}
+
+@media (max-width: 360px) {
     .grid-container { grid-template-columns: minmax(0, 1fr); }
 }

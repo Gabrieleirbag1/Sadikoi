@@ -68,3 +68,10 @@
   height: 18px;
   width: auto;
 }
+
+@media (max-width: 768px) {
+  .gif-picker {
+    width: min(320px, calc(100vw - 56px));
+    box-sizing: border-box;
+  }
+}

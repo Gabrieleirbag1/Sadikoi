@@ -28,3 +28,23 @@
   width: 32px;
   height: 32px;
 }
+
+/* Mobile (issue #31): the group page fills the screen exactly; bubbles and chat share the height. */
+@media (max-width: 768px) {
+    :host {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .main-container {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .group-header-title {
+        max-width: 55vw;
+    }
+}

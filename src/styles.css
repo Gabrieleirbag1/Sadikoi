@@ -85,3 +85,10 @@ html::-webkit-scrollbar {
     display: inline-flex;
     background-image: none;
 }
+
+/* Mobile: pages flow and scroll instead of fitting a fixed share of the viewport. */
+@media (max-width: 768px) {
+    .main-container {
+        height: auto;
+    }
+}
