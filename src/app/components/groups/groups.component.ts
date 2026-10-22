@@ -31,7 +31,9 @@ export class GroupsComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
-    this.changeView(localStorage.getItem('groupsView') as ViewState || 'grid');
+    // No saved choice yet: list on mobile (as in the mock-up), grid on desktop.
+    const defaultView: ViewState = window.matchMedia('(max-width: 768px)').matches ? 'list' : 'grid';
+    this.changeView(localStorage.getItem('groupsView') as ViewState || defaultView);
   }
 
   protected async fetchGroups(): Promise<void> {

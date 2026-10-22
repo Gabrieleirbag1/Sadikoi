@@ -104,3 +104,83 @@ button[disabled]:active {
     box-shadow: none;
     transition: none;
 }
+
+/* Mobile: margin around the dialog, scroll inside it, above the sticky footer menu. */
+@media (max-width: 768px) {
+    .modal {
+        z-index: 960;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+
+    .modal-dialog {
+        box-sizing: border-box;
+        max-height: calc(100dvh - 32px);
+        overflow-y: auto;
+    }
+}
+
+/* Mobile: form on top, member list below. */
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 100%;
+    }
+
+    .group-options-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .group-options-form,
+    .group-users-list-container {
+        width: 100%;
+    }
+
+    .group-users-list-container {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        padding: 16px 0 0;
+        border-left: none;
+        border-radius: 0;
+        border-top: 2px solid var(--primary, #41403e);
+    }
+
+    .group-user-info span {
+        max-width: 40vw;
+    }
+
+    .group-options-form-buttons {
+        flex-wrap: wrap;
+    }
+
+    /* One row per member: avatar + name (cut with an ellipsis), role icon, compact actions. */
+    .group-user-info {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .group-user-info span {
+        max-width: none;
+        min-width: 0;
+    }
+
+    .group-user .group-options-form-buttons {
+        flex: none;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .group-user .group-options-form-buttons img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .group-user .group-options-form-buttons button {
+        max-width: 90px;
+        margin: 0;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+        line-height: 1.1;
+    }
+}

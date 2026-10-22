@@ -42,3 +42,23 @@
     margin: 0;
     display: inline-flex;
 }
+
+/* Mobile: centred title, settings button pinned on the right (issue #31 mock-up). */
+@media (max-width: 768px) {
+    .header-container {
+        justify-content: center;
+        padding: 0 16px;
+    }
+
+    .header-title {
+        margin: 14px 0 18px;
+        font-size: 1.6rem;
+    }
+
+    .menu-button {
+        position: absolute;
+        right: 16px;
+        top: calc(50% - 4px);
+        transform: translateY(-50%);
+    }
+}

@@ -155,7 +155,9 @@
     "resetEmailSent": "If an account exists for this email, a reset link has been sent.",
     "passwordReset": "Password reset. You can now log in.",
     "feedbackSent": "Thanks for your feedback!",
-    "userReported": "User reported. Thank you!"
+    "userReported": "User reported. Thank you!",
+    "invitationCopied": "Invitation link copied!",
+    "invitationCopyFailed": "Couldn't copy the invitation link."
   },
   "forgotPassword": {
     "title": "Forgot your password?",

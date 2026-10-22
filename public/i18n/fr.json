@@ -155,7 +155,9 @@
     "resetEmailSent": "Si un compte existe pour cet email, un lien de réinitialisation a été envoyé.",
     "passwordReset": "Mot de passe réinitialisé. Tu peux te connecter.",
     "feedbackSent": "Merci pour votre retour !",
-    "userReported": "Utilisateur signalé. Merci !"
+    "userReported": "Utilisateur signalé. Merci !",
+    "invitationCopied": "Lien d'invitation copié !",
+    "invitationCopyFailed": "Impossible de copier le lien d'invitation."
   },
   "forgotPassword": {
     "title": "Mot de passe oublié ?",

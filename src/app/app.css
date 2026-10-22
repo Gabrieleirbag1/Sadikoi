@@ -43,3 +43,10 @@ app-header {
 .main-content::-webkit-scrollbar {
   display: none;
 }
+
+/* Mobile: tighter gutters around the page content. */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px 16px 0;
+  }
+}

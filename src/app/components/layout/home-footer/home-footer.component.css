@@ -15,3 +15,22 @@
 .home-footer .icon-button.active {
     border-bottom-color: var(--secondary-light-10);
 }
+
+/* Mobile: footer menu bar stuck to the bottom of the screen, edge to edge. */
+@media (max-width: 768px) {
+    :host {
+        position: sticky;
+        bottom: 0;
+        z-index: 50;
+        display: block;
+        margin: 0 -16px;
+    }
+
+    .home-footer {
+        height: 56px;
+        padding-bottom: env(safe-area-inset-bottom);
+        background-color: rgba(255, 252, 248, 0.94);
+        backdrop-filter: blur(6px);
+        border-top: 2px dashed var(--primary-shaded-50, #c1c0bd);
+    }
+}

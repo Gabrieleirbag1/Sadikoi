@@ -49,3 +49,11 @@
   height: 36px;
   margin-top: 8px;
 }
+
+@media (max-width: 768px) {
+  .account-user-icon {
+    width: min(130px, 100%);
+    height: auto;
+    aspect-ratio: 1;
+  }
+}
