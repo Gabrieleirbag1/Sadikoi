@@ -22,6 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- App Links: these site links open the app instead of the browser.
+                 Android checks https://sadikoi.missclick.net/.well-known/assetlinks.json before allowing it. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="sadikoi.missclick.net" />
+                <data android:pathPrefix="/group/invitations/" />
+                <data android:pathPrefix="/reset-password/" />
+            </intent-filter>
+
         </activity>
 
         <provider
