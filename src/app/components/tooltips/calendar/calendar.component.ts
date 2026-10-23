@@ -18,6 +18,16 @@ interface CalendarDay {
 /** 1 January 2024 is a Monday: the 7 days from it give the weekday names in Monday-first order. */
 const A_MONDAY = new Date(2024, 0, 1);
 
+/**
+ * The calendar day a question belongs to: the UTC day of its date (the API dates each question at the
+ * reset time that opened it, in UTC). Returned as a local midnight so it can be compared with the grid.
+ * Dates without a timezone are UTC (that's how the API stores them).
+ */
+function questionDay(value: string | number | Date): Date {
+  const date = typeof value === 'string' && !/Z$|[+-]\d{2}:\d{2}$/.test(value.trim()) ? new Date(`${value.trim()}Z`) : new Date(value);
+  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -54,12 +64,12 @@ export class CalendarComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const today = new Date();
+    const today = this.currentQuestionDay();
     this.viewYear = today.getFullYear();
     this.viewMonth = today.getMonth();
     const question = this.question();
     if (question && question.date) {
-      this.selectedDate = new Date(question.date);
+      this.selectedDate = questionDay(question.date);
     }
     this.loadMonth(this.viewYear, this.viewMonth);
   }
@@ -95,7 +105,7 @@ export class CalendarComponent implements OnInit {
   }
 
   protected goToToday(): void {
-    const today = new Date();
+    const today = this.currentQuestionDay();
     this.viewYear = today.getFullYear();
     this.viewMonth = today.getMonth();
     this.selectedDate = today;
@@ -130,7 +140,7 @@ export class CalendarComponent implements OnInit {
         const questionList = Array.isArray(questions) ? questions : [questions];
         questionList.forEach(q => {
           if (!q || q.date == null) return; // skip items without a date
-          const date = new Date(q.date as string | number | Date);
+          const date = questionDay(q.date as string | number | Date);
           const key = this.toKey(date.getFullYear(), date.getMonth(), date.getDate());
           this.questionsByDate.set(key, q);
           enableDates.push(key);
@@ -155,7 +165,7 @@ export class CalendarComponent implements OnInit {
     const daysInMonth = new Date(this.viewYear, this.viewMonth + 1, 0).getDate();
     const daysInPrevMonth = new Date(this.viewYear, this.viewMonth, 0).getDate();
 
-    const today = new Date();
+    const today = this.currentQuestionDay();
     const cells: CalendarDay[] = [];
 
     // Leading days from previous month
@@ -213,6 +223,24 @@ export class CalendarComponent implements OnInit {
       disabled: !this.enableDates.has(key),
     };
   }
+  /**
+   * The day of the question currently shown, which is "today" for the calendar. Same rule as the API:
+   * before today's reset time (UTC) it is still yesterday's question.
+   */
+  private currentQuestionDay(): Date {
+    const resetTime = this.group()?.daily_reset_timestamp;
+    const now = new Date();
+    if (!resetTime) {
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+    const [hours, minutes] = resetTime.split(':').map(Number);
+    let windowStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), hours, minutes);
+    if (now.getTime() < windowStart) {
+      windowStart -= 24 * 60 * 60 * 1000;
+    }
+    return questionDay(new Date(windowStart));
+  }
+
   private toKey(year: number, month: number, date: number): string {
     const mm = String(month + 1).padStart(2, '0');
     const dd = String(date).padStart(2, '0');
