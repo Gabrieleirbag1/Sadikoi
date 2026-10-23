@@ -23,6 +23,7 @@
     "verifyDeviceRequest": "Veuillez entrer le code envoyé à votre e-mail.",
     "askForNewCode": "Demander un nouveau code",
     "or": "ou",
+    "continueWithGoogle": "Continuer avec Google",
     "forgotPassword": "Mot de passe oublié ?",
     "consentPrefix": "En vous inscrivant ou en vous connectant, vous confirmez avoir au moins 13 ans et acceptez les",
     "consentAnd": "et la"

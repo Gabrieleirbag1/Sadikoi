@@ -10,6 +10,10 @@ const config: CapacitorConfig = {
     CapacitorHttp: { enabled: true },
     // Keeps cookies in the native cookie store, shared with CapacitorHttp.
     CapacitorCookies: { enabled: true },
+    // Only Google is used: the other providers' SDKs are left out of the app.
+    SocialLogin: {
+      providers: { google: true, facebook: false, apple: false, twitter: false },
+    },
   },
 };
 
