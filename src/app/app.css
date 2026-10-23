@@ -50,3 +50,21 @@ app-header {
     padding: 16px 16px 0;
   }
 }
+
+/* Clear of the notch (landscape) and, on pages without the bottom menu bar (which pads itself),
+   of the gesture bar. */
+.main-content {
+  padding-left: max(30px, var(--safe-left));
+  padding-right: max(30px, var(--safe-right));
+}
+
+.main-content:not(:has(app-home-footer)) {
+  padding-bottom: var(--safe-bottom);
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-left: max(16px, var(--safe-left));
+    padding-right: max(16px, var(--safe-right));
+  }
+}

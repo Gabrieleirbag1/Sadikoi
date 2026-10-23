@@ -47,13 +47,13 @@
 @media (max-width: 768px) {
     .modal {
         z-index: 960;
-        padding: 16px;
+        padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
         box-sizing: border-box;
     }
 
     .modal-dialog {
         box-sizing: border-box;
-        max-height: calc(100dvh - 32px);
+        max-height: calc(100dvh - 32px - var(--safe-top) - var(--safe-bottom));
         overflow-y: auto;
     }
 }

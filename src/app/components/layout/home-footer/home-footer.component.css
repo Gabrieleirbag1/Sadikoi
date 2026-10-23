@@ -28,7 +28,7 @@
 
     .home-footer {
         height: 56px;
-        padding-bottom: env(safe-area-inset-bottom);
+        padding-bottom: var(--safe-bottom);
         background-color: rgba(255, 252, 248, 0.94);
         backdrop-filter: blur(6px);
         border-top: 2px dashed var(--primary-shaded-50, #c1c0bd);

@@ -3,7 +3,7 @@
   --toast-success: #86a361;
   --toast-bg: #fffefc;
   position: fixed;
-  bottom: 16px;
+  bottom: calc(16px + var(--safe-bottom));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
