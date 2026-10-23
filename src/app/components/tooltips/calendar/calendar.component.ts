@@ -1,5 +1,8 @@
-import { Component, inject, model, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, model, OnInit, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { map } from 'rxjs';
 import { QuestionService } from '../../../services/question/question.service';
 
 interface CalendarDay {
@@ -12,22 +15,29 @@ interface CalendarDay {
   disabled: boolean;
 }
 
-const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
+/** 1 January 2024 is a Monday: the 7 days from it give the weekday names in Monday-first order. */
+const A_MONDAY = new Date(2024, 0, 1);
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css',
 })
 export class CalendarComponent implements OnInit {
   protected readonly questionService = inject(QuestionService);
-  protected weekdays = WEEKDAYS;
+  private readonly translate = inject(TranslateService);
+  /** Month and weekday names follow the site language. */
+  private readonly lang = toSignal(this.translate.onLangChange.pipe(map(event => event.lang)), {
+    initialValue: this.translate.getCurrentLang() ?? 'en',
+  });
+  protected readonly weekdays = computed(() => {
+    const format = new Intl.DateTimeFormat(this.lang(), { weekday: 'short' });
+    return Array.from({ length: 7 }, (_, i) =>
+      format.format(new Date(A_MONDAY.getFullYear(), A_MONDAY.getMonth(), A_MONDAY.getDate() + i)).replace('.', ''),
+    );
+  });
   protected viewYear!: number;
   protected viewMonth!: number; // 0-11
   protected days = signal<CalendarDay[]>([]);
@@ -40,7 +50,7 @@ export class CalendarComponent implements OnInit {
   public readonly showCurrent = output<void>();
 
   get title(): string {
-    return `${MONTH_NAMES[this.viewMonth]} ${this.viewYear}`;
+    return new Intl.DateTimeFormat(this.lang(), { month: 'long', year: 'numeric' }).format(new Date(this.viewYear, this.viewMonth, 1));
   }
 
   public ngOnInit(): void {

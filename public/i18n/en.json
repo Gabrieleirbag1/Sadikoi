@@ -48,6 +48,12 @@
     "deleteAccountTitle": "Delete your account?",
     "deleteAccountDescription": "This action cannot be undone."
   },
+  "calendar": {
+    "today": "Today",
+    "clear": "Clear",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
+  },
   "groups": {
     "groupName": "Group Name",
     "groupDescription": "Group Description",

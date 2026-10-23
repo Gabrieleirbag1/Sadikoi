@@ -48,6 +48,12 @@
     "deleteAccountTitle": "Supprimer votre compte ?",
     "deleteAccountDescription": "Cette action est irréversible."
   },
+  "calendar": {
+    "today": "Aujourd'hui",
+    "clear": "Effacer",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant"
+  },
   "groups": {
     "groupName": "Nom du groupe",
     "groupDescription": "Description du groupe",

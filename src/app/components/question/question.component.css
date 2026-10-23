@@ -109,7 +109,8 @@
     position: absolute;
     top: calc(100% + 8px); /* sits below the button, with a gap */
     right: 0;
-    z-index: 1000;
+    /* Above the user profile tooltips (1000-1001), below the modals (2000+). */
+    z-index: 1100;
     border-radius: 8px;
     padding: 12px;
 }
