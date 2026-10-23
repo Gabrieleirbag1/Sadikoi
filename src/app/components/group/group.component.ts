@@ -12,6 +12,7 @@ import { ModalService } from '../../services/modal/modal.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { copyToClipboard } from '../../utils/copy-to-clipboard';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-group',
@@ -88,7 +89,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     // Not awaited before copying: the copy must start during the click (required by Safari).
     const invitationUrl = this.groupsService.getGroupInvitation(group.id).then(invitation => {
       if (!invitation) throw new Error('No invitation to copy');
-      return `${window.location.origin}/group/invitations/${invitation}`;
+      return `${environment.siteUrl}/group/invitations/${invitation}`;
     });
 
     try {
