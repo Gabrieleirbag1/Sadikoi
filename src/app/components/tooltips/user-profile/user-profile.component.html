@@ -21,14 +21,19 @@
         </div>
       }
     </div>
-    @if (hiddenCount() > 0) {
-      <button type="button" class="paper-btn btn-small user-profile-more" (click)="toggleExpanded()">
-        {{ expanded() ? ('userProfile.showLess' | translate) : ('userProfile.showMore' | translate: { count: hiddenCount() }) }}
-      </button>
-    }
   }
 
-  @if (canReport()) {
-    <button type="button" class="user-profile-report" (click)="reportUser()">{{ 'userProfile.report' | translate }}</button>
+  <!-- "Show more" and "Report" share one row, so the bubble doesn't grow a line for each. -->
+  @if ((items().length && hiddenCount() > 0) || canReport()) {
+    <div class="user-profile-footer">
+      @if (items().length && hiddenCount() > 0) {
+        <button type="button" class="paper-btn btn-small user-profile-more" (click)="toggleExpanded()">
+          {{ expanded() ? ('userProfile.showLess' | translate) : ('userProfile.showMore' | translate: { count: hiddenCount() }) }}
+        </button>
+      }
+      @if (canReport()) {
+        <button type="button" class="user-profile-report" (click)="reportUser()">{{ 'userProfile.report' | translate }}</button>
+      }
+    </div>
   }
 </div>
