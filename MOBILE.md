@@ -7,3 +7,4 @@ npx cap add android
 npx cap add ios        # needs a Mac
 npx cap sync
 npx cap open android   # opens Android Studio
+npx ng build && npx cap sync android

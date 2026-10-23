@@ -1,5 +1,5 @@
 export const environment = {
-    apiUrl: 'https://sadikoi.missclick.net/api/',
+    apiUrl: 'http://localhost:8082/api/',
     production: true,
     turnstileSiteKey: '0x4AAAAAAFVlADDuHjoD9GEt'
 };
