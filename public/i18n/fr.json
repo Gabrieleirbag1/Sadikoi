@@ -66,6 +66,9 @@
   },
   "group": {
     "getGroupInvitation": "Copier le lien d'invitation au groupe",
+    "shareGroupInvitation": "Partager l'invitation au groupe",
+    "shareInvitationTitle": "Invitation Sadikoi",
+    "shareInvitationText": "Rejoins mon groupe \"{{name}}\" sur Sadikoi !",
     "groupOptions": "Options du groupe",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
