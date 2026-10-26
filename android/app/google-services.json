@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "242031070843",
+    "project_id": "sadikoi-f233a",
+    "storage_bucket": "sadikoi-f233a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242031070843:android:d1a46dca3426dd550a1cde",
+        "android_client_info": {
+          "package_name": "com.missclick.sadikoi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzLL8OjqhQSTxh-3onKZsTU8TZqwMJ4b8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
