@@ -16,6 +16,10 @@ const config: CapacitorConfig = {
       style: 'LIGHT',
       initialViewportFitValueHint: 'cover',
     },
+    // Push notifications (iOS: how they show while the app is open; Android ignores it).
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
     // Only Google is used: the other providers' SDKs are left out of the app.
     SocialLogin: {
       providers: { google: true, facebook: false, apple: false, twitter: false },
