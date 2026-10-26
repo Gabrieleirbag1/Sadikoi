@@ -64,7 +64,9 @@
     "noGroups": "You're not in any group yet.",
     "appOnly": "Notifications arrive on the mobile app. Your choices here apply to your account.",
     "permissionDenied": "Notifications are blocked: allow them in your phone's settings (Apps › Sadikoi › Notifications).",
-    "saveFailed": "Couldn't save this change."
+    "save": "Save",
+    "saved": "Notification settings saved",
+    "saveFailed": "Couldn't save your settings."
   },
   "groups": {
     "groupName": "Group Name",
