@@ -4,8 +4,6 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 
-type GlobalSetting = 'messages' | 'questions' | 'vote_reminder';
-
 /** Push notification preferences of the account (they apply to every phone of the user). */
 @Injectable({
   providedIn: 'root',
@@ -25,23 +23,20 @@ export class NotificationSettingsService {
     }
   }
 
-  public async updateSetting(name: GlobalSetting, value: boolean): Promise<boolean> {
+  /** Saves the three switches and every group's state in a single request. */
+  public async saveSettings(settings: NotificationSettings): Promise<NotificationSettings | null> {
+    const payload = {
+      messages: settings.messages,
+      questions: settings.questions,
+      vote_reminder: settings.vote_reminder,
+      groups: settings.groups.map(({ id, muted }) => ({ id, muted })),
+    };
     try {
-      await firstValueFrom(this.httpClient.put<ApiResponse>(`${this.url}settings/`, { [name]: value }, { withCredentials: true }));
-      return true;
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${this.url}settings/`, payload, { withCredentials: true }));
+      return response.content || null;
     } catch (error) {
-      this.logger.error('Failed to update notification setting:', error);
-      return false;
-    }
-  }
-
-  public async setGroupMuted(groupId: number, muted: boolean): Promise<boolean> {
-    try {
-      await firstValueFrom(this.httpClient.put<ApiResponse>(`${this.url}groups/${groupId}/`, { muted }, { withCredentials: true }));
-      return true;
-    } catch (error) {
-      this.logger.error('Failed to update group notifications:', error);
-      return false;
+      this.logger.error('Failed to save notification settings:', error);
+      return null;
     }
   }
 

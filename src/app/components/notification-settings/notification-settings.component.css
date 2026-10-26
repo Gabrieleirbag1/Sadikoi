@@ -81,3 +81,9 @@ legend {
     overflow-y: auto;
     padding-right: 6px;
 }
+
+.notifications-save {
+    display: block;
+    width: 100%;
+    margin: 4px 0 0;
+}

@@ -40,6 +40,10 @@
             }
           </div>
         </fieldset>
+
+        <button type="button" class="notifications-save btn-secondary" [disabled]="!dirty() || saving()" (click)="save()">
+          {{ 'notificationSettings.save' | translate }}
+        </button>
       } @else if (loadFailed()) {
         <p class="notifications-note notifications-warning">{{ 'notification.genericError' | translate }}</p>
       }
