@@ -71,3 +71,13 @@ legend {
     margin-bottom: 6px;
     overflow-wrap: anywhere;
 }
+
+/* Many groups: the list scrolls (about 6 rows, less on short screens); its title stays visible. */
+.notifications-groups {
+    /* PaperCSS's hidden checkboxes are absolutely positioned: keep them inside the list,
+       otherwise those of the scrolled-away groups make the whole window scroll too. */
+    position: relative;
+    max-height: min(220px, 30vh);
+    overflow-y: auto;
+    padding-right: 6px;
+}
