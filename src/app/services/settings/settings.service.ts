@@ -7,6 +7,7 @@ export class SettingsService {
   readonly isOpen = signal(false);
   readonly feedbackOpen = signal(false);
   readonly donationOpen = signal(false);
+  readonly notificationsOpen = signal(false);
 
   open(): void {
     this.isOpen.set(true);
@@ -36,5 +37,14 @@ export class SettingsService {
 
   closeDonation(): void {
     this.donationOpen.set(false);
+  }
+
+  openNotifications(): void {
+    this.isOpen.set(false);
+    this.notificationsOpen.set(true);
+  }
+
+  closeNotifications(): void {
+    this.notificationsOpen.set(false);
   }
 }
