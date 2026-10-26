@@ -5,7 +5,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { BubbleCandidate, BubbleEngine, BubbleVoter, CandidateState } from './vote-bubbles.engine';
 
 export interface VoteBubbleData {
