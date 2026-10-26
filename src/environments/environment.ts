@@ -4,7 +4,7 @@ export const environment = {
     siteUrl: 'https://sadikoi.missclick.net',
     /** Push notifications in the mobile app. Keep false until android/app/google-services.json is added:
      *  without Firebase, the push plugin crashes the app. */
-    pushNotificationsEnabled: false,
+    pushNotificationsEnabled: true,
     production: true,
     turnstileSiteKey: '0x4AAAAAAFVlADDuHjoD9GEt'
 };
