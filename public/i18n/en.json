@@ -54,6 +54,18 @@
     "previousMonth": "Previous month",
     "nextMonth": "Next month"
   },
+  "notificationSettings": {
+    "title": "Notifications",
+    "notifyMe": "Notify me about",
+    "messages": "Chat messages",
+    "questions": "New question of the day",
+    "voteReminder": "1 hour before the end, if I haven't voted",
+    "groups": "Groups",
+    "noGroups": "You're not in any group yet.",
+    "appOnly": "Notifications arrive on the mobile app. Your choices here apply to your account.",
+    "permissionDenied": "Notifications are blocked: allow them in your phone's settings (Apps › Sadikoi › Notifications).",
+    "saveFailed": "Couldn't save this change."
+  },
   "groups": {
     "groupName": "Group Name",
     "groupDescription": "Group Description",
