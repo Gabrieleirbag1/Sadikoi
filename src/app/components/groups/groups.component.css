@@ -36,6 +36,10 @@
     gap: 12px;
 }
 
+.groups-header[hidden] {
+    display: none;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -199,12 +203,12 @@
 .group-grid-item:nth-child(5n+4), .group-list-item:nth-child(5n+4) { --card-bg: #e9f4fc; }
 .group-grid-item:nth-child(5n+5), .group-list-item:nth-child(5n+5) { --card-bg: #fff7d9; }
 
-/* Groups where the user hasn't voted today: pulsing blue glow + a light sweeping across the card.
-   The glow stays under 6px so the scroll container's padding doesn't clip it. */
+/* Groups where the user hasn't voted today: pulsing blue glow, a tinted card and a light sweeping across it.
+   The outer glow stays around 6px so the scroll container's padding doesn't clip it; the inset glow is never clipped. */
 .needs-vote {
     position: relative;
     overflow: hidden;
-    animation: needs-vote-glow 2.4s ease-in-out infinite;
+    animation: needs-vote-glow 1.8s ease-in-out infinite;
 }
 
 .needs-vote::after {
@@ -212,33 +216,36 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.7) 50%, transparent 65%);
+    background: linear-gradient(110deg, transparent 30%, rgba(11, 116, 213, 0.28) 45%, rgba(255, 255, 255, 0.9) 50%, rgba(11, 116, 213, 0.28) 55%, transparent 70%);
     transform: translateX(-100%);
-    animation: needs-vote-sweep 3.6s ease-in-out infinite;
+    animation: needs-vote-sweep 2.8s ease-in-out infinite;
 }
 
 @keyframes needs-vote-glow {
     0%, 100% {
         border-color: var(--primary);
-        box-shadow: 0 0 0 0 rgba(11, 116, 213, 0);
+        background-color: #fff;
+        box-shadow: 0 0 0 0 rgba(11, 116, 213, 0), inset 0 0 0 0 rgba(11, 116, 213, 0);
     }
     50% {
         border-color: var(--secondary);
-        box-shadow: 0 0 5px 2px rgba(11, 116, 213, 0.45);
+        background-color: #e6f1fd;
+        box-shadow: 0 0 5px 3px rgba(11, 116, 213, 0.75), inset 0 0 16px 2px rgba(11, 116, 213, 0.4);
     }
 }
 
 /* The sweep crosses the card in the first half, then pauses. */
 @keyframes needs-vote-sweep {
     0% { transform: translateX(-100%); }
-    50%, 100% { transform: translateX(100%); }
+    55%, 100% { transform: translateX(100%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .needs-vote {
         animation: none;
         border-color: var(--secondary);
-        box-shadow: 0 0 5px 2px rgba(11, 116, 213, 0.45);
+        background-color: #e6f1fd;
+        box-shadow: 0 0 5px 3px rgba(11, 116, 213, 0.75), inset 0 0 16px 2px rgba(11, 116, 213, 0.4);
     }
 
     .needs-vote::after {

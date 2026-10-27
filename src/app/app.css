@@ -68,3 +68,12 @@ app-header {
     padding-right: max(16px, var(--safe-right));
   }
 }
+
+/* Mobile browsers: the page itself must not scroll (main-content does). When it did, the browser's
+   address/tool bars collapsed and expanded, resizing 100dvh on every frame: the layout lagged behind.
+   The copyright footer sits below the fold, so it goes too (html/body are locked in styles.css). */
+@media (max-width: 768px) {
+  app-footer {
+    display: none;
+  }
+}
