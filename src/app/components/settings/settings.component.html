@@ -7,7 +7,7 @@
     </div>
 
     <div class="settings-body">
-      <button class="settings-item settings-notifications" (click)="toggleNotifications()">
+      <button class="settings-item settings-notifications" (click)="settings.openNotifications()">
         <img src="images/icons/bell.svg" width="22" height="22" alt="" />
         {{ 'settings.notifications' | translate }}
       </button>
@@ -56,3 +56,4 @@
 
 <app-feedback></app-feedback>
 <app-donation></app-donation>
+<app-notification-settings></app-notification-settings>

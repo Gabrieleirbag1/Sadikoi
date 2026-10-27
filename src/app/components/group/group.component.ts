@@ -12,6 +12,9 @@ import { ModalService } from '../../services/modal/modal.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { copyToClipboard } from '../../utils/copy-to-clipboard';
+import { environment } from '../../../environments/environment';
+import { Capacitor } from '@capacitor/core';
+import { Share } from '@capacitor/share';
 
 @Component({
   selector: 'app-group',
@@ -78,6 +81,9 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** In the app, the invite button opens the phone's share menu; on the website it copies the link. */
+  protected readonly isNative = Capacitor.isNativePlatform();
+
   protected async fetchInvitation(): Promise<void> {
     const group = this.group();
     if (!group) {
@@ -85,10 +91,15 @@ export class GroupComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.isNative) {
+      await this.shareInvitation(group);
+      return;
+    }
+
     // Not awaited before copying: the copy must start during the click (required by Safari).
     const invitationUrl = this.groupsService.getGroupInvitation(group.id).then(invitation => {
       if (!invitation) throw new Error('No invitation to copy');
-      return `${window.location.origin}/group/invitations/${invitation}`;
+      return `${environment.siteUrl}/group/invitations/${invitation}`;
     });
 
     try {
@@ -100,6 +111,27 @@ export class GroupComponent implements OnInit, OnDestroy {
       // HTTP errors already get a toast from the error interceptor.
       if (!(error instanceof HttpErrorResponse)) {
         this.notificationService.showError(this.translate.instant('notification.invitationCopyFailed'));
+      }
+    }
+  }
+
+  private async shareInvitation(group: Group): Promise<void> {
+    const invitation = await this.groupsService.getGroupInvitation(group.id);
+    if (!invitation) {
+      return; // HTTP errors already get a toast from the error interceptor.
+    }
+    try {
+      await Share.share({
+        title: this.translate.instant('group.shareInvitationTitle'),
+        text: this.translate.instant('group.shareInvitationText', { name: group.name }),
+        url: `${environment.siteUrl}/group/invitations/${invitation}`,
+        dialogTitle: this.translate.instant('group.shareGroupInvitation'),
+      });
+    } catch (error: any) {
+      // Closing the share menu without picking an app also rejects.
+      if (!/cancel/i.test(error?.message ?? '')) {
+        this.logger.error('Error sharing group invitation:', error);
+        this.notificationService.showError(this.translate.instant('notification.genericError'));
       }
     }
   }

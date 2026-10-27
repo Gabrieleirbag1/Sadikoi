@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.missclick.sadikoi",
+      "sha256_cert_fingerprints": [
+        "66:3E:D0:FF:21:B2:5E:86:97:57:CB:11:4A:41:D8:28:7E:B0:6B:CA:8C:1F:74:5D:55:82:EB:E2:FB:B4:A5:77"
+      ]
+    }
+  }
+]

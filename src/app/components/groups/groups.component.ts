@@ -28,12 +28,16 @@ export class GroupsComponent implements OnInit {
   private readonly modalService = inject(ModalService);
   protected groups = signal<Group[]>([]);
   protected view: ViewState = 'grid';
+  /** On phones only the list exists: no toggle, and a saved 'grid' choice is ignored. */
+  protected readonly isMobile = window.matchMedia('(max-width: 768px)').matches;
 
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
-    // No saved choice yet: list on mobile (as in the mock-up), grid on desktop.
-    const defaultView: ViewState = window.matchMedia('(max-width: 768px)').matches ? 'list' : 'grid';
-    this.changeView(localStorage.getItem('groupsView') as ViewState || defaultView);
+    if (this.isMobile) {
+      this.view = 'list';
+      return;
+    }
+    this.changeView(localStorage.getItem('groupsView') as ViewState || 'grid');
   }
 
   protected async fetchGroups(): Promise<void> {

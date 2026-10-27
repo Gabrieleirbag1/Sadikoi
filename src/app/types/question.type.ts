@@ -10,4 +10,5 @@ interface Question {
   date?: string,
   item_name: string,
   votes?: Vote[],
+  announcement?: ItemAnnouncement | null,
 }

@@ -1,5 +1,7 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { secrets } from '../../../environments/secrets';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 
 interface KlipyGifProperties {
@@ -27,18 +29,14 @@ export interface KlipyGif {
 @Injectable({ providedIn: 'root' })
 export class KlipyService {
   private readonly logger = inject(LoggerService);
-  private readonly base = `https://api.klipy.com/api/v1/${secrets.klipyApiKey}/gifs`;
-  private user: User | null = null;
-
-  constructor() {
-    this.user = JSON.parse(localStorage.getItem('user') || 'null');
-  }
+  private readonly httpClient = inject(HttpClient);
+  // Klipy is called by the API (it holds the key): the browser never sees it.
+  private readonly base = `${environment.apiUrl}gifs/`;
 
   public async getTrending(): Promise<KlipyGif[]> {
     try {
-      const res = await fetch(`${this.base}/trending`);
-      const json = await res.json();
-      return json?.data?.data ?? [];
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${this.base}trending/`, { withCredentials: true }));
+      return response.content ?? [];
     } catch (error) {
       this.logger.error('Error fetching trending GIFs:', error);
       return [];
@@ -47,10 +45,8 @@ export class KlipyService {
 
   public async getRecent(): Promise<KlipyGif[]> {
     try {
-      const params = new URLSearchParams({ per_page: '50' });
-      const res = await fetch(`${this.base}/recent/${this.user?.id}?${params}`);
-      const json = await res.json();
-      return json?.data?.data ?? [];
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${this.base}recent/`, { withCredentials: true }));
+      return response.content ?? [];
     } catch (error) {
       this.logger.error('Error fetching recent GIFs:', error);
       return [];
@@ -59,10 +55,9 @@ export class KlipyService {
 
   public async searchGifs(query: string): Promise<KlipyGif[]> {
     try {
-      const params = new URLSearchParams({ q: query, per_page: '50', content_filter: 'medium', customer_id: this.user?.id as unknown as string});
-      const res = await fetch(`${this.base}/search?${params}`);
-      const json = await res.json();
-      return json?.data?.data ?? [];
+      const params = new HttpParams().set('q', query);
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${this.base}search/`, { params, withCredentials: true }));
+      return response.content ?? [];
     } catch (error) {
       this.logger.error('Error searching GIFs:', error);
       return [];
@@ -71,12 +66,7 @@ export class KlipyService {
 
   public async shareGif(gif: KlipyGif): Promise<void> {
     try {
-      const gifSlug = gif.slug;
-      await fetch(`${this.base}/share/${gifSlug}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: `${this.user?.id}` }),
-      });
+      await firstValueFrom(this.httpClient.post<ApiResponse>(`${this.base}share/${encodeURIComponent(gif.slug)}/`, {}, { withCredentials: true }));
     } catch (error) {
       this.logger.error('Error sharing GIF:', error);
     }

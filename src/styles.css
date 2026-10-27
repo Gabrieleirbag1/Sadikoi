@@ -1,4 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Screen edges hidden by the status bar, notch or gesture bar (0 in a normal browser).
+   On Android, Capacitor sets --safe-area-inset-* (0 when it already pads the app itself);
+   elsewhere env() gives the values. */
+:root {
+    --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+    --safe-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+    --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+    --safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+}
 body {
     margin: 0;
 }

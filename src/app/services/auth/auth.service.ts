@@ -5,6 +5,8 @@ import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { getDeviceId } from '../../utils/device-id';
+import { PushService } from '../push/push.service';
 
 const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password', '/legal', '/privacy', '/terms', '/delete-account'];
 
@@ -16,6 +18,7 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
+  private readonly push = inject(PushService);
   private isAuthenticatedFlag = false;
 
   constructor() {
@@ -59,23 +62,14 @@ export class AuthService {
   private setAuthenticated(isAuthenticated: boolean): void {
     localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
     this.isAuthenticatedFlag = isAuthenticated;
-  }
-
-  private generateDeviceId(): string {
-    const array = new Uint8Array(16);
-    crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    if (isAuthenticated) {
+      // Mobile app: ask for the notification permission and send this phone's push token.
+      this.push.start();
+    }
   }
 
   private getDeviceId(): string {
-    const deviceId = localStorage.getItem('device_id');
-    if (deviceId) {
-      return deviceId;
-    } else {
-      const newDeviceId = this.generateDeviceId();
-      localStorage.setItem('device_id', newDeviceId);
-      return newDeviceId;
-    }
+    return getDeviceId();
   }
 
   // Helper method to fetch user details, can be used after login to get user info

@@ -23,6 +23,7 @@
     "verifyDeviceRequest": "Veuillez entrer le code envoyé à votre e-mail.",
     "askForNewCode": "Demander un nouveau code",
     "or": "ou",
+    "continueWithGoogle": "Continuer avec Google",
     "forgotPassword": "Mot de passe oublié ?",
     "consentPrefix": "En vous inscrivant ou en vous connectant, vous confirmez avoir au moins 13 ans et acceptez les",
     "consentAnd": "et la"
@@ -47,6 +48,26 @@
     "deleteAccountTitle": "Supprimer votre compte ?",
     "deleteAccountDescription": "Cette action est irréversible."
   },
+  "calendar": {
+    "today": "Aujourd'hui",
+    "clear": "Effacer",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant"
+  },
+  "notificationSettings": {
+    "title": "Notifications",
+    "notifyMe": "Me prévenir pour",
+    "messages": "Les messages du chat",
+    "questions": "La nouvelle question du jour",
+    "voteReminder": "1 h avant la fin, si je n'ai pas voté",
+    "groups": "Groupes",
+    "noGroups": "Tu n'es encore dans aucun groupe.",
+    "appOnly": "Les notifications arrivent sur l'appli mobile. Tes choix ici s'appliquent à ton compte.",
+    "permissionDenied": "Les notifications sont bloquées : autorise-les dans les réglages du téléphone (Applis › Sadikoi › Notifications).",
+    "save": "Enregistrer",
+    "saved": "Réglages de notifications enregistrés",
+    "saveFailed": "Impossible d'enregistrer tes réglages."
+  },
   "groups": {
     "groupName": "Nom du groupe",
     "groupDescription": "Description du groupe",
@@ -59,6 +80,9 @@
   },
   "group": {
     "getGroupInvitation": "Copier le lien d'invitation au groupe",
+    "shareGroupInvitation": "Partager l'invitation au groupe",
+    "shareInvitationTitle": "Invitation Sadikoi",
+    "shareInvitationText": "Rejoins mon groupe \"{{name}}\" sur Sadikoi !",
     "groupOptions": "Options du groupe",
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
@@ -315,6 +339,22 @@
           "body": "Votre compte, vos informations de profil, vos appareils et vos préférences sont supprimés. Les contenus que vous avez publiés dans des groupes sont supprimés ou anonymisés."
         }
       ]
+    }
+  },
+  "itemAnnouncement": {
+    "title": "Les items du jour",
+    "members": "Membres",
+    "new": {
+      "before": "{{user}} a obtenu ce nouvel item",
+      "after": "!"
+    },
+    "stolen": {
+      "before": "{{user}} a volé l'item",
+      "after": "à {{from}}, qui avait {{streak}} 🔥 de streak !"
+    },
+    "kept": {
+      "before": "{{user}} garde son item",
+      "after": "avec {{streak}} 🔥 de streak !"
     }
   }
 }

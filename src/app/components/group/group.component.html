@@ -4,7 +4,7 @@
       <span>{{ group()?.name }}</span>
     </div>
     <div class="group-header-actions">
-      <span class="icon-button" role="button" tabindex="0" (click)="fetchInvitation()" title="{{ 'group.getGroupInvitation' | translate }}">
+      <span class="icon-button" role="button" tabindex="0" (click)="fetchInvitation()" [title]="(isNative ? 'group.shareGroupInvitation' : 'group.getGroupInvitation') | translate">
         <img src="images/icons/invite.svg" width="24" height="24" alt="List View" />
       </span>
       <span class="icon-button" role="button" tabindex="0" (click)="openGroupOptionsModal()" title="{{ 'group.groupOptions' | translate }}">

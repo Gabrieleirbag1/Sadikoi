@@ -23,6 +23,7 @@
     "verifyDeviceRequest": "Please enter the code sent to your email.",
     "askForNewCode": "Ask for a new Code",
     "or": "or",
+    "continueWithGoogle": "Continue with Google",
     "forgotPassword": "Forgot Password?",
     "consentPrefix": "By signing up or signing in, you confirm that you are at least 13 years old and accept the",
     "consentAnd": "and the"
@@ -47,6 +48,26 @@
     "deleteAccountTitle": "Delete your account?",
     "deleteAccountDescription": "This action cannot be undone."
   },
+  "calendar": {
+    "today": "Today",
+    "clear": "Clear",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
+  },
+  "notificationSettings": {
+    "title": "Notifications",
+    "notifyMe": "Notify me about",
+    "messages": "Chat messages",
+    "questions": "New question of the day",
+    "voteReminder": "1 hour before the end, if I haven't voted",
+    "groups": "Groups",
+    "noGroups": "You're not in any group yet.",
+    "appOnly": "Notifications arrive on the mobile app. Your choices here apply to your account.",
+    "permissionDenied": "Notifications are blocked: allow them in your phone's settings (Apps › Sadikoi › Notifications).",
+    "save": "Save",
+    "saved": "Notification settings saved",
+    "saveFailed": "Couldn't save your settings."
+  },
   "groups": {
     "groupName": "Group Name",
     "groupDescription": "Group Description",
@@ -59,6 +80,9 @@
   },
   "group": {
     "getGroupInvitation": "Copy group invitation link",
+    "shareGroupInvitation": "Share group invitation",
+    "shareInvitationTitle": "Sadikoi invitation",
+    "shareInvitationText": "Join my group \"{{name}}\" on Sadikoi!",
     "groupOptions": "Group Options",
     "loadingGroup": "Loading group...",
     "name": "Name:",
@@ -315,6 +339,22 @@
           "body": "Your account, profile information, devices and preferences are deleted. Content you posted in groups is deleted or anonymized."
         }
       ]
+    }
+  },
+  "itemAnnouncement": {
+    "title": "Today's items",
+    "members": "Members",
+    "new": {
+      "before": "{{user}} has got this new item",
+      "after": "!"
+    },
+    "stolen": {
+      "before": "{{user}} has stolen the item",
+      "after": "from {{from}}, who had a {{streak}} 🔥 streak!"
+    },
+    "kept": {
+      "before": "{{user}} keeps their item",
+      "after": "with a {{streak}} 🔥 streak!"
     }
   }
 }

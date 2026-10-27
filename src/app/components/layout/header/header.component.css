@@ -62,3 +62,23 @@
         transform: translateY(-50%);
     }
 }
+
+/* The header's background extends under the status bar; its content stays below it. */
+.header-container {
+    padding-top: var(--safe-top);
+    padding-left: max(20px, var(--safe-left));
+    padding-right: max(20px, var(--safe-right));
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        padding-left: max(16px, var(--safe-left));
+        padding-right: max(16px, var(--safe-right));
+    }
+
+    /* Centred on the content, not on the status bar padding above it. */
+    .menu-button {
+        right: max(16px, var(--safe-right));
+        top: calc(50% - 4px + var(--safe-top) / 2);
+    }
+}

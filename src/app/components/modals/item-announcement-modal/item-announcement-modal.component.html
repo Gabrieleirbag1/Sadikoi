@@ -1,0 +1,60 @@
+<div class="modal" [class]="'announcement-' + announcement().type" role="dialog" aria-modal="true" aria-labelledby="item-announcement-title" (click)="close()">
+  <div class="modal-dialog border" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h1 id="item-announcement-title" class="modal-title">{{ 'itemAnnouncement.title' | translate }}</h1>
+      <span class="modal-close" role="button" tabindex="0" [attr.aria-label]="'modal.close' | translate" (click)="close()" (keydown.enter)="close()">X</span>
+    </div>
+
+    <div class="modal-body">
+      <!-- The item revealed like a gift: sun rays turning behind it, a glow and a few sparkles. -->
+      <div class="announcement-hero" aria-hidden="true">
+        <div class="announcement-rays"></div>
+        <div class="announcement-glow"></div>
+        <span class="announcement-sparkle sparkle-1">✦</span>
+        <span class="announcement-sparkle sparkle-2">✦</span>
+        <span class="announcement-sparkle sparkle-3">✧</span>
+        <span class="announcement-sparkle sparkle-4">✦</span>
+        <div class="announcement-hero-item">
+          <app-item-image-display [itemName]="announcement().item_name" [imgClass]="'announcement-item-icon'"></app-item-image-display>
+        </div>
+      </div>
+
+      <p class="announcement-message">
+        {{ 'itemAnnouncement.' + announcement().type + '.before' | translate: messageParams() }}
+        <app-item-image-display class="announcement-inline-item" [itemName]="announcement().item_name" [imgClass]="'announcement-inline-icon'"></app-item-image-display>
+        {{ 'itemAnnouncement.' + announcement().type + '.after' | translate: messageParams() }}
+      </p>
+
+      <div class="announcement-members-title">{{ 'itemAnnouncement.members' | translate }}</div>
+      <div class="announcement-members" role="list">
+        @for (member of announcement().members; track member.id) {
+          <div class="announcement-member" role="listitem" [class.announcement-member-highlight]="member.id === announcement().user.id">
+            <div class="announcement-member-identity">
+              <app-profile-image-picker
+                class="announcement-member-avatar"
+                [currentImageUrl]="member.profile_picture"
+                [onlyDisplay]="true"
+                [imgClass]="'group-user-icon'"
+              ></app-profile-image-picker>
+              <span class="announcement-member-name">{{ member.username }}</span>
+            </div>
+            @if (member.items?.length) {
+              <div class="announcement-member-items">
+                @for (item of member.items; track item.id) {
+                  <div class="announcement-item">
+                    <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
+                    <span class="announcement-streak" title="Streak">🔥 {{ item.streak }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="announcement-close-button" (click)="close()">{{ 'modal.close' | translate }}</button>
+    </div>
+  </div>
+</div>

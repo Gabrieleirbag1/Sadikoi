@@ -1,0 +1,52 @@
+@if (settings.notificationsOpen()) {
+  <div class="notifications-backdrop" (click)="close()">
+    <div
+      class="notifications-dialog border shadow shadow-large"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'notificationSettings.title' | translate"
+      (click)="$event.stopPropagation()"
+    >
+      <button class="notifications-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">&times;</button>
+      <h1>{{ 'notificationSettings.title' | translate }}</h1>
+
+      @if (!push.available) {
+        <p class="notifications-note">{{ 'notificationSettings.appOnly' | translate }}</p>
+      } @else if (push.permission() === 'denied') {
+        <p class="notifications-note notifications-warning">{{ 'notificationSettings.permissionDenied' | translate }}</p>
+      }
+
+      @if (state(); as current) {
+        <fieldset class="form-group">
+          <legend>{{ 'notificationSettings.notifyMe' | translate }}</legend>
+          @for (option of options; track option.name) {
+            <label class="paper-check">
+              <input type="checkbox" [checked]="current[option.name]" (change)="toggleSetting(option.name, $any($event.target).checked)" />
+              <span>{{ option.label | translate }}</span>
+            </label>
+          }
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>{{ 'notificationSettings.groups' | translate }}</legend>
+          <div class="notifications-groups">
+            @for (group of current.groups; track group.id) {
+              <label class="paper-check">
+                <input type="checkbox" [checked]="!group.muted" (change)="toggleGroup(group, !$any($event.target).checked)" />
+                <span>{{ group.name }}</span>
+              </label>
+            } @empty {
+              <p class="notifications-note">{{ 'notificationSettings.noGroups' | translate }}</p>
+            }
+          </div>
+        </fieldset>
+
+        <button type="button" class="notifications-save btn-secondary" [disabled]="!dirty() || saving()" (click)="save()">
+          {{ 'notificationSettings.save' | translate }}
+        </button>
+      } @else if (loadFailed()) {
+        <p class="notifications-note notifications-warning">{{ 'notification.genericError' | translate }}</p>
+      }
+    </div>
+  </div>
+}

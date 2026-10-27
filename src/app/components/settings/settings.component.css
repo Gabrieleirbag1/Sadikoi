@@ -32,7 +32,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 20px;
+    padding: calc(8px + var(--safe-top)) max(20px, var(--safe-right)) 8px 20px;
     border-bottom: 1px solid var(--settings-border);
 }
 

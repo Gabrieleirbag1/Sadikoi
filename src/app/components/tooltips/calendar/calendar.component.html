@@ -1,12 +1,12 @@
 <div class="calendar">
   <div class="calendar__header">
-    <button type="button" class="calendar__nav" aria-label="Previous month" (click)="prevMonth()">‹</button>
+    <button type="button" class="calendar__nav" [attr.aria-label]="'calendar.previousMonth' | translate" (click)="prevMonth()">‹</button>
     <span class="calendar__title">{{ title }}</span>
-    <button type="button" class="calendar__nav" aria-label="Next month" (click)="nextMonth()">›</button>
+    <button type="button" class="calendar__nav" [attr.aria-label]="'calendar.nextMonth' | translate" (click)="nextMonth()">›</button>
   </div>
 
   <div class="calendar__weekdays">
-    @for (day of weekdays; track day) {
+    @for (day of weekdays(); track $index) {
       <span>{{ day }}</span>
     }
   </div>
@@ -19,8 +19,9 @@
         [class.calendar__day--muted]="!day.isCurrentMonth"
         [class.calendar__day--today]="day.isToday"
         [class.calendar__day--selected]="day.isSelected"
-        [class.calendar__day--disabled]="day.disabled && day.isCurrentMonth"
         [disabled]="day.disabled"
+        [attr.aria-current]="day.isToday ? 'date' : null"
+        [attr.aria-pressed]="day.isSelected"
         (click)="selectDay(day)"
       >
         {{ day.date }}
@@ -29,7 +30,7 @@
   </div>
 
   <div class="calendar__footer">
-    <button type="button" class="calendar__link" (click)="goToToday()">Today</button>
-    <button type="button" class="calendar__link" (click)="clearSelection()">Clear</button>
+    <button type="button" class="calendar__today" (click)="goToToday()">{{ 'calendar.today' | translate }}</button>
+    <button type="button" class="calendar__clear" (click)="clearSelection()">{{ 'calendar.clear' | translate }}</button>
   </div>
 </div>

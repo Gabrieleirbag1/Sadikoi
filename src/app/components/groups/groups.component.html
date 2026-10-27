@@ -1,4 +1,4 @@
-<div class="groups-header">
+<div class="groups-header" [hidden]="isMobile">
   <span
     class="icon-button"
     [class.active]="view === 'grid'"
@@ -26,7 +26,7 @@
   @if (view == 'grid') {
     <section class="grid-container">
       @for (group of groups(); track $index) {
-        <div class="group-grid-item border" (click)="redirectGroup(group)">
+        <div class="group-grid-item border" [class.needs-vote]="!group.has_user_voted_today" (click)="redirectGroup(group)">
           <div class="group-grid-icons">
             <div class="group-users-icons">
               @for (user of group.users.slice(0, 4); track $index) {
@@ -49,7 +49,6 @@
               } @else {
                 {{ 'groups.noDescription' | translate }}
               }
-              {{ group.description }}
           </p>
         </div>
       }
@@ -70,7 +69,7 @@
   } @else {
     <section class="list-container">
       @for (group of groups(); track $index) {
-        <div class="group-list-item border" (click)="redirectGroup(group)">
+        <div class="group-list-item border" [class.needs-vote]="!group.has_user_voted_today" (click)="redirectGroup(group)">
           <div class="group-users-icons">
             @for (user of group.users.slice(0, 4); track $index) {
               <app-profile-image-picker
@@ -89,7 +88,6 @@
               } @else {
                 {{ 'groups.noDescription' | translate }}
               }
-              {{ group.description }}
             </p>
           </div>
           <div class="group-list-item-icon">

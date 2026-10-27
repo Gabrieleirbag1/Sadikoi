@@ -67,15 +67,26 @@
   white-space: nowrap;
 }
 
+.user-profile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .user-profile-more {
-  align-self: flex-start;
   margin: 0;
 }
 
-.user-profile-report {
-  align-self: flex-end;
+/* Reset PaperCSS's [type=button] styles: under 520px they centre it and add a 1rem bottom margin. */
+.user-profile-report,
+.user-profile-report:hover,
+.user-profile-report:focus {
+  margin: 0 0 0 auto;
   padding: 0;
   border: none;
+  box-shadow: none;
+  transform: none;
   background: none;
   font-size: 0.75rem;
   color: var(--muted);

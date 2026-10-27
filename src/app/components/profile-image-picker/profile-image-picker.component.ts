@@ -1,6 +1,6 @@
 import { Component, computed, ElementRef, inject, model, viewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-profile-image-picker',

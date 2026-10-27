@@ -7,6 +7,8 @@ import { ReportUserModalComponent } from "./components/modals/report-user-modal/
 import { ErrorModalComponent } from "./components/error-modal/error-modal.component";
 import { LoadingComponent } from "./components/loading/loading.component";
 import { LoadingService } from "./services/loading/loading.service";
+import { DeepLinkService } from "./services/deep-link/deep-link.service";
+import { PushService } from "./services/push/push.service";
 
 @Component({
   selector: 'app-root',
@@ -19,5 +21,7 @@ export class App {
 
   constructor() {
     inject(LoadingService).init();
+    inject(DeepLinkService).init();
+    inject(PushService).init();
   }
 }

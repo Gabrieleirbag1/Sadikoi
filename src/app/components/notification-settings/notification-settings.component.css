@@ -1,0 +1,89 @@
+/* Same window as the feedback and donation dialogs. */
+.notifications-backdrop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 950;
+    padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+}
+
+.notifications-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fff;
+    font-size: 18px;
+}
+
+.notifications-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    padding: 0 8px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--primary, #41403e);
+}
+
+h1 {
+    margin: 4px 0 16px;
+    text-align: center;
+    color: var(--primary, #41403e);
+    font-size: clamp(26px, 6vw, 34px);
+}
+
+.notifications-note {
+    margin: 0 0 12px;
+    color: var(--muted, #868e96);
+    font-size: 0.9rem;
+}
+
+.notifications-warning {
+    color: var(--danger, #a7342d);
+}
+
+fieldset.form-group {
+    margin: 0 0 16px;
+    padding: 0;
+    border: none;
+}
+
+legend {
+    margin-bottom: 6px;
+    padding: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted, #868e96);
+}
+
+.paper-check {
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+/* Many groups: the list scrolls (about 6 rows, less on short screens); its title stays visible. */
+.notifications-groups {
+    /* PaperCSS's hidden checkboxes are absolutely positioned: keep them inside the list,
+       otherwise those of the scrolled-away groups make the whole window scroll too. */
+    position: relative;
+    max-height: min(220px, 30vh);
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.notifications-save {
+    display: block;
+    width: 100%;
+    margin: 4px 0 0;
+}

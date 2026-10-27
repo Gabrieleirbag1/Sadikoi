@@ -65,6 +65,8 @@
 }
 
 .message-infos {
+    /* Pushed right even when the author is absent (2nd message of a run). */
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -168,11 +170,17 @@ app-gif-picker {
         flex-direction: column;
     }
 
+    /* Extra room so messages and the input don't touch the hand-drawn border (its corners curve inwards). */
     .chat-container {
         flex: 1;
         min-height: 0;
         width: 100%;
         height: auto;
+        padding: 14px 14px 18px;
+    }
+
+    .chat-messages-container {
+        padding: 5px 6px;
     }
 
     .message-row {
@@ -181,7 +189,7 @@ app-gif-picker {
 
     .chat-input-area {
         gap: 6px;
-        margin: 4px 0 0;
+        margin: 6px 4px 2px;
     }
 
     /* 16px minimum: smaller inputs make iOS zoom in on focus. */

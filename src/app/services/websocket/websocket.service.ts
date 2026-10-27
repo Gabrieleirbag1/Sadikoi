@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 
 @Injectable({ providedIn: 'root' })
