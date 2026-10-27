@@ -1,0 +1,134 @@
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+  background-color: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.modal-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: calc(100dvh - 32px - var(--safe-top) - var(--safe-bottom));
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.modal-close {
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.announcement-message {
+  margin: 0;
+  font-size: 1.2rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* The item icon sits inside the sentence. */
+.announcement-message app-item-image-display {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.announcement-members-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border-bottom: 1px dashed var(--muted-light);
+}
+
+.announcement-members {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.announcement-members li::before {
+  content: none;
+}
+
+.announcement-member {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 6px;
+}
+
+.announcement-member-highlight {
+  background-color: rgba(202, 202, 202, 0.3);
+}
+
+.announcement-member-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.announcement-member-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.announcement-member-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.announcement-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 4px;
+  background-color: rgba(202, 202, 202, 0.3);
+}
+
+.announcement-streak {
+  font-weight: bold;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+}
