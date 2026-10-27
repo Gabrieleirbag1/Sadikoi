@@ -86,15 +86,6 @@ html {
   scrollbar-width: none;
 }
 
-/* Mobile: only .main-content scrolls (see app.css), so the browser bars stay put and 100dvh is stable. */
-@media (max-width: 768px) {
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
-}
-
 html::-webkit-scrollbar {
   display: none;
 }
