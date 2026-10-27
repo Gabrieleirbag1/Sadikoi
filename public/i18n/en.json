@@ -340,5 +340,21 @@
         }
       ]
     }
+  },
+  "itemAnnouncement": {
+    "title": "Today's items",
+    "members": "Members",
+    "new": {
+      "before": "{{user}} has got this new item",
+      "after": "!"
+    },
+    "stolen": {
+      "before": "{{user}} has stolen the item",
+      "after": "from {{from}}, who had a {{streak}} 🔥 streak!"
+    },
+    "kept": {
+      "before": "{{user}} keeps their item",
+      "after": "with a {{streak}} 🔥 streak!"
+    }
   }
 }
