@@ -65,3 +65,6 @@
     }
   }
 </section>
+@if (announcementToShow(); as announcement) {
+  <app-item-announcement-modal [announcement]="announcement" (closed)="closeAnnouncement()"></app-item-announcement-modal>
+}

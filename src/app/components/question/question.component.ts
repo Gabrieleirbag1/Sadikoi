@@ -10,10 +10,14 @@ import { WebsocketService } from '../../services/websocket/websocket.service';
 import { CalendarComponent } from '../tooltips/calendar/calendar.component';
 import { VoteBubbleData, VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
+import { ItemAnnouncementModalComponent } from '../modals/item-announcement-modal/item-announcement-modal.component';
+
+/** localStorage key holding the id of the last question whose item announcement was seen in a group. */
+const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +35,8 @@ export class QuestionComponent implements OnInit{
   protected showCalendarFlag = signal(false);
   protected readonly answerText = signal('');
   protected readonly selectedVoteId = signal<number | null>(null);
+  /** Today's item announcement, shown once per day and group. */
+  protected readonly announcementToShow = signal<ItemAnnouncement | null>(null);
   public readonly question = model<Question | null>(null);
   /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
   private readonly currentQuestion = signal<Question | null>(null);
@@ -115,9 +121,35 @@ export class QuestionComponent implements OnInit{
       this.question.set(question);
       this.answerText.set(''); // the answer textarea is recreated empty for a new question
       this.populateVoteBubbles();
+      this.showAnnouncementIfUnseen(group.id, question);
       this.logger.debug('Fetched question:', this.question());
     } catch (error) {
       this.logger.error('Error fetching question:', error);
+    }
+  }
+
+  private showAnnouncementIfUnseen(groupId: number, question: Question | null): void {
+    if (!question?.announcement) return;
+    let seenQuestionId: string | null = null;
+    try {
+      seenQuestionId = localStorage.getItem(announcementSeenKey(groupId));
+    } catch {
+      // storage unavailable: show the announcement anyway
+    }
+    if (seenQuestionId !== String(question.id)) {
+      this.announcementToShow.set(question.announcement);
+    }
+  }
+
+  protected closeAnnouncement(): void {
+    this.announcementToShow.set(null);
+    const groupId = this.group()?.id;
+    const questionId = this.currentQuestion()?.id;
+    if (groupId == null || questionId == null) return;
+    try {
+      localStorage.setItem(announcementSeenKey(groupId), String(questionId));
+    } catch {
+      // storage unavailable: the announcement will show again next time
     }
   }
 
