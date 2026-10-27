@@ -1,4 +1,11 @@
+/* Colours per announcement type: gold for a new item, red for a stolen one, green for a kept one. */
 .modal {
+  --accent: #f08c00;
+  --accent-strong: #d9480f;
+  --accent-light: #fff3bf;
+  --ray: rgba(255, 196, 0, 0.55);
+  --glow: rgba(255, 224, 102, 0.9);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6,21 +13,45 @@
   inset: 0;
   z-index: 2000;
   padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
-  background-color: rgba(0, 0, 0, 0.5);
   box-sizing: border-box;
+  background-color: rgba(20, 12, 40, 0.55);
+  animation: announcement-fade-in 200ms ease-out;
+}
+
+.modal.announcement-stolen {
+  --accent: #e64980;
+  --accent-strong: #c2255c;
+  --accent-light: #ffdeeb;
+  --ray: rgba(255, 107, 107, 0.5);
+  --glow: rgba(255, 168, 168, 0.9);
+}
+
+.modal.announcement-kept {
+  --accent: #12b886;
+  --accent-strong: #087f5b;
+  --accent-light: #c3fae8;
+  --ray: rgba(56, 217, 169, 0.5);
+  --glow: rgba(150, 242, 215, 0.9);
 }
 
 .modal-dialog {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  max-width: 500px;
-  max-height: calc(100dvh - 32px - var(--safe-top) - var(--safe-bottom));
-  padding: 20px;
+  max-width: 460px;
+  max-height: 100%;
+  min-width: 0;
+  padding: 16px 20px 20px;
   box-sizing: border-box;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-color: var(--accent-strong);
+  background:
+    radial-gradient(circle at 15% 0%, var(--accent-light) 0%, transparent 45%),
+    radial-gradient(circle at 90% 10%, #e5dbff 0%, transparent 40%),
+    linear-gradient(180deg, var(--accent-light) 0%, #fff 45%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: announcement-pop-in 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal-header {
@@ -28,11 +59,14 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex: none;
 }
 
 .modal-title {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  color: var(--accent-strong);
+  overflow-wrap: anywhere;
 }
 
 .modal-close {
@@ -45,41 +79,95 @@
   flex-direction: column;
   gap: 12px;
   min-height: 0;
+  min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
+/* --------------------------------------------------------------- hero */
+.announcement-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  height: clamp(130px, 32vw, 170px);
+  overflow: hidden;
+  /* Fade the rays out before the top and bottom edges instead of cutting them. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 25%, #000 75%, transparent 100%);
+}
+
+.announcement-rays {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: repeating-conic-gradient(from 0deg, var(--ray) 0deg 9deg, transparent 9deg 22.5deg);
+  -webkit-mask-image: radial-gradient(circle, #000 18%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 18%, transparent 62%);
+  animation: announcement-spin 14s linear infinite;
+}
+
+.announcement-glow {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+  animation: announcement-pulse 2.2s ease-in-out infinite;
+}
+
+.announcement-hero-item {
+  position: relative;
+  animation:
+    announcement-reveal 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both,
+    announcement-float 3s ease-in-out 900ms infinite;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25));
+}
+
+.announcement-sparkle {
+  position: absolute;
+  color: var(--accent);
+  font-size: 1.1rem;
+  line-height: 1;
+  animation: announcement-twinkle 1.8s ease-in-out infinite;
+}
+
+.sparkle-1 { top: 18%; left: calc(50% - 80px); animation-delay: 0s; }
+.sparkle-2 { top: 26%; left: calc(50% + 66px); font-size: 1.4rem; animation-delay: 0.5s; }
+.sparkle-3 { bottom: 16%; left: calc(50% - 64px); animation-delay: 0.9s; }
+.sparkle-4 { bottom: 22%; left: calc(50% + 56px); font-size: 0.9rem; animation-delay: 1.3s; }
+
+/* ------------------------------------------------------------ message */
 .announcement-message {
   margin: 0;
   font-size: 1.2rem;
+  line-height: 1.5;
   text-align: center;
+  color: #2b2b2b;
   overflow-wrap: anywhere;
 }
 
-/* The item icon sits inside the sentence. */
-.announcement-message app-item-image-display {
+/* The small item icon sits inside the sentence. */
+.announcement-inline-item {
   display: inline-block;
   vertical-align: middle;
 }
 
+/* ------------------------------------------------------------ members */
 .announcement-members-title {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--muted);
-  border-bottom: 1px dashed var(--muted-light);
+  color: var(--accent-strong);
+  border-bottom: 2px dashed var(--accent);
 }
 
 .announcement-members {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.announcement-members li::before {
-  content: none;
+  gap: 6px;
+  min-width: 0;
 }
 
 .announcement-member {
@@ -87,31 +175,50 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 4px 6px;
+  gap: 6px 10px;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 12px 4px 12px 4px;
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 2px solid transparent;
 }
 
-.announcement-member-highlight {
-  background-color: rgba(202, 202, 202, 0.3);
+.announcement-member:nth-child(odd) {
+  background-color: rgba(237, 231, 255, 0.6);
+}
+
+.announcement-member-highlight,
+.announcement-member-highlight:nth-child(odd) {
+  background-color: var(--accent-light);
+  border-color: var(--accent);
 }
 
 .announcement-member-identity {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
+.announcement-member-avatar {
+  flex: none;
+  line-height: 0;
+}
+
 .announcement-member-name {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: bold;
 }
 
 .announcement-member-items {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  min-width: 0;
 }
 
 .announcement-item {
@@ -119,16 +226,97 @@
   align-items: center;
   gap: 4px;
   padding: 2px 8px 2px 4px;
-  background-color: rgba(202, 202, 202, 0.3);
+  border: 2px solid #ffa94d;
+  border-radius: 12px 4px 12px 4px;
+  background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%);
 }
 
 .announcement-streak {
   font-weight: bold;
   font-size: 0.9rem;
   white-space: nowrap;
+  color: #d9480f;
 }
 
+/* ------------------------------------------------------------- footer */
 .modal-footer {
   display: flex;
   justify-content: center;
+  flex: none;
+}
+
+.announcement-close-button {
+  padding: 8px 28px;
+  font-size: 1.1rem;
+  color: #fff;
+  background-color: var(--accent);
+  border-color: var(--accent-strong);
+}
+
+.announcement-close-button:hover {
+  background-color: var(--accent-strong);
+}
+
+/* ---------------------------------------------------------- small screens */
+@media (max-width: 480px) {
+  .modal-dialog {
+    padding: 12px 14px 14px;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  .announcement-message {
+    font-size: 1.05rem;
+  }
+
+  .announcement-rays {
+    width: 260px;
+    height: 260px;
+  }
+}
+
+/* --------------------------------------------------------- animations */
+@keyframes announcement-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes announcement-pop-in {
+  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+}
+
+@keyframes announcement-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes announcement-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes announcement-reveal {
+  0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes announcement-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes announcement-twinkle {
+  0%, 100% { transform: scale(0.6); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal-dialog,
+  .announcement-rays,
+  .announcement-glow,
+  .announcement-hero-item,
+  .announcement-sparkle {
+    animation: none;
+  }
 }
