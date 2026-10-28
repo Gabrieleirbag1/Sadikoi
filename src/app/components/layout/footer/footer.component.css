@@ -1,8 +1,126 @@
-footer {
+/* Same paper look as the header (its variables aren't in scope here, .main-content doesn't wrap us). */
+:host {
+    --footer-bg: #faf6f1;
+    --footer-text: #41403e;
+    --footer-muted: #8a8580;
+    --footer-accent: #0b74d5;
+
+    position: relative;
+    display: block;
+    /* Overlap main-content by the wave's height so its background shows above the curve. */
+    margin-top: -9px;
+}
+
+.footer {
+    position: relative;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    gap: 22px;
+    padding: 46px 20px calc(28px + var(--safe-bottom));
+    color: var(--footer-text);
+    font-family: 'Neucha', sans-serif;
+    /* The fill starts 9px down; the wavy SVG strip provides the rest along the curve. */
+    background: linear-gradient(var(--footer-bg), var(--footer-bg)) bottom left / 100% calc(100% - 9px) no-repeat;
+}
+
+/* Hand-drawn wavy top line: the header's underline, mirrored (fill below the curve). */
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 10' preserveAspectRatio='none'%3E%3Cpath fill='%23faf6f1' d='M0 10 L0 5 L2 5 C 80 8, 160 2, 260 6 S 430 3, 520 6 S 700 8, 790 4 S 940 6, 998 5 L1000 5 L1000 10 Z'/%3E%3Cpath fill='none' stroke='%23d6cec6' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke' d='M2 5 C 80 8, 160 2, 260 6 S 430 3, 520 6 S 700 8, 790 4 S 940 6, 998 5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    pointer-events: none;
+}
+
+.social-icons {
+    display: flex;
+    gap: 14px;
+}
+
+/* PaperCSS gives every <a> a blue hand-drawn underline (background-image): drop it here. */
+.footer a,
+.footer a:visited {
+    color: inherit;
+    background-image: none;
+    text-decoration: none;
+}
+
+.social-btn {
+    display: inline-flex;
+    padding: 4px;
+    color: var(--footer-text);
+    transition: color 150ms ease, transform 150ms ease;
+}
+
+.footer .social-btn:hover,
+.footer .social-btn:focus-visible {
+    color: var(--footer-accent);
+    transform: translateY(-2px) rotate(-3deg);
+    outline: none;
+}
+
+.social-btn:active {
+    transform: scale(0.95);
+}
+
+.social-btn svg {
+    width: 28px;
+    height: 28px;
+}
+
+.social-btn svg.filled {
+    fill: currentColor;
+}
+
+.social-btn svg.stroked {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.social-btn svg .dot {
+    fill: currentColor;
+    stroke: none;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 24px;
+}
+
+.footer-link,
+.copyright a {
+    color: inherit;
+    transition: color 150ms ease;
+}
+
+.footer-link {
+    font-size: 1.05rem;
+}
+
+.footer .footer-link:hover,
+.footer .footer-link:focus-visible,
+.footer .copyright a:hover,
+.footer .copyright a:focus-visible {
+    color: var(--footer-accent);
+    outline: none;
+}
+
+.copyright {
+    margin: 0;
+    padding-top: 16px;
+    width: min(420px, 100%);
+    text-align: center;
+    font-family: 'Patrick Hand SC', 'Neucha', cursive;
+    letter-spacing: 0.08em;
+    color: var(--footer-muted);
+    border-top: 2px dashed #d6cec6;
 }
