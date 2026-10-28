@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "android:release": "ng build && npx cap sync android && cd android && ./gradlew bundleRelease",
     "assets": "npx --yes @capacitor/assets@3.0.5 generate --android --iconBackgroundColor '#0b74d5' --iconBackgroundColorDark '#0b74d5' --splashBackgroundColor '#fffcf8' --splashBackgroundColorDark '#2b2a28'"
   },
   "private": true,
