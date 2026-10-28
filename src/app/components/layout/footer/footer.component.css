@@ -42,7 +42,9 @@
 }
 
 /* PaperCSS gives every <a> a blue hand-drawn underline (background-image): drop it here. */
-.footer a {
+.footer a,
+.footer a:visited {
+    color: inherit;
     background-image: none;
     text-decoration: none;
 }
@@ -54,8 +56,8 @@
     transition: color 150ms ease, transform 150ms ease;
 }
 
-.social-btn:hover,
-.social-btn:focus-visible {
+.footer .social-btn:hover,
+.footer .social-btn:focus-visible {
     color: var(--footer-accent);
     transform: translateY(-2px) rotate(-3deg);
     outline: none;
@@ -104,10 +106,10 @@
     font-size: 1.05rem;
 }
 
-.footer-link:hover,
-.footer-link:focus-visible,
-.copyright a:hover,
-.copyright a:focus-visible {
+.footer .footer-link:hover,
+.footer .footer-link:focus-visible,
+.footer .copyright a:hover,
+.footer .copyright a:focus-visible {
     color: var(--footer-accent);
     outline: none;
 }
