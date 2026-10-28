@@ -5,6 +5,8 @@
       "namespace": "android_app",
       "package_name": "com.missclick.sadikoi",
       "sha256_cert_fingerprints": [
+        "07:CF:E6:4A:55:D8:C4:69:63:12:5B:F7:69:3A:09:07:F9:DF:E8:62:8E:C8:D4:54:7F:B0:33:50:BC:8B:7A:ED",
+        "B5:1A:18:F3:20:B0:FE:AB:FB:6D:A0:5C:E4:70:6D:60:DA:1E:43:50:D3:49:E7:ED:00:1A:72:E7:61:7B:C3:86",
         "66:3E:D0:FF:21:B2:5E:86:97:57:CB:11:4A:41:D8:28:7E:B0:6B:CA:8C:1F:74:5D:55:82:EB:E2:FB:B4:A5:77"
       ]
     }
