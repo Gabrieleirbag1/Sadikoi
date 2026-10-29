@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { afterEveryRender, Component, ElementRef, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -26,10 +26,29 @@ export class GroupsComponent implements OnInit {
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   protected groups = signal<Group[]>([]);
   protected view: ViewState = 'grid';
   /** On phones only the list exists: no toggle, and a saved 'grid' choice is ignored. */
   protected readonly isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  constructor() {
+    afterEveryRender(() => this.syncNeedsVoteAnimations());
+  }
+
+  /**
+   * A CSS animation starts when its card appears, so a group created (or a view switched) later would
+   * pulse out of step with the others. Starting them all at the page timeline's origin keeps every
+   * "needs vote" card in phase (the sweep lasts exactly twice the glow, so both stay aligned).
+   */
+  private syncNeedsVoteAnimations(): void {
+    for (const animation of this.host.nativeElement.getAnimations({ subtree: true })) {
+      // Angular prefixes a component's keyframes ("_ngcontent-xxx_needs-vote-glow"): match the end of the name.
+      if (animation instanceof CSSAnimation && /needs-vote-(glow|sweep)$/.test(animation.animationName) && animation.startTime !== 0) {
+        animation.startTime = 0;
+      }
+    }
+  }
 
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
