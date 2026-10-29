@@ -5,9 +5,9 @@ import { NotificationSettingsService } from '../../services/notification-setting
 import { NotificationService } from '../../services/notification/notification.service';
 import { PushService } from '../../services/push/push.service';
 
-type GlobalSetting = 'messages' | 'questions' | 'vote_reminder';
+type GlobalSetting = keyof NotificationSettings;
 
-/** Push notification preferences: three global switches, then one per group, saved together by the save button. */
+/** Global push notification switches, saved together by the save button (each group also has its own). */
 @Component({
   selector: 'app-notification-settings',
   imports: [TranslatePipe],
@@ -36,6 +36,7 @@ export class NotificationSettingsComponent {
     { name: 'messages', label: 'notificationSettings.messages' },
     { name: 'questions', label: 'notificationSettings.questions' },
     { name: 'vote_reminder', label: 'notificationSettings.voteReminder' },
+    { name: 'answers', label: 'notificationSettings.answers' },
   ];
 
   constructor() {
@@ -59,10 +60,6 @@ export class NotificationSettingsComponent {
 
   protected toggleSetting(name: GlobalSetting, value: boolean): void {
     this.patch(state => ({ ...state, [name]: value }));
-  }
-
-  protected toggleGroup(group: NotificationGroupSetting, muted: boolean): void {
-    this.patch(state => ({ ...state, groups: state.groups.map(g => (g.id === group.id ? { ...g, muted } : g)) }));
   }
 
   private patch(change: (state: NotificationSettings) => NotificationSettings): void {

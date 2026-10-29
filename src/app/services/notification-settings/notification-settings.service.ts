@@ -23,19 +23,35 @@ export class NotificationSettingsService {
     }
   }
 
-  /** Saves the three switches and every group's state in a single request. */
+  /** Saves the global switches. */
   public async saveSettings(settings: NotificationSettings): Promise<NotificationSettings | null> {
-    const payload = {
-      messages: settings.messages,
-      questions: settings.questions,
-      vote_reminder: settings.vote_reminder,
-      groups: settings.groups.map(({ id, muted }) => ({ id, muted })),
-    };
     try {
-      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${this.url}settings/`, payload, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${this.url}settings/`, settings, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to save notification settings:', error);
+      return null;
+    }
+  }
+
+  /** One group's switches, with the global ones. */
+  public async getGroupSettings(groupId: number): Promise<GroupNotificationSettings | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${this.url}settings/groups/${groupId}/`, { withCredentials: true }));
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Failed to fetch group notification settings:', error);
+      return null;
+    }
+  }
+
+  /** Saves any of one group's switches. */
+  public async saveGroupSettings(groupId: number, changes: Partial<NotificationSettings>): Promise<GroupNotificationSettings | null> {
+    try {
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${this.url}settings/groups/${groupId}/`, changes, { withCredentials: true }));
+      return response.content || null;
+    } catch (error) {
+      this.logger.error('Failed to save group notification settings:', error);
       return null;
     }
   }
