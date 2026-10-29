@@ -1,39 +1,73 @@
 @if (isOpen()) {
-  <div class="modal" tabindex="-1" role="dialog">
+  <div class="modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="group-modal-title">
     <div class="modal-dialog border" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          @if (state != 'chose') {
-            <span class="modal-back" (click)="changeGroupModalState('chose')">
-              <
-            </span>
-          }
-          <h5 class="modal-title">{{ config().title }}</h5>
-          <span class="modal-close" (click)="discard($event)">X</span>
-        </div>
-        @if (state === 'chose') {
-          <div class="group-modal-header-buttons">
-            <button type="button" class="background-secondary" (click)="changeGroupModalState('create')">Créer un groupe</button>
-            <button type="button" class="background-warning" (click)="changeGroupModalState('join')">Rejoindre un groupe</button>
-          </div>
+      <div class="modal-header">
+        @if (state !== 'chose') {
+          <button type="button" class="modal-icon-button" (click)="changeGroupModalState('chose')" [attr.aria-label]="'modal.back' | translate">
+            ‹
+          </button>
         }
-        <div class="modal-body">
-          <!-- <p>{{ config().description }}</p> -->
-          @if (state === 'create') {
-            <input type="text" [placeholder]="'groups.groupName' | translate" #groupName />
-            <input type="text" [placeholder]="'groups.groupDescription' | translate" #groupDescription />
-            <div class="group-modal-time-and-themes">
-              <input type="time" [placeholder]="'groups.groupTime' | translate" #groupTime [value]="defaultTimeValue" />
-              <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
+        <h5 class="modal-title" id="group-modal-title">{{ title() | translate }}</h5>
+        <button type="button" class="modal-icon-button" (click)="discard($event)" [attr.aria-label]="'modal.close' | translate">
+          ×
+        </button>
+      </div>
+
+      @if (state === 'chose') {
+        <div class="modal-body group-modal-choices">
+          <button type="button" class="background-secondary" (click)="changeGroupModalState('create')">{{ 'groups.createGroup' | translate }}</button>
+          <button type="button" class="background-warning" (click)="changeGroupModalState('join')">{{ 'groups.joinAGroup' | translate }}</button>
+        </div>
+      } @else if (state === 'create') {
+        <div class="group-create-form">
+          <!-- Only the fields scroll (small phones): the title and the create button stay visible. -->
+          <div class="modal-body group-create-fields">
+            <div class="field">
+              <label for="group-name">{{ 'groups.groupName' | translate }}</label>
+              <input
+                id="group-name"
+                type="text"
+                maxlength="30"
+                required
+                [placeholder]="'groups.namePlaceholder' | translate"
+                [attr.aria-invalid]="nameMissing"
+                [attr.aria-describedby]="nameMissing ? 'group-name-error' : null"
+                (input)="nameMissing = false"
+                (keydown.enter)="save()"
+                #groupName
+              />
+              @if (nameMissing) {
+                <small id="group-name-error" class="field-error" role="alert">{{ 'groups.nameRequired' | translate }}</small>
+              }
             </div>
+
+            <div class="field">
+              <label for="group-description">{{ 'groups.descriptionLabel' | translate }}</label>
+              <input id="group-description" type="text" maxlength="200" (keydown.enter)="save()" #groupDescription />
+            </div>
+
+            <div class="field">
+              <div class="field-inline">
+                <label for="group-time">{{ 'groups.resetTimeLabel' | translate }}</label>
+                <input id="group-time" type="time" aria-describedby="group-time-hint" #groupTime [value]="defaultTimeValue" />
+              </div>
+              <small id="group-time-hint" class="field-hint">{{ 'groups.resetTimeHint' | translate }}</small>
+            </div>
+
+            <app-themes [(selectedThemes)]="selectedThemes"></app-themes>
+          </div>
+
+          <div class="group-create-footer">
             <button type="button" class="background-secondary" (click)="save()" [disabled]="selectedThemes.length === 0">
               {{ 'groups.createGroup' | translate }}
             </button>
-          } @else if (state === 'join') {
-            <app-join-group></app-join-group>
-          }
+          </div>
         </div>
-      </div>
+      } @else if (state === 'join') {
+        <div class="modal-body">
+          <app-join-group></app-join-group>
+        </div>
+      }
     </div>
   </div>
 }
