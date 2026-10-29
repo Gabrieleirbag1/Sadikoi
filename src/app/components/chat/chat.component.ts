@@ -63,6 +63,12 @@ export class ChatComponent {
         this.messages.update(messages => [...messages, message]);
       }
     });
+
+    // Messages sent while disconnected (phone asleep...) never arrived: reload the day.
+    this.websocketService.reconnected$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      const g = this.group();
+      if (g && !this.readOnly()) this.loadMessages(g.id, this.questionId());
+    });
   }
 
   private async loadMessages(groupId: number, questionId?: number): Promise<void> {

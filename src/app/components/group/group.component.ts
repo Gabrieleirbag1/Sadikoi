@@ -58,6 +58,11 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.websocketService.listen<Group>('member_joined').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
     this.websocketService.listen<Group>('member_left').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
     this.websocketService.listen<Group>('role_updated').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(group => this.group.set(group));
+    // Members, roles or settings may have changed while disconnected.
+    this.websocketService.reconnected$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      const g = this.group();
+      if (g) this.fetchGroup(g.id);
+    });
     this.websocketService.listen<{ group_id: number }>('group_deleted').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
       if (payload.group_id === this.group()?.id) {
         this.router.navigate(['/groups']);
