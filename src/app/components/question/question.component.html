@@ -64,6 +64,7 @@
         [group]="group()"
         phase="voting"
         [multiple]="!!question()?.enableMultipleVoting"
+        [limit]="question()?.voteNumberLimit ?? 0"
         (voted)="submitVote($event)"
       />
     }

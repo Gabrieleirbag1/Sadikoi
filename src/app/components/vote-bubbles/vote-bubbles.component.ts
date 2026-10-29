@@ -46,6 +46,8 @@ export class VoteBubblesComponent {
   public readonly phase = input<'voting' | 'results'>('results');
   public readonly disabled = input(false);
   public readonly multiple = input(false);
+  /** Multiple voting only: how many members must be picked (e.g. 2 for DUO). 0 = no limit. */
+  public readonly limit = input(0);
   public readonly selectedIds = model<number[]>([]);
   public readonly voted = output<number[]>();
 
@@ -56,6 +58,9 @@ export class VoteBubblesComponent {
 
   protected readonly hoveredId = signal<number | null>(null);
   protected readonly isVoting = computed(() => this.phase() === 'voting' && !this.disabled());
+  /** Picks needed before the vote can be sent: `limit` (capped by the candidates shown), or 1. */
+  protected readonly requiredCount = computed(() =>
+    this.multiple() && this.limit() > 0 ? Math.min(this.limit(), this.bubbles().length) : 1);
   protected readonly candidates = computed<BubbleCandidate[]>(() =>
     this.bubbles().map(b => ({
       id: b.votedUser.id,
@@ -198,13 +203,16 @@ export class VoteBubblesComponent {
     if (!this.isVoting()) return;
     this.selectedIds.update(ids => {
       if (ids.includes(id)) return ids.filter(i => i !== id);
-      return this.multiple() ? [...ids, id] : [id];
+      if (!this.multiple()) return [id];
+      // Over the limit: the oldest pick is unselected to make room for the new one.
+      const next = [...ids, id];
+      return this.limit() > 0 ? next.slice(-this.limit()) : next;
     });
   }
 
   protected confirm(): void {
     const ids = this.selectedIds();
-    if (ids.length && this.isVoting()) this.voted.emit(ids);
+    if (ids.length >= this.requiredCount() && this.isVoting()) this.voted.emit(ids);
   }
 
   /** The tooltip keeps its natural size: near the right/bottom edge it flips to the other side of the pointer. */

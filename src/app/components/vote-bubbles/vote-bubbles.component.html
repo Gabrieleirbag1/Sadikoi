@@ -32,7 +32,7 @@
     </div>
   }
 
-  @if (isVoting() && selectedIds().length) {
+  @if (isVoting() && selectedIds().length >= requiredCount()) {
     <div class="vote-bubbles-submit">
       <button type="button" class="background-success" (click)="confirm()">{{ 'question.submitAnswer' | translate }}</button>
     </div>
