@@ -12,10 +12,11 @@ import { UserProfileService } from '../../../services/user-profile/user-profile.
 import { ModalComponent } from '../modal/modal.component';
 import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
 import { ThemesComponent } from '../../tooltips/themes/themes.component';
+import { GroupNotificationSettingsComponent } from '../../group-notification-settings/group-notification-settings.component';
 
 @Component({
   selector: 'app-group-options-modal',
-  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent, ModalComponent, ProfileImagePickerComponent, ThemesComponent],
+  imports: [FormField, DatePipe, TranslatePipe, UserProfileComponent, ModalComponent, ProfileImagePickerComponent, ThemesComponent, GroupNotificationSettingsComponent],
   templateUrl: './group-options-modal.component.html',
   styleUrls: ['./group-options-modal.component.css', '../../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,0 +1,17 @@
+.group-notifications {
+    margin: 16px 0 0;
+}
+
+.paper-check {
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.paper-check.disabled {
+    opacity: 0.6;
+}
+
+.group-notifications-note {
+    color: var(--muted);
+    font-size: 0.85em;
+}
