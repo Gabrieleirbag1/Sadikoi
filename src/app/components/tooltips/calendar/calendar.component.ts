@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs';
 import { QuestionService } from '../../../services/question/question.service';
+import { LoggerService } from '../../../services/logger/logger.service';
 
 interface CalendarDay {
   date: number;
@@ -38,6 +39,7 @@ function questionDay(value: string | number | Date): Date {
 export class CalendarComponent implements OnInit {
   protected readonly questionService = inject(QuestionService);
   private readonly translate = inject(TranslateService);
+  private readonly logger = inject(LoggerService);
   /** Month and weekday names follow the site language. */
   private readonly lang = toSignal(this.translate.onLangChange.pipe(map(event => event.lang)), {
     initialValue: this.translate.getCurrentLang() ?? 'en',
@@ -148,7 +150,7 @@ export class CalendarComponent implements OnInit {
       });
       this.setEnableDates(enableDates);
     } catch (error) {
-      console.error('Error fetching questions for date:', error);
+      this.logger.error('Error fetching questions for date:', error);
     }
   }
 

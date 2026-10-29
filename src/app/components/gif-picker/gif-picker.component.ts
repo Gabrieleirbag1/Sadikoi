@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { KLIPY_URL } from '../settings/settings.constants';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -13,6 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class GifPickerComponent {
   private readonly klipyService = inject(KlipyService);
+  private readonly logger = inject(LoggerService);
   protected readonly klipyUrl = KLIPY_URL;
 
   readonly gifSelected = model<KlipyGif | null>(null);
@@ -79,7 +81,7 @@ export class GifPickerComponent {
 
   protected selectGif(gif: KlipyGif): void {
     this.gifSelected.set(gif);
-    this.klipyService.shareGif(gif).catch(err => console.error('Error sharing GIF:', err));
+    this.klipyService.shareGif(gif).catch(err => this.logger.error('Error sharing GIF:', err));
   }
 
   protected getPreviewUrl(gif: KlipyGif): string {

@@ -75,7 +75,7 @@ export class GroupsComponent implements OnInit {
       description: '',
       save: (data: { name: string; description: string; time: string; themes: string[] }) =>
         this.createGroup(data.name, data.description, data.time, data.themes),
-      discard: () => console.log('cancelled'),
+      discard: () => this.logger.debug('Group creation cancelled'),
     });
   }
 
