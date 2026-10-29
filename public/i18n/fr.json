@@ -78,7 +78,14 @@
     "joinGroup": "Rejoindre le groupe",
     "gridView": "Vue en grille",
     "listView": "Vue en liste",
-    "noDescription": "Un groupe avec des gens formidables, mais sans description."
+    "noDescription": "Un groupe avec des gens formidables, mais sans description.",
+    "joinAGroup": "Rejoindre un groupe",
+    "newGroupTitle": "Nouveau groupe",
+    "namePlaceholder": "Ex. : Les potes du lycée",
+    "descriptionLabel": "Description (facultative)",
+    "resetTimeLabel": "Heure de la question du jour",
+    "resetTimeHint": "Une nouvelle question arrive chaque jour à cette heure.",
+    "nameRequired": "Donne un nom au groupe."
   },
   "group": {
     "getGroupInvitation": "Copier le lien d'invitation au groupe",
@@ -139,7 +146,8 @@
   },
   "modal": {
     "save": "Confirmer",
-    "close": "Fermer"
+    "close": "Fermer",
+    "back": "Retour"
   },
   "languages": {
     "english": "English",
@@ -358,5 +366,10 @@
       "before": "{{user}} garde son item",
       "after": "avec {{streak}} 🔥 de streak !"
     }
+  },
+  "themes": {
+    "title": "Thèmes des questions",
+    "selected": "{{count}}/{{total}} choisis",
+    "atLeastOne": "Garde au moins un thème."
   }
 }
