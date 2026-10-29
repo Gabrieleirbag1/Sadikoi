@@ -75,7 +75,9 @@ export class GoogleLoginComponent implements AfterViewInit {
   protected async nativeLogin(): Promise<void> {
     try {
       const socialLogin = await getNativeSocialLogin();
-      const { result } = await socialLogin.login({ provider: 'google', options: { scopes: ['email', 'profile'] } });
+      // No `scopes`: email and profile are the plugin's defaults, and on Android any `scopes` option is
+      // refused unless MainActivity is modified for the plugin ("You CANNOT use scopes...").
+      const { result } = await socialLogin.login({ provider: 'google', options: {} });
       const idToken = 'idToken' in result ? result.idToken : null;
       if (!idToken) {
         throw new Error('Google did not return an ID token');
