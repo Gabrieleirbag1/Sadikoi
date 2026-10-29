@@ -163,17 +163,32 @@ h1 {
   width: 100%;
 }
 
+/* "Remember me" and "Forgot password?" always stay on one line: on narrow screens the text shrinks
+   with the row's width (cqi) instead of wrapping. */
 .checkbox-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 10px;
+  container-type: inline-size;
 }
 
 .checkbox-label-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  font-size: min(1em, 5.4cqi);
+  white-space: nowrap;
+}
+
+.checkbox-label-container label,
+.checkbox-label-container a {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .checkbox-label-container a {
