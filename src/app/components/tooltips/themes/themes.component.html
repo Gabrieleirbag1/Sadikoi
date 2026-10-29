@@ -1,21 +1,29 @@
-<div class="themes-picker">
-	<button type="button" class="themes-button" (click)="toggle()" [disabled]="disabled()" [attr.aria-expanded]="isOpen()">
-		Choose themes
-	</button>
+<fieldset class="themes" [disabled]="disabled()">
+	<legend class="themes-legend">
+		<span>{{ 'themes.title' | translate }}</span>
+		<span class="themes-count" aria-live="polite">
+			{{ 'themes.selected' | translate: { count: selectedThemeCount(), total: themes().length } }}
+		</span>
+	</legend>
 
-	@if (isOpen() && !disabled()) {
-		<div class="themes-popover" role="dialog" aria-label="Choose themes">
-			@for (theme of themes(); track theme.id) {
-				<label>
-					<input
-						type="checkbox"
-						[checked]="selectedThemes().includes(theme.id)"
-						[disabled]="selectedThemes().includes(theme.id) && selectedThemeCount() === 1"
-						(change)="toggleTheme(theme.id, $any($event.target).checked)"
-					/>
-					{{ theme.fr }}
-				</label>
-			}
-		</div>
+	<div class="themes-chips">
+		@for (theme of themes(); track theme.id) {
+			@let selected = isSelected(theme.id);
+			@let locked = selected && selectedThemeCount() === 1;
+			<label class="theme-chip" [class.selected]="selected" [class.locked]="locked">
+				<input
+					type="checkbox"
+					class="theme-chip-input"
+					[checked]="selected"
+					[disabled]="locked"
+					(change)="toggleTheme(theme.id, $any($event.target).checked)"
+				/>
+				<span class="theme-chip-label">{{ label(theme) }}</span>
+			</label>
+		}
+	</div>
+
+	@if (selectedThemeCount() === 1 && !disabled()) {
+		<p class="themes-hint">{{ 'themes.atLeastOne' | translate }}</p>
 	}
-</div>
+</fieldset>
