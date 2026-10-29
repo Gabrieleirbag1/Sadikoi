@@ -27,19 +27,7 @@
           }
         </fieldset>
 
-        <fieldset class="form-group">
-          <legend>{{ 'notificationSettings.groups' | translate }}</legend>
-          <div class="notifications-groups">
-            @for (group of current.groups; track group.id) {
-              <label class="paper-check">
-                <input type="checkbox" [checked]="!group.muted" (change)="toggleGroup(group, !$any($event.target).checked)" />
-                <span>{{ group.name }}</span>
-              </label>
-            } @empty {
-              <p class="notifications-note">{{ 'notificationSettings.noGroups' | translate }}</p>
-            }
-          </div>
-        </fieldset>
+        <p class="notifications-note">{{ 'notificationSettings.perGroupHint' | translate }}</p>
 
         <button type="button" class="notifications-save btn-secondary" [disabled]="!dirty() || saving()" (click)="save()">
           {{ 'notificationSettings.save' | translate }}

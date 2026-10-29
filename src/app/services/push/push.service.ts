@@ -1,7 +1,8 @@
 import { inject, Injectable, NgZone, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { PushNotifications } from '@capacitor/push-notifications';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { PushNotifications, PushNotificationSchema } from '@capacitor/push-notifications';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -14,7 +15,17 @@ const CHANNELS = [
   { id: 'messages', nameKey: 'notificationSettings.messages' },
   { id: 'questions', nameKey: 'notificationSettings.questions' },
   { id: 'reminders', nameKey: 'notificationSettings.voteReminder' },
+  { id: 'answers', nameKey: 'notificationSettings.answers' },
 ];
+
+/** Stable numeric id for a tag ("chat-12"): a new notification with the same tag replaces the previous one. */
+function notificationId(tag: string): number {
+  let hash = 0;
+  for (const char of tag) {
+    hash = (Math.imul(hash, 31) + char.charCodeAt(0)) | 0;
+  }
+  return Math.abs(hash);
+}
 
 export type PushPermission = 'granted' | 'denied' | 'unknown';
 
@@ -78,13 +89,47 @@ export class PushService {
     await PushNotifications.addListener('registrationError', error => {
       this.logger.error('Push registration failed:', error);
     });
-    // Tapped notification: open its group. The API only sends paths of the app ("/group/12").
+    // Tapped notification: open its group.
     await PushNotifications.addListener('pushNotificationActionPerformed', ({ notification }) => {
-      const route = notification.data?.route;
-      if (typeof route === 'string' && route.startsWith('/')) {
-        this.ngZone.run(() => this.router.navigateByUrl(route));
-      }
+      this.openRoute(notification.data?.route);
     });
+    // Received while the app is open (the plugin shows nothing, see capacitor.config.ts).
+    await PushNotifications.addListener('pushNotificationReceived', notification => {
+      this.showWhileOpen(notification);
+    });
+    await LocalNotifications.addListener('localNotificationActionPerformed', ({ notification }) => {
+      this.openRoute(notification.extra?.route);
+    });
+  }
+
+  /** The API only sends paths of the app ("/group/12"). */
+  private openRoute(route: unknown): void {
+    if (typeof route === 'string' && route.startsWith('/')) {
+      this.ngZone.run(() => this.router.navigateByUrl(route));
+    }
+  }
+
+  /** Nothing if the notification's page is on screen (e.g. that group is open), otherwise the usual banner. */
+  private async showWhileOpen(notification: PushNotificationSchema): Promise<void> {
+    const data = notification.data ?? {};
+    const route = typeof data.route === 'string' ? data.route : '';
+    const currentPath = this.router.url.split(/[?#]/)[0];
+    if (route && (currentPath === route || currentPath.startsWith(`${route}/`))) {
+      return;
+    }
+    try {
+      await LocalNotifications.schedule({
+        notifications: [{
+          id: notificationId(data.tag ?? notification.id ?? `${Date.now()}`),
+          title: notification.title ?? '',
+          body: notification.body ?? '',
+          channelId: data.channel,
+          extra: { route },
+        }],
+      });
+    } catch (error) {
+      this.logger.error('Failed to show a notification:', error);
+    }
   }
 
   private async createChannels(): Promise<void> {

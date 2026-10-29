@@ -1,0 +1,26 @@
+<fieldset class="form-group group-notifications">
+  <legend>{{ 'notificationSettings.groupTitle' | translate }}</legend>
+  @if (!push.available) {
+    <p class="group-notifications-note">{{ 'notificationSettings.appOnly' | translate }}</p>
+  }
+  @if (state(); as current) {
+    @for (option of options; track option.name) {
+      <label class="paper-check" [class.disabled]="!current.global[option.name]">
+        <input
+          type="checkbox"
+          [checked]="current.group[option.name] && current.global[option.name]"
+          [disabled]="!current.global[option.name]"
+          (change)="toggle(option.name, $any($event.target).checked)"
+        />
+        <span>
+          {{ option.label | translate }}
+          @if (!current.global[option.name]) {
+            <small class="group-notifications-note">({{ 'notificationSettings.disabledGlobally' | translate }})</small>
+          }
+        </span>
+      </label>
+    }
+  } @else if (loadFailed()) {
+    <p class="group-notifications-note">{{ 'notification.genericError' | translate }}</p>
+  }
+</fieldset>

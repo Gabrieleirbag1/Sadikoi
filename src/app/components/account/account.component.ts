@@ -173,7 +173,7 @@ export class AccountComponent implements OnInit {
       title,
       description,
       save: saveCallback,
-      discard: () => console.log('cancelled'),
+      discard: () => this.logger.debug('Modal cancelled:', modalId),
     });
   }
 

@@ -65,7 +65,6 @@
 }
 
 .message-infos {
-    /* Pushed right even when the author is absent (2nd message of a run). */
     margin-left: auto;
     display: flex;
     align-items: center;

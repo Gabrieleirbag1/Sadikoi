@@ -16,9 +16,16 @@ const config: CapacitorConfig = {
       style: 'LIGHT',
       initialViewportFitValueHint: 'cover',
     },
-    // Push notifications (iOS: how they show while the app is open; Android ignores it).
+    // Push notifications received while the app is open: the plugin shows nothing (empty list), the app
+    // decides (PushService): hidden if the notification's page is on screen, otherwise shown through
+    // LocalNotifications. App closed or in the background: Firebase shows them as usual.
     PushNotifications: {
-      presentationOptions: ['badge', 'sound', 'alert'],
+      presentationOptions: [],
+    },
+    // Same icon and color as the Firebase notifications (AndroidManifest.xml).
+    LocalNotifications: {
+      smallIcon: 'ic_stat_notification',
+      iconColor: '#0B74D5',
     },
     // Only Google is used: the other providers' SDKs are left out of the app.
     SocialLogin: {
