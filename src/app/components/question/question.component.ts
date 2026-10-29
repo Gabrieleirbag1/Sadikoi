@@ -87,6 +87,29 @@ export class QuestionComponent implements OnInit{
         this.fetchQuestion();
       }
     });
+
+    this.websocketService.reconnected$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.refreshAfterReconnect());
+  }
+
+  /** Catches up on what happened while disconnected (new question, votes), without clearing a half-written answer. */
+  private async refreshAfterReconnect(): Promise<void> {
+    const group = this.group();
+    if (!group) return;
+    try {
+      const latest = await this.questionService.getQuestion(group.id);
+      if (latest?.id !== this.currentQuestion()?.id) {
+        this.showQuestion(group.id, latest);
+        return;
+      }
+      const viewingPast = this.isPastQuestion();
+      this.currentQuestion.set(latest);
+      if (!viewingPast) {
+        this.question.set(latest);
+        this.populateVoteBubbles();
+      }
+    } catch (error) {
+      this.logger.error('Error refreshing question after reconnection:', error);
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -117,15 +140,19 @@ export class QuestionComponent implements OnInit{
       const group = this.group();
       if (!group) throw new Error('Group is not set')
       const question = await this.questionService.getQuestion(group.id);
-      this.currentQuestion.set(question);
-      this.question.set(question);
-      this.answerText.set(''); // the answer textarea is recreated empty for a new question
-      this.populateVoteBubbles();
-      this.showAnnouncementIfUnseen(group.id, question);
-      this.logger.debug('Fetched question:', this.question());
+      this.showQuestion(group.id, question);
     } catch (error) {
       this.logger.error('Error fetching question:', error);
     }
+  }
+
+  private showQuestion(groupId: number, question: Question | null): void {
+    this.currentQuestion.set(question);
+    this.question.set(question);
+    this.answerText.set(''); // the answer textarea is recreated empty for a new question
+    this.populateVoteBubbles();
+    this.showAnnouncementIfUnseen(groupId, question);
+    this.logger.debug('Fetched question:', this.question());
   }
 
   private showAnnouncementIfUnseen(groupId: number, question: Question | null): void {

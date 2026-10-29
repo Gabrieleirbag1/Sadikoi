@@ -25,6 +25,10 @@
   flex-shrink: 0;
 }
 
+.question-item-mobile {
+  display: none;
+}
+
 .question-container span {
   font-size: 2rem;
   font-weight: bold;
@@ -155,7 +159,7 @@ app-vote-bubbles.vote-bubbles-voting {
   }
 
   .question-container {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 8px;
     margin: 8px 0 12px;
   }
@@ -172,8 +176,23 @@ app-vote-bubbles.vote-bubbles-voting {
     font-size: 1.4rem;
   }
 
-  .calendar-anchor {
+  /* Item and calendar side by side on the right, centered on the same line. */
+  .question-content app-item-image-display.question-item {
+    display: none;
+  }
+
+  .question-item-mobile {
+    display: flex;
     grid-column: 2;
+  }
+
+  .calendar-anchor {
+    grid-column: 3;
+  }
+
+  /* No inline line box under the image: both icons are exactly 36 px tall. */
+  .calendar-anchor .icon-button {
+    display: flex;
   }
 
   .question-votes-and-chat-container {

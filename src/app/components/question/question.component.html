@@ -3,9 +3,13 @@
     <div class="question-content">
       <span>{{ question()?.content }}</span>
       @if (!question()?.canWrite) {
-        <app-item-image-display [itemName]="question()?.item_name" [imgClass]="'group-question-item'"></app-item-image-display>
+        <app-item-image-display class="question-item" [itemName]="question()?.item_name" [imgClass]="'group-question-item'"></app-item-image-display>
       }
     </div>
+    <!-- Mobile only: the item sits next to the calendar, at the same size. -->
+    @if (!question()?.canWrite) {
+      <app-item-image-display class="question-item-mobile" [itemName]="question()?.item_name" [imgClass]="'group-question-item-mobile'"></app-item-image-display>
+    }
     <div class="calendar-anchor" #calendarAnchor>
       <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()" title="{{ 'group.calendar' | translate }}">
         <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />

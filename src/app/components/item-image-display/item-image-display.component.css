@@ -9,6 +9,13 @@
   height: 42px;
 }
 
+/* Same size as the calendar icon next to it (mobile question header). */
+.group-question-item-mobile {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+
 .user-profile-item-icon {
   width: 24px;
   height: 24px;
