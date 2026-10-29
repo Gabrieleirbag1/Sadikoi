@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sadikoi Android</title>
+<meta name="description" content="Sadikoi mobile app guide: development, signing, Play Store release, Google Sign-In, App Links and push notifications.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --text: #22211f;
+    --muted: #6b6862;
+    --border: #e3e0d8;
+    --accent: #0b74d5;
+    --accent-soft: #e4f0fb;
+    --ok: #1e8a4c;
+    --ok-soft: #e3f4ea;
+    --warn: #a35c00;
+    --warn-soft: #fbf0df;
+    --danger: #b3261e;
+    --danger-soft: #fbe6e4;
+    --code-bg: #f3f1ec;
+    --radius: 10px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1a19;
+      --surface: #242321;
+      --surface-2: #2d2b29;
+      --text: #ecebe8;
+      --muted: #a8a49c;
+      --border: #3a3835;
+      --accent: #5aa9f0;
+      --accent-soft: #1d3247;
+      --ok: #5cc98a;
+      --ok-soft: #1c3427;
+      --warn: #f0b05a;
+      --warn-soft: #3a2c17;
+      --danger: #f08a82;
+      --danger-soft: #3d2120;
+      --code-bg: #2d2b29;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1a19;
+    --surface: #242321;
+    --surface-2: #2d2b29;
+    --text: #ecebe8;
+    --muted: #a8a49c;
+    --border: #3a3835;
+    --accent: #5aa9f0;
+    --accent-soft: #1d3247;
+    --ok: #5cc98a;
+    --ok-soft: #1c3427;
+    --warn: #f0b05a;
+    --warn-soft: #3a2c17;
+    --danger: #f08a82;
+    --danger-soft: #3d2120;
+    --code-bg: #2d2b29;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 var(--sans);
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: var(--accent); }
+  h1, h2, h3 { line-height: 1.25; }
+  h1 { font-size: 1.9rem; margin: 0 0 .4rem; }
+  h2 { font-size: 1.4rem; margin: 0 0 1rem; padding-top: .5rem; }
+  h3 { font-size: 1.08rem; margin: 1.6rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  ul, ol { padding-left: 1.3rem; }
+  li { margin: .25rem 0; }
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--code-bg);
+    padding: .1em .35em;
+    border-radius: 5px;
+    overflow-wrap: anywhere;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 40px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  nav.toc {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    font-size: .92rem;
+  }
+  nav.toc .brand { font-weight: 700; font-size: 1.05rem; margin-bottom: 12px; }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  nav.toc li { margin: 0; counter-increment: toc; }
+  nav.toc a {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  nav.toc a::before { content: counter(toc) ". "; opacity: .6; }
+  nav.toc a:hover { background: var(--surface-2); color: var(--text); }
+  nav.toc a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .theme-btn {
+    margin-top: 16px;
+    font: inherit;
+    font-size: .85rem;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  main { min-width: 0; }
+  header.hero { margin-bottom: 28px; }
+  header.hero p { color: var(--muted); margin: 0; max-width: 62ch; }
+  section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  section > p, section > ul, section > ol { max-width: 72ch; }
+
+  .callout {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 1rem 0;
+    border-left: 4px solid;
+  }
+  .callout strong:first-child { display: block; margin-bottom: 2px; }
+  .callout.info { background: var(--accent-soft); border-color: var(--accent); }
+  .callout.ok { background: var(--ok-soft); border-color: var(--ok); }
+  .callout.warn { background: var(--warn-soft); border-color: var(--warn); }
+  .callout.danger { background: var(--danger-soft); border-color: var(--danger); }
+  .callout p { margin: .2rem 0; }
+
+  .code {
+    position: relative;
+    margin: .8rem 0;
+  }
+  .code pre {
+    margin: 0;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    padding-right: 70px;
+    overflow-x: auto;
+    font: .86rem/1.55 var(--mono);
+    white-space: pre;
+  }
+  .code .label {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-family: var(--mono);
+  }
+  .copy {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    font: .78rem var(--sans);
+    padding: 4px 9px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .copy.done { color: var(--ok); border-color: var(--ok); }
+
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; margin: .8rem 0; }
+  .table-wrap { overflow-x: auto; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: .82rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); font-weight: 600; }
+  td code { white-space: nowrap; }
+  .fp { font-family: var(--mono); font-size: .8rem; overflow-wrap: anywhere; white-space: normal !important; }
+
+  .tag {
+    display: inline-block;
+    font-size: .74rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .tag.info { background: var(--accent-soft); color: var(--accent); }
+  .tag.muted { background: var(--surface-2); color: var(--muted); }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin: 1.2rem 0;
+    flex-wrap: wrap;
+  }
+  .flow .step {
+    flex: 1 1 140px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: .88rem;
+  }
+  .flow .step b { display: block; font-size: .93rem; margin-bottom: 2px; }
+  .flow .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; }
+
+  /* Key explorer */
+  .keys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 1rem 0 0; }
+  .key-btn {
+    text-align: left;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .key-btn small { display: block; color: var(--muted); font-size: .8rem; }
+  .key-btn b { display: block; font-size: 1rem; }
+  .key-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .key-panel {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    background: var(--surface);
+  }
+  .key-panel dl { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: .92rem; }
+  .key-panel dt { color: var(--muted); }
+  .key-panel dd { margin: 0; }
+
+  /* Checklist */
+  .progress { display: flex; align-items: center; gap: 12px; margin: .5rem 0 1rem; }
+  .bar { flex: 1; height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s; }
+  .progress output { font-size: .88rem; color: var(--muted); min-width: 4.5em; text-align: right; }
+  .checklist h3 { margin-top: 1.2rem; }
+  .checklist label {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .checklist label:hover { background: var(--surface-2); }
+  .checklist input { margin-top: 5px; width: 16px; height: 16px; flex: none; accent-color: var(--ok); }
+  .checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
+  .reset {
+    font: inherit;
+    font-size: .82rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 3px 9px;
+    cursor: pointer;
+  }
+
+  details {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 14px;
+    margin: 8px 0;
+    background: var(--surface);
+  }
+  details[open] { padding-bottom: 10px; }
+  summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
+  summary code { font-weight: 400; }
+
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 40px; margin: 1.1rem 0; }
+  .steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--surface);
+    font-size: .85rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 16px 16px 60px; }
+    nav.toc { position: static; max-height: none; }
+    nav.toc ol { display: flex; flex-wrap: wrap; gap: 4px; }
+    nav.toc a { background: var(--surface); border: 1px solid var(--border); font-size: .82rem; padding: 3px 8px; }
+    nav.toc a::before { content: none; }
+    section { padding: 18px 16px; }
+    .keys { grid-template-columns: minmax(0, 1fr); }
+    .key-panel dl { grid-template-columns: minmax(0, 1fr); }
+    .key-panel dt { margin-top: 6px; }
+    .flow .arrow { transform: rotate(90deg); width: 100%; text-align: center; }
+    h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <div class="brand">Sadikoi Android</div>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#setup">Setup &amp; development</a></li>
+    <li><a href="#keys">Signing keys</a></li>
+    <li><a href="#upload-key">Create the upload key</a></li>
+    <li><a href="#build">Build the AAB</a></li>
+    <li><a href="#play">Play Console</a></li>
+    <li><a href="#fingerprints">SHA fingerprints</a></li>
+    <li><a href="#google">Google Sign-In</a></li>
+    <li><a href="#applinks">App Links</a></li>
+    <li><a href="#push">Push notifications</a></li>
+    <li><a href="#backend">Backend &amp; services</a></li>
+    <li><a href="#checklist">Release checklist</a></li>
+    <li><a href="#update">Publish an update</a></li>
+    <li><a href="#troubleshoot">Troubleshooting</a></li>
+  </ol>
+  <button class="theme-btn" type="button" id="theme-btn">Theme: auto</button>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Sadikoi Android app</h1>
+  <p>How to develop, sign and publish the app on the Play Store, and how to set up Google sign-in, invitation links and push notifications.</p>
+</header>
+
+<!-- 1 -->
+<section id="overview">
+  <h2>Overview</h2>
+  <p>The mobile app is the Angular website packaged as an Android app with <b>Capacitor</b>. The site is built into <code>dist/Sadikoi/browser</code>, then copied into the Android project (<code>android/</code>), which opens in Android Studio.</p>
+  <div class="flow" aria-label="Build pipeline">
+    <div class="step"><b>Angular</b><code>ng build</code></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>Capacitor</b><code>npx cap sync android</code></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>Gradle</b>APK (testing) or AAB (Play Store)</div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>Phone</b>USB or Play Store</div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Item</th><th>Value / file</th></tr>
+    <tr><td>App ID</td><td><code>com.missclick.sadikoi</code></td></tr>
+    <tr><td>Capacitor config</td><td><code>capacitor.config.ts</code></td></tr>
+    <tr><td>Android config</td><td><code>android/app/build.gradle</code>, <code>android/app/src/main/AndroidManifest.xml</code></td></tr>
+    <tr><td>Site URL</td><td><code>environment.siteUrl</code> = <code>https://sadikoi.missclick.net</code></td></tr>
+    <tr><td>App origin (as seen by the API)</td><td><code>https://localhost</code> (Android), <code>capacitor://localhost</code> (iOS)</td></tr>
+  </table>
+  </div>
+  <div class="callout info">
+    <strong>Why the origin is <code>https://localhost</code></strong>
+    <p>In the app, the page is loaded from the phone, not from the website, so <code>window.location.origin</code> is <code>https://localhost</code>. That's why shared links use <code>environment.siteUrl</code>, and why the API must allow this origin.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="setup">
+  <h2>Setup &amp; development</h2>
+  <h3>Requirements</h3>
+  <ul>
+    <li>Node and npm, with the project dependencies installed (<code>npm install</code>).</li>
+    <li>Android Studio. It ships with Java and <code>keytool</code>. This guide assumes it is installed in <code>/opt/android-studio</code>: adjust the paths if yours is elsewhere.</li>
+    <li><code>adb</code> (Android SDK) and a phone in developer mode, connected over USB.</li>
+  </ul>
+  <div class="callout warn">
+    <strong>Java is not on the PATH</strong>
+    <p><code>keytool</code> and <code>./gradlew</code> fail with <code>command not found</code> or <code>JAVA_HOME is not set</code>. Use Android Studio's Java: prefix the command with <code>JAVA_HOME=/opt/android-studio/jbr</code>, or add these lines to <code>~/.zshrc</code>:</p>
+  </div>
+  <div class="code"><div class="label">~/.zshrc</div><pre>export JAVA_HOME=/opt/android-studio/jbr
+export PATH="$JAVA_HOME/bin:$PATH"</pre></div>
+
+  <h3>Development loop</h3>
+  <div class="code"><div class="label">Build the site and copy it into the Android project</div><pre>npx ng build &amp;&amp; npx cap sync android</pre></div>
+  <div class="code"><div class="label">Open Android Studio (then ▶ Run to launch on the phone)</div><pre>npx cap open android</pre></div>
+  <div class="code"><div class="label">Regenerate the icon and splash screen from assets/</div><pre>npm run assets</pre></div>
+  <p>Run it again after every change to the Angular code, a Capacitor plugin or <code>capacitor.config.ts</code>. An app launched from Android Studio is signed with the <b>debug key</b> (see next section).</p>
+
+  <details>
+    <summary>Initial project setup (history, already done)</summary>
+    <div class="code"><pre>npm i @capacitor/core
+npm i -D @capacitor/cli
+npx cap init Sadikoi com.missclick.sadikoi --web-dir=dist/Sadikoi/browser
+npm i @capacitor/android
+ng build
+npx cap add android
+npx cap sync</pre></div>
+    <p>iOS (<code>npm i @capacitor/ios</code>, <code>npx cap add ios</code>) requires a Mac and is not set up yet.</p>
+  </details>
+</section>
+
+<!-- 3 -->
+<section id="keys">
+  <h2>Signing keys</h2>
+  <p>Android only installs <b>signed</b> apps. The signature proves that every version comes from the same author: an update signed with a different key is rejected. With the Play Store there are <b>two keys</b>, plus the debug key for development.</p>
+
+  <div class="flow" aria-label="Signing flow">
+    <div class="step"><b>You</b>Sign the <code>.aab</code> with your <b>upload key</b></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>Play Console</b>Google checks the upload comes from you</div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>Google</b>Re-signs the app with the <b>app signing key</b></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>Testers</b>Install the app signed by Google</div>
+  </div>
+
+  <p>Click a key to see what it does:</p>
+  <div class="keys" role="group" aria-label="Keys">
+    <button class="key-btn" type="button" data-key="debug" aria-pressed="false"><small>Development</small><b>Debug key</b></button>
+    <button class="key-btn" type="button" data-key="upload" aria-pressed="true"><small>Yours</small><b>Upload key</b></button>
+    <button class="key-btn" type="button" data-key="signing" aria-pressed="false"><small>Google's</small><b>App signing key</b></button>
+  </div>
+  <div class="key-panel" id="key-panel" aria-live="polite"></div>
+
+  <div class="callout info">
+    <strong>What a fingerprint (SHA-1 / SHA-256) is</strong>
+    <p>Each key has a fingerprint: an identifier computed from the key. Google Sign-In and App Links check that the app is signed by a key whose fingerprint has been declared. A key has two fingerprints: a SHA-1 (short) and a SHA-256 (long). Each service asks for one or the other (see <a href="#fingerprints">SHA fingerprints</a>).</p>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="upload-key">
+  <h2>Create the upload key (once)</h2>
+  <ol class="steps">
+    <li>
+      <b>Generate the key file</b>, outside the project folder:
+      <div class="code"><pre>/opt/android-studio/jbr/bin/keytool -genkeypair -v -keystore "$HOME/sadikoi-upload.jks" -keyalg RSA -keysize 2048 -validity 10000 -alias upload</pre></div>
+      <p>The command asks for a password, then your name and a few details (press Enter to leave them empty). Confirm with <code>yes</code>. The key password is the same as the file password.</p>
+    </li>
+    <li>
+      <b>Create <code>android/keystore.properties</code></b>. This file is ignored by git (<code>android/.gitignore</code>), and so are <code>*.jks</code> files:
+      <div class="code"><div class="label">android/keystore.properties</div><pre>storeFile=/home/&lt;user&gt;/sadikoi-upload.jks
+storePassword=&lt;password&gt;
+keyAlias=upload
+keyPassword=&lt;password&gt;</pre></div>
+      <p><code>storeFile</code> must be an absolute path (<code>~</code> doesn't work) or a path relative to <code>android/app/</code>. <code>android/app/build.gradle</code> reads this file to sign the release build. If it doesn't exist, the release is simply left unsigned.</p>
+    </li>
+    <li>
+      <b>Back up</b> the <code>.jks</code> file and its password somewhere else (password manager, USB drive...).
+    </li>
+  </ol>
+  <div class="callout danger">
+    <strong>Never commit the key or its password</strong>
+    <p>The repository is public. If you lose the upload key, Google support can reset it (Play Console → App integrity), but it is a slow process.</p>
+  </div>
+  <details>
+    <summary>Alternative: the Android Studio wizard</summary>
+    <p>Build → Generate Signed App Bundle or APK… → Android App Bundle → <b>Create new…</b> (path of the <code>.jks</code>, password, alias <code>upload</code>, validity 25 years). The output is then in <code>android/app/release/</code>. The command line method above is still recommended: it can be repeated with <code>npm run android:release</code>.</p>
+  </details>
+</section>
+
+<!-- 5 -->
+<section id="build">
+  <h2>Build the signed AAB</h2>
+  <p>The Play Store requires an <b>Android App Bundle</b> (<code>.aab</code>), not an APK. One script does everything: production build of the site, Android sync, then build and signing.</p>
+  <div class="code"><pre>JAVA_HOME=/opt/android-studio/jbr npm run android:release</pre></div>
+  <p>Output: <code>android/app/build/outputs/bundle/release/app-release.aab</code></p>
+  <h3>Check the signature</h3>
+  <div class="code"><pre>cd android &amp;&amp; JAVA_HOME=/opt/android-studio/jbr ./gradlew :app:signingReport</pre></div>
+  <p>In the <code>Variant: release</code> section, you should see <code>Config: release</code> with the SHA-1 and SHA-256 of your upload key. <code>Config: none</code> means <code>keystore.properties</code> is missing or wrong.</p>
+</section>
+
+<!-- 6 -->
+<section id="play">
+  <h2>Play Console</h2>
+  <h3>Testing tracks</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Track</th><th>Purpose</th><th>Delay</th></tr>
+    <tr><td><b>Internal testing</b></td><td>First upload, check that everything works. Up to 100 testers.</td><td>A few minutes</td></tr>
+    <tr><td><b>Closed testing</b></td><td>Registered testers (list or Google group).</td><td>Google review (hours to days)</td></tr>
+    <tr><td><b>Production</b></td><td>Public.</td><td>After the mandatory closed test (see below)</td></tr>
+  </table>
+  </div>
+  <div class="callout warn">
+    <strong>New personal developer account: 12 testers for 14 days</strong>
+    <p>Before you can apply for production access, Google requires a closed test with at least 12 opted-in testers for 14 consecutive days.</p>
+  </div>
+
+  <h3>First upload</h3>
+  <ol class="steps">
+    <li>Test and release → <b>Internal testing</b> → Create new release → upload <code>app-release.aab</code>.</li>
+    <li>Accept <b>Play App Signing</b>, which is offered automatically: Google then creates the app signing key.</li>
+    <li>Get that key's fingerprints: Test and release → <b>App integrity</b> → App signing. It shows the SHA-1, the SHA-256 and a <i>Digital Asset Links</i> JSON snippet. The "Upload key certificate" section must show the same fingerprints as your upload key.</li>
+    <li>Declare these fingerprints (<a href="#fingerprints">next section</a>), then install the app from the test link.</li>
+  </ol>
+
+  <h3>Required forms (no code)</h3>
+  <ul>
+    <li>Store listing: 512×512 icon, 1024×500 feature graphic, phone screenshots, descriptions.</li>
+    <li>Privacy policy: <code>https://sadikoi.missclick.net/privacy</code></li>
+    <li>Account deletion: <code>https://sadikoi.missclick.net/delete-account</code></li>
+    <li>Data safety, content rating, target audience, ads declaration, app category.</li>
+  </ul>
+</section>
+
+<!-- 7 -->
+<section id="fingerprints">
+  <h2>SHA fingerprints: what goes where</h2>
+  <p>Simple rule: <b>SHA-256 → <code>assetlinks.json</code></b> (App Links) and <b>SHA-1 → Google Cloud</b> (Google Sign-In). Firebase doesn't need them for push notifications.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Key</th><th>Where to find its fingerprints</th><th>Needed for</th></tr>
+    <tr>
+      <td><b>App signing</b> (Google)</td>
+      <td>Play Console → App integrity → App signing</td>
+      <td><span class="tag warn">Required</span> the app installed from the Play Store</td>
+    </tr>
+    <tr>
+      <td><b>Upload</b> (yours)</td>
+      <td><code>./gradlew :app:signingReport</code>, <code>Variant: release</code>. Also shown in Play Console under "Upload key certificate".</td>
+      <td><span class="tag muted">Optional</span> a release APK/AAB installed manually</td>
+    </tr>
+    <tr>
+      <td><b>Debug</b></td>
+      <td><code>./gradlew :app:signingReport</code>, <code>Variant: debug</code></td>
+      <td><span class="tag info">Dev</span> the app launched over USB from Android Studio</td>
+    </tr>
+  </table>
+  </div>
+  <div class="code"><div class="label">Read the fingerprints of a .jks file directly</div><pre>/opt/android-studio/jbr/bin/keytool -list -v -keystore "$HOME/sadikoi-upload.jks" -alias upload</pre></div>
+  <p>The debug key belongs to each machine (<code>~/.android/debug.keystore</code>): it is different on another computer, so its fingerprints have to be declared again there.</p>
+</section>
+
+<!-- 8 -->
+<section id="google">
+  <h2>Google Sign-In</h2>
+  <p>Google blocks its sign-in page inside a WebView (error <code>disallowed_useragent</code>). In the app, sign-in therefore goes through the native plugin <code>@capgo/capacitor-social-login</code> (<code>src/app/components/google-login/google-login.component.ts</code>). On the website, it is still the regular Google button.</p>
+
+  <h3>OAuth clients</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>OAuth client</th><th>Where it is used</th><th>Role</th></tr>
+    <tr><td><b>Web</b></td><td>App: <code>src/environments/secrets.ts</code> (<code>googleClientId</code>, git-ignored). Backend: <code>GOOGLE_CLIENT_BROWSER_ID</code></td><td>The token returned by Google is issued for this ID, on the website <b>and</b> in the app. The backend verifies it.</td></tr>
+    <tr><td><b>Android</b> (one per SHA-1)</td><td>Nowhere in the code</td><td>Lets Google recognize the app (package name + SHA-1). Must be in the <b>same Google Cloud project</b> as the Web client.</td></tr>
+  </table>
+  </div>
+  <div class="callout ok">
+    <strong>No Android ID goes into the secrets</strong>
+    <p><code>GOOGLE_CLIENT_MOBILE_ID</code> in <code>Sadikoi-API/src/.google.secrets</code> stays as it is. It is a fallback in case Google issues a token for the Android ID, but in practice it is not used.</p>
+  </div>
+
+  <h3>Declare a key</h3>
+  <ol class="steps">
+    <li>Google Cloud Console → APIs &amp; Services → <b>Credentials</b>, in the Web client's project.</li>
+    <li>Create credentials → OAuth client ID → type <b>Android</b>.</li>
+    <li>Package name <code>com.missclick.sadikoi</code>, and the key's <b>SHA-1</b>.</li>
+    <li>Repeat for each key: an Android client only accepts one SHA-1. At a minimum, create the one for the <b>app signing</b> key.</li>
+  </ol>
+  <p>No new AAB and no backend change are needed. It can take a few minutes to apply.</p>
+</section>
+
+<!-- 9 -->
+<section id="applinks">
+  <h2>App Links (links that open the app)</h2>
+  <p>Links to <code>https://sadikoi.missclick.net/group/invitations/…</code> and <code>/reset-password/…</code> (invitations, emails) open the app instead of the browser when it is installed.</p>
+  <ul>
+    <li><b>Android</b>: the <code>autoVerify</code> intent filter in <code>AndroidManifest.xml</code> declares these paths.</li>
+    <li><b>Website</b>: <code>public/.well-known/assetlinks.json</code> lists the allowed SHA-256 fingerprints. Android downloads it when the app is installed to verify the link.</li>
+    <li><b>Angular</b>: <code>src/app/services/deep-link/deep-link.service.ts</code> listens to <code>appUrlOpen</code> and opens the right page.</li>
+  </ul>
+  <h3>Update assetlinks.json</h3>
+  <p>Add the SHA-256 to the <code>sha256_cert_fingerprints</code> list without removing the others, then redeploy the site. Play Console provides a ready-made JSON snippet, but it only contains the app signing key: don't replace the whole file with it.</p>
+  <div class="code"><div class="label">Check the live file (200, application/json, no redirect)</div><pre>curl -i https://sadikoi.missclick.net/.well-known/assetlinks.json</pre></div>
+  <h3>Test on the phone</h3>
+  <div class="code"><div class="label">The state must be "verified"</div><pre>adb shell pm get-app-links com.missclick.sadikoi</pre></div>
+  <div class="code"><div class="label">Simulate opening a link</div><pre>adb shell am start -a android.intent.action.VIEW -d "https://sadikoi.missclick.net/group/invitations/test"</pre></div>
+  <div class="callout info">
+    <strong>Android only verifies on install</strong>
+    <p>If the app was installed before the new file went live, uninstall and reinstall it, or run the verification again:</p>
+    <div class="code"><pre>adb shell pm verify-app-links --re-verify com.missclick.sadikoi</pre></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="push">
+  <h2>Push notifications (Firebase)</h2>
+  <p>Firebase is only used to send push notifications. It is a separate project from the Google Cloud project used for Google sign-in. SHA fingerprints are <b>not</b> needed.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Side</th><th>File</th><th>Role</th></tr>
+    <tr><td>App</td><td><code>android/app/google-services.json</code></td><td>Links the app to the Firebase project (public file, committed).</td></tr>
+    <tr><td>App</td><td><code>environment.pushNotificationsEnabled</code></td><td><code>true</code> in production. Without <code>google-services.json</code>, the push plugin crashes the app: keep it <code>false</code> in that case.</td></tr>
+    <tr><td>App</td><td><code>src/app/services/push/push.service.ts</code></td><td>Asks for permission, gets the device token and sends it to the API.</td></tr>
+    <tr><td>Backend</td><td><code>Sadikoi-API/src/.firebase-service-account.json</code></td><td>Service account key (<b>secret</b>, git-ignored) used to send through FCM. Must be on the <b>production server</b>, otherwise nothing is sent.</td></tr>
+  </table>
+  </div>
+  <p>The notification icon is <code>res/drawable-*/ic_stat_notification.png</code> (white on transparent). Its color is set by <code>@color/notification_color</code>.</p>
+</section>
+
+<!-- 11 -->
+<section id="backend">
+  <h2>Backend &amp; external services</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Item</th><th>Setting</th><th>Status</th></tr>
+    <tr><td>CORS</td><td><code>https://localhost</code> and <code>capacitor://localhost</code> allowed with credentials (REST API + Socket.IO), <code>Sadikoi-API/src/config.py</code></td><td><span class="tag ok">Done</span></td></tr>
+    <tr><td>Cookies</td><td><code>SameSite=None; Secure</code>, <code>Sadikoi-API/src/app.py</code></td><td><span class="tag ok">Done</span></td></tr>
+    <tr><td>Native networking</td><td><code>CapacitorHttp</code> + <code>CapacitorCookies</code> enabled in <code>capacitor.config.ts</code>: no CORS preflight, cookies are kept</td><td><span class="tag ok">Done</span></td></tr>
+    <tr><td>Turnstile (captcha)</td><td>Add <code>localhost</code> to the widget's hostnames in the Cloudflare dashboard</td><td><span class="tag warn">To check</span></td></tr>
+    <tr><td>Google Sign-In</td><td>The backend accepts <code>GOOGLE_CLIENT_BROWSER_ID</code> and <code>GOOGLE_CLIENT_MOBILE_ID</code></td><td><span class="tag ok">Done</span></td></tr>
+    <tr><td>Push</td><td><code>.firebase-service-account.json</code> present on the server</td><td><span class="tag warn">To check</span></td></tr>
+  </table>
+  </div>
+</section>
+
+<!-- 12 -->
+<section id="checklist" class="checklist">
+  <h2>Release checklist</h2>
+  <p>Your progress is saved in this browser.</p>
+  <div class="progress">
+    <div class="bar"><span id="bar"></span></div>
+    <output id="count">0 / 0</output>
+    <button class="reset" type="button" id="reset">Reset</button>
+  </div>
+
+  <h3>Before the first upload</h3>
+  <label><input type="checkbox" data-id="key"><span>Upload key created and backed up outside the repository</span></label>
+  <label><input type="checkbox" data-id="props"><span><code>android/keystore.properties</code> filled in</span></label>
+  <label><input type="checkbox" data-id="build"><span><code>npm run android:release</code> succeeds, <code>signingReport</code> shows <code>Config: release</code></span></label>
+  <label><input type="checkbox" data-id="turnstile"><span><code>localhost</code> added to the Turnstile hostnames</span></label>
+  <label><input type="checkbox" data-id="firebase"><span>Firebase service account present on the server</span></label>
+  <label><input type="checkbox" data-id="listing"><span>Store listing, privacy policy, account deletion, data safety and content rating filled in</span></label>
+
+  <h3>After the first upload (internal testing)</h3>
+  <label><input type="checkbox" data-id="signing"><span>Play App Signing accepted, app signing key fingerprints retrieved</span></label>
+  <label><input type="checkbox" data-id="assetlinks"><span>App signing + upload SHA-256 in <code>assetlinks.json</code>, site redeployed</span></label>
+  <label><input type="checkbox" data-id="oauth"><span>Android OAuth client created with the app signing SHA-1 (and upload SHA-1 if needed)</span></label>
+  <label><input type="checkbox" data-id="install"><span>App installed from the Play test link</span></label>
+  <label><input type="checkbox" data-id="test-google"><span>Google sign-in works</span></label>
+  <label><input type="checkbox" data-id="test-links"><span><code>pm get-app-links</code> → <code>verified</code>, an invitation link opens the app</span></label>
+  <label><input type="checkbox" data-id="test-push"><span>Push notification received</span></label>
+
+  <h3>To production</h3>
+  <label><input type="checkbox" data-id="closed"><span>Closed test started with at least 12 testers</span></label>
+  <label><input type="checkbox" data-id="14days"><span>14 consecutive days passed</span></label>
+  <label><input type="checkbox" data-id="prod"><span>Production access requested and release published</span></label>
+</section>
+
+<!-- 13 -->
+<section id="update">
+  <h2>Publish an update</h2>
+  <ol class="steps">
+    <li>Increase <code>versionCode</code> (always +1, Play rejects a number already used) and <code>versionName</code> in <code>android/app/build.gradle</code>.</li>
+    <li><code>JAVA_HOME=/opt/android-studio/jbr npm run android:release</code></li>
+    <li>Play Console → the target track → Create new release → upload the new <code>.aab</code>.</li>
+  </ol>
+  <div class="code"><div class="label">android/app/build.gradle</div><pre>versionCode 2
+versionName "1.1"</pre></div>
+  <p>Fingerprints don't change between versions: nothing to redo in Google Cloud or <code>assetlinks.json</code>.</p>
+</section>
+
+<!-- 14 -->
+<section id="troubleshoot">
+  <h2>Troubleshooting</h2>
+  <details>
+    <summary><code>keytool: command not found</code> / <code>JAVA_HOME is not set</code></summary>
+    <p>Java is not on the PATH. Use <code>/opt/android-studio/jbr/bin/keytool</code> and <code>JAVA_HOME=/opt/android-studio/jbr ./gradlew …</code>, or edit <code>~/.zshrc</code> (see <a href="#setup">Setup</a>).</p>
+  </details>
+  <details>
+    <summary>Google sign-in: <code>DEVELOPER_ERROR</code> / code 10</summary>
+    <p>The SHA-1 of the key that signed the installed app is not declared in any Android OAuth client of the project. Installed from Play → <b>app signing</b> SHA-1. Release installed manually → upload SHA-1. Launched from Android Studio → debug SHA-1.</p>
+  </details>
+  <details>
+    <summary>Google sign-in: <code>disallowed_useragent</code></summary>
+    <p>The web sign-in was opened in the WebView. In the app, the button must use the native plugin: check that <code>Capacitor.isNativePlatform()</code> is true and that the plugin is synced (<code>npx cap sync android</code>).</p>
+  </details>
+  <details>
+    <summary>Links open the browser instead of the app</summary>
+    <ul>
+      <li><code>curl -i</code> on <code>assetlinks.json</code>: it must return 200, <code>application/json</code>, with no redirect.</li>
+      <li>The SHA-256 of the key that signed the installed app must be in the list.</li>
+      <li>Reinstall the app or run <code>pm verify-app-links --re-verify</code>, then check with <code>pm get-app-links</code>.</li>
+    </ul>
+  </details>
+  <details>
+    <summary>The app crashes on startup after adding push</summary>
+    <p><code>google-services.json</code> is missing from <code>android/app/</code> while <code>pushNotificationsEnabled</code> is <code>true</code>. Add the file, or set the option to <code>false</code>.</p>
+  </details>
+  <details>
+    <summary>No notification received</summary>
+    <ul>
+      <li>Notification permission granted on the phone (Android 13+).</li>
+      <li><code>.firebase-service-account.json</code> present on the server, no <code>FCM error</code> in the API logs.</li>
+      <li>The phone sent its token to the API (<code>push.service.ts</code> logs).</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Logged out / CORS errors in the app</summary>
+    <p>Check that the API allows the <code>https://localhost</code> origin with credentials, and that cookies are <code>SameSite=None; Secure</code>. Quick test:</p>
+    <div class="code"><pre>curl -si -X OPTIONS https://sadikoi.missclick.net/api/ -H "Origin: https://localhost" -H "Access-Control-Request-Method: POST" | grep -i access-control</pre></div>
+  </details>
+  <details>
+    <summary>Play rejects the AAB: "version code already used" or "signed with the wrong key"</summary>
+    <p>Increase <code>versionCode</code>. For the key: the AAB must be signed with the upload key registered in Play Console (compare with <code>signingReport</code>).</p>
+  </details>
+</section>
+</main>
+</div>
+
+<script>
+(function () {
+  function store(action, key, value) {
+    try {
+      if (action === 'get') return localStorage.getItem(key);
+      if (action === 'set') localStorage.setItem(key, value);
+      if (action === 'del') localStorage.removeItem(key);
+    } catch (e) { /* storage unavailable: the page still works */ }
+    return null;
+  }
+
+  // Copy buttons on every code block.
+  document.querySelectorAll('.code pre').forEach(function (pre) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      var done = function () {
+        btn.textContent = 'Copied';
+        btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1500);
+      };
+      var text = pre.textContent;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+      } else {
+        fallback(text);
+        done();
+      }
+    });
+    pre.parentNode.appendChild(btn);
+  });
+  function fallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  // Key explorer.
+  var keys = {
+    debug: {
+      who: 'Android Studio, created automatically',
+      where: '~/.android/debug.keystore (different on each machine)',
+      signs: 'The app launched over USB with ▶ Run',
+      sha256: 'assetlinks.json: to test links over USB',
+      sha1: 'Android OAuth client: to test Google Sign-In over USB',
+      lose: 'No impact: a new one is created (its fingerprints must be declared again).'
+    },
+    upload: {
+      who: 'You (keytool)',
+      where: 'Your .jks file + android/keystore.properties (outside git)',
+      signs: 'The .aab you upload to Play Console. Google checks the upload comes from you, then strips this signature.',
+      sha256: 'assetlinks.json: optional (release APK installed manually)',
+      sha1: 'Android OAuth client: optional (same case)',
+      lose: 'Google support can reset it (App integrity), but it is slow: back it up.'
+    },
+    signing: {
+      who: 'Google (Play App Signing), created on the first upload',
+      where: 'At Google only: you never see it, only its fingerprints',
+      signs: 'The app testers and users install from the Play Store',
+      sha256: 'assetlinks.json: required',
+      sha1: 'Android OAuth client: required',
+      lose: 'Not possible: Google keeps it.'
+    }
+  };
+  var panel = document.getElementById('key-panel');
+  var buttons = document.querySelectorAll('.key-btn');
+  function showKey(id) {
+    var k = keys[id];
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.key === id)); });
+    var rows = [
+      ['Created by', k.who],
+      ['Stored in', k.where],
+      ['Signs', k.signs],
+      ['Its SHA-256', k.sha256],
+      ['Its SHA-1', k.sha1],
+      ['If lost', k.lose]
+    ];
+    panel.innerHTML = '<dl>' + rows.map(function (r) {
+      return '<dt>' + r[0] + '</dt><dd>' + r[1].replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</dd>';
+    }).join('') + '</dl>';
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { showKey(b.dataset.key); }); });
+  showKey('upload');
+
+  // Checklist with progress, saved in this browser.
+  var KEY = 'sadikoi-mobile-checklist';
+  var saved = {};
+  try { saved = JSON.parse(store('get', KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = document.querySelectorAll('.checklist input[type=checkbox]');
+  var bar = document.getElementById('bar');
+  var count = document.getElementById('count');
+  function update() {
+    var done = 0;
+    boxes.forEach(function (b) { if (b.checked) done++; });
+    count.textContent = done + ' / ' + boxes.length;
+    bar.style.width = (boxes.length ? (done / boxes.length) * 100 : 0) + '%';
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.dataset.id];
+    b.addEventListener('change', function () {
+      saved[b.dataset.id] = b.checked;
+      store('set', KEY, JSON.stringify(saved));
+      update();
+    });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    saved = {};
+    store('del', KEY);
+    boxes.forEach(function (b) { b.checked = false; });
+    update();
+  });
+  update();
+
+  // Theme toggle: auto -> light -> dark.
+  var root = document.documentElement;
+  var themeBtn = document.getElementById('theme-btn');
+  var labels = { auto: 'Theme: auto', light: 'Theme: light', dark: 'Theme: dark' };
+  function applyTheme(t) {
+    if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    themeBtn.textContent = labels[t];
+  }
+  var theme = store('get', 'sadikoi-mobile-theme') || 'auto';
+  if (!labels[theme]) theme = 'auto';
+  applyTheme(theme);
+  themeBtn.addEventListener('click', function () {
+    theme = theme === 'auto' ? 'light' : theme === 'light' ? 'dark' : 'auto';
+    store('set', 'sadikoi-mobile-theme', theme);
+    applyTheme(theme);
+  });
+
+  // Highlight the current section in the table of contents.
+  var links = {};
+  document.querySelectorAll('nav.toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          Object.keys(links).forEach(function (id) { links[id].classList.toggle('active', id === e.target.id); });
+        }
+      });
+    }, { rootMargin: '0px 0px -70% 0px' });
+    document.querySelectorAll('main section').forEach(function (s) { observer.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

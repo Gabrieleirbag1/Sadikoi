@@ -78,7 +78,14 @@
     "joinGroup": "Join Group",
     "gridView": "Grid View",
     "listView": "List View",
-    "noDescription": "A group with great people, but no description."
+    "noDescription": "A group with great people, but no description.",
+    "joinAGroup": "Join a group",
+    "newGroupTitle": "New group",
+    "namePlaceholder": "e.g. High school crew",
+    "descriptionLabel": "Description (optional)",
+    "resetTimeLabel": "Daily question time",
+    "resetTimeHint": "A new question arrives every day at this time.",
+    "nameRequired": "Give the group a name."
   },
   "group": {
     "getGroupInvitation": "Copy group invitation link",
@@ -139,7 +146,8 @@
   },
   "modal": {
     "save": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "back": "Back"
   },
   "languages": {
     "english": "English",
@@ -358,5 +366,10 @@
       "before": "{{user}} keeps their item",
       "after": "with a {{streak}} 🔥 streak!"
     }
+  },
+  "themes": {
+    "title": "Question themes",
+    "selected": "{{count}}/{{total}} selected",
+    "atLeastOne": "Keep at least one theme."
   }
 }

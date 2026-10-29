@@ -1,31 +1,112 @@
-.themes-picker {
+:host {
 	display: block;
 	width: 100%;
+}
+
+.themes {
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.themes-legend {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 8px;
+	width: 100%;
+	margin-bottom: 8px;
+	font-size: 1rem;
+}
+
+.themes-count {
+	color: var(--muted);
+	font-size: 0.85rem;
+	white-space: nowrap;
+}
+
+/* Chips that wrap: every theme is visible without opening anything. */
+.themes-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 5px;
+}
+
+.theme-chip {
 	position: relative;
-}
-
-.themes-popover {
-	position: absolute;
-	z-index: 10;
-	top: calc(100% + 4px);
-	left: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	min-width: 180px;
-	padding: 12px;
-	background: #fff;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-}
-
-.themes-popover label {
-	display: flex;
-	gap: 8px;
+	display: inline-flex;
 	align-items: center;
+	min-height: 32px;
+	/* Room for the check mark on both sides, so checking a theme never changes its width. */
+	padding: 2px 15px;
+	border: 2px solid var(--primary-light);
+	border-radius: 999px;
+	background: #fff;
+	color: var(--primary);
+	font-size: 0.9rem;
+	line-height: 1.1;
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.themes-button {
-    width: 100%;
+.theme-chip:hover {
+	border-color: var(--secondary);
+}
+
+/* Selected: filled, with a check mark so the state doesn't rely on color alone. */
+.theme-chip.selected {
+	border-color: var(--secondary);
+	background: var(--secondary-light);
+}
+
+.theme-chip.selected::before {
+	content: '✓';
+	position: absolute;
+	left: 4px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--secondary);
+	font-size: 0.75rem;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.theme-chip.locked {
+	cursor: not-allowed;
+}
+
+/* The real checkbox stays in the page (keyboard, screen readers) but is invisible. */
+.theme-chip-input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.theme-chip:has(.theme-chip-input:focus-visible) {
+	outline: 2px solid var(--secondary);
+	outline-offset: 2px;
+}
+
+.themes[disabled] .theme-chip {
+	cursor: default;
+	opacity: 0.6;
+}
+
+.themes[disabled] .theme-chip:hover {
+	border-color: var(--primary-light);
+}
+
+.themes[disabled] .theme-chip.selected:hover {
+	border-color: var(--secondary);
+}
+
+.themes-hint {
+	margin: 6px 0 0;
+	color: var(--muted);
+	font-size: 0.85rem;
 }

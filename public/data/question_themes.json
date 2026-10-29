@@ -1,14 +1,152 @@
 {
-  "style": {
-    "id": "style",
-    "fr": "style",
-    "en": "style",
-    "checked": true
-  },
-  "connerie": {
-    "id": "connerie",
-    "fr": "connerie",
-    "en": "stupidity",
-    "checked": false
-  }
+    "soiree": {
+        "id": "soiree",
+        "fr": "Soirée",
+        "en": "Party",
+        "checked": false
+    },
+    "boulot": {
+        "id": "boulot",
+        "fr": "Boulot",
+        "en": "Work",
+        "checked": false
+    },
+    "ecole": {
+        "id": "ecole",
+        "fr": "École",
+        "en": "School",
+        "checked": false
+    },
+    "mechant": {
+        "id": "mechant",
+        "fr": "Méchant",
+        "en": "Villain",
+        "checked": false
+    },
+    "loisirs": {
+        "id": "loisirs",
+        "fr": "Loisirs",
+        "en": "Hobbies",
+        "checked": true
+    },
+    "et_si": {
+        "id": "et_si",
+        "fr": "Et si",
+        "en": "What if",
+        "checked": true
+    },
+    "hot": {
+        "id": "hot",
+        "fr": "Hot",
+        "en": "Spicy",
+        "checked": false
+    },
+    "voyage": {
+        "id": "voyage",
+        "fr": "Voyage",
+        "en": "Travel",
+        "checked": true
+    },
+    "argent": {
+        "id": "argent",
+        "fr": "Argent",
+        "en": "Money",
+        "checked": false
+    },
+    "reseaux": {
+        "id": "reseaux",
+        "fr": "Réseaux",
+        "en": "Social media",
+        "checked": false
+    },
+    "amour": {
+        "id": "amour",
+        "fr": "Amour",
+        "en": "Love",
+        "checked": false
+    },
+    "famille": {
+        "id": "famille",
+        "fr": "Famille",
+        "en": "Family",
+        "checked": false
+    },
+    "survie": {
+        "id": "survie",
+        "fr": "Survie",
+        "en": "Survival",
+        "checked": false
+    },
+    "absurde": {
+        "id": "absurde",
+        "fr": "Absurde",
+        "en": "Absurd",
+        "checked": true
+    },
+    "amitie": {
+        "id": "amitie",
+        "fr": "Amitié",
+        "en": "Friendship",
+        "checked": true
+    },
+    "futur": {
+        "id": "futur",
+        "fr": "Futur",
+        "en": "Future",
+        "checked": false
+    },
+    "bouffe": {
+        "id": "bouffe",
+        "fr": "Bouffe",
+        "en": "Food",
+        "checked": true
+    },
+    "sport": {
+        "id": "sport",
+        "fr": "Sport",
+        "en": "Sports",
+        "checked": false
+    },
+    "secrets": {
+        "id": "secrets",
+        "fr": "Secrets",
+        "en": "Secrets",
+        "checked": false
+    },
+    "nostalgie": {
+        "id": "nostalgie",
+        "fr": "Nostalgie",
+        "en": "Throwback",
+        "checked": false
+    },
+    "avenir": {
+        "id": "avenir",
+        "fr": "Avenir",
+        "en": "What's Next",
+        "checked": false
+    },
+    "travail": {
+        "id": "travail",
+        "fr": "Travail",
+        "en": "Jobs",
+        "checked": false
+    },
+    "illegal": {
+        "id": "illegal",
+        "fr": "Illégal et dangereux",
+        "en": "Living Dangerously",
+        "checked": false
+    },
+    "crado": {
+        "id": "crado",
+        "fr": "Crado",
+        "en": "Gross",
+        "checked": false
+    },
+    "trash": {
+        "id": "trash",
+        "fr": "Trash",
+        "en": "Savage",
+        "checked": false
+    }
 }

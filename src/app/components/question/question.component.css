@@ -16,6 +16,13 @@
   gap: 8px;
   grid-column: 2;
   justify-content: center;
+  /* The item icon is centered on the question text (one line or several). */
+  align-items: center;
+}
+
+.question-content app-item-image-display {
+  display: flex;
+  flex-shrink: 0;
 }
 
 .question-container span {

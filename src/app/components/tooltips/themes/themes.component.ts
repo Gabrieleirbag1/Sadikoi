@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, model, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom, map } from 'rxjs';
 
 interface ThemeOption {
   id: string;
@@ -9,25 +11,25 @@ interface ThemeOption {
   checked: boolean;
 }
 
+/** The question themes of a group, as chips that wrap: all of them are visible at once, no popover. */
 @Component({
   selector: 'app-themes',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './themes.component.html',
   styleUrl: './themes.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '(document:click)': 'closeOnOutsideClick($event)',
-  },
 })
 export class ThemesComponent implements OnInit {
-  private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly httpClient = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
 
   public readonly disabled = input(false);
   public readonly selectedThemes = model<string[]>([]);
   protected readonly themes = signal<ThemeOption[]>([]);
-  protected readonly isOpen = signal(false);
   protected readonly selectedThemeCount = computed(() => this.selectedThemes().length);
+  private readonly lang = toSignal(this.translate.onLangChange.pipe(map(event => event.lang)), {
+    initialValue: this.translate.getCurrentLang() ?? 'en',
+  });
 
   async ngOnInit(): Promise<void> {
     const themes = await firstValueFrom(
@@ -41,18 +43,17 @@ export class ThemesComponent implements OnInit {
     }
   }
 
-  protected toggle(): void {
-    this.isOpen.update(open => !open);
+  protected label(theme: ThemeOption): string {
+    return this.lang() === 'fr' ? theme.fr : theme.en;
   }
 
-  protected closeOnOutsideClick(event: MouseEvent): void {
-    if (this.isOpen() && !this.elementRef.nativeElement.contains(event.target as Node)) {
-      this.isOpen.set(false);
-    }
+  protected isSelected(themeId: string): boolean {
+    return this.selectedThemes().includes(themeId);
   }
 
   protected toggleTheme(themeId: string, checked: boolean): void {
     const selectedThemes = this.selectedThemes();
+    // A group always keeps at least one theme.
     if (!checked && selectedThemes.length === 1) return;
 
     this.selectedThemes.set(

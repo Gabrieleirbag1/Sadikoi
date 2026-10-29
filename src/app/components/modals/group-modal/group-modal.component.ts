@@ -20,6 +20,7 @@ export class GroupModalComponent {
   
   protected readonly defaultTimeValue = this.datetimeService.convertUTCTimeStampToLocal("15:00:00");
   protected selectedThemes: string[] = [];
+  protected nameMissing = false;
 
   protected state: GroupModalState = 'chose';
   protected groupName = viewChild<ElementRef<HTMLInputElement>>('groupName');
@@ -38,23 +39,38 @@ export class GroupModalComponent {
     const discardFn = this.config().discard;
     this.modalService.close(this.modalId);
     discardFn?.(event);
-    this.state = 'chose';
+    this.reset();
   }
 
   protected save(): void {
-    if (!this.groupName()?.nativeElement.value) {
+    if (!this.groupName()?.nativeElement.value.trim()) {
+      this.nameMissing = true;
       this.groupName()?.nativeElement.focus();
       return;
     }
     const saveFn = this.config().save;
     this.modalService.close(this.modalId);
     saveFn?.({
-      name: this.groupName()?.nativeElement.value ?? '',
+      name: this.groupName()?.nativeElement.value.trim() ?? '',
       description: this.groupDescription()?.nativeElement.value ?? '',
       time: this.groupTime()?.nativeElement.value ?? '15:00:00',
       themes: this.selectedThemes
     });
+    this.reset();
+  }
+
+  /** Next opening starts from scratch: first step, default themes (set again by app-themes when empty). */
+  private reset(): void {
     this.state = 'chose';
+    this.selectedThemes = [];
+    this.nameMissing = false;
+  }
+
+  /** The configured title, otherwise one for the current step. */
+  protected title(): string {
+    const configured = this.config().title;
+    if (configured) return configured;
+    return { chose: 'groups.newGroupTitle', create: 'groups.createGroup', join: 'groups.joinAGroup' }[this.state];
   }
 
   protected changeGroupModalState(newState: GroupModalState): void {
