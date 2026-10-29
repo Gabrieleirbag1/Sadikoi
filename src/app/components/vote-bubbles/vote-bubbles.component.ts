@@ -115,7 +115,12 @@ export class VoteBubblesComponent {
     });
   }
 
+  /** Input of the last press: 'touch' on phones, 'mouse' on laptops (the click event alone doesn't say it everywhere). */
+  protected lastPointerType = 'mouse';
+
   protected onPointerMove(event: PointerEvent): void {
+    // While voting on a phone, a finger sliding over a bubble must not open its profile (see onClick).
+    if (this.isVoting() && event.pointerType === 'touch') return;
     this.setHovered(this.hit(event), event);
   }
 
@@ -159,14 +164,34 @@ export class VoteBubblesComponent {
   protected onClick(event: MouseEvent): void {
     const hit = this.hit(event);
     if (!hit) return;
-    const user = this.bubbles().find(b => b.votedUser.id === hit.id)?.votedUser;
-    if (user) {
-      clearTimeout(this.hideTimeout);
-      this.placeTooltip(event);
-      this.tooltipUserId.set(hit.id);
-      this.userProfileService.showNow(user, this.tooltipScope);
+    if (!this.isVoting()) {
+      this.showTooltipNow(hit.id, event);
+      return;
     }
-    if (this.isVoting()) this.select(hit.id);
+    // Voting with a mouse: the click only (un)selects, the profile opens on hover.
+    if (this.lastPointerType !== 'touch') {
+      this.select(hit.id);
+      return;
+    }
+    // Voting on a phone: 1st tap selects, a tap on the selected bubble opens its profile, the next one unselects it.
+    const selected = this.selectedIds().includes(hit.id);
+    const profileOpen = this.tooltipUserId() === hit.id && this.userProfileService.isOpenFor(this.tooltipUser(), this.tooltipScope);
+    if (selected && !profileOpen) {
+      this.showTooltipNow(hit.id, event);
+      return;
+    }
+    clearTimeout(this.hideTimeout);
+    this.hideTooltip();
+    this.select(hit.id);
+  }
+
+  private showTooltipNow(id: number, event: MouseEvent): void {
+    const user = this.bubbles().find(b => b.votedUser.id === id)?.votedUser;
+    if (!user) return;
+    clearTimeout(this.hideTimeout);
+    this.placeTooltip(event);
+    this.tooltipUserId.set(id);
+    this.userProfileService.showNow(user, this.tooltipScope);
   }
 
   protected select(id: number): void {

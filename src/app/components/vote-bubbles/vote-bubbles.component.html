@@ -4,6 +4,7 @@
       #canvas
       class="vote-bubbles-canvas"
       [class.clickable]="isVoting() && hoveredId() !== null"
+      (pointerdown)="lastPointerType = $event.pointerType"
       (pointermove)="onPointerMove($event)"
       (pointerleave)="onPointerLeave()"
       (click)="onClick($event)"
