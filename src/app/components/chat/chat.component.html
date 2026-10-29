@@ -18,17 +18,17 @@
           <span class="chat-avatar-spacer"></span>
         }
         <div class="message" [class.background-secondary]="isOwnMessage(message)">
-        <div class="message-header">
-          @if (isFirstOfRun) {
+        @if (isFirstOfRun) {
+          <div class="message-header">
             <strong class="message-author">{{ message.sender.username }}</strong>
-          }
-          <div class="message-infos">
-            <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
-            @if (!isOwnMessage(message)) {
-              <span class="message-report" (click)="reportMessage(message)">{{ 'chat.report' | translate }}</span>
-            }
+            <div class="message-infos">
+              <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
+              @if (!isOwnMessage(message)) {
+                <span class="message-report" (click)="reportMessage(message)">{{ 'chat.report' | translate }}</span>
+              }
+            </div>
           </div>
-        </div>
+        }
         @if (isGifMessage(message.content)) {
           <img [src]="message.content" alt="GIF" class="message-gif" (load)="autoScroll('instant')" />
         } @else {
