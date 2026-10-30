@@ -233,7 +233,8 @@
     "about": "À propos (missclick.net)",
     "credits": "Crédits",
     "gifsPoweredBy": "GIFs fournis par",
-    "deleteAccount": "Suppression du compte"
+    "deleteAccount": "Suppression du compte",
+    "childSafety": "Sécurité des enfants"
   },
   "legal": {
     "back": "Retour",
@@ -363,6 +364,39 @@
         {
           "heading": "Données supprimées",
           "body": "Votre compte, vos informations de profil, vos appareils et vos préférences sont supprimés. Les contenus que vous avez publiés dans des groupes sont supprimés ou anonymisés."
+        }
+      ]
+    },
+    "childSafety": {
+      "title": "Normes de sécurité des enfants",
+      "sections": [
+        {
+          "heading": "Tolérance zéro",
+          "body": "Sadikoi interdit strictement toute forme d'exploitation et d'abus sexuels sur mineurs (CSAE) : contenus pédopornographiques (CSAM), sollicitation ou « grooming » d'un mineur, sexualisation de mineurs, sextorsion et traite d'enfants. Cette règle s'applique à tous les contenus de l'application : messages du chat, GIF, photos de profil, noms d'utilisateur et réponses écrites."
+        },
+        {
+          "heading": "Qui peut utiliser Sadikoi",
+          "body": "Il faut avoir au moins 13 ans pour créer un compte. Les groupes sont privés : on ne peut les rejoindre que sur invitation d'un membre, et l'application ne propose ni recherche de profils ni messages privés entre inconnus."
+        },
+        {
+          "heading": "Signaler un contenu ou un utilisateur",
+          "body": "Dans l'application, ouvrez le profil d'un membre ou touchez un message du chat, puis choisissez « Signaler ». Vous pouvez aussi écrire à gabrielgarronedev@gmail.com en indiquant « Sécurité des enfants » en objet. Chaque signalement est examiné par notre équipe, en priorité lorsqu'il concerne un mineur."
+        },
+        {
+          "heading": "Ce que nous faisons",
+          "body": "Lorsqu'un contenu ou un comportement relevant de la CSAE nous est signalé ou détecté, nous supprimons le contenu, supprimons définitivement les comptes concernés et conservons les informations nécessaires aux enquêtes, dans le respect de la loi. Nous signalons les faits aux autorités compétentes, notamment à la plateforme PHAROS du ministère de l'Intérieur et au CyberTipline du NCMEC, et coopérons avec les forces de l'ordre."
+        },
+        {
+          "heading": "Respect de la loi",
+          "body": "Sadikoi respecte les lois applicables en matière de protection des enfants, notamment le droit français et le droit de l'Union européenne."
+        },
+        {
+          "heading": "Contact sécurité des enfants",
+          "body": "Pour toute question sur nos pratiques de sécurité des enfants ou pour un signalement, écrivez à gabrielgarronedev@gmail.com."
+        },
+        {
+          "heading": "En cas de danger immédiat",
+          "body": "Si un enfant est en danger immédiat, contactez d'abord les services d'urgence (17 ou 112 en France). Vous pouvez aussi appeler le 119 (Allô Enfance en Danger) ou signaler un contenu illicite sur internet-signalement.gouv.fr."
         }
       ]
     }

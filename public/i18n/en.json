@@ -233,7 +233,8 @@
     "about": "About (missclick.net)",
     "credits": "Credits",
     "gifsPoweredBy": "GIFs powered by",
-    "deleteAccount": "Account deletion"
+    "deleteAccount": "Account deletion",
+    "childSafety": "Child safety"
   },
   "legal": {
     "back": "Back",
@@ -363,6 +364,39 @@
         {
           "heading": "Data deleted",
           "body": "Your account, profile information, devices and preferences are deleted. Content you posted in groups is deleted or anonymized."
+        }
+      ]
+    },
+    "childSafety": {
+      "title": "Child safety standards",
+      "sections": [
+        {
+          "heading": "Zero tolerance",
+          "body": "Sadikoi strictly prohibits any form of child sexual abuse and exploitation (CSAE): child sexual abuse material (CSAM), soliciting or grooming a minor, sexualizing minors, sextortion and child trafficking. This rule applies to all content in the app: chat messages, GIFs, profile pictures, usernames and written answers."
+        },
+        {
+          "heading": "Who can use Sadikoi",
+          "body": "You must be at least 13 years old to create an account. Groups are private: they can only be joined through an invitation from a member, and the app offers no profile search and no private messages between strangers."
+        },
+        {
+          "heading": "Reporting content or a user",
+          "body": "In the app, open a member's profile or tap a chat message, then choose \"Report\". You can also email gabrielgarronedev@gmail.com with \"Child safety\" as the subject. Every report is reviewed by our team, with priority given to reports involving a minor."
+        },
+        {
+          "heading": "What we do",
+          "body": "When CSAE content or behavior is reported to us or detected, we remove the content, permanently delete the accounts involved and keep the information needed for investigations, as required by law. We report it to the competent authorities, including the French PHAROS platform and the NCMEC CyberTipline, and cooperate with law enforcement."
+        },
+        {
+          "heading": "Legal compliance",
+          "body": "Sadikoi complies with applicable child safety laws, including French and European Union law."
+        },
+        {
+          "heading": "Child safety contact",
+          "body": "For any question about our child safety practices, or to make a report, email gabrielgarronedev@gmail.com."
+        },
+        {
+          "heading": "If a child is in immediate danger",
+          "body": "If a child is in immediate danger, contact your local emergency services first (112 in Europe). In France, you can also call 119 (Allô Enfance en Danger) or report illegal content at internet-signalement.gouv.fr."
         }
       ]
     }
