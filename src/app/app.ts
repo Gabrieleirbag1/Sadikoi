@@ -11,10 +11,11 @@ import { DeepLinkService } from "./services/deep-link/deep-link.service";
 import { PushService } from "./services/push/push.service";
 import { ConnectivityService } from "./services/connectivity/connectivity.service";
 import { ConnectionErrorComponent } from "./components/connection-error/connection-error.component";
+import { OpenInAppBannerComponent } from "./components/open-in-app-banner/open-in-app-banner.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, ErrorModalComponent, SettingsComponent, ReportUserModalComponent, LoadingComponent, ConnectionErrorComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ErrorModalComponent, SettingsComponent, ReportUserModalComponent, LoadingComponent, ConnectionErrorComponent, OpenInAppBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

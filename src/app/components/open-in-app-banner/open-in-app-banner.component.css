@@ -1,0 +1,46 @@
+/* Floating card at the bottom of the screen, above the home menu bar. */
+.open-in-app {
+  position: fixed;
+  left: calc(12px + var(--safe-left));
+  right: calc(12px + var(--safe-right));
+  bottom: calc(68px + var(--safe-bottom));
+  z-index: 940;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 12px;
+  background-color: #fffcf8;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.open-in-app img {
+  flex: none;
+  border-radius: 8px;
+}
+
+.open-in-app-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.open-in-app-open {
+  flex: none;
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.open-in-app-close {
+  flex: none;
+  margin: 0;
+  padding: 0 6px;
+  border: none;
+  background: none;
+  box-shadow: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--primary, #41403e);
+}

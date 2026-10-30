@@ -156,6 +156,10 @@
     "question": "Question:",
     "submitSuggestion": "Submit Suggestion"
   },
+  "openInApp": {
+    "text": "Sadikoi is better in the app",
+    "open": "Open the app"
+  },
   "modal": {
     "save": "Confirm",
     "close": "Close",

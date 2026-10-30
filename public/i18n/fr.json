@@ -156,6 +156,10 @@
     "question": "Question :",
     "submitSuggestion": "Soumettre la suggestion"
   },
+  "openInApp": {
+    "text": "Sadikoi, c’est mieux dans l’appli",
+    "open": "Ouvrir l’appli"
+  },
   "modal": {
     "save": "Confirmer",
     "close": "Fermer",
