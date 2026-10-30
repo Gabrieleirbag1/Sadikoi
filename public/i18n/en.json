@@ -3,6 +3,17 @@
   "loading": {
     "label": "Loading..."
   },
+  "connection": {
+    "offlineTitle": "No internet connection",
+    "offlineText": "Your phone is offline. Turn on Wi-Fi or mobile data.",
+    "poorTitle": "Poor connection",
+    "poorText": "The network is too weak to reach Sadikoi right now.",
+    "serverTitle": "Server unavailable",
+    "serverText": "Sadikoi can't be reached at the moment. It's not your connection.",
+    "autoRetry": "We'll keep retrying for you.",
+    "retry": "Retry",
+    "checking": "Checking…"
+  },
   "auth": {
     "authenticated": "You are logged in!",
     "forgetDevice": "Forget this device on logout",
