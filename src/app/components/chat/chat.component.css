@@ -105,7 +105,10 @@
 .message-gif {
     display: block;
     max-width: 100%;
+    /* Reserves space before the GIF loads, so the thread jumps less. */
+    min-height: 100px;
     max-height: 200px;
+    object-fit: contain;
     margin: 5px;
     border-radius: 8px;
 }
