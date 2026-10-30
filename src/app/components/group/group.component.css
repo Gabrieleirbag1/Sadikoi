@@ -44,18 +44,22 @@
         flex-direction: column;
     }
 
-    /* Title on the left (it would touch the buttons if centered), buttons on the right. */
+    /* Title centered on the whole header: an empty column as wide as the buttons on its left keeps it
+       centered, and a long name is cut ("…") before reaching the buttons.
+       --header-actions-width = 3 icons of 24px + 2 gaps of 10px: update it with the buttons. */
     .group-header {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 12px;
+        --header-actions-width: 92px;
+        grid-template-columns: var(--header-actions-width) minmax(0, 1fr) var(--header-actions-width);
+        gap: 8px;
     }
 
     .group-header-title {
-        grid-column: 1;
+        grid-column: 2;
+        justify-content: center;
         max-width: none;
     }
 
     .group-header-actions {
-        grid-column: 2;
+        grid-column: 3;
     }
 }
