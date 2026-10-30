@@ -1,7 +1,7 @@
 <section class="main-container">
   <div class="question-container">
     <div class="question-content">
-      <span>{{ question()?.content }}</span>
+      <span class="question-text" [appFitText]="question()?.content">{{ question()?.content }}</span>
       @if (!question()?.canWrite) {
         <app-item-image-display class="question-item" [itemName]="question()?.item_name" [imgClass]="'group-question-item'"></app-item-image-display>
       }

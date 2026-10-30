@@ -44,7 +44,18 @@
         flex-direction: column;
     }
 
+    /* Title on the left (it would touch the buttons if centered), buttons on the right. */
+    .group-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+
     .group-header-title {
-        max-width: 55vw;
+        grid-column: 1;
+        max-width: none;
+    }
+
+    .group-header-actions {
+        grid-column: 2;
     }
 }

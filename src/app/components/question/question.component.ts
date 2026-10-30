@@ -11,13 +11,14 @@ import { CalendarComponent } from '../tooltips/calendar/calendar.component';
 import { VoteBubbleData, VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
 import { ItemAnnouncementModalComponent } from '../modals/item-announcement-modal/item-announcement-modal.component';
+import { FitTextDirective } from '../../directives/fit-text.directive';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent, FitTextDirective],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
