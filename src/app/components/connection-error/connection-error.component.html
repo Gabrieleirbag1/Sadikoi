@@ -1,0 +1,31 @@
+<section class="connection-error border" role="alert" aria-live="assertive">
+  <svg class="connection-error-icon" viewBox="0 0 64 64" aria-hidden="true">
+    @switch (kind()) {
+      @case ('server') {
+        <rect x="12" y="10" width="40" height="16" rx="4" />
+        <rect x="12" y="30" width="40" height="16" rx="4" />
+        <circle cx="20" cy="18" r="1.5" class="filled" />
+        <circle cx="20" cy="38" r="1.5" class="filled" />
+        <path d="M40 50 52 62 M52 50 40 62" class="danger" />
+      }
+      @default {
+        <!-- Wi-Fi waves: the weak signal keeps only the small one, offline crosses them out. -->
+        <path d="M8 26a34 34 0 0 1 48 0" [class.faded]="kind() === 'poor'" />
+        <path d="M16 34a23 23 0 0 1 32 0" [class.faded]="kind() === 'poor'" />
+        <path d="M24 42a12 12 0 0 1 16 0" />
+        <circle cx="32" cy="50" r="3" class="filled" />
+        @if (kind() === 'offline') {
+          <path d="M10 10 54 54" class="danger" />
+        }
+      }
+    }
+  </svg>
+
+  <h1 class="connection-error-title">{{ 'connection.' + kind() + 'Title' | translate }}</h1>
+  <p>{{ 'connection.' + kind() + 'Text' | translate }}</p>
+  <p class="connection-error-note">{{ 'connection.autoRetry' | translate }}</p>
+
+  <button type="button" class="btn-secondary" [disabled]="connectivity.checking()" (click)="retry()">
+    {{ (connectivity.checking() ? 'connection.checking' : 'connection.retry') | translate }}
+  </button>
+</section>
