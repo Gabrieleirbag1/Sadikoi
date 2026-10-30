@@ -12,10 +12,10 @@ const dir = process.argv[2] ?? 'dist/Sadikoi/browser';
 const FRENCH = [
   ['<html lang="en"', '<html lang="fr"'], // the build adds attributes after lang
   [
-    'A game for groups of friends: every day a new question, everyone votes for a friend, and the winner gets an item… until someone takes it from them.',
-    'Le jeu entre amis : chaque jour une nouvelle question, chacun vote pour un ami, et le gagnant remporte un objet… jusqu’à ce qu’on le lui prenne.',
+    'Every day, your group gets a new question. Everyone votes for the friend who fits it best, and the winner gets an item they keep until someone steals it.',
+    'Chaque jour, une nouvelle question tombe dans ton groupe. Tout le monde vote pour le pote qui correspond le mieux, et le gagnant récupère un objet qu’il garde jusqu’à ce qu’on le lui pique.',
   ],
-  ['Sadikoi – the daily question game for friends', 'Sadikoi – le jeu de la question du jour entre amis'],
+  ['Sadikoi: the daily question for you and your friends', 'Sadikoi : la question du jour entre potes'],
   ['<meta property="og:locale" content="en_US">', '<meta property="og:locale" content="fr_FR">'],
   ['<meta property="og:locale:alternate" content="fr_FR">', '<meta property="og:locale:alternate" content="en_US">'],
   ['Sadikoi logo: a speech bubble with an S', 'Logo de Sadikoi : une bulle de dialogue avec un S'],
