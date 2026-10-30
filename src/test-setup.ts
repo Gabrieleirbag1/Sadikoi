@@ -23,3 +23,10 @@ if (!window.matchMedia) {
     },
   },
 };
+
+// jsdom has no ResizeObserver: elements never resize there anyway.
+(globalThis as any).ResizeObserver ??= class {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+};

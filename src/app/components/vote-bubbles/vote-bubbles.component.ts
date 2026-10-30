@@ -21,6 +21,10 @@ const TOOLTIP_HEIGHT = 180;
 const DEFAULT_PICTURE = '/default-profile.svg';
 /** Angle (rad) de la ligne de séparation : la photo occupe le haut-gauche, le pseudo le bas-droite. */
 const SPLIT_ANGLE = -Math.PI / 6;
+/** Voting on a phone: holding a ball this long (ms) opens its profile; a tap only (un)selects. */
+const LONG_PRESS_MS = 500;
+/** A finger moving further than this (px) is scrolling or sliding, not holding. */
+const LONG_PRESS_SLOP = 10;
 /** Smaller balls (voters on a phone) show only the picture: a name that small can't be read. */
 const NAME_MIN_RADIUS = 16;
 /** Agar.io-like decor colours (food pellets). Purely cosmetic: nothing eats them. */
@@ -119,20 +123,57 @@ export class VoteBubblesComponent {
     this.destroyRef.onDestroy(() => {
       cancelAnimationFrame(this.frame);
       clearTimeout(this.hideTimeout);
+      this.cancelLongPress();
     });
   }
 
   /** Input of the last press: 'touch' on phones, 'mouse' on laptops (the click event alone doesn't say it everywhere). */
   protected lastPointerType = 'mouse';
+  /** Finger held on a ball while voting: opens its profile after LONG_PRESS_MS. */
+  private longPress: { timer: ReturnType<typeof setTimeout>; x: number; y: number } | null = null;
+  /** The press that just ended opened a profile: its click must not also (un)select the ball. */
+  private longPressed = false;
+
+  protected onPointerDown(event: PointerEvent): void {
+    this.lastPointerType = event.pointerType;
+    this.cancelLongPress();
+    this.longPressed = false;
+    if (!this.isVoting() || event.pointerType !== 'touch') return;
+    const hit = this.hit(event);
+    if (!hit) return;
+    const { clientX, clientY } = event;
+    this.longPress = {
+      x: clientX,
+      y: clientY,
+      timer: setTimeout(() => {
+        this.longPress = null;
+        this.longPressed = true;
+        navigator.vibrate?.(15);
+        this.showTooltipNow(hit.id, { clientX, clientY });
+      }, LONG_PRESS_MS),
+    };
+  }
+
+  /** Lifting or losing the finger before the delay: it was a tap (or a scroll), no profile. */
+  protected cancelLongPress(): void {
+    if (this.longPress) clearTimeout(this.longPress.timer);
+    this.longPress = null;
+  }
 
   protected onPointerMove(event: PointerEvent): void {
-    // While voting on a phone, a finger sliding over a bubble must not open its profile (see onClick).
+    if (this.longPress && Math.hypot(event.clientX - this.longPress.x, event.clientY - this.longPress.y) > LONG_PRESS_SLOP) {
+      this.cancelLongPress();
+    }
+    // While voting on a phone, a finger sliding over a bubble must not open its profile (long press only, see onPointerDown).
     if (this.isVoting() && event.pointerType === 'touch') return;
     this.setHovered(this.hit(event), event);
   }
 
-  protected onPointerLeave(): void {
+  protected onPointerLeave(event: PointerEvent): void {
+    this.cancelLongPress();
     this.hoveredId.set(null);
+    // A finger lifted after a long press also "leaves": the profile it opened stays until the next tap.
+    if (event.pointerType === 'touch' && this.longPressed) return;
     this.scheduleHide();
   }
 
@@ -169,30 +210,28 @@ export class VoteBubblesComponent {
   }
 
   protected onClick(event: MouseEvent): void {
+    // The long press already opened the profile: lifting the finger doesn't select.
+    if (this.longPressed) {
+      this.longPressed = false;
+      return;
+    }
     const hit = this.hit(event);
-    if (!hit) return;
     if (!this.isVoting()) {
-      this.showTooltipNow(hit.id, event);
+      if (hit) this.showTooltipNow(hit.id, event);
       return;
     }
     // Voting with a mouse: the click only (un)selects, the profile opens on hover.
     if (this.lastPointerType !== 'touch') {
-      this.select(hit.id);
+      if (hit) this.select(hit.id);
       return;
     }
-    // Voting on a phone: 1st tap selects, a tap on the selected bubble opens its profile, the next one unselects it.
-    const selected = this.selectedIds().includes(hit.id);
-    const profileOpen = this.tooltipUserId() === hit.id && this.userProfileService.isOpenFor(this.tooltipUser(), this.tooltipScope);
-    if (selected && !profileOpen) {
-      this.showTooltipNow(hit.id, event);
-      return;
-    }
+    // Voting on a phone: a tap (un)selects and closes an open profile; a long press opens it.
     clearTimeout(this.hideTimeout);
     this.hideTooltip();
-    this.select(hit.id);
+    if (hit) this.select(hit.id);
   }
 
-  private showTooltipNow(id: number, event: MouseEvent): void {
+  private showTooltipNow(id: number, event: Pick<MouseEvent, 'clientX' | 'clientY'>): void {
     const user = this.bubbles().find(b => b.votedUser.id === id)?.votedUser;
     if (!user) return;
     clearTimeout(this.hideTimeout);
@@ -218,7 +257,7 @@ export class VoteBubblesComponent {
   }
 
   /** The tooltip keeps its natural size: near the right/bottom edge it flips to the other side of the pointer. */
-  private placeTooltip(event: MouseEvent): void {
+  private placeTooltip(event: Pick<MouseEvent, 'clientX' | 'clientY'>): void {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left, y = event.clientY - rect.top;
     this.tooltipPos.set({
@@ -228,7 +267,7 @@ export class VoteBubblesComponent {
     });
   }
 
-  private hit(event: MouseEvent): CandidateState | null {
+  private hit(event: Pick<MouseEvent, 'clientX' | 'clientY'>): CandidateState | null {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     return this.engine.hitTest(event.clientX - rect.left, event.clientY - rect.top);
   }
