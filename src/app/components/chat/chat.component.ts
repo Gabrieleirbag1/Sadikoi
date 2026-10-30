@@ -10,6 +10,9 @@ import { ProfileImagePickerComponent } from '../profile-image-picker/profile-ima
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ReportUserService } from '../../services/report-user/report-user.service';
 
+/** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
+const TYPING_CLASS = 'chat-typing';
+
 @Component({
   selector: 'app-chat',
   imports: [CommonModule, GifPickerComponent, ProfileImagePickerComponent, TranslatePipe],
@@ -28,6 +31,10 @@ export class ChatComponent {
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
+  /** Focus is in the input area (message input or GIF search). */
+  protected readonly inputFocused = signal(false);
+  /** Writing a message or picking a GIF: the chat gets the whole screen on phones. */
+  private readonly typing = computed(() => !this.readOnly() && (this.inputFocused() || this.showGifPicker()));
 
   /** Follow new content at the bottom. Only the user scrolling up turns it off: smooth scrolls and
    *  late-loading GIFs move the position without that being a choice to leave the bottom. */
@@ -46,6 +53,9 @@ export class ChatComponent {
   private readonly questionId = computed(() => this.question()?.id);
 
   constructor() {
+    effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
+    this.destroyRef.onDestroy(() => document.documentElement.classList.remove(TYPING_CLASS));
+
     effect(() => {
       const g = this.group();
       const questionId = this.questionId();
@@ -109,6 +119,12 @@ export class ChatComponent {
       el => el instanceof Element && (el.tagName === 'APP-GIF-PICKER' || el.classList.contains('gif-btn')),
     );
     if (!inside) this.showGifPicker.set(false);
+  }
+
+  protected onInputAreaFocusOut(event: FocusEvent): void {
+    // Focus moving inside the area (input -> GIF search) is still typing.
+    const area = event.currentTarget as HTMLElement;
+    if (!area.contains(event.relatedTarget as Node | null)) this.inputFocused.set(false);
   }
 
   protected toggleGifPicker(): void {

@@ -42,12 +42,14 @@
   </div>
 
   @if (!readOnly()) {
-  <div class="chat-input-area">
+  <!-- Buttons keep the focus in the input (mousedown): blurring it would bring the bubbles back and move
+       the button away before the click lands. -->
+  <div class="chat-input-area" (focusin)="inputFocused.set(true)" (focusout)="onInputAreaFocusOut($event)">
     @if (showGifPicker()) {
       <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
     }
 
-    <button type="button" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
       {{ 'chat.gif' | translate }}
     </button>
     <input
@@ -56,7 +58,7 @@
       (keydown.enter)="sendMessage(messageContent.value, messageContent)"
       #messageContent
     />
-    <button type="button" class="background-secondary" (click)="sendMessage(messageContent.value, messageContent)">
+    <button type="button" class="background-secondary" (mousedown)="$event.preventDefault()" (click)="sendMessage(messageContent.value, messageContent)">
       >
     </button>
   </div>
