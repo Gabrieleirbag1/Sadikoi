@@ -1,7 +1,13 @@
 <div class="app-screen">
     <app-header></app-header>
     <main class="main-content">
-        <router-outlet></router-outlet>
+        <!-- No stale or empty page while the API can't be reached: the outlet comes back (and the page
+             reloads its data) once the connection works again. -->
+        @if (connectivity.status() === 'ok') {
+            <router-outlet></router-outlet>
+        } @else {
+            <app-connection-error></app-connection-error>
+        }
     </main>
 </div>
 <app-footer></app-footer>
