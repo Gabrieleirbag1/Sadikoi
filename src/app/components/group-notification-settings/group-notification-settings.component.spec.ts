@@ -34,9 +34,24 @@ describe('GroupNotificationSettingsComponent', () => {
     expect(api.saveGroupSettings).not.toHaveBeenCalled();
     expect(saveButton().disabled).toBe(false);
 
+    const saved = vi.fn();
+    fixture.componentInstance.saved.subscribe(saved);
     saveButton().click();
     await fixture.whenStable();
+    expect(saved).toHaveBeenCalledOnce(); // the modal closes
     expect(api.saveGroupSettings).toHaveBeenCalledExactlyOnceWith(7, { messages: false, questions: false, vote_reminder: false, answers: true });
     expect(saveButton().disabled).toBe(true); // saved: nothing left to save
+  });
+
+  it('does not report a failed save as saved', async () => {
+    api.saveGroupSettings.mockResolvedValue(null);
+    const saved = vi.fn();
+    fixture.componentInstance.saved.subscribe(saved);
+    checkboxes()[0].click();
+    await fixture.whenStable();
+    saveButton().click();
+    await fixture.whenStable();
+    expect(saved).not.toHaveBeenCalled();
+    expect(saveButton().disabled).toBe(false); // the draft is kept, ready to retry
   });
 });

@@ -109,11 +109,17 @@
   justify-content: space-between;
 }
 
+.question-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  grid-column: 3;
+  justify-self: end;
+}
+
 .calendar-anchor {
   position: relative;
   display: inline-flex;
-  grid-column: 3;
-  justify-self: end;
 }
 
 .calendar-popover {
@@ -176,7 +182,7 @@ app-vote-bubbles.vote-bubbles-voting {
     font-size: 1.4rem;
   }
 
-  /* Item and calendar side by side on the right, centered on the same line. */
+  /* Item, calendar and bell side by side on the right, centered on the same line. */
   .question-content app-item-image-display.question-item {
     display: none;
   }
@@ -186,12 +192,12 @@ app-vote-bubbles.vote-bubbles-voting {
     grid-column: 2;
   }
 
-  .calendar-anchor {
+  .question-actions {
     grid-column: 3;
   }
 
-  /* No inline line box under the image: both icons are exactly 36 px tall. */
-  .calendar-anchor .icon-button {
+  /* No inline line box under the images: every icon is exactly 36 px tall. */
+  .question-actions .icon-button {
     display: flex;
   }
 

@@ -72,14 +72,15 @@
     "questions": "La nouvelle question du jour",
     "voteReminder": "1 h avant la fin, si je n'ai pas voté",
     "answers": "Quand quelqu'un répond à la question du jour",
-    "perGroupHint": "Tu peux aussi choisir pour chaque groupe, dans ses options.",
+    "perGroupHint": "Tu peux aussi choisir pour chaque groupe, avec la cloche à côté de son calendrier.",
     "groupTitle": "Notifications de ce groupe",
     "disabledGlobally": "désactivé dans les réglages globaux",
     "appOnly": "Les notifications arrivent sur l'appli mobile. Tes choix ici s'appliquent à ton compte.",
     "permissionDenied": "Les notifications sont bloquées : autorise-les dans les réglages du téléphone (Applis › Sadikoi › Notifications).",
     "save": "Enregistrer",
     "saved": "Réglages de notifications enregistrés",
-    "saveFailed": "Impossible d'enregistrer tes réglages."
+    "saveFailed": "Impossible d'enregistrer tes réglages.",
+    "loading": "Chargement…"
   },
   "groups": {
     "groupName": "Nom du groupe",

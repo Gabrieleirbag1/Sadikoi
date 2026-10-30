@@ -1,5 +1,4 @@
-<fieldset class="form-group group-notifications">
-  <legend>{{ 'notificationSettings.groupTitle' | translate }}</legend>
+<div class="group-notifications">
   @if (!push.available) {
     <p class="group-notifications-note">{{ 'notificationSettings.appOnly' | translate }}</p>
   }
@@ -25,5 +24,7 @@
     </button>
   } @else if (loadFailed()) {
     <p class="group-notifications-note">{{ 'notification.genericError' | translate }}</p>
+  } @else {
+    <p class="group-notifications-note">{{ 'notificationSettings.loading' | translate }}</p>
   }
-</fieldset>
+</div>

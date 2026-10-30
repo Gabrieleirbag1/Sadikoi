@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { NotificationSettingsService } from '../../services/notification-settings/notification-settings.service';
 import { NotificationService } from '../../services/notification/notification.service';
@@ -21,17 +21,19 @@ export class GroupNotificationSettingsComponent {
   protected readonly push = inject(PushService);
 
   public readonly groupId = input.required<number>();
+  /** Emitted after a successful save (the modal closes). */
+  public readonly saved = output<void>();
 
   /** What the user is editing; sent in one request by the save button. */
   protected readonly state = signal<GroupNotificationSettings | null>(null);
   /** What the server has (to know whether anything changed). */
-  private readonly saved = signal<GroupNotificationSettings | null>(null);
+  private readonly serverState = signal<GroupNotificationSettings | null>(null);
   protected readonly loadFailed = signal(false);
   protected readonly saving = signal(false);
   protected readonly dirty = computed(() => {
     const draft = this.state();
-    const saved = this.saved();
-    return !!draft && !!saved && JSON.stringify(draft.group) !== JSON.stringify(saved.group);
+    const server = this.serverState();
+    return !!draft && !!server && JSON.stringify(draft.group) !== JSON.stringify(server.group);
   });
   protected readonly options: { name: Setting; label: string }[] = [
     { name: 'messages', label: 'notificationSettings.messages' },
@@ -48,13 +50,13 @@ export class GroupNotificationSettingsComponent {
 
   private async load(groupId: number): Promise<void> {
     this.state.set(null);
-    this.saved.set(null);
+    this.serverState.set(null);
     this.loadFailed.set(false);
     const settings = await this.api.getGroupSettings(groupId);
     // Ignore a late answer if another group was opened meanwhile.
     if (groupId !== this.groupId()) return;
     this.state.set(settings);
-    this.saved.set(settings);
+    this.serverState.set(settings);
     this.loadFailed.set(!settings);
   }
 
@@ -75,8 +77,9 @@ export class GroupNotificationSettingsComponent {
     if (groupId !== this.groupId()) return;
     if (result) {
       this.state.set(result);
-      this.saved.set(result);
+      this.serverState.set(result);
       this.toasts.showSuccess(this.translate.instant('notificationSettings.saved'));
+      this.saved.emit();
     } else {
       // The draft is kept so the user can retry.
       this.toasts.showError(this.translate.instant('notificationSettings.saveFailed'));

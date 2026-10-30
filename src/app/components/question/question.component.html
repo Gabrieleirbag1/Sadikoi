@@ -10,15 +10,28 @@
     @if (!question()?.canWrite) {
       <app-item-image-display class="question-item-mobile" [itemName]="question()?.item_name" [imgClass]="'group-question-item-mobile'"></app-item-image-display>
     }
-    <div class="calendar-anchor" #calendarAnchor>
-      <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()" title="{{ 'group.calendar' | translate }}">
-        <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />
+    <!-- Calendar, then this group's notification settings on its right. -->
+    <div class="question-actions">
+      <div class="calendar-anchor" #calendarAnchor>
+        <span class="icon-button" role="button" tabindex="0" (click)="showCalendar()" title="{{ 'group.calendar' | translate }}">
+          <img src="images/icons/calendar.svg" width="36" height="36" alt="List View" />
+        </span>
+        @if (showCalendarFlag()) {
+          <div class="calendar-popover" role="tooltip">
+            <app-calendar [group]="group()" [(question)]="question" (showCurrent)="showCurrentQuestion()"></app-calendar>
+          </div>
+        }
+      </div>
+      <span
+        class="icon-button notifications-button"
+        role="button"
+        tabindex="0"
+        (click)="showNotifications.set(true)"
+        (keydown.enter)="showNotifications.set(true)"
+        title="{{ 'notificationSettings.groupTitle' | translate }}"
+      >
+        <img src="images/icons/bell.svg" width="36" height="36" [alt]="'notificationSettings.groupTitle' | translate" />
       </span>
-      @if (showCalendarFlag()) {
-        <div class="calendar-popover" role="tooltip">
-          <app-calendar [group]="group()" [(question)]="question" (showCurrent)="showCurrentQuestion()"></app-calendar>
-        </div>
-      }
     </div>
   </div>
   @if (question()?.votes?.length) {
@@ -72,4 +85,7 @@
 </section>
 @if (announcementToShow(); as announcement) {
   <app-item-announcement-modal [announcement]="announcement" (closed)="closeAnnouncement()"></app-item-announcement-modal>
+}
+@if (showNotifications() && group(); as g) {
+  <app-group-notifications-modal [groupId]="g.id" (closed)="showNotifications.set(false)" />
 }
