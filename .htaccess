@@ -1,10 +1,23 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  # Skip rewriting for existing files and directories
+  # Serve existing files and directories as they are ("/" and index.html go to the app below)
+  RewriteCond %{REQUEST_URI} !^/(index\.html)?$
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
-  # Redirect all other requests to index.html
-  RewriteRule . /index.html [L]
+  # Every other request is the app. Same app in both files, only the link preview text differs
+  # (Discord, WhatsApp... read the <meta> tags without running the app):
+  # French for ?lang=fr links and French browsers, English otherwise.
+  RewriteCond %{QUERY_STRING} (^|&)lang=fr(&|$) [OR]
+  RewriteCond %{HTTP:Accept-Language} ^fr [NC]
+  RewriteRule ^ /index.fr.html [END]
+  RewriteRule ^ /index.html [END]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # The page depends on the browser language: caches must keep one copy per language.
+  <FilesMatch "^index(\.fr)?\.html$">
+    Header append Vary Accept-Language
+  </FilesMatch>
 </IfModule>

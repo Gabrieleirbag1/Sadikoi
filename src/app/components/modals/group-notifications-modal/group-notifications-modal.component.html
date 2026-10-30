@@ -1,0 +1,9 @@
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="group-notifications-title" (click)="close()">
+  <div class="modal-dialog border" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h1 id="group-notifications-title" class="modal-title">{{ 'notificationSettings.groupTitle' | translate }}</h1>
+      <span class="modal-close" role="button" tabindex="0" [attr.aria-label]="'modal.close' | translate" (click)="close()" (keydown.enter)="close()">X</span>
+    </div>
+    <app-group-notification-settings [groupId]="groupId()" (saved)="close()" />
+  </div>
+</div>

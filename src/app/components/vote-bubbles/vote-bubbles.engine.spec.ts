@@ -7,12 +7,18 @@ const candidate = (id: number, voters: number): BubbleCandidate => ({
 });
 
 describe('BubbleEngine', () => {
-  it('keeps candidates (and their orbit) inside the box and never merges them', () => {
+  it('keeps candidates and their voters inside the box and never merges them', () => {
     const engine = new BubbleEngine();
     engine.resize(600, 400);
     engine.sync([candidate(1, 3), candidate(2, 0), candidate(3, 5)]);
     for (let i = 0; i < 2000; i++) {
       engine.step(1 / 60);
+      for (const v of engine.voterPositions()) {
+        expect(v.x - v.r).toBeGreaterThanOrEqual(-0.5);
+        expect(v.y - v.r).toBeGreaterThanOrEqual(-0.5);
+        expect(v.x + v.r).toBeLessThanOrEqual(600.5);
+        expect(v.y + v.r).toBeLessThanOrEqual(400.5);
+      }
       for (const c of engine.candidates) {
         expect(c.x - c.r).toBeGreaterThanOrEqual(-0.5);
         expect(c.y - c.r).toBeGreaterThanOrEqual(-0.5);
@@ -21,6 +27,52 @@ describe('BubbleEngine', () => {
       }
     }
     expect(engine.candidates.length).toBe(3);
+  });
+
+  it("keeps each candidate's voters clear of the other candidates", () => {
+    const engine = new BubbleEngine();
+    engine.resize(360, 240); // phone
+    engine.sync([candidate(1, 2), candidate(2, 1), candidate(3, 3), candidate(4, 1)]);
+    for (let i = 0; i < 600; i++) engine.step(1 / 60);
+    let worst = 0;
+    for (let i = 0; i < 600; i++) {
+      engine.step(1 / 60);
+      for (const v of engine.voterPositions()) {
+        for (const c of engine.candidates) {
+          if (c === v.owner) continue;
+          worst = Math.max(worst, c.r + v.r - Math.hypot(v.x - c.x, v.y - c.y));
+        }
+      }
+    }
+    expect(worst).toBeLessThan(4); // a few px of contact while two rings push apart, never covered
+  });
+
+  it('scales the balls to the box: smaller on a phone, never unreadably small voters', () => {
+    const balls = [candidate(1, 2), candidate(2, 1), candidate(3, 1), candidate(4, 0)];
+    const desktop = new BubbleEngine();
+    desktop.resize(730, 540);
+    desktop.sync(balls);
+    const phone = new BubbleEngine();
+    phone.resize(360, 240);
+    phone.sync(balls);
+
+    expect(phone.scale).toBeLessThan(desktop.scale);
+    expect(phone.candidates[0].targetR).toBeLessThan(desktop.candidates[0].targetR);
+    expect(phone.voterRadius).toBeGreaterThanOrEqual(11);
+  });
+
+  it('shrinks the balls when there are more of them, and grows a few in a big box', () => {
+    const engine = new BubbleEngine();
+    engine.resize(360, 400);
+    engine.sync([candidate(1, 0), candidate(2, 0)]);
+    const few = engine.scale;
+    engine.sync(Array.from({ length: 10 }, (_, i) => candidate(i + 1, 0)));
+    expect(engine.scale).toBeLessThan(few);
+
+    const big = new BubbleEngine();
+    big.resize(1200, 700);
+    big.sync([candidate(1, 1), candidate(2, 0)]);
+    expect(big.scale).toBeGreaterThan(1);
   });
 
   it('grows with votes', () => {

@@ -29,7 +29,10 @@ export class ChatComponent {
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
 
-  private isAtBottom = true;
+  /** Follow new content at the bottom. Only the user scrolling up turns it off: smooth scrolls and
+   *  late-loading GIFs move the position without that being a choice to leave the bottom. */
+  private stickToBottom = true;
+  private lastScrollTop = 0;
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
 
   private readonly connectedUser: User = JSON.parse(localStorage.getItem('user') || '{}');
@@ -76,7 +79,10 @@ export class ChatComponent {
       const response = await this.chatService.getMessages(groupId, questionId);
       // ignore a stale response if another day was selected meanwhile
       if (questionId !== this.questionId()) return;
+      // Opening a thread starts at the bottom, without animation.
+      this.stickToBottom = true;
       this.messages.set(response);
+      afterNextRender(() => this.scrollToBottom('instant'), { injector: this.injector });
     } catch (error) {
       this.logger.error('Error loading messages:', error);
     }
@@ -118,12 +124,19 @@ export class ChatComponent {
 
   protected onMessagesScroll(): void {
     const el = this.messagesContainer()?.nativeElement;
-    if (el) this.isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+    if (!el) return;
+    if (el.scrollTop < this.lastScrollTop - 2) {
+      this.stickToBottom = false;
+    }
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 40) {
+      this.stickToBottom = true;
+    }
+    this.lastScrollTop = el.scrollTop;
   }
 
-  // Only follow new content if the user is already at the bottom.
+  // Only follow new content if the user hasn't scrolled up.
   protected autoScroll(behavior: ScrollBehavior = 'smooth'): void {
-    if (this.isAtBottom) this.scrollToBottom(behavior);
+    if (this.stickToBottom) this.scrollToBottom(behavior);
   }
 
   protected scrollToBottom(behavior: ScrollBehavior = 'smooth'): void {

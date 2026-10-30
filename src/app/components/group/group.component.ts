@@ -4,6 +4,7 @@ import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupOptionsComponent } from "../modals/group-options-modal/group-options-modal.component";
+import { GroupNotificationsModalComponent } from '../modals/group-notifications-modal/group-notifications-modal.component';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -18,7 +19,7 @@ import { Share } from '@capacitor/share';
 
 @Component({
   selector: 'app-group',
-  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe, HomeFooterComponent],
+  imports: [QuestionComponent, GroupOptionsComponent, GroupNotificationsModalComponent, TranslatePipe, HomeFooterComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
@@ -33,6 +34,8 @@ export class GroupComponent implements OnInit, OnDestroy {
   private readonly translate = inject(TranslateService);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
+  /** The bell button's modal (this group's notification settings). */
+  protected readonly showNotifications = signal(false);
   public readonly question = model<Question | null>(null);
 
   async ngOnInit(): Promise<void> {
@@ -102,13 +105,13 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
 
     // Not awaited before copying: the copy must start during the click (required by Safari).
-    const invitationUrl = this.groupsService.getGroupInvitation(group.id).then(invitation => {
+    const link = this.groupsService.getGroupInvitation(group.id).then(invitation => {
       if (!invitation) throw new Error('No invitation to copy');
-      return `${environment.siteUrl}/group/invitations/${invitation}`;
+      return this.invitationUrl(invitation);
     });
 
     try {
-      await copyToClipboard(invitationUrl);
+      await copyToClipboard(link);
       this.logger.info('Invitation copied to clipboard');
       this.notificationService.showSuccess(this.translate.instant('notification.invitationCopied'));
     } catch (error) {
@@ -120,6 +123,12 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** French users' links get ?lang=fr: Discord, WhatsApp... then show the French preview (see .htaccess). */
+  private invitationUrl(token: string): string {
+    const lang = this.translate.getCurrentLang() === 'fr' ? '?lang=fr' : '';
+    return `${environment.siteUrl}/group/invitations/${token}${lang}`;
+  }
+
   private async shareInvitation(group: Group): Promise<void> {
     const invitation = await this.groupsService.getGroupInvitation(group.id);
     if (!invitation) {
@@ -129,7 +138,7 @@ export class GroupComponent implements OnInit, OnDestroy {
       await Share.share({
         title: this.translate.instant('group.shareInvitationTitle'),
         text: this.translate.instant('group.shareInvitationText', { name: group.name }),
-        url: `${environment.siteUrl}/group/invitations/${invitation}`,
+        url: this.invitationUrl(invitation),
         dialogTitle: this.translate.instant('group.shareGroupInvitation'),
       });
     } catch (error: any) {

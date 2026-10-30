@@ -44,17 +44,25 @@ export interface Rect {
   height: number;
 }
 
+/** Sizes for a ball "at scale 1": the engine scales them to the box (see `scale`). */
 export interface EngineOptions {
   minRadius: number;
   maxRadius: number;
   voterRadius: number;
+  /** Pixels per second at scale 1. */
   maxSpeed: number;
   /** Multiplicateur de vitesse (0 = figé). */
   speedFactor: number;
 }
 
-/** Free space between a candidate and its orbiting voters. */
+/** Free space between a candidate and its orbiting voters (at scale 1). */
 const ORBIT_GAP = 8;
+/** Share of the free area that the balls, with their ring of voters, should cover. */
+const FILL = 0.5;
+const MIN_SCALE = 0.45;
+const MAX_SCALE = 1.3;
+/** Smaller, a voter's picture can't be recognized. */
+const MIN_VOTER_RADIUS = 11;
 
 const DEFAULTS: EngineOptions = {
   minRadius: 38,
@@ -78,6 +86,11 @@ export class BubbleEngine {
   private frozenId: number | null = null;
   /** Solid rectangles (e.g. the answer card) that candidates bounce on. */
   private obstacles: Rect[] = [];
+  /**
+   * Size of everything relative to the options: computed from the box area and the balls to show,
+   * so a phone gets smaller balls that don't pile up, and a few balls in a big box get bigger ones.
+   */
+  public scale = 1;
 
   public constructor(options: Partial<EngineOptions> = {}, private readonly random: () => number = Math.random) {
     this.options = { ...DEFAULTS, ...options };
@@ -86,10 +99,20 @@ export class BubbleEngine {
   public resize(width: number, height: number): void {
     this.width = width;
     this.height = height;
-    this.candidates.forEach(c => {
-      c.targetR = this.radiusFor(c);
-      this.clamp(c);
-    });
+    this.updateScale();
+  }
+
+  public get voterRadius(): number {
+    return Math.max(MIN_VOTER_RADIUS, this.options.voterRadius * this.scale);
+  }
+
+  private get orbitGap(): number {
+    return ORBIT_GAP * this.scale;
+  }
+
+  /** Room a candidate takes: the ball, plus the ring of its voters. Collisions and walls use it. */
+  public footprint(c: CandidateState): number {
+    return c.voters.length ? c.r + 2 * this.voterRadius + this.orbitGap : c.r;
   }
 
   /** Synchronise les candidats en conservant la position de ceux déjà présents. */
@@ -108,7 +131,7 @@ export class BubbleEngine {
           x: this.width * (0.2 + this.random() * 0.6),
           y: this.height * (0.2 + this.random() * 0.6),
           vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-          r: this.options.minRadius, targetR: this.options.minRadius,
+          r: this.options.minRadius * this.scale, targetR: this.options.minRadius * this.scale,
           orbitAngle: this.random() * Math.PI * 2,
         };
         this.candidates.push(state);
@@ -117,13 +140,31 @@ export class BubbleEngine {
       state.picture = d.picture;
       state.voters = d.voters;
       state.answer = d.answer;
-      state.targetR = this.radiusFor(state);
-      this.clamp(state);
     }
+    this.updateScale();
   }
 
   public setObstacles(obstacles: Rect[]): void {
     this.obstacles = obstacles;
+    this.updateScale();
+  }
+
+  /** Picks `scale` so the balls cover about FILL of the free area, and the biggest one still has room to move. */
+  private updateScale(): void {
+    const { width: w, height: h } = this;
+    if (w && h && this.candidates.length) {
+      const obstacles = this.obstacles.reduce((sum, o) => sum + o.width * o.height, 0);
+      const free = Math.max(w * h * 0.3, w * h - obstacles);
+      const sizes = this.candidates.map(c =>
+        this.baseRadius(c) + (c.voters.length ? 2 * this.options.voterRadius + ORBIT_GAP : 0));
+      const area = sizes.reduce((sum, r) => sum + Math.PI * r * r, 0);
+      const fit = Math.min(Math.sqrt((FILL * free) / area), Math.min(w, h) / (2.2 * Math.max(...sizes)));
+      this.scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, fit));
+    }
+    this.candidates.forEach(c => {
+      c.targetR = this.baseRadius(c) * this.scale;
+      this.clamp(c);
+    });
   }
 
   /** Immobilise un candidat (ex. sélectionné) pour faciliter le clic. */
@@ -133,7 +174,9 @@ export class BubbleEngine {
 
   public step(dt: number): void {
     dt = Math.min(dt, 0.05);
-    const { maxSpeed, speedFactor } = this.options;
+    const { speedFactor } = this.options;
+    // Smaller balls move slower, so they look the same speed on a phone.
+    const maxSpeed = this.options.maxSpeed * this.scale;
     const k = dt * speedFactor;
 
     for (const c of this.candidates) {
@@ -170,11 +213,12 @@ export class BubbleEngine {
       const cx = Math.min(Math.max(c.x, o.x), o.x + o.width);
       const cy = Math.min(Math.max(c.y, o.y), o.y + o.height);
       let dx = c.x - cx, dy = c.y - cy;
+      const r = this.footprint(c);
       let dist = Math.hypot(dx, dy);
-      if (dist >= c.r) continue;
+      if (dist >= r) continue;
       let nx: number, ny: number, push: number;
       if (dist > 0) {
-        nx = dx / dist; ny = dy / dist; push = c.r - dist;
+        nx = dx / dist; ny = dy / dist; push = r - dist;
       } else {
         // centre inside the rectangle: leave through the nearest side
         const left = c.x - o.x, right = o.x + o.width - c.x, top = c.y - o.y, bottom = o.y + o.height - c.y;
@@ -182,7 +226,7 @@ export class BubbleEngine {
         nx = min === left ? -1 : min === right ? 1 : 0;
         ny = min === top ? -1 : min === bottom ? 1 : 0;
         if (nx !== 0) ny = 0;
-        push = min + c.r;
+        push = min + r;
       }
       c.x += nx * push;
       c.y += ny * push;
@@ -196,7 +240,7 @@ export class BubbleEngine {
 
   /** Rayon orbital d'un votant autour de son candidat. */
   public voterOrbitRadius(c: CandidateState): number {
-    return c.r + this.options.voterRadius + ORBIT_GAP;
+    return c.r + this.voterRadius + this.orbitGap;
   }
 
   public voterPositions(): VoterPosition[] {
@@ -206,7 +250,7 @@ export class BubbleEngine {
       const orbit = this.voterOrbitRadius(c);
       c.voters.forEach((voter, i) => {
         const a = c.orbitAngle + (i / n) * Math.PI * 2;
-        out.push({ voter, owner: c, r: this.options.voterRadius, x: c.x + Math.cos(a) * orbit, y: c.y + Math.sin(a) * orbit });
+        out.push({ voter, owner: c, r: this.voterRadius, x: c.x + Math.cos(a) * orbit, y: c.y + Math.sin(a) * orbit });
       });
     }
     return out;
@@ -221,26 +265,25 @@ export class BubbleEngine {
     return null;
   }
 
-  /** Aire proportionnelle au nombre de voix, bornée par la taille de la box. */
-  private radiusFor(c: CandidateState): number {
+  /** Radius at scale 1: grows with the votes, up to maxRadius. */
+  private baseRadius(c: CandidateState): number {
     const { minRadius, maxRadius } = this.options;
-    const votes = c.voters.length;
-    const cap = Math.max(minRadius, Math.min(maxRadius, Math.min(this.width, this.height) / 4 || maxRadius));
-    return Math.max(minRadius * 0.6, Math.min(cap, minRadius + Math.sqrt(votes) * (maxRadius - minRadius) * 0.45));
+    return Math.min(maxRadius, minRadius + Math.sqrt(c.voters.length) * (maxRadius - minRadius) * 0.45);
   }
 
   private bounce(c: CandidateState): void {
-    const m = c.r;
-    if (c.x < m) { c.x = m; c.vx = Math.abs(c.vx); }
-    else if (c.x > this.width - m) { c.x = this.width - m; c.vx = -Math.abs(c.vx); }
-    if (c.y < m) { c.y = m; c.vy = Math.abs(c.vy); }
-    else if (c.y > this.height - m) { c.y = this.height - m; c.vy = -Math.abs(c.vy); }
+    // Capped at half the box, like clamp(): a ring wider than the box mustn't flip direction every frame.
+    const mx = Math.min(this.footprint(c), this.width / 2), my = Math.min(this.footprint(c), this.height / 2);
+    if (c.x < mx) { c.x = mx; c.vx = Math.abs(c.vx); }
+    else if (c.x > this.width - mx) { c.x = this.width - mx; c.vx = -Math.abs(c.vx); }
+    if (c.y < my) { c.y = my; c.vy = Math.abs(c.vy); }
+    else if (c.y > this.height - my) { c.y = this.height - my; c.vy = -Math.abs(c.vy); }
   }
 
   private clamp(c: CandidateState): void {
-    const m = Math.min(c.r, this.width / 2, this.height / 2);
-    c.x = Math.min(Math.max(c.x, m), Math.max(m, this.width - m));
-    c.y = Math.min(Math.max(c.y, m), Math.max(m, this.height - m));
+    const mx = Math.min(this.footprint(c), this.width / 2), my = Math.min(this.footprint(c), this.height / 2);
+    c.x = Math.min(Math.max(c.x, mx), this.width - mx);
+    c.y = Math.min(Math.max(c.y, my), this.height - my);
   }
 
   /** Les boules se repoussent doucement : jamais d'absorption ni de fusion. */
@@ -251,7 +294,7 @@ export class BubbleEngine {
         const a = list[i], b = list[j];
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.hypot(dx, dy) || 0.001;
-        const min = a.r + b.r;
+        const min = this.footprint(a) + this.footprint(b);
         if (dist >= min) continue;
         const nx = dx / dist, ny = dy / dist;
         const push = (min - dist) / 2;

@@ -3,6 +3,17 @@
   "loading": {
     "label": "Chargement..."
   },
+  "connection": {
+    "offlineTitle": "Pas de connexion internet",
+    "offlineText": "Ton téléphone est hors ligne. Active le Wi-Fi ou les données mobiles.",
+    "poorTitle": "Connexion trop faible",
+    "poorText": "Le réseau est trop faible pour joindre Sadikoi pour le moment.",
+    "serverTitle": "Serveur indisponible",
+    "serverText": "Sadikoi est injoignable pour le moment. Ça ne vient pas de ta connexion.",
+    "autoRetry": "On réessaie automatiquement.",
+    "retry": "Réessayer",
+    "checking": "Vérification…"
+  },
   "auth": {
     "authenticated": "Vous êtes connecté!",
     "forgetDevice": "Oublier cet appareil à la déconnexion",
@@ -61,14 +72,15 @@
     "questions": "La nouvelle question du jour",
     "voteReminder": "1 h avant la fin, si je n'ai pas voté",
     "answers": "Quand quelqu'un répond à la question du jour",
-    "perGroupHint": "Tu peux aussi choisir pour chaque groupe, dans ses options.",
+    "perGroupHint": "Tu peux aussi choisir pour chaque groupe, avec la cloche à côté de ses options.",
     "groupTitle": "Notifications de ce groupe",
     "disabledGlobally": "désactivé dans les réglages globaux",
     "appOnly": "Les notifications arrivent sur l'appli mobile. Tes choix ici s'appliquent à ton compte.",
     "permissionDenied": "Les notifications sont bloquées : autorise-les dans les réglages du téléphone (Applis › Sadikoi › Notifications).",
     "save": "Enregistrer",
     "saved": "Réglages de notifications enregistrés",
-    "saveFailed": "Impossible d'enregistrer tes réglages."
+    "saveFailed": "Impossible d'enregistrer tes réglages.",
+    "loading": "Chargement…"
   },
   "groups": {
     "groupName": "Nom du groupe",
@@ -143,6 +155,10 @@
     },
     "question": "Question :",
     "submitSuggestion": "Soumettre la suggestion"
+  },
+  "openInApp": {
+    "text": "Sadikoi, c’est mieux dans l’appli",
+    "open": "Ouvrir l’appli"
   },
   "modal": {
     "save": "Confirmer",

@@ -1,5 +1,4 @@
-<fieldset class="form-group group-notifications">
-  <legend>{{ 'notificationSettings.groupTitle' | translate }}</legend>
+<div class="form-group group-notifications">
   @if (!push.available) {
     <p class="group-notifications-note">{{ 'notificationSettings.appOnly' | translate }}</p>
   }
@@ -20,7 +19,12 @@
         </span>
       </label>
     }
+    <button type="button" class="group-notifications-save btn-secondary" [disabled]="!dirty() || saving()" (click)="save()">
+      {{ 'notificationSettings.save' | translate }}
+    </button>
   } @else if (loadFailed()) {
     <p class="group-notifications-note">{{ 'notification.genericError' | translate }}</p>
+  } @else {
+    <p class="group-notifications-note">{{ 'notificationSettings.loading' | translate }}</p>
   }
-</fieldset>
+</div>

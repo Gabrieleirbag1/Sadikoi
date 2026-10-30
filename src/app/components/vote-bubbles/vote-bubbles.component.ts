@@ -21,6 +21,12 @@ const TOOLTIP_HEIGHT = 180;
 const DEFAULT_PICTURE = '/default-profile.svg';
 /** Angle (rad) de la ligne de séparation : la photo occupe le haut-gauche, le pseudo le bas-droite. */
 const SPLIT_ANGLE = -Math.PI / 6;
+/** Voting on a phone: holding a ball this long (ms) opens its profile; a tap only (un)selects. */
+const LONG_PRESS_MS = 500;
+/** A finger moving further than this (px) is scrolling or sliding, not holding. */
+const LONG_PRESS_SLOP = 10;
+/** Smaller balls (voters on a phone) show only the picture: a name that small can't be read. */
+const NAME_MIN_RADIUS = 16;
 /** Agar.io-like decor colours (food pellets). Purely cosmetic: nothing eats them. */
 const PELLET_COLORS = ['#ff4d6d', '#ffd23f', '#3ddc97', '#4cc9f0', '#b583ff', '#ff9f1c', '#7bed4f', '#f15bb5'];
 const PELLET_COUNT = 110;
@@ -117,20 +123,57 @@ export class VoteBubblesComponent {
     this.destroyRef.onDestroy(() => {
       cancelAnimationFrame(this.frame);
       clearTimeout(this.hideTimeout);
+      this.cancelLongPress();
     });
   }
 
   /** Input of the last press: 'touch' on phones, 'mouse' on laptops (the click event alone doesn't say it everywhere). */
   protected lastPointerType = 'mouse';
+  /** Finger held on a ball while voting: opens its profile after LONG_PRESS_MS. */
+  private longPress: { timer: ReturnType<typeof setTimeout>; x: number; y: number } | null = null;
+  /** The press that just ended opened a profile: its click must not also (un)select the ball. */
+  private longPressed = false;
+
+  protected onPointerDown(event: PointerEvent): void {
+    this.lastPointerType = event.pointerType;
+    this.cancelLongPress();
+    this.longPressed = false;
+    if (!this.isVoting() || event.pointerType !== 'touch') return;
+    const hit = this.hit(event);
+    if (!hit) return;
+    const { clientX, clientY } = event;
+    this.longPress = {
+      x: clientX,
+      y: clientY,
+      timer: setTimeout(() => {
+        this.longPress = null;
+        this.longPressed = true;
+        navigator.vibrate?.(15);
+        this.showTooltipNow(hit.id, { clientX, clientY });
+      }, LONG_PRESS_MS),
+    };
+  }
+
+  /** Lifting or losing the finger before the delay: it was a tap (or a scroll), no profile. */
+  protected cancelLongPress(): void {
+    if (this.longPress) clearTimeout(this.longPress.timer);
+    this.longPress = null;
+  }
 
   protected onPointerMove(event: PointerEvent): void {
-    // While voting on a phone, a finger sliding over a bubble must not open its profile (see onClick).
+    if (this.longPress && Math.hypot(event.clientX - this.longPress.x, event.clientY - this.longPress.y) > LONG_PRESS_SLOP) {
+      this.cancelLongPress();
+    }
+    // While voting on a phone, a finger sliding over a bubble must not open its profile (long press only, see onPointerDown).
     if (this.isVoting() && event.pointerType === 'touch') return;
     this.setHovered(this.hit(event), event);
   }
 
-  protected onPointerLeave(): void {
+  protected onPointerLeave(event: PointerEvent): void {
+    this.cancelLongPress();
     this.hoveredId.set(null);
+    // A finger lifted after a long press also "leaves": the profile it opened stays until the next tap.
+    if (event.pointerType === 'touch' && this.longPressed) return;
     this.scheduleHide();
   }
 
@@ -167,30 +210,28 @@ export class VoteBubblesComponent {
   }
 
   protected onClick(event: MouseEvent): void {
+    // The long press already opened the profile: lifting the finger doesn't select.
+    if (this.longPressed) {
+      this.longPressed = false;
+      return;
+    }
     const hit = this.hit(event);
-    if (!hit) return;
     if (!this.isVoting()) {
-      this.showTooltipNow(hit.id, event);
+      if (hit) this.showTooltipNow(hit.id, event);
       return;
     }
     // Voting with a mouse: the click only (un)selects, the profile opens on hover.
     if (this.lastPointerType !== 'touch') {
-      this.select(hit.id);
+      if (hit) this.select(hit.id);
       return;
     }
-    // Voting on a phone: 1st tap selects, a tap on the selected bubble opens its profile, the next one unselects it.
-    const selected = this.selectedIds().includes(hit.id);
-    const profileOpen = this.tooltipUserId() === hit.id && this.userProfileService.isOpenFor(this.tooltipUser(), this.tooltipScope);
-    if (selected && !profileOpen) {
-      this.showTooltipNow(hit.id, event);
-      return;
-    }
+    // Voting on a phone: a tap (un)selects and closes an open profile; a long press opens it.
     clearTimeout(this.hideTimeout);
     this.hideTooltip();
-    this.select(hit.id);
+    if (hit) this.select(hit.id);
   }
 
-  private showTooltipNow(id: number, event: MouseEvent): void {
+  private showTooltipNow(id: number, event: Pick<MouseEvent, 'clientX' | 'clientY'>): void {
     const user = this.bubbles().find(b => b.votedUser.id === id)?.votedUser;
     if (!user) return;
     clearTimeout(this.hideTimeout);
@@ -216,7 +257,7 @@ export class VoteBubblesComponent {
   }
 
   /** The tooltip keeps its natural size: near the right/bottom edge it flips to the other side of the pointer. */
-  private placeTooltip(event: MouseEvent): void {
+  private placeTooltip(event: Pick<MouseEvent, 'clientX' | 'clientY'>): void {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left, y = event.clientY - rect.top;
     this.tooltipPos.set({
@@ -226,7 +267,7 @@ export class VoteBubblesComponent {
     });
   }
 
-  private hit(event: MouseEvent): CandidateState | null {
+  private hit(event: Pick<MouseEvent, 'clientX' | 'clientY'>): CandidateState | null {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     return this.engine.hitTest(event.clientX - rect.left, event.clientY - rect.top);
   }
@@ -264,11 +305,8 @@ export class VoteBubblesComponent {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       this.ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const compact = width < 480;
-      Object.assign(this.engine.options, {
-        minRadius: compact ? 30 : 38, maxRadius: compact ? 70 : 90, voterRadius: compact ? 13 : 16,
-        speedFactor: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.3 : 1,
-      });
+      // Ball sizes follow the box (engine.scale), so a phone and a desktop both stay readable.
+      this.engine.options.speedFactor = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.3 : 1;
       this.engine.resize(width, height);
       measureObstacle();
     };
@@ -451,6 +489,7 @@ export class VoteBubblesComponent {
     colorKey: number, selected: boolean, hovered: boolean,
   ): void {
     const color = PALETTE[Math.abs(colorKey) % PALETTE.length];
+    const showName = r >= NAME_MIN_RADIUS;
     ctx.save();
     ctx.translate(x, y);
 
@@ -466,11 +505,11 @@ export class VoteBubblesComponent {
 
     ctx.clip();
 
-    // Moitié haute : photo, découpée par la diagonale.
+    // Moitié haute : photo, découpée par la diagonale (toute la boule si le nom n'est pas affiché).
     ctx.save();
     ctx.rotate(SPLIT_ANGLE);
     ctx.beginPath();
-    ctx.rect(-r - 1, -r - 1, 2 * r + 2, r + 1);
+    ctx.rect(-r - 1, -r - 1, 2 * r + 2, showName ? r + 1 : 2 * r + 2);
     ctx.clip();
     ctx.rotate(-SPLIT_ANGLE);
     const img = this.image(picture);
@@ -485,32 +524,34 @@ export class VoteBubblesComponent {
     }
     ctx.restore();
 
-    // Moitié basse : pseudo.
-    ctx.save();
-    ctx.rotate(SPLIT_ANGLE);
-    ctx.beginPath();
-    ctx.rect(-r - 1, 0, 2 * r + 2, r + 1);
-    ctx.clip();
-    ctx.fillStyle = color;
-    ctx.fillRect(-r, 0, 2 * r, r);
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const fontSize = Math.max(8, r * 0.34);
-    ctx.font = `700 ${fontSize}px sans-serif`;
-    ctx.fillText(this.fit(ctx, name, r * 1.6), 0, r * 0.5);
-    ctx.restore();
+    if (showName) {
+      // Moitié basse : pseudo.
+      ctx.save();
+      ctx.rotate(SPLIT_ANGLE);
+      ctx.beginPath();
+      ctx.rect(-r - 1, 0, 2 * r + 2, r + 1);
+      ctx.clip();
+      ctx.fillStyle = color;
+      ctx.fillRect(-r, 0, 2 * r, r);
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const fontSize = Math.max(8, r * 0.34);
+      ctx.font = `700 ${fontSize}px sans-serif`;
+      ctx.fillText(this.fit(ctx, name, r * 1.6), 0, r * 0.5);
+      ctx.restore();
 
-    // Ligne de séparation.
-    ctx.save();
-    ctx.rotate(SPLIT_ANGLE);
-    ctx.beginPath();
-    ctx.moveTo(-r, 0);
-    ctx.lineTo(r, 0);
-    ctx.lineWidth = Math.max(1.5, r * 0.06);
-    ctx.strokeStyle = '#fff';
-    ctx.stroke();
-    ctx.restore();
+      // Ligne de séparation.
+      ctx.save();
+      ctx.rotate(SPLIT_ANGLE);
+      ctx.beginPath();
+      ctx.moveTo(-r, 0);
+      ctx.lineTo(r, 0);
+      ctx.lineWidth = Math.max(1.5, r * 0.06);
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+      ctx.restore();
+    }
 
     ctx.restore();
 
@@ -519,8 +560,9 @@ export class VoteBubblesComponent {
     ctx.translate(x, y);
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.lineWidth = selected ? 4 : 2;
-    ctx.strokeStyle = selected ? '#1982c4' : 'rgba(0,0,0,.45)';
+    // Without the colored name half, the outline keeps the owner's color (who this voter voted for).
+    ctx.lineWidth = selected ? 4 : showName ? 2 : 3;
+    ctx.strokeStyle = selected ? '#1982c4' : showName ? 'rgba(0,0,0,.45)' : color;
     ctx.stroke();
     ctx.restore();
   }

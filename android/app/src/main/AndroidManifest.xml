@@ -20,13 +20,15 @@
             </intent-filter>
 
             <!-- App Links: these site links open the app instead of the browser.
-                 Android checks https://sadikoi.missclick.net/.well-known/assetlinks.json before allowing it. -->
+                 Android checks https://sadikoi.missclick.net/.well-known/assetlinks.json before allowing it.
+                 Same pages as isAppPath() in src/app/utils/open-in-app.ts (legal pages and /api/ stay on the web). -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="sadikoi.missclick.net" />
-                <data android:pathPrefix="/group/invitations/" />
+                <data android:path="/" />
+                <data android:pathPrefix="/group/" />
                 <data android:pathPrefix="/reset-password/" />
             </intent-filter>
         </activity>

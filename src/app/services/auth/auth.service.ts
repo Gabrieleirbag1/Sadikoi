@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -42,11 +42,16 @@ export class AuthService {
   }
 
   private async initializeAuthState(): Promise<void> {
-    const response = await this.getUser();
-    if (response) {
-      this.setAuthenticated(true);
-    } else {
-      this.setAuthenticated(false);
+    try {
+      const user = await this.fetchUser();
+      this.setAuthenticated(!!user);
+    } catch (error) {
+      // Only the server can say the session is over (401, handled by the auth interceptor). Without a
+      // connection the saved state is kept: the connection error screen shows, not the login page.
+      this.logger.error('Failed to fetch user:', error);
+      if (error instanceof HttpErrorResponse && error.status !== 0 && error.status < 500) {
+        this.setAuthenticated(false);
+      }
     }
   }
 
@@ -74,16 +79,21 @@ export class AuthService {
 
   // Helper method to fetch user details, can be used after login to get user info
   public async getUser(): Promise<User | null> {
-    const paylod = { device_id: this.getDeviceId(), device_name: navigator.platform };
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/account/`, paylod, { withCredentials: true }));
-      this.logger.debug('Fetched user details:', response);
-      this.setLanguage(response.content);
-      return response.content || null;
+      return await this.fetchUser();
     } catch (error) {
       this.logger.error('Failed to fetch user:', error);
       return null;
     }
+  }
+
+  /** Like getUser(), but lets the error through (to tell a network failure from a refused session). */
+  private async fetchUser(): Promise<User | null> {
+    const paylod = { device_id: this.getDeviceId(), device_name: navigator.platform };
+    const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/account/`, paylod, { withCredentials: true }));
+    this.logger.debug('Fetched user details:', response);
+    this.setLanguage(response.content);
+    return response.content || null;
   }
 
   public clearSessionAndRedirect(): void {

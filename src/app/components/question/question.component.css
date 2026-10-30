@@ -34,6 +34,20 @@
   font-weight: bold;
 }
 
+/* At most 2 lines: FitTextDirective shrinks the font from the size set here, and clamps if even that isn't enough. */
+.question-text {
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.question-text.fit-text-clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
 .user-vote-container {
   display: flex;
   flex-direction: column;

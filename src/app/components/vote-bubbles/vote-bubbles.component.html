@@ -4,9 +4,12 @@
       #canvas
       class="vote-bubbles-canvas"
       [class.clickable]="isVoting() && hoveredId() !== null"
-      (pointerdown)="lastPointerType = $event.pointerType"
+      (pointerdown)="onPointerDown($event)"
       (pointermove)="onPointerMove($event)"
-      (pointerleave)="onPointerLeave()"
+      (pointerup)="cancelLongPress()"
+      (pointercancel)="cancelLongPress()"
+      (pointerleave)="onPointerLeave($event)"
+      (contextmenu)="$event.preventDefault()"
       (click)="onClick($event)"
       aria-hidden="true"
     ></canvas>
