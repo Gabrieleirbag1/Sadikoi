@@ -10,6 +10,16 @@
       <span class="icon-button" role="button" tabindex="0" (click)="openGroupOptionsModal()" title="{{ 'group.groupOptions' | translate }}">
         <img src="images/icons/settings.svg" width="24" height="24" alt="List View" />
       </span>
+      <span
+        class="icon-button"
+        role="button"
+        tabindex="0"
+        (click)="showNotifications.set(true)"
+        (keydown.enter)="showNotifications.set(true)"
+        [title]="'notificationSettings.groupTitle' | translate"
+      >
+        <img src="images/icons/bell.svg" width="24" height="24" [alt]="'notificationSettings.groupTitle' | translate" />
+      </span>
     </div>
   </header>
   @if (group()) {
@@ -25,3 +35,6 @@
 ></app-home-footer>
 <app-group-options-modal [group]="group()" (groupChange)="group.set($event)">
 </app-group-options-modal>
+@if (showNotifications() && group(); as g) {
+  <app-group-notifications-modal [groupId]="g.id" (closed)="showNotifications.set(false)" />
+}

@@ -11,14 +11,13 @@ import { CalendarComponent } from '../tooltips/calendar/calendar.component';
 import { VoteBubbleData, VoteBubblesComponent } from '../vote-bubbles/vote-bubbles.component';
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
 import { ItemAnnouncementModalComponent } from '../modals/item-announcement-modal/item-announcement-modal.component';
-import { GroupNotificationsModalComponent } from '../modals/group-notifications-modal/group-notifications-modal.component';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent, GroupNotificationsModalComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,8 +33,6 @@ export class QuestionComponent implements OnInit{
   protected usersId: number[] = [];
   protected voteBubbles: VoteBubbleData[] = [];
   protected showCalendarFlag = signal(false);
-  /** The bell button's modal (this group's notification settings). */
-  protected readonly showNotifications = signal(false);
   protected readonly answerText = signal('');
   protected readonly selectedVoteId = signal<number | null>(null);
   /** Today's item announcement, shown once per day and group. */

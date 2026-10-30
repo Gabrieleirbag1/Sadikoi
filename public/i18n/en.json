@@ -72,7 +72,7 @@
     "questions": "New question of the day",
     "voteReminder": "1 hour before the end, if I haven't voted",
     "answers": "When someone answers today's question",
-    "perGroupHint": "You can also choose for each group, with the bell next to its calendar.",
+    "perGroupHint": "You can also choose for each group, with the bell next to its settings.",
     "groupTitle": "This group's notifications",
     "disabledGlobally": "turned off in the global settings",
     "appOnly": "Notifications arrive on the mobile app. Your choices here apply to your account.",

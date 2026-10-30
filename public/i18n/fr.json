@@ -72,7 +72,7 @@
     "questions": "La nouvelle question du jour",
     "voteReminder": "1 h avant la fin, si je n'ai pas voté",
     "answers": "Quand quelqu'un répond à la question du jour",
-    "perGroupHint": "Tu peux aussi choisir pour chaque groupe, avec la cloche à côté de son calendrier.",
+    "perGroupHint": "Tu peux aussi choisir pour chaque groupe, avec la cloche à côté de ses options.",
     "groupTitle": "Notifications de ce groupe",
     "disabledGlobally": "désactivé dans les réglages globaux",
     "appOnly": "Les notifications arrivent sur l'appli mobile. Tes choix ici s'appliquent à ton compte.",

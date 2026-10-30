@@ -25,6 +25,13 @@ describe('GroupNotificationSettingsComponent', () => {
     await fixture.whenStable();
   });
 
+  it('keeps the checkboxes inside a .form-group (PaperCSS draws them next to their text only there)', () => {
+    expect(checkboxes().length).toBe(4);
+    for (const box of checkboxes()) {
+      expect(box.closest('.form-group .paper-check')).not.toBeNull();
+    }
+  });
+
   it('toggling sends nothing; save sends every switch in one request', async () => {
     expect(saveButton().disabled).toBe(true);
     for (const box of checkboxes().slice(0, 3)) {

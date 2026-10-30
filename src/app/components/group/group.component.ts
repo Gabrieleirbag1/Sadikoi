@@ -4,6 +4,7 @@ import { GroupsService } from '../../services/groups/groups.service';
 import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupOptionsComponent } from "../modals/group-options-modal/group-options-modal.component";
+import { GroupNotificationsModalComponent } from '../modals/group-notifications-modal/group-notifications-modal.component';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -18,7 +19,7 @@ import { Share } from '@capacitor/share';
 
 @Component({
   selector: 'app-group',
-  imports: [QuestionComponent, GroupOptionsComponent, TranslatePipe, HomeFooterComponent],
+  imports: [QuestionComponent, GroupOptionsComponent, GroupNotificationsModalComponent, TranslatePipe, HomeFooterComponent],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
 })
@@ -33,6 +34,8 @@ export class GroupComponent implements OnInit, OnDestroy {
   private readonly translate = inject(TranslateService);
   protected group = signal<Group | null>(null);
   protected homeState = signal<HomeState>('group');
+  /** The bell button's modal (this group's notification settings). */
+  protected readonly showNotifications = signal(false);
   public readonly question = model<Question | null>(null);
 
   async ngOnInit(): Promise<void> {
