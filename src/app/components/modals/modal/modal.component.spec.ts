@@ -13,6 +13,7 @@ describe('ModalComponent', () => {
 
     fixture = TestBed.createComponent(ModalComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('id', 'test-modal');
     await fixture.whenStable();
   });
 
