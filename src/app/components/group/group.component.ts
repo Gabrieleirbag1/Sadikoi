@@ -105,13 +105,13 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
 
     // Not awaited before copying: the copy must start during the click (required by Safari).
-    const invitationUrl = this.groupsService.getGroupInvitation(group.id).then(invitation => {
+    const link = this.groupsService.getGroupInvitation(group.id).then(invitation => {
       if (!invitation) throw new Error('No invitation to copy');
-      return `${environment.siteUrl}/group/invitations/${invitation}`;
+      return this.invitationUrl(invitation);
     });
 
     try {
-      await copyToClipboard(invitationUrl);
+      await copyToClipboard(link);
       this.logger.info('Invitation copied to clipboard');
       this.notificationService.showSuccess(this.translate.instant('notification.invitationCopied'));
     } catch (error) {
@@ -123,6 +123,12 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** French users' links get ?lang=fr: Discord, WhatsApp... then show the French preview (see .htaccess). */
+  private invitationUrl(token: string): string {
+    const lang = this.translate.getCurrentLang() === 'fr' ? '?lang=fr' : '';
+    return `${environment.siteUrl}/group/invitations/${token}${lang}`;
+  }
+
   private async shareInvitation(group: Group): Promise<void> {
     const invitation = await this.groupsService.getGroupInvitation(group.id);
     if (!invitation) {
@@ -132,7 +138,7 @@ export class GroupComponent implements OnInit, OnDestroy {
       await Share.share({
         title: this.translate.instant('group.shareInvitationTitle'),
         text: this.translate.instant('group.shareInvitationText', { name: group.name }),
-        url: `${environment.siteUrl}/group/invitations/${invitation}`,
+        url: this.invitationUrl(invitation),
         dialogTitle: this.translate.instant('group.shareGroupInvitation'),
       });
     } catch (error: any) {

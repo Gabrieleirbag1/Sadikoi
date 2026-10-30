@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 
 import { NotificationSettingsService } from '../../services/notification-settings/notification-settings.service';
 import { GroupComponent } from './group.component';
@@ -44,5 +45,13 @@ describe('GroupComponent', () => {
     (fixture.nativeElement.querySelector('app-group-notifications-modal .modal-close') as HTMLElement).click();
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('app-group-notifications-modal')).toBeNull();
+  });
+
+  it("invitation links carry ?lang=fr for French users (French link previews)", () => {
+    const link = (token: string) => (component as unknown as { invitationUrl(t: string): string }).invitationUrl(token);
+    const translate = TestBed.inject(TranslateService);
+    expect(link('abc')).toMatch(/\/group\/invitations\/abc$/);
+    translate.use('fr');
+    expect(link('abc')).toMatch(/\/group\/invitations\/abc\?lang=fr$/);
   });
 });
