@@ -110,7 +110,7 @@ export class BubbleEngine {
     return ORBIT_GAP * this.scale;
   }
 
-  /** Room a candidate takes: the ball, plus the ring of its voters. Collisions and walls use it. */
+  /** Room a candidate takes: the ball, plus the ring of its voters. Ball and obstacle collisions use it (not the walls). */
   public footprint(c: CandidateState): number {
     return c.voters.length ? c.r + 2 * this.voterRadius + this.orbitGap : c.r;
   }
@@ -271,9 +271,16 @@ export class BubbleEngine {
     return Math.min(maxRadius, minRadius + Math.sqrt(c.voters.length) * (maxRadius - minRadius) * 0.45);
   }
 
+  /**
+   * Distance the centre keeps from the walls: the ball itself only. Orbiting voters may slip under the
+   * border (clipped, briefly hidden) so the big balls really touch it. Capped at half the box.
+   */
+  private wallMargin(c: CandidateState): { mx: number; my: number } {
+    return { mx: Math.min(c.r, this.width / 2), my: Math.min(c.r, this.height / 2) };
+  }
+
   private bounce(c: CandidateState): void {
-    // Capped at half the box, like clamp(): a ring wider than the box mustn't flip direction every frame.
-    const mx = Math.min(this.footprint(c), this.width / 2), my = Math.min(this.footprint(c), this.height / 2);
+    const { mx, my } = this.wallMargin(c);
     if (c.x < mx) { c.x = mx; c.vx = Math.abs(c.vx); }
     else if (c.x > this.width - mx) { c.x = this.width - mx; c.vx = -Math.abs(c.vx); }
     if (c.y < my) { c.y = my; c.vy = Math.abs(c.vy); }
@@ -281,7 +288,7 @@ export class BubbleEngine {
   }
 
   private clamp(c: CandidateState): void {
-    const mx = Math.min(this.footprint(c), this.width / 2), my = Math.min(this.footprint(c), this.height / 2);
+    const { mx, my } = this.wallMargin(c);
     c.x = Math.min(Math.max(c.x, mx), this.width - mx);
     c.y = Math.min(Math.max(c.y, my), this.height - my);
   }

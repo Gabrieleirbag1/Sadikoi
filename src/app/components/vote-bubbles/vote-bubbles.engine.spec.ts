@@ -7,18 +7,12 @@ const candidate = (id: number, voters: number): BubbleCandidate => ({
 });
 
 describe('BubbleEngine', () => {
-  it('keeps candidates and their voters inside the box and never merges them', () => {
+  it('keeps candidates inside the box and never merges them', () => {
     const engine = new BubbleEngine();
     engine.resize(600, 400);
     engine.sync([candidate(1, 3), candidate(2, 0), candidate(3, 5)]);
     for (let i = 0; i < 2000; i++) {
       engine.step(1 / 60);
-      for (const v of engine.voterPositions()) {
-        expect(v.x - v.r).toBeGreaterThanOrEqual(-0.5);
-        expect(v.y - v.r).toBeGreaterThanOrEqual(-0.5);
-        expect(v.x + v.r).toBeLessThanOrEqual(600.5);
-        expect(v.y + v.r).toBeLessThanOrEqual(400.5);
-      }
       for (const c of engine.candidates) {
         expect(c.x - c.r).toBeGreaterThanOrEqual(-0.5);
         expect(c.y - c.r).toBeGreaterThanOrEqual(-0.5);
@@ -27,6 +21,20 @@ describe('BubbleEngine', () => {
       }
     }
     expect(engine.candidates.length).toBe(3);
+  });
+
+  it('bounces the ball itself on the walls, its orbiting voters may slip under the border', () => {
+    const engine = new BubbleEngine();
+    engine.resize(600, 400);
+    engine.sync([candidate(1, 4)]);
+    for (let i = 0; i < 60; i++) engine.step(1 / 60); // let the radius grow
+    const c = engine.candidates[0];
+    c.x = -50;
+    c.vx = -10;
+    engine.step(1 / 60);
+    expect(c.x).toBeCloseTo(c.r, 0);
+    expect(c.vx).toBeGreaterThan(0);
+    expect(c.x).toBeLessThan(engine.footprint(c));
   });
 
   it("keeps each candidate's voters clear of the other candidates", () => {
