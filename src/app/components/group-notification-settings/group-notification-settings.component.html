@@ -20,6 +20,9 @@
         </span>
       </label>
     }
+    <button type="button" class="group-notifications-save btn-secondary" [disabled]="!dirty() || saving()" (click)="save()">
+      {{ 'notificationSettings.save' | translate }}
+    </button>
   } @else if (loadFailed()) {
     <p class="group-notifications-note">{{ 'notification.genericError' | translate }}</p>
   }
