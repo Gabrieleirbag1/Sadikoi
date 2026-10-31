@@ -56,4 +56,40 @@ describe('ChatComponent', () => {
       expect(scrollTo).toHaveBeenCalledOnce();
     });
   });
+
+  describe('author profile', () => {
+    const sender = { id: 2, username: 'bob', email: '', date_created: '2025-01-01', language: 'fr' } as unknown as User;
+    const member = { ...sender, items: [], role: 'member' } as User;
+
+    const avatar = () => fixture.nativeElement.querySelector('.chat-avatar-btn') as HTMLButtonElement;
+    const card = () => fixture.nativeElement.querySelector('.chat-profile-popover app-user-profile');
+
+    beforeEach(async () => {
+      fixture.componentRef.setInput('group', { id: 1, users: [member] } as unknown as Group);
+      (component as any).messages.set([{ id: 1, content: 'hi', sender, timestamp: '2025-01-01T10:00:00' }]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+    });
+
+    afterEach(() => (component as any).closeProfile());
+
+    it('clicking the picture opens the group member profile, clicking it again closes it', () => {
+      avatar().click();
+      fixture.detectChanges();
+      expect(card()).toBeTruthy();
+      expect((component as any).profileUser()).toBe(member);
+
+      avatar().click();
+      fixture.detectChanges();
+      expect(card()).toBeNull();
+    });
+
+    it('a click elsewhere closes the profile', () => {
+      avatar().click();
+      fixture.detectChanges();
+      document.body.click();
+      fixture.detectChanges();
+      expect(card()).toBeNull();
+    });
+  });
 });

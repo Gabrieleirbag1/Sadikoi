@@ -1,5 +1,6 @@
-<section class="chat-container">
-  <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()">
+<section class="chat-container" #chatContainer>
+  <!-- The profile card points at an avatar: the user moving the thread closes it. -->
+  <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()" (wheel)="closeProfile()" (touchmove)="closeProfile()">
     @for (message of messages(); track message.id) {
       @let previous = messages()[$index - 1];
       @let isNewDay = !previous || dayKey(previous) !== dayKey(message);
@@ -9,11 +10,19 @@
       }
       <div class="message-row" [class.own]="isOwnMessage(message)">
         @if (isFirstOfRun) {
-          <app-profile-image-picker
-            [currentImageUrl]="message.sender.profile_picture"
-            [onlyDisplay]="true"
-            [imgClass]="'chat-user-icon'"
-          />
+          <button
+            type="button"
+            class="chat-avatar-btn"
+            [title]="message.sender.username"
+            [attr.aria-expanded]="userProfileService.isOpenFor(message.sender, profileScope)"
+            (click)="toggleProfile(message.sender, $event)"
+          >
+            <app-profile-image-picker
+              [currentImageUrl]="message.sender.profile_picture"
+              [onlyDisplay]="true"
+              [imgClass]="'chat-user-icon'"
+            />
+          </button>
         } @else {
           <span class="chat-avatar-spacer"></span>
         }
@@ -40,6 +49,19 @@
       <p class="chat-empty">{{ 'chat.noMessagesDisplay' | translate }}</p>
     }
   </div>
+
+  @if (userProfileService.isOpenFor(profileUser(), profileScope)) {
+    <div
+      class="user-profile-popover chat-profile-popover"
+      role="dialog"
+      [class.flip-x]="profilePos().flipX"
+      [class.flip-y]="profilePos().flipY"
+      [style.left.px]="profilePos().x"
+      [style.top.px]="profilePos().y"
+    >
+      <app-user-profile [user]="profileUser()" [group]="group()"></app-user-profile>
+    </div>
+  }
 
   @if (!readOnly()) {
   <!-- Buttons keep the focus in the input (mousedown): blurring it would bring the bubbles back and move
