@@ -19,14 +19,16 @@ export interface VoteBubbleData {
 const TOOLTIP_WIDTH = 280;
 const TOOLTIP_HEIGHT = 180;
 const DEFAULT_PICTURE = '/default-profile.svg';
-/** Angle (rad) de la ligne de séparation : la photo occupe le haut-gauche, le pseudo le bas-droite. */
-const SPLIT_ANGLE = -Math.PI / 6;
+/** Horizontal line under the picture, as a fraction of the radius below the centre: the name sits under it. */
+const NAME_LINE = 0.55;
+/** Outline of a picked ball while voting: the app's blue, not one of the ball colours. */
+const SELECTED_COLOR = '#0b74d5';
 /** Voting on a phone: holding a ball this long (ms) opens its profile; a tap only (un)selects. */
 const LONG_PRESS_MS = 500;
 /** A finger moving further than this (px) is scrolling or sliding, not holding. */
 const LONG_PRESS_SLOP = 10;
-/** Smaller balls (voters on a phone) show only the picture: a name that small can't be read. */
-const NAME_MIN_RADIUS = 16;
+/** Smaller balls (voters, tiny candidates) show only the picture: a name in the bottom band that small can't be read. */
+const NAME_MIN_RADIUS = 22;
 /** Agar.io-like decor colours (food pellets). Purely cosmetic: nothing eats them. */
 const PELLET_COLORS = ['#ff4d6d', '#ffd23f', '#3ddc97', '#4cc9f0', '#b583ff', '#ff9f1c', '#7bed4f', '#f15bb5'];
 const PELLET_COUNT = 110;
@@ -336,11 +338,11 @@ export class VoteBubblesComponent {
     const hovered = this.hoveredId();
     const selected = this.selectedIds();
     this.engine.voterPositions().forEach(v =>
-      this.drawBall(ctx, v.x, v.y, v.r, v.voter.name, v.voter.picture, v.owner.id, false, false));
+      this.drawBall(ctx, v.x, v.y, v.r, v.voter.name, v.voter.picture, v.owner.id, false, false, t));
     // les plus gros d'abord : les petits restent visibles et cliquables au-dessus
     [...this.engine.candidates]
       .sort((a, b) => b.r - a.r)
-      .forEach(c => this.drawBall(ctx, c.x, c.y, c.r, c.name, c.picture, c.id, selected.includes(c.id) && this.isVoting(), c.id === hovered && this.isVoting()));
+      .forEach(c => this.drawBall(ctx, c.x, c.y, c.r, c.name, c.picture, c.id, selected.includes(c.id) && this.isVoting(), c.id === hovered && this.isVoting(), t));
     this.engine.candidates.forEach(c => c.answer && this.drawSpeech(ctx, c));
   }
 
@@ -484,18 +486,20 @@ export class VoteBubblesComponent {
     }
   }
 
+  /** Picture on most of the ball; the name, if it fits, under a horizontal line at the bottom. */
   private drawBall(
     ctx: CanvasRenderingContext2D, x: number, y: number, r: number, name: string, picture: string | null,
-    colorKey: number, selected: boolean, hovered: boolean,
+    colorKey: number, selected: boolean, hovered: boolean, t: number,
   ): void {
     const color = PALETTE[Math.abs(colorKey) % PALETTE.length];
     const showName = r >= NAME_MIN_RADIUS;
+    const lineY = NAME_LINE * r;
     ctx.save();
     ctx.translate(x, y);
 
-    if (selected || hovered) {
-      ctx.shadowColor = selected ? '#1982c4' : 'rgba(0,0,0,.35)';
-      ctx.shadowBlur = selected ? 22 : 12;
+    if (hovered && !selected) {
+      ctx.shadowColor = 'rgba(0,0,0,.35)';
+      ctx.shadowBlur = 12;
     }
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
@@ -505,52 +509,38 @@ export class VoteBubblesComponent {
 
     ctx.clip();
 
-    // Moitié haute : photo, découpée par la diagonale (toute la boule si le nom n'est pas affiché).
-    ctx.save();
-    ctx.rotate(SPLIT_ANGLE);
-    ctx.beginPath();
-    ctx.rect(-r - 1, -r - 1, 2 * r + 2, showName ? r + 1 : 2 * r + 2);
-    ctx.clip();
-    ctx.rotate(-SPLIT_ANGLE);
+    // Picture: covers the ball, shifted up so its centre (usually the face) sits in the middle of the visible part.
     const img = this.image(picture);
     if (img.complete && img.naturalWidth) {
       const size = 2 * r;
       const scale = Math.max(size / img.naturalWidth, size / img.naturalHeight);
       const w = img.naturalWidth * scale, h = img.naturalHeight * scale;
-      ctx.drawImage(img, -w / 2, -h / 2, w, h);
+      const shift = showName ? ((r - lineY) / 2) : 0;
+      ctx.drawImage(img, -w / 2, -h / 2 - shift, w, h);
     } else {
       ctx.fillStyle = 'rgba(255,255,255,.35)';
       ctx.fillRect(-r, -r, 2 * r, 2 * r);
     }
-    ctx.restore();
 
     if (showName) {
-      // Moitié basse : pseudo.
-      ctx.save();
-      ctx.rotate(SPLIT_ANGLE);
-      ctx.beginPath();
-      ctx.rect(-r - 1, 0, 2 * r + 2, r + 1);
-      ctx.clip();
+      // Bottom band in the user's colour, with the name.
       ctx.fillStyle = color;
-      ctx.fillRect(-r, 0, 2 * r, r);
+      ctx.fillRect(-r, lineY, 2 * r, r - lineY + 1);
+      ctx.beginPath();
+      ctx.moveTo(-r, lineY);
+      ctx.lineTo(r, lineY);
+      ctx.lineWidth = Math.max(1.5, r * 0.05);
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+
+      const textY = (lineY + r) / 2;
+      // Width of the band at the text's height (the circle narrows towards the bottom).
+      const maxWidth = 2 * Math.sqrt(r * r - textY * textY) * 0.92;
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      const fontSize = Math.max(8, r * 0.34);
-      ctx.font = `700 ${fontSize}px sans-serif`;
-      ctx.fillText(this.fit(ctx, name, r * 1.6), 0, r * 0.5);
-      ctx.restore();
-
-      // Ligne de séparation.
-      ctx.save();
-      ctx.rotate(SPLIT_ANGLE);
-      ctx.beginPath();
-      ctx.moveTo(-r, 0);
-      ctx.lineTo(r, 0);
-      ctx.lineWidth = Math.max(1.5, r * 0.06);
-      ctx.strokeStyle = '#fff';
-      ctx.stroke();
-      ctx.restore();
+      ctx.font = `700 ${Math.max(8, r * 0.24)}px sans-serif`;
+      ctx.fillText(this.fit(ctx, name, maxWidth), 0, textY);
     }
 
     ctx.restore();
@@ -558,12 +548,31 @@ export class VoteBubblesComponent {
     // Contour (hors clip).
     ctx.save();
     ctx.translate(x, y);
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
-    // Without the colored name half, the outline keeps the owner's color (who this voter voted for).
-    ctx.lineWidth = selected ? 4 : showName ? 2 : 3;
-    ctx.strokeStyle = selected ? '#1982c4' : showName ? 'rgba(0,0,0,.45)' : color;
-    ctx.stroke();
+    if (selected) {
+      // Picked while voting: thick blue ring outside the ball (the picture stays whole), a white gap so it
+      // stands out from the ball's own colour, and a slow pulsing glow.
+      const ring = Math.max(5, r * 0.12);
+      const gap = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, r + gap / 2, 0, Math.PI * 2);
+      ctx.lineWidth = gap;
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, r + gap + ring / 2, 0, Math.PI * 2);
+      ctx.lineWidth = ring;
+      ctx.strokeStyle = SELECTED_COLOR;
+      ctx.shadowColor = SELECTED_COLOR;
+      ctx.shadowBlur = 14 + Math.sin(t * 4) * 8;
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      // Without the coloured name band, the outline keeps the owner's colour (who this voter voted for).
+      ctx.lineWidth = hovered ? 3 : showName ? 2 : 3;
+      ctx.strokeStyle = hovered ? 'rgba(0,0,0,.6)' : showName ? 'rgba(0,0,0,.45)' : color;
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
