@@ -123,7 +123,8 @@
   },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",
-    "submitAnswer": "Soumettre la réponse"
+    "submitAnswer": "Soumettre la réponse",
+    "nextQuestionIn": "Prochaine question dans"
   },
   "chat": {
     "noMessagesDisplay": "Aucun message à afficher.",
