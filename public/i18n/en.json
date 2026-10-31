@@ -123,7 +123,8 @@
   },
   "question": {
     "enterYourAnswer": "Enter your answer...",
-    "submitAnswer": "Submit Answer"
+    "submitAnswer": "Submit Answer",
+    "nextQuestionIn": "Next question in"
   },
   "chat": {
     "noMessagesDisplay": "No messages to display.",

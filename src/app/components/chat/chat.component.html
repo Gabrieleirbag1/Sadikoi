@@ -1,5 +1,6 @@
-<section class="chat-container">
-  <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()">
+<section class="chat-container" #chatContainer>
+  <!-- The profile card points at an avatar: the user moving the thread closes it. -->
+  <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()" (wheel)="closeProfile()" (touchmove)="closeProfile()">
     @for (message of messages(); track message.id) {
       @let previous = messages()[$index - 1];
       @let isNewDay = !previous || dayKey(previous) !== dayKey(message);
@@ -9,11 +10,19 @@
       }
       <div class="message-row" [class.own]="isOwnMessage(message)">
         @if (isFirstOfRun) {
-          <app-profile-image-picker
-            [currentImageUrl]="message.sender.profile_picture"
-            [onlyDisplay]="true"
-            [imgClass]="'chat-user-icon'"
-          />
+          <button
+            type="button"
+            class="chat-avatar-btn"
+            [title]="message.sender.username"
+            [attr.aria-expanded]="userProfileService.isOpenFor(message.sender, profileScope)"
+            (click)="toggleProfile(message.sender, $event)"
+          >
+            <app-profile-image-picker
+              [currentImageUrl]="message.sender.profile_picture"
+              [onlyDisplay]="true"
+              [imgClass]="'chat-user-icon'"
+            />
+          </button>
         } @else {
           <span class="chat-avatar-spacer"></span>
         }
@@ -41,13 +50,28 @@
     }
   </div>
 
+  @if (userProfileService.isOpenFor(profileUser(), profileScope)) {
+    <div
+      class="user-profile-popover chat-profile-popover"
+      role="dialog"
+      [class.flip-x]="profilePos().flipX"
+      [class.flip-y]="profilePos().flipY"
+      [style.left.px]="profilePos().x"
+      [style.top.px]="profilePos().y"
+    >
+      <app-user-profile [user]="profileUser()" [group]="group()"></app-user-profile>
+    </div>
+  }
+
   @if (!readOnly()) {
-  <div class="chat-input-area">
+  <!-- Buttons keep the focus in the input (mousedown): blurring it would bring the bubbles back and move
+       the button away before the click lands. -->
+  <div class="chat-input-area" (focusin)="inputFocused.set(true)" (focusout)="onInputAreaFocusOut($event)">
     @if (showGifPicker()) {
       <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
     }
 
-    <button type="button" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
       {{ 'chat.gif' | translate }}
     </button>
     <input
@@ -56,7 +80,7 @@
       (keydown.enter)="sendMessage(messageContent.value, messageContent)"
       #messageContent
     />
-    <button type="button" class="background-secondary" (click)="sendMessage(messageContent.value, messageContent)">
+    <button type="button" class="background-secondary" (mousedown)="$event.preventDefault()" (click)="sendMessage(messageContent.value, messageContent)">
       >
     </button>
   </div>

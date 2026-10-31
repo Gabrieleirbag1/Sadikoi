@@ -34,6 +34,12 @@
   height: 30px;
 }
 
+.user-profile-icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
 .register-user-icon {
   width: 100px;
   height: 100px;

@@ -5,13 +5,14 @@ import { QuestionComponent } from "../question/question.component";
 import { LoggerService } from '../../services/logger/logger.service';
 import { GroupOptionsComponent } from "../modals/group-options-modal/group-options-modal.component";
 import { GroupNotificationsModalComponent } from '../modals/group-notifications-modal/group-notifications-modal.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HomeFooterComponent } from "../layout/home-footer/home-footer.component";
 import { ModalService } from '../../services/modal/modal.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { NotificationService } from '../../services/notification/notification.service';
+import { PushService } from '../../services/push/push.service';
 import { copyToClipboard } from '../../utils/copy-to-clipboard';
 import { environment } from '../../../environments/environment';
 import { Capacitor } from '@capacitor/core';
@@ -27,6 +28,8 @@ export class GroupComponent implements OnInit, OnDestroy {
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly pushService = inject(PushService);
   private readonly modalService = inject(ModalService);
   private readonly websocketService = inject(WebsocketService);
   private readonly destroyRef = inject(DestroyRef);
@@ -45,9 +48,11 @@ export class GroupComponent implements OnInit, OnDestroy {
     //   return;
     // }
 
-    const groupIdUrl = window.location.pathname.split('/').pop();
-    const groupId = groupIdUrl ? parseInt(groupIdUrl, 10) : null;
+    // From the route, not window.location: during a navigation the browser URL may still be the previous page's.
+    const groupId = parseInt(this.route.snapshot.paramMap.get('id') ?? '', 10);
     if (groupId) {
+      // The group is open: its notifications in the phone's tray have been seen.
+      this.pushService.clearGroupNotifications(groupId);
       await this.fetchGroup(groupId);
     } else {
       this.logger.error('Invalid group ID in URL');

@@ -102,3 +102,12 @@ html::-webkit-scrollbar {
         height: auto;
     }
 }
+
+/* Phone, writing in the chat (ChatComponent sets .chat-typing): the keyboard leaves little room, so the
+   bubbles and the bottom menu bar make way for the chat. */
+@media (max-width: 768px) {
+  html.chat-typing .question-votes-container,
+  html.chat-typing app-home-footer {
+    display: none;
+  }
+}

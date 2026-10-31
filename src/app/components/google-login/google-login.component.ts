@@ -2,7 +2,6 @@ import { AfterViewInit, Component, inject, NgZone } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
 import { secrets } from '../../../environments/secrets';
 import { LoggerService } from '../../services/logger/logger.service';
 import { LoadingService } from '../../services/loading/loading.service';
@@ -33,7 +32,6 @@ export class GoogleLoginComponent implements AfterViewInit {
   private readonly logger = inject(LoggerService);
   private readonly ngZone = inject(NgZone);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly loading = inject(LoadingService);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
@@ -95,7 +93,7 @@ export class GoogleLoginComponent implements AfterViewInit {
   private async loginWithToken(token: string): Promise<void> {
     const success = await this.authService.googleLogin(token);
     if (success) {
-      this.router.navigate(['/groups']); // Adjust destination as needed
+      this.authService.redirectAfterLogin();
     }
   }
 }
