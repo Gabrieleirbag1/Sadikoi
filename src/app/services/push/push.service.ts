@@ -1,5 +1,6 @@
 import { inject, Injectable, NgZone, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { PushNotifications, PushNotificationSchema } from '@capacitor/push-notifications';
@@ -17,6 +18,10 @@ const CHANNELS = [
   { id: 'reminders', nameKey: 'notificationSettings.voteReminder' },
   { id: 'answers', nameKey: 'notificationSettings.answers' },
 ];
+
+/** Tags of a group's notifications (API, notifications.py): opening the group clears them all. */
+const GROUP_TAG_PREFIXES = ['chat', 'answers', 'question'];
+const groupTags = (groupId: number) => GROUP_TAG_PREFIXES.map(prefix => `${prefix}-${groupId}`);
 
 /** Stable numeric id for a tag ("chat-12"): a new notification with the same tag replaces the previous one. */
 function notificationId(tag: string): number {
@@ -100,6 +105,32 @@ export class PushService {
     await LocalNotifications.addListener('localNotificationActionPerformed', ({ notification }) => {
       this.openRoute(notification.extra?.route);
     });
+    // Back in the app on a group's page (e.g. a notification of the group already open was tapped, which
+    // doesn't reload the page): what arrived meanwhile has been seen.
+    await App.addListener('resume', () => {
+      const groupId = this.router.url.match(/^\/group\/(\d+)(?:[/?#]|$)/)?.[1];
+      if (groupId) this.clearGroupNotifications(Number(groupId));
+    });
+  }
+
+  /** The group's page is open: its notifications (chat, answers, question, reminder) leave the tray. */
+  public async clearGroupNotifications(groupId: number): Promise<void> {
+    if (!this.available) {
+      return;
+    }
+    const tags = groupTags(groupId);
+    try {
+      // Shown by Firebase (app closed or in the background): tagged by the API.
+      const { notifications } = await PushNotifications.getDeliveredNotifications();
+      const delivered = notifications.filter(n => n.tag && tags.includes(n.tag));
+      if (delivered.length) {
+        await PushNotifications.removeDeliveredNotifications({ notifications: delivered });
+      }
+      // Shown by showWhileOpen (app open on another page): their id comes from the same tags.
+      await LocalNotifications.removeDeliveredNotificationsById({ ids: tags.map(notificationId) });
+    } catch (error) {
+      this.logger.error('Failed to clear the group notifications:', error);
+    }
   }
 
   /** The API only sends paths of the app ("/group/12"). */
