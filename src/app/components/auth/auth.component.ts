@@ -1,6 +1,6 @@
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -16,7 +16,6 @@ type DisplayMode = 'register' | 'login' | 'verifyDevice';
 })
 export class AuthComponent {
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
   protected isAuthenticated = this.authService.isAuthenticated();
   protected displayMode = signal<DisplayMode>('login');
 
@@ -89,7 +88,7 @@ export class AuthComponent {
           this.setDisplayMode('verifyDevice');
         } else {
           this.isAuthenticated = true;
-          this.router.navigate(['/']);
+          this.authService.redirectAfterLogin();
         }
       }
     }

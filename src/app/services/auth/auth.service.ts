@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { getDeviceId } from '../../utils/device-id';
 import { PushService } from '../push/push.service';
+import { clearPostLoginRedirect, takePostLoginRedirect } from '../../utils/post-login-redirect';
 
 const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password', '/legal', '/privacy', '/terms', '/delete-account'];
 
@@ -246,7 +247,14 @@ export class AuthService {
     }
   }
 
+  /** Just logged in: the page the user was sent away from (e.g. an invitation), or the home page. */
+  public redirectAfterLogin(): Promise<boolean> {
+    return this.router.navigateByUrl(takePostLoginRedirect() ?? '/');
+  }
+
   public async logout(forgetDevice: boolean): Promise<void> {
+    // Chosen logout: a page saved earlier must not open for the next account.
+    clearPostLoginRedirect();
     const payload = { device_id: this.getDeviceId(), device_name: navigator.platform, forget_device: forgetDevice };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/logout/`, payload, { withCredentials: true }));
@@ -260,6 +268,7 @@ export class AuthService {
   }
 
   public async logoutDevices(): Promise<void> {
+    clearPostLoginRedirect();
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(`${environment.apiUrl}auth/security/logout-devices/`, { withCredentials: true }));
       this.logger.debug('Logout all devices successful:', response);
