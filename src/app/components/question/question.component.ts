@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, computed, inject, model, OnInit, SimpleChanges, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, computed, effect, inject, model, OnInit, SimpleChanges, signal, untracked, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { QuestionService } from '../../services/question/question.service';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,15 @@ import { FitTextDirective } from '../../directives/fit-text.directive';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
+/** Countdown over but still the old question (phone clock a bit ahead of the server): ask again after this delay. */
+const NEXT_QUESTION_RETRY_MS = 10_000;
+
+/** "03:07:09" */
+function formatCountdown(ms: number): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(Math.floor(total / 3600))}:${pad(Math.floor(total / 60) % 60)}:${pad(total % 60)}`;
+}
 
 @Component({
   selector: 'app-question',
@@ -64,8 +73,33 @@ export class QuestionComponent implements OnInit{
   });
   @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
+  /** Ticks every second for the countdown to the next question. */
+  private readonly now = signal(Date.now());
+  private readonly nextQuestionAt = computed(() => {
+    const time = Date.parse(this.currentQuestion()?.next_question_at ?? '');
+    return Number.isFinite(time) ? time : null;
+  });
+  protected readonly countdown = computed(() => {
+    const next = this.nextQuestionAt();
+    return next === null ? null : formatCountdown(next - this.now());
+  });
+  private lastNextQuestionRequest = 0;
+
+  public constructor() {
+    // The reset time changed in the group options: the next question comes at another time.
+    let resetTime: string | undefined;
+    effect(() => {
+      const reset = this.group()?.daily_reset_timestamp;
+      if (resetTime !== undefined && reset !== resetTime) untracked(() => this.refreshCurrentQuestion());
+      resetTime = reset;
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     this.connectedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    this.now.set(Date.now());
+    const timer = setInterval(() => this.tick(), 1000);
+    this.destroyRef.onDestroy(() => clearInterval(timer));
     await this.fetchQuestion();
 
     this.websocketService.listen<{ question_id: number; votes: Vote[] }>('new_vote').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(payload => {
@@ -89,11 +123,23 @@ export class QuestionComponent implements OnInit{
       }
     });
 
-    this.websocketService.reconnected$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.refreshAfterReconnect());
+    this.websocketService.reconnected$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.refreshCurrentQuestion());
   }
 
-  /** Catches up on what happened while disconnected (new question, votes), without clearing a half-written answer. */
-  private async refreshAfterReconnect(): Promise<void> {
+  /** At the end of the countdown, asks for the new question: the server creates it then, and tells the
+   *  other members (new_question), so the voting screen shows up without reloading the page. */
+  private tick(): void {
+    const now = Date.now();
+    this.now.set(now);
+    const next = this.nextQuestionAt();
+    if (next !== null && now >= next && now - this.lastNextQuestionRequest >= NEXT_QUESTION_RETRY_MS) {
+      this.lastNextQuestionRequest = now;
+      this.refreshCurrentQuestion();
+    }
+  }
+
+  /** Catches up with the server (new question, votes), without clearing a half-written answer. */
+  private async refreshCurrentQuestion(): Promise<void> {
     const group = this.group();
     if (!group) return;
     try {
@@ -109,7 +155,7 @@ export class QuestionComponent implements OnInit{
         this.populateVoteBubbles();
       }
     } catch (error) {
-      this.logger.error('Error refreshing question after reconnection:', error);
+      this.logger.error('Error refreshing the current question:', error);
     }
   }
 

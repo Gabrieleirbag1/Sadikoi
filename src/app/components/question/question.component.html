@@ -1,5 +1,12 @@
 <section class="main-container">
   <div class="question-container">
+    @if (countdown(); as left) {
+      <div class="next-question-timer" role="timer">
+        <div class="next-question-icon" aria-hidden="true">⏳</div>
+        <div class="next-question-label">{{ 'question.nextQuestionIn' | translate }}</div>
+        <div class="next-question-time">{{ left }}</div>
+      </div>
+    }
     <div class="question-content">
       <span class="question-text" [appFitText]="question()?.content">{{ question()?.content }}</span>
       @if (!question()?.canWrite) {

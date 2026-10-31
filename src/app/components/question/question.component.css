@@ -130,6 +130,30 @@
   justify-self: end;
 }
 
+/* Countdown to the next question of the day: in the empty left column, across from the calendar. */
+.next-question-timer {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.next-question-label {
+  color: var(--muted);
+}
+
+.next-question-time {
+  font-weight: bold;
+  font-variant-numeric: tabular-nums; /* the digits don't shift every second */
+  color: var(--secondary);
+}
+
 .calendar-popover {
     position: absolute;
     top: calc(100% + 8px); /* sits below the button, with a gap */
@@ -202,6 +226,14 @@ app-vote-bubbles.vote-bubbles-voting {
 
   .calendar-anchor {
     grid-column: 3;
+  }
+
+  /* Own line under the question, small. */
+  .next-question-timer {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 2px 10px;
+    font-size: 0.85rem;
   }
 
   /* No inline line box under the image: both icons are exactly 36 px tall. */

@@ -11,4 +11,6 @@ interface Question {
   item_name: string,
   votes?: Vote[],
   announcement?: ItemAnnouncement | null,
+  /** Current question only (ISO, UTC): when the next question of the day comes out. */
+  next_question_at?: string,
 }
