@@ -11,12 +11,16 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ReportUserService } from '../../services/report-user/report-user.service';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
 /** Approximate profile card size, only used to decide when to flip it away from an edge. */
 const PROFILE_WIDTH = 280;
 const PROFILE_HEIGHT = 180;
+/** Browser only: the visible screen shrinking by more than this (px) means the on-screen keyboard is open. */
+const KEYBOARD_MIN_HEIGHT = 150;
 
 @Component({
   selector: 'app-chat',
@@ -49,6 +53,11 @@ export class ChatComponent {
   private lastScrollTop = 0;
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
   private readonly chatContainer = viewChild<ElementRef<HTMLElement>>('chatContainer');
+  private readonly inputArea = viewChild<ElementRef<HTMLElement>>('inputArea');
+  /** Browser only: visible screen height when the input got the focus, before the keyboard opened. */
+  private heightBeforeKeyboard = 0;
+  /** Browser only: the keyboard was seen open since the input got the focus. */
+  private keyboardSeen = false;
 
   /** Author whose profile card is open (clicked avatar). */
   protected readonly profileUser = signal<User | null>(null);
@@ -67,8 +76,22 @@ export class ChatComponent {
 
   constructor() {
     effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
+    // Android's back button closes the keyboard but leaves the focus in the input: the chat would
+    // keep the whole screen. When the keyboard closes, we drop the focus ourselves.
+    let viewport: VisualViewport | null = null;
+    const onViewportResize = () => this.onViewportResize(viewport!.height);
+    if (Capacitor.isNativePlatform()) {
+      // The app's screen resizes in several steps while the keyboard opens: only the plugin is reliable.
+      const listener = Keyboard.addListener('keyboardDidHide', () => this.blurInput());
+      this.destroyRef.onDestroy(() => void listener.then(l => l.remove()));
+    } else {
+      viewport = window.visualViewport;
+      viewport?.addEventListener('resize', onViewportResize);
+    }
+
     this.destroyRef.onDestroy(() => {
       document.documentElement.classList.remove(TYPING_CLASS);
+      viewport?.removeEventListener('resize', onViewportResize);
       this.userProfileService.hide(this.profileScope);
     });
 
@@ -173,6 +196,27 @@ export class ChatComponent {
     if (!this.profileUser()) return;
     this.userProfileService.hide(this.profileScope);
     this.profileUser.set(null);
+  }
+
+  protected onInputAreaFocusIn(): void {
+    if (!this.inputFocused()) {
+      this.heightBeforeKeyboard = window.visualViewport?.height ?? 0;
+      this.keyboardSeen = false;
+    }
+    this.inputFocused.set(true);
+  }
+
+  /** Browser: the keyboard is closed once the screen, after shrinking for it, is back to its full height. */
+  private onViewportResize(height: number): void {
+    if (!this.inputFocused()) return;
+    const shrunk = this.heightBeforeKeyboard - height > KEYBOARD_MIN_HEIGHT;
+    if (shrunk) this.keyboardSeen = true;
+    else if (this.keyboardSeen) this.blurInput();
+  }
+
+  private blurInput(): void {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && this.inputArea()?.nativeElement.contains(active)) active.blur();
   }
 
   protected onInputAreaFocusOut(event: FocusEvent): void {
