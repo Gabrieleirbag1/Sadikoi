@@ -1,0 +1,105 @@
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: tutorial-fade-in 200ms ease-out;
+}
+
+/* Tips: the screen they explain stays visible behind them. */
+.modal.tutorial-small {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+  max-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background-color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: tutorial-pop-in 250ms ease-out;
+}
+
+.tutorial-small .modal-dialog {
+  max-width: 340px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.4rem;
+  overflow-wrap: anywhere;
+}
+
+.tutorial-small .modal-title {
+  font-size: 1.2rem;
+}
+
+.modal-close {
+  padding: 0 8px;
+}
+
+.tutorial-body {
+  line-height: 1.45;
+}
+
+/* Content projected by the screen showing the popup. */
+.tutorial-body ::ng-deep p {
+  margin: 0 0 8px;
+}
+
+.tutorial-body ::ng-deep p:last-child {
+  margin-bottom: 0;
+}
+
+.tutorial-body ::ng-deep ol,
+.tutorial-body ::ng-deep ul {
+  margin: 0 0 10px;
+  padding-left: 1.3em;
+}
+
+.tutorial-body ::ng-deep li {
+  margin-bottom: 6px;
+}
+
+.tutorial-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Reset PaperCSS's [type=button] styles: under 520px they centre it and add a 1rem bottom margin. */
+.tutorial-footer button {
+  margin: 0;
+}
+
+@keyframes tutorial-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes tutorial-pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal-dialog {
+    animation: none;
+  }
+}
