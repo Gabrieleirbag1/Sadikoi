@@ -54,7 +54,8 @@
 
 .user-profile-item {
   display: flex;
-  align-items: center;
+  /* The streak sits at the foot of the icon. */
+  align-items: flex-end;
   gap: 4px;
   padding: 2px 8px 2px 4px;
   background-color: var(--primary-light, #cdcccb);
@@ -62,8 +63,13 @@
 }
 
 .user-profile-streak {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
   font-weight: bold;
-  font-size: 0.9rem;
+  /* Close to the icon height (24px). */
+  font-size: 1.1rem;
   white-space: nowrap;
 }
 

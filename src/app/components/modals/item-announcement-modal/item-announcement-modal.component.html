@@ -46,7 +46,7 @@
                 @for (item of member.items; track item.id) {
                   <div class="announcement-item">
                     <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
-                    <span class="announcement-streak" title="Streak">🔥 {{ item.streak }}</span>
+                    <span class="announcement-streak" title="Streak"><span aria-hidden="true">🔥</span>{{ item.streak }}</span>
                   </div>
                 }
               </div>

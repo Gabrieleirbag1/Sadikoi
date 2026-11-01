@@ -17,7 +17,7 @@
       @for (item of visibleItems(); track $index) {
         <div class="user-profile-item border border-1">
           <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
-          <span class="user-profile-streak" title="Streak">🔥 {{ item.streak }}</span>
+          <span class="user-profile-streak" title="Streak"><span aria-hidden="true">🔥</span>{{ item.streak }}</span>
         </div>
       }
     </div>
