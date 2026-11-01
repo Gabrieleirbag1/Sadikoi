@@ -29,6 +29,81 @@
   display: none;
 }
 
+/* Like / dislike, stacked next to the question. A fixed-width slot, even when empty, so the text
+   always has the same width (FitTextDirective keeps it on 2 lines at most).
+   `.question-content` in the selector: beats `.question-container span` (font size of the question). */
+.question-content .question-feedback {
+  flex: 0 0 18px;
+  width: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0;
+}
+
+.question-content .question-feedback .icon-button {
+  display: flex;
+  opacity: 0.5;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.question-content .question-feedback .icon-button:hover,
+.question-content .question-feedback .icon-button:focus-visible {
+  opacity: 1;
+  transform: scale(1.15);
+  outline: none;
+}
+
+.question-feedback svg {
+  width: 16px;
+  height: 16px;
+}
+
+.feedback-like {
+  color: var(--success);
+}
+
+.feedback-dislike {
+  color: var(--danger);
+}
+
+/* Picked: the chosen thumb pops, the other one goes, then both fade out. */
+.question-content .question-feedback.rated {
+  animation: feedback-fade-out 400ms ease-in 450ms forwards;
+}
+
+.question-content .question-feedback.rated .icon-button {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.question-content .question-feedback.rated .icon-button.chosen {
+  opacity: 1;
+  animation: feedback-pop 450ms ease-out;
+}
+
+@keyframes feedback-pop {
+  0% { transform: scale(1) rotate(0); }
+  40% { transform: scale(1.6) rotate(-14deg); }
+  70% { transform: scale(0.9) rotate(6deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes feedback-fade-out {
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .question-content .question-feedback.rated {
+    animation-delay: 0ms;
+  }
+
+  .question-content .question-feedback.rated .icon-button.chosen {
+    animation: none;
+  }
+}
+
 .question-container span {
   font-size: 2rem;
   font-weight: bold;
@@ -246,6 +321,17 @@ app-vote-bubbles.vote-bubbles-voting {
 
   .question-container span {
     font-size: 1.4rem;
+  }
+
+  .question-content .question-feedback {
+    flex-basis: 16px;
+    width: 16px;
+    gap: 3px;
+  }
+
+  .question-feedback svg {
+    width: 15px;
+    height: 15px;
   }
 
   /* Item and calendar side by side on the right, centered on the same line. */

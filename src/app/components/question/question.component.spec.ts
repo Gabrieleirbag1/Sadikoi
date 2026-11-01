@@ -104,4 +104,71 @@ describe('QuestionComponent', () => {
       expect(tip()).toBeNull();
     });
   });
+
+  describe('question feedback', () => {
+    const thumbs = () => fixture.nativeElement.querySelectorAll('.question-feedback .icon-button') as NodeListOf<HTMLElement>;
+    const show = (votes: unknown[], extra: Partial<Question> = {}) => {
+      component.question.set({ id: 7, content: 'Q', canWrite: false, votes, ...extra } as unknown as Question);
+      fixture.detectChanges();
+    };
+    const voted = [{ voterUser: { id: 5 }, targets: [{ id: 6 }] }];
+    let rateQuestion: MockInstance<QuestionService['rateQuestion']>;
+
+    beforeEach(() => {
+      rateQuestion = vi.spyOn(TestBed.inject(QuestionService), 'rateQuestion').mockResolvedValue();
+      fixture.componentRef.setInput('group', { id: 1, users: [] } as unknown as Group);
+    });
+
+    it('is hidden while voting', () => {
+      show([]);
+      expect(thumbs().length).toBe(0);
+      // the slot is still there, so the question text keeps the same width
+      expect(fixture.nativeElement.querySelector('.question-feedback')).not.toBeNull();
+    });
+
+    it('shows a like and a dislike once the votes are shown', () => {
+      show(voted);
+      expect([...thumbs()].map(t => t.classList.contains('feedback-like'))).toEqual([true, false]);
+    });
+
+    it('is hidden when the question was already rated', () => {
+      show(voted, { my_feedback: false });
+      expect(thumbs().length).toBe(0);
+    });
+
+    it('sends the rating, then fades the thumbs out', async () => {
+      show(voted);
+      thumbs()[0].click();
+      fixture.detectChanges();
+      expect(rateQuestion).toHaveBeenCalledWith(1, 7, true);
+      const slot = fixture.nativeElement.querySelector('.question-feedback') as HTMLElement;
+      expect(slot.classList).toContain('rated');
+      expect(thumbs()[0].classList).toContain('chosen');
+      expect(component.question()?.my_feedback).toBe(true);
+
+      // the chosen thumb's pop bubbles up: the thumbs stay
+      thumbs()[0].dispatchEvent(new Event('animationend', { bubbles: true }));
+      fixture.detectChanges();
+      expect(thumbs().length).toBe(2);
+
+      slot.dispatchEvent(new Event('animationend'));
+      fixture.detectChanges();
+      expect(thumbs().length).toBe(0);
+    });
+
+    it('rates only once', () => {
+      show(voted);
+      thumbs()[0].click();
+      thumbs()[1].click();
+      expect(rateQuestion).toHaveBeenCalledTimes(1);
+    });
+
+    it('stays hidden when the calendar shows the rated question again (its copy has no my_feedback)', () => {
+      show(voted);
+      thumbs()[1].click();
+      fixture.nativeElement.querySelector('.question-feedback').dispatchEvent(new Event('animationend'));
+      show(voted);
+      expect(thumbs().length).toBe(0);
+    });
+  });
 });

@@ -89,6 +89,22 @@ export class QuestionComponent implements OnInit{
   });
   @ViewChild('calendarAnchor') calendarAnchor?: ElementRef<HTMLElement>;
 
+  /** Questions rated during this visit (the calendar keeps its own copies, without `my_feedback`). */
+  private readonly ratedQuestionIds = signal<ReadonlySet<number>>(new Set());
+  /** The thumb just picked: it pops, then both thumbs fade out. */
+  protected readonly feedbackAnimation = signal<{ questionId: number; liked: boolean } | null>(null);
+  /** Like / dislike thumbs: only once the votes are shown, until the question is rated. */
+  protected readonly showFeedback = computed(() => {
+    const question = this.question();
+    if (!question?.votes?.length) return false;
+    if (this.feedbackAnimation()?.questionId === question.id) return true;
+    return question.my_feedback == null && !this.ratedQuestionIds().has(question.id);
+  });
+  protected readonly feedbackRated = computed(() => {
+    const animation = this.feedbackAnimation();
+    return !!animation && animation.questionId === this.question()?.id ? animation : null;
+  });
+
   /** Ticks every second for the countdown to the next question. */
   private readonly now = signal(Date.now());
   private readonly nextQuestionAt = computed(() => {
@@ -258,6 +274,27 @@ export class QuestionComponent implements OnInit{
     } catch (error) {
       this.logger.error('Error submitting vote:', error);
     }
+  }
+
+  protected async rate(liked: boolean): Promise<void> {
+    const question = this.question();
+    const group = this.group();
+    if (!question || !group || !this.showFeedback() || this.feedbackRated()) return;
+    this.feedbackAnimation.set({ questionId: question.id, liked });
+    this.ratedQuestionIds.update(ids => new Set(ids).add(question.id));
+    const rated = (q: Question | null) => q && q.id === question.id ? { ...q, my_feedback: liked } : q;
+    this.question.update(rated);
+    this.currentQuestion.update(rated);
+    try {
+      await this.questionService.rateQuestion(group.id, question.id, liked);
+    } catch (error) {
+      this.logger.error('Error rating the question:', error);
+    }
+  }
+
+  /** End of the fade out (not of the thumb's pop, which bubbles up too): the thumbs are removed. */
+  protected onFeedbackAnimationEnd(event: AnimationEvent): void {
+    if (event.target === event.currentTarget) this.feedbackAnimation.set(null);
   }
 
   protected closeTip(step: 'vote' | 'results'): void {

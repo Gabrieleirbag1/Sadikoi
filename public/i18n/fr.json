@@ -124,7 +124,9 @@
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",
     "submitAnswer": "Soumettre la réponse",
-    "nextQuestionIn": "Prochaine question dans"
+    "nextQuestionIn": "Prochaine question dans",
+    "like": "J'aime cette question",
+    "dislike": "Je n'aime pas cette question"
   },
   "chat": {
     "noMessagesDisplay": "Aucun message à afficher.",
