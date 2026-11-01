@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
 import { DatetimeService } from '../datetime/datetime.service';
+import { SKIP_ERROR_TOAST } from '../../interceptors/error.interceptor';
 
 @Injectable({
   providedIn: 'root',
@@ -54,6 +55,20 @@ export class QuestionService {
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to submit vote:', error);
+      throw error;
+    }
+  }
+
+  /** Like or dislike a question whose votes are shown (once per question). Discreet: no error toast. */
+  public async rateQuestion(groupId: number, questionId: number, liked: boolean): Promise<void> {
+    try {
+      await firstValueFrom(this.httpClient.post<ApiResponse>(
+        `${environment.apiUrl}questions/${groupId}/${questionId}/feedback/`,
+        { liked },
+        { withCredentials: true, context: new HttpContext().set(SKIP_ERROR_TOAST, true) },
+      ));
+    } catch (error) {
+      this.logger.error('Failed to rate question:', error);
       throw error;
     }
   }

@@ -13,4 +13,6 @@ interface Question {
   announcement?: ItemAnnouncement | null,
   /** Current question only (ISO, UTC): when the next question of the day comes out. */
   next_question_at?: string,
+  /** The connected user's opinion of this question: liked (true), disliked (false), not rated yet (null). */
+  my_feedback?: boolean | null,
 }
