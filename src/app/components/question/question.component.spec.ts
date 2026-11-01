@@ -68,4 +68,40 @@ describe('QuestionComponent', () => {
       expect(getQuestion).toHaveBeenCalledTimes(3);
     });
   });
+
+  describe('tutorial tips', () => {
+    const tip = () => (component as any).tipToShow();
+    const ask = (votes: unknown[], extra: Partial<Question> = {}) =>
+      component.question.set({ id: 1, content: 'Q', canWrite: false, votes, ...extra } as unknown as Question);
+
+    beforeEach(() => {
+      localStorage.clear();
+      localStorage.setItem('user', JSON.stringify({ id: 5 }));
+    });
+
+    afterEach(() => localStorage.clear());
+
+    it('explains voting first, then the results once voted, each only once', () => {
+      ask([]);
+      expect(tip()).toBe('vote');
+      (component as any).closeTip('vote');
+      expect(tip()).toBeNull();
+
+      ask([{ voterUser: { id: 5 }, targets: [{ id: 6 }] }]);
+      expect(tip()).toBe('results');
+      (component as any).closeTip('results');
+      expect(tip()).toBeNull();
+    });
+
+    it('waits for the item announcement to be closed', () => {
+      ask([]);
+      (component as any).announcementToShow.set({ type: 'new' });
+      expect(tip()).toBeNull();
+    });
+
+    it('has no tip for written-answer questions', () => {
+      ask([], { canWrite: true });
+      expect(tip()).toBeNull();
+    });
+  });
 });

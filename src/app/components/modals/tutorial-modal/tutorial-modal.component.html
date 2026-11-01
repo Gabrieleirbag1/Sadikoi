@@ -1,0 +1,16 @@
+<div class="modal" [class]="'tutorial-' + size()" role="dialog" aria-modal="true" aria-labelledby="tutorial-title" (click)="close()">
+  <div class="modal-dialog border" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h1 id="tutorial-title" class="modal-title">{{ title() }}</h1>
+      <span class="modal-close" role="button" tabindex="0" [attr.aria-label]="'modal.close' | translate" (click)="close()" (keydown.enter)="close()">X</span>
+    </div>
+
+    <div class="tutorial-body">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="tutorial-footer">
+      <button type="button" class="background-secondary" (click)="close()">{{ 'tutorial.gotIt' | translate }}</button>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { getDeviceId } from '../../utils/device-id';
 import { PushService } from '../push/push.service';
 import { clearPostLoginRedirect, takePostLoginRedirect } from '../../utils/post-login-redirect';
+import { TutorialService } from '../tutorial/tutorial.service';
 
 const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password', '/legal', '/privacy', '/terms', '/delete-account'];
 
@@ -20,6 +21,7 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   private readonly push = inject(PushService);
+  private readonly tutorial = inject(TutorialService);
   private isAuthenticatedFlag = false;
 
   constructor() {
@@ -249,7 +251,10 @@ export class AuthService {
 
   /** Just logged in: the page the user was sent away from (e.g. an invitation), or the home page. */
   public redirectAfterLogin(): Promise<boolean> {
-    return this.router.navigateByUrl(takePostLoginRedirect() ?? '/');
+    const url = takePostLoginRedirect();
+    // Account made to answer an invitation: straight to the group, no welcome popup, now or later.
+    if (url?.startsWith('/group/invitations/')) this.tutorial.markSeen('welcome');
+    return this.router.navigateByUrl(url ?? '/');
   }
 
   public async logout(forgetDevice: boolean): Promise<void> {

@@ -189,6 +189,29 @@
     "duoTitle": "Résultats des duos",
     "votedBy": "Voté par"
   },
+  "tutorial": {
+    "gotIt": "Compris !",
+    "welcome": {
+      "title": "Bienvenue sur Sadikoi ! 👋",
+      "intro": "Le principe est simple :",
+      "rules": {
+        "question": "Chaque jour, une nouvelle question tombe dans ton groupe : « Qui serait le premier à… ? »",
+        "vote": "Tu votes pour un membre du groupe (ou pour un duo, selon la question).",
+        "results": "Une fois que tu as voté, tu découvres qui a voté pour qui, et vous en parlez dans le chat.",
+        "item": "Le plus voté remporte l'objet du jour… et peut se le faire voler le lendemain."
+      },
+      "start": "Pour commencer, crée un groupe avec le bouton « + », ou rejoins celui d'un ami grâce à son lien d'invitation."
+    },
+    "vote": {
+      "title": "À toi de voter !",
+      "body": "Touche la boule de la personne pour qui tu votes (ou les deux boules, pour un duo), puis appuie sur « {{button}} ». Tu peux changer d'avis tant que tu n'as pas validé."
+    },
+    "results": {
+      "title": "Qui a voté pour qui ?",
+      "body": "Chaque grosse boule est une personne votée : plus elle a reçu de votes, plus elle est grosse. Les petites boules qui tournent autour sont les membres qui ont voté pour elle.",
+      "help": "Si tu n'as pas compris, clique sur le bouton « {{button}} » en haut à droite."
+    }
+  },
   "userProfile": {
     "showMore": "Voir {{count}} de plus",
     "showLess": "Voir moins",
