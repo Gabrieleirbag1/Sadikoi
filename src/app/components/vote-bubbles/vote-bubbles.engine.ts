@@ -83,7 +83,6 @@ export class BubbleEngine {
   public readonly options: EngineOptions;
   /** Orbite : un tour complet en ~8 s. */
   private orbitSpeed = (Math.PI * 2) / 8;
-  private frozenId: number | null = null;
   /** Solid rectangles (e.g. the answer card) that candidates bounce on. */
   private obstacles: Rect[] = [];
   /**
@@ -167,11 +166,6 @@ export class BubbleEngine {
     });
   }
 
-  /** Immobilise un candidat (ex. sélectionné) pour faciliter le clic. */
-  public freeze(id: number | null): void {
-    this.frozenId = id;
-  }
-
   public step(dt: number): void {
     dt = Math.min(dt, 0.05);
     const { speedFactor } = this.options;
@@ -182,7 +176,6 @@ export class BubbleEngine {
     for (const c of this.candidates) {
       c.r += (c.targetR - c.r) * Math.min(1, dt * 6);
       c.orbitAngle += this.orbitSpeed * k;
-      if (c.id === this.frozenId) continue;
 
       // Dérive aléatoire de la direction.
       c.vx += (this.random() - 0.5) * maxSpeed * 2 * dt;

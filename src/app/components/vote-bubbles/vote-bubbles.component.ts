@@ -117,11 +117,6 @@ export class VoteBubblesComponent {
       if (this.ready) this.engine.sync(data);
     });
 
-    effect(() => {
-      const ids = this.selectedIds();
-      this.engine.freeze(this.isVoting() && ids.length ? ids[ids.length - 1] : null);
-    });
-
     this.destroyRef.onDestroy(() => {
       cancelAnimationFrame(this.frame);
       clearTimeout(this.hideTimeout);
