@@ -106,7 +106,7 @@ describe('QuestionComponent', () => {
   });
 
   describe('question feedback', () => {
-    const thumbs = () => fixture.nativeElement.querySelectorAll('.question-feedback .icon-button') as NodeListOf<HTMLElement>;
+    const thumbs = () => fixture.nativeElement.querySelectorAll('.question-feedback-side .icon-button') as NodeListOf<HTMLElement>;
     const show = (votes: unknown[], extra: Partial<Question> = {}) => {
       component.question.set({ id: 7, content: 'Q', canWrite: false, votes, ...extra } as unknown as Question);
       fixture.detectChanges();
@@ -122,6 +122,8 @@ describe('QuestionComponent', () => {
     it('is hidden while voting', () => {
       show([]);
       expect(thumbs().length).toBe(0);
+      // the slot is still there, so the question text keeps the same width
+      expect(fixture.nativeElement.querySelector('.question-feedback-side')).not.toBeNull();
     });
 
     it('shows a like and a dislike once the votes are shown', () => {
@@ -139,7 +141,7 @@ describe('QuestionComponent', () => {
       thumbs()[0].click();
       fixture.detectChanges();
       expect(rateQuestion).toHaveBeenCalledWith(1, 7, true);
-      const slot = fixture.nativeElement.querySelector('.question-feedback') as HTMLElement;
+      const slot = fixture.nativeElement.querySelector('.question-feedback-side') as HTMLElement;
       expect(slot.classList).toContain('rated');
       expect(thumbs()[0].classList).toContain('chosen');
       expect(component.question()?.my_feedback).toBe(true);
@@ -164,7 +166,7 @@ describe('QuestionComponent', () => {
     it('stays hidden when the calendar shows the rated question again (its copy has no my_feedback)', () => {
       show(voted);
       thumbs()[1].click();
-      fixture.nativeElement.querySelector('.question-feedback').dispatchEvent(new Event('animationend'));
+      fixture.nativeElement.querySelector('.question-feedback-side').dispatchEvent(new Event('animationend'));
       show(voted);
       expect(thumbs().length).toBe(0);
     });

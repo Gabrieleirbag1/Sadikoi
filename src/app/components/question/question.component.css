@@ -29,7 +29,7 @@
   display: none;
 }
 
-/* Countdown, then like / dislike: in the empty left column, across from the calendar. */
+/* Countdown (and, on phones, like / dislike): in the empty left column, across from the calendar. */
 .question-meta {
   grid-column: 1;
   grid-row: 1;
@@ -41,31 +41,43 @@
   min-width: 0;
 }
 
-/* Like / dislike, side by side next to the hourglass. */
+/* Like / dislike. Computer: stacked next to the question, in a fixed-width slot, even when empty, so the
+   text always has the same width. Phone: side by side next to the hourglass (see the media query). */
 .question-feedback {
   display: flex;
   align-items: center;
-  gap: 2px;
 }
 
-/* `.question-meta` in the selector: beats `.question-container span` (font size of the question). */
-.question-meta .question-feedback .icon-button {
+.question-feedback-side {
+  flex: 0 0 24px;
+  width: 24px;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0;
+}
+
+.question-feedback-meta {
+  display: none;
+}
+
+/* `.question-container` in the selector: beats `.question-container span` (font size of the question). */
+.question-container .question-feedback .icon-button {
   display: flex;
-  padding: 6px;
+  padding: 2px;
   opacity: 0.6;
   transition: opacity 150ms ease, transform 150ms ease;
 }
 
-.question-meta .question-feedback .icon-button:hover,
-.question-meta .question-feedback .icon-button:focus-visible {
+.question-container .question-feedback .icon-button:hover,
+.question-container .question-feedback .icon-button:focus-visible {
   opacity: 1;
   transform: scale(1.15);
   outline: none;
 }
 
 .question-feedback svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .feedback-like {
@@ -77,16 +89,16 @@
 }
 
 /* Picked: the chosen thumb pops, the other one goes, then both fade out. */
-.question-meta .question-feedback.rated {
+.question-container .question-feedback.rated {
   animation: feedback-fade-out 400ms ease-in 450ms forwards;
 }
 
-.question-meta .question-feedback.rated .icon-button {
+.question-container .question-feedback.rated .icon-button {
   pointer-events: none;
   opacity: 0;
 }
 
-.question-meta .question-feedback.rated .icon-button.chosen {
+.question-container .question-feedback.rated .icon-button.chosen {
   opacity: 1;
   animation: feedback-pop 450ms ease-out;
 }
@@ -103,11 +115,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .question-meta .question-feedback.rated {
+  .question-container .question-feedback.rated {
     animation-delay: 0ms;
   }
 
-  .question-meta .question-feedback.rated .icon-button.chosen {
+  .question-container .question-feedback.rated .icon-button.chosen {
     animation: none;
   }
 }
@@ -321,9 +333,18 @@ app-vote-bubbles.vote-bubbles-voting {
     font-size: 1.4rem;
   }
 
+  .question-feedback-side {
+    display: none;
+  }
+
+  .question-feedback-meta {
+    display: flex;
+    gap: 2px;
+  }
+
   .question-feedback svg {
-    width: 22px;
-    height: 22px;
+    width: 19px;
+    height: 19px;
   }
 
   /* Item and calendar side by side on the right, centered on the same line. */
@@ -346,7 +367,7 @@ app-vote-bubbles.vote-bubbles-voting {
     grid-row: 2;
   }
 
-  .question-meta .question-feedback .icon-button {
+  .question-container .question-feedback .icon-button {
     padding: 4px 6px;
   }
 
