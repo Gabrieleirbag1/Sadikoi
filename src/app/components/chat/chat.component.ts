@@ -82,7 +82,8 @@ export class ChatComponent {
     const onViewportResize = () => this.onViewportResize(viewport!.height);
     if (Capacitor.isNativePlatform()) {
       // The app's screen resizes in several steps while the keyboard opens: only the plugin is reliable.
-      const listener = Keyboard.addListener('keyboardDidHide', () => this.blurInput());
+      // "Will hide" fires as the keyboard starts going down, so the bubbles come back with it, not after.
+      const listener = Keyboard.addListener('keyboardWillHide', () => this.blurInput());
       this.destroyRef.onDestroy(() => void listener.then(l => l.remove()));
     } else {
       viewport = window.visualViewport;
