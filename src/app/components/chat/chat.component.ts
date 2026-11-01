@@ -44,8 +44,13 @@ export class ChatComponent {
   protected showGifPicker = signal(false);
   /** Focus is in the input area (message input or GIF search). */
   protected readonly inputFocused = signal(false);
-  /** Writing a message or picking a GIF: the chat gets the whole screen on phones. */
-  private readonly typing = computed(() => !this.readOnly() && (this.inputFocused() || this.showGifPicker()));
+  private readonly isNative = Capacitor.isNativePlatform();
+  /** App only: the keyboard is open or coming up (plugin events). */
+  private readonly keyboardOpen = signal(false);
+  /** Writing a message or picking a GIF: the chat gets the whole screen on phones. In the app, writing
+   *  waits for the keyboard to start coming up, so the chat grows with it instead of before it. */
+  private readonly typing = computed(() => !this.readOnly()
+    && ((this.inputFocused() && (!this.isNative || this.keyboardOpen())) || this.showGifPicker()));
 
   /** Follow new content at the bottom. Only the user scrolling up turns it off: smooth scrolls and
    *  late-loading GIFs move the position without that being a choice to leave the bottom. */
@@ -80,11 +85,17 @@ export class ChatComponent {
     // keep the whole screen. When the keyboard closes, we drop the focus ourselves.
     let viewport: VisualViewport | null = null;
     const onViewportResize = () => this.onViewportResize(viewport!.height);
-    if (Capacitor.isNativePlatform()) {
+    if (this.isNative) {
       // The app's screen resizes in several steps while the keyboard opens: only the plugin is reliable.
-      // "Will hide" fires as the keyboard starts going down, so the bubbles come back with it, not after.
-      const listener = Keyboard.addListener('keyboardWillHide', () => this.blurInput());
-      this.destroyRef.onDestroy(() => void listener.then(l => l.remove()));
+      // "Will show/hide" fire as the keyboard starts moving, so the layout changes with it, not before or after.
+      const listeners = [
+        Keyboard.addListener('keyboardWillShow', () => this.keyboardOpen.set(true)),
+        Keyboard.addListener('keyboardWillHide', () => {
+          this.keyboardOpen.set(false);
+          this.blurInput();
+        }),
+      ];
+      this.destroyRef.onDestroy(() => listeners.forEach(l => void l.then(h => h.remove())));
     } else {
       viewport = window.visualViewport;
       viewport?.addEventListener('resize', onViewportResize);
