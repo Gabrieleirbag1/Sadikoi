@@ -22,7 +22,7 @@
             </div>
             <span class="vote-result-name">
               @for (target of row.targets; track target.id; let last = $last) {
-                {{ target.username }}@if (!last) { <span class="vote-result-and">&</span> }
+                {{ target.username }}@if (!last) { <span class="vote-result-and"> &</span> }
               }
             </span>
             <span class="vote-result-percent">{{ row.percent }}%</span>
