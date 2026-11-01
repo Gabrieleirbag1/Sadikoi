@@ -19,6 +19,12 @@ const TYPING_CLASS = 'chat-typing';
 /** Approximate profile card size, only used to decide when to flip it away from an edge. */
 const PROFILE_WIDTH = 280;
 const PROFILE_HEIGHT = 180;
+/** Id of one sent message, so the API can recognise the same message sent twice. */
+function newClientId(): string {
+  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
 /** Browser only: the visible screen shrinking by more than this (px) means the on-screen keyboard is open. */
 const KEYBOARD_MIN_HEIGHT = 150;
 
@@ -59,6 +65,8 @@ export class ChatComponent {
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
   private readonly chatContainer = viewChild<ElementRef<HTMLElement>>('chatContainer');
   private readonly inputArea = viewChild<ElementRef<HTMLElement>>('inputArea');
+  /** Last message that failed to send, kept to resend it with the same id. */
+  private failedSend: { content: string; clientId: string } | null = null;
   /** Browser only: visible screen height when the input got the focus, before the keyboard opened. */
   private heightBeforeKeyboard = 0;
   /** Browser only: the keyboard was seen open since the input got the focus. */
@@ -153,14 +161,22 @@ export class ChatComponent {
 
   protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
     if (!content.trim() || this.readOnly()) return;
-    try {
-      const g = this.group();
-      if (!g) throw new Error('Group is not set');
-      const newMessage = await this.chatService.sendMessage(g.id, content, this.questionId());
-      // if (newMessage) this.messages.update(messages => [...messages, newMessage]);
-      if (input) input.value = '';
-    } catch (error) {
-      this.logger.error('Error sending message:', error);
+    const g = this.group();
+    if (!g) {
+      this.logger.error('Error sending message: group is not set');
+      return;
+    }
+    // Sending the message that just failed again: same id, so if the first try did reach the server
+    // it isn't stored twice.
+    const clientId = this.failedSend?.content === content ? this.failedSend.clientId : newClientId();
+    this.failedSend = null;
+    // Emptied right away: a second tap on "send" finds nothing to send.
+    if (input) input.value = '';
+    const sent = await this.chatService.sendMessage(g.id, content, this.questionId(), clientId);
+    if (!sent) {
+      this.failedSend = { content, clientId };
+      // Give the text back to retry, unless something new was typed meanwhile.
+      if (input && !input.value) input.value = content;
     }
   }
 
