@@ -268,9 +268,23 @@
 }
 
 .next-question-time {
+  display: inline-flex;
   font-weight: bold;
-  font-variant-numeric: tabular-nums; /* the digits don't shift every second */
   color: var(--secondary);
+}
+
+/* Fixed width per character, glyph centered: the timer is always as wide, whatever the digits.
+   `.next-question-time` in the selector: beats `.question-container span` (font size of the question). */
+.next-question-time .countdown-char {
+  display: inline-block;
+  width: 1.1ch;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: center;
+}
+
+.next-question-time .countdown-sep {
+  width: 0.6ch;
 }
 
 .calendar-popover {

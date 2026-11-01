@@ -7,7 +7,13 @@
           <div class="next-question-timer" role="timer">
             <div class="next-question-icon" aria-hidden="true">⏳</div>
             <div class="next-question-label">{{ 'question.nextQuestionIn' | translate }}</div>
-            <div class="next-question-time">{{ left }}</div>
+            <!-- One fixed-width cell per character: the hand-drawn font has no equal-width digits, so the
+                 timer (and the thumbs after it) would shift as the numbers change. -->
+            <div class="next-question-time" [attr.aria-label]="left">
+              @for (char of left.split(''); track $index) {
+                <span class="countdown-char" [class.countdown-sep]="char === ':'" aria-hidden="true">{{ char }}</span>
+              }
+            </div>
           </div>
         }
         <!-- Phone: the thumbs next to the hourglass (on a computer they sit next to the question). -->
