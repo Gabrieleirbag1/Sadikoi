@@ -124,7 +124,9 @@
   "question": {
     "enterYourAnswer": "Enter your answer...",
     "submitAnswer": "Submit Answer",
-    "nextQuestionIn": "Next question in"
+    "nextQuestionIn": "Next question in",
+    "like": "I like this question",
+    "dislike": "I don't like this question"
   },
   "chat": {
     "noMessagesDisplay": "No messages to display.",
