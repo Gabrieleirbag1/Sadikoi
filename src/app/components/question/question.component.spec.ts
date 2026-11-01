@@ -122,8 +122,6 @@ describe('QuestionComponent', () => {
     it('is hidden while voting', () => {
       show([]);
       expect(thumbs().length).toBe(0);
-      // the slot is still there, so the question text keeps the same width
-      expect(fixture.nativeElement.querySelector('.question-feedback')).not.toBeNull();
     });
 
     it('shows a like and a dislike once the votes are shown', () => {

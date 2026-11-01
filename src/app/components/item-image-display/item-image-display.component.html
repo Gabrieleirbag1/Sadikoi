@@ -1,10 +1,12 @@
 <!-- Item names live in the "items" translations; an unknown item falls back to its raw id. -->
 @let key = 'items.' + itemName();
 @let name = itemName() ? (key | translate) : null;
+@let label = name === key ? itemName() : name;
 <img
   class="group-item-icon"
   [class]="imgClass()"
   [src]="itemName() ? 'images/items/' + itemName() + '.png' : 'default-item.svg'"
-  [attr.title]="name === key ? itemName() : name"
+  [attr.title]="label"
   alt=""
+  (click)="onTap($event, label ?? null)"
 />
