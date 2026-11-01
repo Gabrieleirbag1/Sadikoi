@@ -189,6 +189,29 @@
     "duoTitle": "Duo results",
     "votedBy": "Voted by"
   },
+  "tutorial": {
+    "gotIt": "Got it!",
+    "welcome": {
+      "title": "Welcome to Sadikoi! 👋",
+      "intro": "Here's how it works:",
+      "rules": {
+        "question": "Every day, a new question drops in your group: \"Who would be the first to…?\"",
+        "vote": "You vote for a member of the group (or for a duo, depending on the question).",
+        "results": "Once you've voted, you find out who voted for whom, and you talk about it in the chat.",
+        "item": "The most voted person wins the item of the day… and can get it stolen the next day."
+      },
+      "start": "To get started, create a group with the \"+\" button, or join a friend's group with their invitation link."
+    },
+    "vote": {
+      "title": "Your turn to vote!",
+      "body": "Tap the ball of the person you vote for (or both balls, for a duo), then press \"{{button}}\". You can change your mind until you confirm."
+    },
+    "results": {
+      "title": "Who voted for whom?",
+      "body": "Each big ball is a person who got votes: the more votes, the bigger the ball. The small balls orbiting around it are the members who voted for them.",
+      "help": "If it's not clear, tap the \"{{button}}\" button in the top right corner."
+    }
+  },
   "userProfile": {
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
