@@ -109,11 +109,6 @@ export class BubbleEngine {
     return ORBIT_GAP * this.scale;
   }
 
-  /** Room a candidate takes: the ball, plus the ring of its voters. Ball and obstacle collisions use it (not the walls). */
-  public footprint(c: CandidateState): number {
-    return c.voters.length ? c.r + 2 * this.voterRadius + this.orbitGap : c.r;
-  }
-
   /** Synchronise les candidats en conservant la position de ceux déjà présents. */
   public sync(data: BubbleCandidate[]): void {
     const incoming = new Set(data.map(d => d.id));
@@ -206,7 +201,7 @@ export class BubbleEngine {
       const cx = Math.min(Math.max(c.x, o.x), o.x + o.width);
       const cy = Math.min(Math.max(c.y, o.y), o.y + o.height);
       let dx = c.x - cx, dy = c.y - cy;
-      const r = this.footprint(c);
+      const r = c.r;
       let dist = Math.hypot(dx, dy);
       if (dist >= r) continue;
       let nx: number, ny: number, push: number;
@@ -286,7 +281,10 @@ export class BubbleEngine {
     c.y = Math.min(Math.max(c.y, my), this.height - my);
   }
 
-  /** Les boules se repoussent doucement : jamais d'absorption ni de fusion. */
+  /**
+   * Les boules se repoussent doucement : jamais d'absorption ni de fusion. Only the balls themselves touch:
+   * orbiting voters are drawn under every ball and slip beneath the others, so no invisible ring keeps them apart.
+   */
   private collide(): void {
     const list = this.candidates;
     for (let i = 0; i < list.length; i++) {
@@ -294,7 +292,7 @@ export class BubbleEngine {
         const a = list[i], b = list[j];
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.hypot(dx, dy) || 0.001;
-        const min = this.footprint(a) + this.footprint(b);
+        const min = a.r + b.r;
         if (dist >= min) continue;
         const nx = dx / dist, ny = dy / dist;
         const push = (min - dist) / 2;

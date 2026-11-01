@@ -34,25 +34,26 @@ describe('BubbleEngine', () => {
     engine.step(1 / 60);
     expect(c.x).toBeCloseTo(c.r, 0);
     expect(c.vx).toBeGreaterThan(0);
-    expect(c.x).toBeLessThan(engine.footprint(c));
+    expect(c.x).toBeLessThan(engine.voterOrbitRadius(c));
   });
 
-  it("keeps each candidate's voters clear of the other candidates", () => {
+  it('bounces balls on each other by their own size: orbiting voters slip under the other balls', () => {
     const engine = new BubbleEngine();
-    engine.resize(360, 240); // phone
-    engine.sync([candidate(1, 2), candidate(2, 1), candidate(3, 3), candidate(4, 1)]);
-    for (let i = 0; i < 600; i++) engine.step(1 / 60);
-    let worst = 0;
-    for (let i = 0; i < 600; i++) {
-      engine.step(1 / 60);
-      for (const v of engine.voterPositions()) {
-        for (const c of engine.candidates) {
-          if (c === v.owner) continue;
-          worst = Math.max(worst, c.r + v.r - Math.hypot(v.x - c.x, v.y - c.y));
-        }
-      }
-    }
-    expect(worst).toBeLessThan(4); // a few px of contact while two rings push apart, never covered
+    engine.resize(600, 400);
+    engine.sync([candidate(1, 3), candidate(2, 3)]);
+    for (let i = 0; i < 60; i++) engine.step(1 / 60); // let the radii grow
+    const [a, b] = engine.candidates;
+    // Rings overlapping, balls apart: no push.
+    a.x = 200; a.y = 200; b.x = 200 + a.r + b.r + 4; b.y = 200;
+    a.vx = a.vy = b.vx = b.vy = 0;
+    engine.options.speedFactor = 0;
+    engine.step(1 / 60);
+    expect(b.x - a.x).toBeLessThan(engine.voterOrbitRadius(a) + engine.voterOrbitRadius(b));
+    expect(b.x - a.x).toBeGreaterThanOrEqual(a.r + b.r);
+    // Balls overlapping: pushed apart to touching.
+    b.x = a.x + (a.r + b.r) / 2;
+    engine.step(1 / 60);
+    expect(Math.hypot(b.x - a.x, b.y - a.y)).toBeCloseTo(a.r + b.r, 0);
   });
 
   it('scales the balls to the box: smaller on a phone, never unreadably small voters', () => {
