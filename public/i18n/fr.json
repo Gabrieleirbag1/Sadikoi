@@ -183,6 +183,12 @@
     "selected": "Voter pour {{name}} ?",
     "confirm": "Valider le vote"
   },
+  "voteResults": {
+    "open": "Voir les résultats détaillés",
+    "title": "Résultats",
+    "duoTitle": "Résultats des duos",
+    "votedBy": "Voté par"
+  },
   "userProfile": {
     "showMore": "Voir {{count}} de plus",
     "showLess": "Voir moins",

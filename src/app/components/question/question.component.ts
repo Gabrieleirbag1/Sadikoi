@@ -12,6 +12,7 @@ import { VoteBubbleData, VoteBubblesComponent } from '../vote-bubbles/vote-bubbl
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
 import { ItemAnnouncementModalComponent } from '../modals/item-announcement-modal/item-announcement-modal.component';
 import { FitTextDirective } from '../../directives/fit-text.directive';
+import { VoteResultsModalComponent } from '../modals/vote-results-modal/vote-results-modal.component';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
@@ -27,7 +28,7 @@ function formatCountdown(ms: number): string {
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent, FitTextDirective],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent, FitTextDirective, VoteResultsModalComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,6 +48,8 @@ export class QuestionComponent implements OnInit{
   protected readonly selectedVoteId = signal<number | null>(null);
   /** Today's item announcement, shown once per day and group. */
   protected readonly announcementToShow = signal<ItemAnnouncement | null>(null);
+  /** The detailed results list (who voted for whom) is open. */
+  protected readonly showResults = signal(false);
   public readonly question = model<Question | null>(null);
   /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
   private readonly currentQuestion = signal<Question | null>(null);

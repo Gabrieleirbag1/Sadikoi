@@ -50,6 +50,19 @@
   height: 200px;
 }
 
+/* Detailed vote results: the voted member, then their voters. */
+.vote-result-icon {
+  display: block;
+  width: 44px;
+  height: 44px;
+}
+
+.vote-result-voter-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
 .chat-user-icon {
   width: 36px;
   height: 36px;

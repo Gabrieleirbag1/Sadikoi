@@ -35,6 +35,16 @@
           <app-vote-bubbles [bubbles]="answerBubbles()" phase="results" [group]="group()" />
         } @else {
           <app-vote-bubbles [bubbles]="voteBubbles" phase="results" [group]="group()" />
+          <!-- Top-right corner: out of the way of the balls, opens the plain list of who voted for whom. -->
+          <button
+            type="button"
+            class="vote-results-button"
+            [title]="'voteResults.open' | translate"
+            [attr.aria-label]="'voteResults.open' | translate"
+            (click)="showResults.set(true)"
+          >
+            <img src="images/icons/list.svg" width="22" height="22" alt="" />
+          </button>
         }
       </section>
       <section>
@@ -77,6 +87,9 @@
     }
   }
 </section>
+@if (showResults() && question(); as resultsQuestion) {
+  <app-vote-results-modal [question]="resultsQuestion" (closed)="showResults.set(false)"></app-vote-results-modal>
+}
 @if (announcementToShow(); as announcement) {
   <app-item-announcement-modal [announcement]="announcement" (closed)="closeAnnouncement()"></app-item-announcement-modal>
 }

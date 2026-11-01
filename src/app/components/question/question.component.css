@@ -107,8 +107,28 @@
 }
 
 .question-votes-container {
+  position: relative;
   display: flex;
   width: 57vw;
+}
+
+/* Over the bubbles, top-right corner; below the profile tooltips (1000+). */
+.vote-results-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 6px;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.vote-results-button img {
+  display: block;
 }
 
 .voter-container {

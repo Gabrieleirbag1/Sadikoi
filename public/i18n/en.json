@@ -183,6 +183,12 @@
     "selected": "Vote for {{name}}?",
     "confirm": "Confirm vote"
   },
+  "voteResults": {
+    "open": "See detailed results",
+    "title": "Results",
+    "duoTitle": "Duo results",
+    "votedBy": "Voted by"
+  },
   "userProfile": {
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
