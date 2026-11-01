@@ -38,26 +38,24 @@ describe('FitTextDirective', () => {
   it('keeps the stylesheet size when the text fits on 2 lines', async () => {
     await show('A short question?');
     expect(el.style.fontSize).toBe('');
-    expect(el.classList).not.toContain('fit-text-clamped');
   });
 
   it('shrinks a long text until it fits on 2 lines', async () => {
     await show('x'.repeat(50)); // 3 lines at 32px, 2 lines from 24px
     expect(fontSize()).toBe(24);
     expect(lines()).toBe(2);
-    expect(el.classList).not.toContain('fit-text-clamped');
   });
 
-  it('stops at the minimum size and clamps what still overflows', async () => {
+  it('stops at the minimum size and lets the text take more lines, never cutting it', async () => {
     await show('x'.repeat(200));
     expect(fontSize()).toBe(16);
-    expect(el.classList).toContain('fit-text-clamped');
+    expect(lines()).toBeGreaterThan(2);
+    expect(el.classList).not.toContain('fit-text-clamped');
   });
 
   it('grows back for a shorter text', async () => {
     await show('x'.repeat(200));
     await show('Short');
     expect(el.style.fontSize).toBe('');
-    expect(el.classList).not.toContain('fit-text-clamped');
   });
 });
