@@ -9,13 +9,15 @@ import { GroupModalComponent } from '../modals/group-modal/group-modal.component
 import { DatetimeService } from '../../services/datetime/datetime.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
+import { TutorialModalComponent } from '../modals/tutorial-modal/tutorial-modal.component';
+import { TutorialService } from '../../services/tutorial/tutorial.service';
 
 
 type ViewState = 'grid' | 'list';
 
 @Component({
   selector: 'app-groups',
-  imports: [CommonModule, ProfileImagePickerComponent, GroupModalComponent, ItemImageDisplayComponent, TranslatePipe],
+  imports: [CommonModule, ProfileImagePickerComponent, GroupModalComponent, ItemImageDisplayComponent, TranslatePipe, TutorialModalComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
   standalone: true
@@ -27,6 +29,9 @@ export class GroupsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly modalService = inject(ModalService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly tutorial = inject(TutorialService);
+  /** First login of a new account: the rules in short, and how to get a group. */
+  protected readonly showWelcome = signal(this.tutorial.shouldWelcome());
   protected groups = signal<Group[]>([]);
   protected view: ViewState = 'grid';
   /** On phones only the list exists: no toggle, and a saved 'grid' choice is ignored. */
@@ -48,6 +53,11 @@ export class GroupsComponent implements OnInit {
         animation.startTime = 0;
       }
     }
+  }
+
+  protected closeWelcome(): void {
+    this.tutorial.markSeen('welcome');
+    this.showWelcome.set(false);
   }
 
   async ngOnInit(): Promise<void> {

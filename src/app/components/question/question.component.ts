@@ -13,6 +13,8 @@ import { ItemImageDisplayComponent } from '../item-image-display/item-image-disp
 import { ItemAnnouncementModalComponent } from '../modals/item-announcement-modal/item-announcement-modal.component';
 import { FitTextDirective } from '../../directives/fit-text.directive';
 import { VoteResultsModalComponent } from '../modals/vote-results-modal/vote-results-modal.component';
+import { TutorialModalComponent } from '../modals/tutorial-modal/tutorial-modal.component';
+import { TutorialService } from '../../services/tutorial/tutorial.service';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
@@ -28,7 +30,7 @@ function formatCountdown(ms: number): string {
 
 @Component({
   selector: 'app-question',
-  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent, FitTextDirective, VoteResultsModalComponent],
+  imports: [CommonModule, ChatComponent, TranslatePipe, CalendarComponent, VoteBubblesComponent, ItemImageDisplayComponent, ItemAnnouncementModalComponent, FitTextDirective, VoteResultsModalComponent, TutorialModalComponent],
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +52,17 @@ export class QuestionComponent implements OnInit{
   protected readonly announcementToShow = signal<ItemAnnouncement | null>(null);
   /** The detailed results list (who voted for whom) is open. */
   protected readonly showResults = signal(false);
+  private readonly tutorial = inject(TutorialService);
+  /** Bumped when a tip is closed: `isSeen` reads localStorage, which signals can't watch. */
+  private readonly tipsClosed = signal(0);
+  /** First voting screen, then first results: a short tip, once per account. Never over another popup. */
+  protected readonly tipToShow = computed<'vote' | 'results' | null>(() => {
+    this.tipsClosed();
+    const question = this.question();
+    if (!question || question.canWrite || this.announcementToShow() || this.showResults()) return null;
+    const step = question.votes?.length ? 'results' : 'vote';
+    return this.tutorial.isSeen(step) ? null : step;
+  });
   public readonly question = model<Question | null>(null);
   /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
   private readonly currentQuestion = signal<Question | null>(null);
@@ -245,6 +258,11 @@ export class QuestionComponent implements OnInit{
     } catch (error) {
       this.logger.error('Error submitting vote:', error);
     }
+  }
+
+  protected closeTip(step: 'vote' | 'results'): void {
+    this.tutorial.markSeen(step);
+    this.tipsClosed.update(n => n + 1);
   }
 
   /** Go back to the group's current question (calendar "Today" / "Clear"). */

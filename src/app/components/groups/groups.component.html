@@ -115,3 +115,15 @@
 </section>
 
 <app-group-modal></app-group-modal>
+@if (showWelcome()) {
+  <app-tutorial-modal size="large" [title]="'tutorial.welcome.title' | translate" (closed)="closeWelcome()">
+    <p>{{ 'tutorial.welcome.intro' | translate }}</p>
+    <ol>
+      <li>{{ 'tutorial.welcome.rules.question' | translate }}</li>
+      <li>{{ 'tutorial.welcome.rules.vote' | translate }}</li>
+      <li>{{ 'tutorial.welcome.rules.results' | translate }}</li>
+      <li>{{ 'tutorial.welcome.rules.item' | translate }}</li>
+    </ol>
+    <p><b>{{ 'tutorial.welcome.start' | translate }}</b></p>
+  </app-tutorial-modal>
+}

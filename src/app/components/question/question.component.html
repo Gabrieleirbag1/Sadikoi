@@ -95,6 +95,19 @@
 @if (showResults() && question(); as resultsQuestion) {
   <app-vote-results-modal [question]="resultsQuestion" (closed)="showResults.set(false)"></app-vote-results-modal>
 }
+@switch (tipToShow()) {
+  @case ('vote') {
+    <app-tutorial-modal [title]="'tutorial.vote.title' | translate" (closed)="closeTip('vote')">
+      <p>{{ 'tutorial.vote.body' | translate: { button: ('question.submitAnswer' | translate) } }}</p>
+    </app-tutorial-modal>
+  }
+  @case ('results') {
+    <app-tutorial-modal [title]="'tutorial.results.title' | translate" (closed)="closeTip('results')">
+      <p>{{ 'tutorial.results.body' | translate }}</p>
+      <p><b>{{ 'tutorial.results.help' | translate: { button: ('voteResults.title' | translate) } }}</b></p>
+    </app-tutorial-modal>
+  }
+}
 @if (announcementToShow(); as announcement) {
   <app-item-announcement-modal [announcement]="announcement" (closed)="closeAnnouncement()"></app-item-announcement-modal>
 }
