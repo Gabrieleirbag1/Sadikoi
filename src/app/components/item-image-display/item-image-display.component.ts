@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, input, ViewEncapsulation } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-item-image-display',
+  imports: [TranslatePipe],
   templateUrl: './item-image-display.component.html',
   styleUrl: './item-image-display.component.css',
   encapsulation: ViewEncapsulation.None,

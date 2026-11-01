@@ -20,7 +20,10 @@
       </div>
 
       <p class="announcement-message">
+        @let itemKey = 'items.' + announcement().item_name;
+        @let itemLabel = itemKey | translate;
         {{ 'itemAnnouncement.' + announcement().type + '.before' | translate: messageParams() }}
+        <strong>{{ itemLabel === itemKey ? announcement().item_name : itemLabel }}</strong>
         <app-item-image-display class="announcement-inline-item" [itemName]="announcement().item_name" [imgClass]="'announcement-inline-icon'"></app-item-image-display>
         {{ 'itemAnnouncement.' + announcement().type + '.after' | translate: messageParams() }}
       </p>

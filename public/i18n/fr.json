@@ -406,17 +406,31 @@
     "title": "Les items du jour",
     "members": "Membres",
     "new": {
-      "before": "{{user}} a obtenu ce nouvel item",
+      "before": "{{user}} a obtenu",
       "after": "!"
     },
     "stolen": {
-      "before": "{{user}} a volé l'item",
+      "before": "{{user}} a volé",
       "after": "à {{from}}, qui avait {{streak}} 🔥 de streak !"
     },
     "kept": {
-      "before": "{{user}} garde son item",
+      "before": "{{user}} garde",
       "after": "avec {{streak}} 🔥 de streak !"
     }
+  },
+  "items": {
+    "cape_leader": "Cape du Leader",
+    "bonnet_honte": "Bonnet de la Honte",
+    "masque_traitre": "Masque du Traître",
+    "bouclier_loyal": "Bouclier de la Loyauté",
+    "torche_chaos": "Torche du Chaos",
+    "etoile_destin": "Étoile du Destin",
+    "lunettes_genie": "Lunettes du Génie",
+    "cle_secrets": "Clé des Secrets",
+    "coeur_passion": "Cœur de la Passion",
+    "couronne_drama": "Couronne du Drama",
+    "trophee_vice": "Trophée du Vice",
+    "micro_verite": "Micro de la Vérité"
   },
   "themes": {
     "title": "Thèmes des questions",
