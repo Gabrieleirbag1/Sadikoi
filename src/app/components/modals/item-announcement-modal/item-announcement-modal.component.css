@@ -232,8 +232,14 @@
 }
 
 .announcement-streak {
+  /* Centre the emoji on the icon: as plain text it sits on the baseline, lower than the image. */
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
   font-weight: bold;
-  font-size: 0.9rem;
+  /* Close to the icon height (24px). */
+  font-size: 1.1rem;
   white-space: nowrap;
   color: #d9480f;
 }

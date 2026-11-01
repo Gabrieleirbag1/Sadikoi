@@ -23,9 +23,10 @@ export class ChatService {
     }
   }
 
-  public async sendMessage(groupId: number, content: string, questionId?: number): Promise<Message | null> {
+  /** `clientId` identifies the message: sent again with the same id (double tap, network replay), it is stored once. */
+  public async sendMessage(groupId: number, content: string, questionId: number | undefined, clientId: string): Promise<Message | null> {
     try {
-      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { content, question_id: questionId }, { withCredentials: true }));
+      const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}groups/${groupId}/messages/`, { content, question_id: questionId, client_id: clientId }, { withCredentials: true }));
       return response.content || null;
     } catch (error) {
       this.logger.error('Failed to send message:', error);

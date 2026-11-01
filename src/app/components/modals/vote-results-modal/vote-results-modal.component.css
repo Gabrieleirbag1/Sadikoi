@@ -1,0 +1,144 @@
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.4rem;
+  overflow-wrap: anywhere;
+}
+
+.modal-close {
+  padding: 0 8px;
+}
+
+.vote-results-question {
+  margin: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+/* Only the list scrolls: the title and the close button stay in view. */
+.vote-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  margin: 0;
+  padding: 0 4px 4px 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.vote-results-list li::before {
+  content: none; /* PaperCSS draws a dash before list items */
+}
+
+.vote-result-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 10px;
+  text-indent: 0;
+}
+
+.vote-result-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.vote-result-avatars {
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* Duo: the two pictures overlap a little. */
+.vote-result-avatars.duo app-profile-image-picker + app-profile-image-picker {
+  margin-left: -14px;
+}
+
+.vote-result-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: bold;
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+}
+
+.vote-result-and {
+  color: var(--muted);
+  font-weight: normal;
+}
+
+.vote-result-percent {
+  flex-shrink: 0;
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: var(--secondary, #0b74d5);
+}
+
+.vote-result-bar {
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.vote-result-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--secondary, #0b74d5);
+}
+
+.vote-result-voters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.vote-result-voted-by {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.vote-result-voter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px 1px 2px;
+  border-radius: 12px;
+  background-color: rgba(202, 202, 202, 0.3);
+}

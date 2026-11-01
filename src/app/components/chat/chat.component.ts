@@ -11,12 +11,22 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ReportUserService } from '../../services/report-user/report-user.service';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
 /** Approximate profile card size, only used to decide when to flip it away from an edge. */
 const PROFILE_WIDTH = 280;
 const PROFILE_HEIGHT = 180;
+/** Id of one sent message, so the API can recognise the same message sent twice. */
+function newClientId(): string {
+  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
+/** Browser only: the visible screen shrinking by more than this (px) means the on-screen keyboard is open. */
+const KEYBOARD_MIN_HEIGHT = 150;
 
 @Component({
   selector: 'app-chat',
@@ -40,8 +50,13 @@ export class ChatComponent {
   protected showGifPicker = signal(false);
   /** Focus is in the input area (message input or GIF search). */
   protected readonly inputFocused = signal(false);
-  /** Writing a message or picking a GIF: the chat gets the whole screen on phones. */
-  private readonly typing = computed(() => !this.readOnly() && (this.inputFocused() || this.showGifPicker()));
+  private readonly isNative = Capacitor.isNativePlatform();
+  /** App only: the keyboard is open or coming up (plugin events). */
+  private readonly keyboardOpen = signal(false);
+  /** Writing a message or picking a GIF: the chat gets the whole screen on phones. In the app, writing
+   *  waits for the keyboard to start coming up, so the chat grows with it instead of before it. */
+  private readonly typing = computed(() => !this.readOnly()
+    && ((this.inputFocused() && (!this.isNative || this.keyboardOpen())) || this.showGifPicker()));
 
   /** Follow new content at the bottom. Only the user scrolling up turns it off: smooth scrolls and
    *  late-loading GIFs move the position without that being a choice to leave the bottom. */
@@ -49,6 +64,13 @@ export class ChatComponent {
   private lastScrollTop = 0;
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
   private readonly chatContainer = viewChild<ElementRef<HTMLElement>>('chatContainer');
+  private readonly inputArea = viewChild<ElementRef<HTMLElement>>('inputArea');
+  /** Last message that failed to send, kept to resend it with the same id. */
+  private failedSend: { content: string; clientId: string } | null = null;
+  /** Browser only: visible screen height when the input got the focus, before the keyboard opened. */
+  private heightBeforeKeyboard = 0;
+  /** Browser only: the keyboard was seen open since the input got the focus. */
+  private keyboardSeen = false;
 
   /** Author whose profile card is open (clicked avatar). */
   protected readonly profileUser = signal<User | null>(null);
@@ -67,8 +89,29 @@ export class ChatComponent {
 
   constructor() {
     effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
+    // Android's back button closes the keyboard but leaves the focus in the input: the chat would
+    // keep the whole screen. When the keyboard closes, we drop the focus ourselves.
+    let viewport: VisualViewport | null = null;
+    const onViewportResize = () => this.onViewportResize(viewport!.height);
+    if (this.isNative) {
+      // The app's screen resizes in several steps while the keyboard opens: only the plugin is reliable.
+      // "Will show/hide" fire as the keyboard starts moving, so the layout changes with it, not before or after.
+      const listeners = [
+        Keyboard.addListener('keyboardWillShow', () => this.keyboardOpen.set(true)),
+        Keyboard.addListener('keyboardWillHide', () => {
+          this.keyboardOpen.set(false);
+          this.blurInput();
+        }),
+      ];
+      this.destroyRef.onDestroy(() => listeners.forEach(l => void l.then(h => h.remove())));
+    } else {
+      viewport = window.visualViewport;
+      viewport?.addEventListener('resize', onViewportResize);
+    }
+
     this.destroyRef.onDestroy(() => {
       document.documentElement.classList.remove(TYPING_CLASS);
+      viewport?.removeEventListener('resize', onViewportResize);
       this.userProfileService.hide(this.profileScope);
     });
 
@@ -118,14 +161,22 @@ export class ChatComponent {
 
   protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
     if (!content.trim() || this.readOnly()) return;
-    try {
-      const g = this.group();
-      if (!g) throw new Error('Group is not set');
-      const newMessage = await this.chatService.sendMessage(g.id, content, this.questionId());
-      // if (newMessage) this.messages.update(messages => [...messages, newMessage]);
-      if (input) input.value = '';
-    } catch (error) {
-      this.logger.error('Error sending message:', error);
+    const g = this.group();
+    if (!g) {
+      this.logger.error('Error sending message: group is not set');
+      return;
+    }
+    // Sending the message that just failed again: same id, so if the first try did reach the server
+    // it isn't stored twice.
+    const clientId = this.failedSend?.content === content ? this.failedSend.clientId : newClientId();
+    this.failedSend = null;
+    // Emptied right away: a second tap on "send" finds nothing to send.
+    if (input) input.value = '';
+    const sent = await this.chatService.sendMessage(g.id, content, this.questionId(), clientId);
+    if (!sent) {
+      this.failedSend = { content, clientId };
+      // Give the text back to retry, unless something new was typed meanwhile.
+      if (input && !input.value) input.value = content;
     }
   }
 
@@ -173,6 +224,27 @@ export class ChatComponent {
     if (!this.profileUser()) return;
     this.userProfileService.hide(this.profileScope);
     this.profileUser.set(null);
+  }
+
+  protected onInputAreaFocusIn(): void {
+    if (!this.inputFocused()) {
+      this.heightBeforeKeyboard = window.visualViewport?.height ?? 0;
+      this.keyboardSeen = false;
+    }
+    this.inputFocused.set(true);
+  }
+
+  /** Browser: the keyboard is closed once the screen, after shrinking for it, is back to its full height. */
+  private onViewportResize(height: number): void {
+    if (!this.inputFocused()) return;
+    const shrunk = this.heightBeforeKeyboard - height > KEYBOARD_MIN_HEIGHT;
+    if (shrunk) this.keyboardSeen = true;
+    else if (this.keyboardSeen) this.blurInput();
+  }
+
+  private blurInput(): void {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && this.inputArea()?.nativeElement.contains(active)) active.blur();
   }
 
   protected onInputAreaFocusOut(event: FocusEvent): void {

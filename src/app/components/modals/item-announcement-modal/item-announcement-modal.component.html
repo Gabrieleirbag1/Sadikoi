@@ -20,7 +20,10 @@
       </div>
 
       <p class="announcement-message">
+        @let itemKey = 'items.' + announcement().item_name;
+        @let itemLabel = itemKey | translate;
         {{ 'itemAnnouncement.' + announcement().type + '.before' | translate: messageParams() }}
+        <strong>{{ itemLabel === itemKey ? announcement().item_name : itemLabel }}</strong>
         <app-item-image-display class="announcement-inline-item" [itemName]="announcement().item_name" [imgClass]="'announcement-inline-icon'"></app-item-image-display>
         {{ 'itemAnnouncement.' + announcement().type + '.after' | translate: messageParams() }}
       </p>
@@ -43,7 +46,7 @@
                 @for (item of member.items; track item.id) {
                   <div class="announcement-item">
                     <app-item-image-display [itemName]="item.item_name" [imgClass]="'user-profile-item-icon'"></app-item-image-display>
-                    <span class="announcement-streak" title="Streak">🔥 {{ item.streak }}</span>
+                    <span class="announcement-streak" title="Streak"><span aria-hidden="true">🔥</span>{{ item.streak }}</span>
                   </div>
                 }
               </div>

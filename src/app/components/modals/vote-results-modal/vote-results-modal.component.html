@@ -1,0 +1,52 @@
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="vote-results-title" (click)="close()">
+  <div class="modal-dialog border" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h1 id="vote-results-title" class="modal-title">{{ (isDuo() ? 'voteResults.duoTitle' : 'voteResults.title') | translate }}</h1>
+      <span class="modal-close" role="button" tabindex="0" [attr.aria-label]="'modal.close' | translate" (click)="close()" (keydown.enter)="close()">X</span>
+    </div>
+
+    <p class="vote-results-question">{{ question().content }}</p>
+
+    <ul class="vote-results-list">
+      @for (row of rows(); track $index) {
+        <li class="vote-result-row border">
+          <div class="vote-result-head">
+            <div class="vote-result-avatars" [class.duo]="row.targets.length > 1">
+              @for (target of row.targets; track target.id) {
+                <app-profile-image-picker
+                  [currentImageUrl]="target.profile_picture"
+                  [onlyDisplay]="true"
+                  [imgClass]="'vote-result-icon'"
+                ></app-profile-image-picker>
+              }
+            </div>
+            <span class="vote-result-name">
+              @for (target of row.targets; track target.id; let last = $last) {
+                {{ target.username }}@if (!last) { <span class="vote-result-and"> &</span> }
+              }
+            </span>
+            <span class="vote-result-percent">{{ row.percent }}%</span>
+          </div>
+
+          <div class="vote-result-bar" aria-hidden="true">
+            <div class="vote-result-bar-fill" [style.width.%]="row.percent"></div>
+          </div>
+
+          <div class="vote-result-voters">
+            <span class="vote-result-voted-by">{{ 'voteResults.votedBy' | translate }}</span>
+            @for (voter of row.voters; track voter.id) {
+              <span class="vote-result-voter">
+                <app-profile-image-picker
+                  [currentImageUrl]="voter.profile_picture"
+                  [onlyDisplay]="true"
+                  [imgClass]="'vote-result-voter-icon'"
+                ></app-profile-image-picker>
+                {{ voter.username }}
+              </span>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+</div>

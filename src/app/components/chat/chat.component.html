@@ -66,7 +66,7 @@
   @if (!readOnly()) {
   <!-- Buttons keep the focus in the input (mousedown): blurring it would bring the bubbles back and move
        the button away before the click lands. -->
-  <div class="chat-input-area" (focusin)="inputFocused.set(true)" (focusout)="onInputAreaFocusOut($event)">
+  <div class="chat-input-area" #inputArea (focusin)="onInputAreaFocusIn()" (focusout)="onInputAreaFocusOut($event)">
     @if (showGifPicker()) {
       <app-gif-picker (gifSelectedChange)="onGifSelected($event)" />
     }

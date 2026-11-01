@@ -183,6 +183,12 @@
     "selected": "Vote for {{name}}?",
     "confirm": "Confirm vote"
   },
+  "voteResults": {
+    "open": "See detailed results",
+    "title": "Results",
+    "duoTitle": "Duo results",
+    "votedBy": "Voted by"
+  },
   "userProfile": {
     "showMore": "Show {{count}} more",
     "showLess": "Show less",
@@ -406,17 +412,31 @@
     "title": "Today's items",
     "members": "Members",
     "new": {
-      "before": "{{user}} has got this new item",
+      "before": "{{user}} has got",
       "after": "!"
     },
     "stolen": {
-      "before": "{{user}} has stolen the item",
+      "before": "{{user}} has stolen",
       "after": "from {{from}}, who had a {{streak}} 🔥 streak!"
     },
     "kept": {
-      "before": "{{user}} keeps their item",
+      "before": "{{user}} keeps",
       "after": "with a {{streak}} 🔥 streak!"
     }
+  },
+  "items": {
+    "cape_leader": "Leader's Cape",
+    "bonnet_honte": "Dunce Cap",
+    "masque_traitre": "Traitor's Mask",
+    "bouclier_loyal": "Shield of Loyalty",
+    "torche_chaos": "Torch of Chaos",
+    "etoile_destin": "Star of Destiny",
+    "lunettes_genie": "Genius Glasses",
+    "cle_secrets": "Key of Secrets",
+    "coeur_passion": "Heart of Passion",
+    "couronne_drama": "Drama Queen Crown",
+    "trophee_vice": "Trophy of Vice",
+    "micro_verite": "Mic of Truth"
   },
   "themes": {
     "title": "Question themes",

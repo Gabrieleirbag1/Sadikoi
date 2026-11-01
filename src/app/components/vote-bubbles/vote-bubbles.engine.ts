@@ -83,7 +83,6 @@ export class BubbleEngine {
   public readonly options: EngineOptions;
   /** Orbite : un tour complet en ~8 s. */
   private orbitSpeed = (Math.PI * 2) / 8;
-  private frozenId: number | null = null;
   /** Solid rectangles (e.g. the answer card) that candidates bounce on. */
   private obstacles: Rect[] = [];
   /**
@@ -108,11 +107,6 @@ export class BubbleEngine {
 
   private get orbitGap(): number {
     return ORBIT_GAP * this.scale;
-  }
-
-  /** Room a candidate takes: the ball, plus the ring of its voters. Ball and obstacle collisions use it (not the walls). */
-  public footprint(c: CandidateState): number {
-    return c.voters.length ? c.r + 2 * this.voterRadius + this.orbitGap : c.r;
   }
 
   /** Synchronise les candidats en conservant la position de ceux déjà présents. */
@@ -167,11 +161,6 @@ export class BubbleEngine {
     });
   }
 
-  /** Immobilise un candidat (ex. sélectionné) pour faciliter le clic. */
-  public freeze(id: number | null): void {
-    this.frozenId = id;
-  }
-
   public step(dt: number): void {
     dt = Math.min(dt, 0.05);
     const { speedFactor } = this.options;
@@ -182,7 +171,6 @@ export class BubbleEngine {
     for (const c of this.candidates) {
       c.r += (c.targetR - c.r) * Math.min(1, dt * 6);
       c.orbitAngle += this.orbitSpeed * k;
-      if (c.id === this.frozenId) continue;
 
       // Dérive aléatoire de la direction.
       c.vx += (this.random() - 0.5) * maxSpeed * 2 * dt;
@@ -213,7 +201,7 @@ export class BubbleEngine {
       const cx = Math.min(Math.max(c.x, o.x), o.x + o.width);
       const cy = Math.min(Math.max(c.y, o.y), o.y + o.height);
       let dx = c.x - cx, dy = c.y - cy;
-      const r = this.footprint(c);
+      const r = c.r;
       let dist = Math.hypot(dx, dy);
       if (dist >= r) continue;
       let nx: number, ny: number, push: number;
@@ -293,7 +281,10 @@ export class BubbleEngine {
     c.y = Math.min(Math.max(c.y, my), this.height - my);
   }
 
-  /** Les boules se repoussent doucement : jamais d'absorption ni de fusion. */
+  /**
+   * Les boules se repoussent doucement : jamais d'absorption ni de fusion. Only the balls themselves touch:
+   * orbiting voters are drawn under every ball and slip beneath the others, so no invisible ring keeps them apart.
+   */
   private collide(): void {
     const list = this.candidates;
     for (let i = 0; i < list.length; i++) {
@@ -301,7 +292,7 @@ export class BubbleEngine {
         const a = list[i], b = list[j];
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.hypot(dx, dy) || 0.001;
-        const min = this.footprint(a) + this.footprint(b);
+        const min = a.r + b.r;
         if (dist >= min) continue;
         const nx = dx / dist, ny = dy / dist;
         const push = (min - dist) / 2;

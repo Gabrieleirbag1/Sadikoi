@@ -107,8 +107,42 @@
 }
 
 .question-votes-container {
+  position: relative;
   display: flex;
   width: 57vw;
+}
+
+/* Over the bubbles, top-right corner. The box's hand-drawn border curves inwards there, hence the wider
+   right offset. Below the profile tooltips (1000+). */
+.vote-results-button,
+.vote-results-button:hover,
+.vote-results-button:focus {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 4px 12px 4px 10px;
+  border: 2px solid var(--secondary);
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: var(--secondary);
+  font-size: 0.95rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.vote-results-button:hover {
+  background-color: #fff;
+  transform: translateY(-1px);
+}
+
+.vote-results-button svg {
+  flex-shrink: 0;
 }
 
 .voter-container {
