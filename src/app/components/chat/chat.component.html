@@ -1,4 +1,22 @@
 <section class="chat-container" #chatContainer>
+  <!-- Phone only (CSS): full screen chat, hiding the bubbles. Keeps the focus like the input buttons. -->
+  <span
+    class="chat-fullscreen-toggle"
+    role="button"
+    tabindex="0"
+    [class.expanded]="fullscreen()"
+    [attr.aria-pressed]="fullscreen()"
+    [title]="(fullscreen() ? 'chat.exitFullscreen' : 'chat.fullscreen') | translate"
+    [attr.aria-label]="(fullscreen() ? 'chat.exitFullscreen' : 'chat.fullscreen') | translate"
+    (mousedown)="$event.preventDefault()"
+    (click)="toggleFullscreen()"
+    (keydown.enter)="toggleFullscreen()"
+  >
+    <!-- Slightly uneven strokes: drawn by hand, like the rest of the site. -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4.5 15.8c2.6-2.4 5-4.9 7.4-7.3 2.3 2.2 4.8 4.6 7.6 7" />
+    </svg>
+  </span>
   <!-- The profile card points at an avatar: the user moving the thread closes it. -->
   <div class="chat-messages-container" #messagesContainer (scroll)="onMessagesScroll()" (wheel)="closeProfile()" (touchmove)="closeProfile()">
     @for (message of messages(); track message.id) {

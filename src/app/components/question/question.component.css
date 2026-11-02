@@ -29,35 +29,55 @@
   display: none;
 }
 
-/* Like / dislike, stacked next to the question. A fixed-width slot, even when empty, so the text
-   always has the same width (FitTextDirective keeps it on 2 lines at most).
-   `.question-content` in the selector: beats `.question-container span` (font size of the question). */
-.question-content .question-feedback {
-  flex: 0 0 18px;
-  width: 18px;
+/* Countdown (and, on phones, like / dislike): in the empty left column, across from the calendar. */
+.question-meta {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 4px 10px;
+  min-width: 0;
+}
+
+/* Like / dislike. Computer: stacked next to the question, in a fixed-width slot, even when empty, so the
+   text always has the same width. Phone: side by side next to the hourglass (see the media query). */
+.question-feedback {
+  display: flex;
+  align-items: center;
+}
+
+.question-feedback-side {
+  flex: 0 0 24px;
+  width: 24px;
+  flex-direction: column;
+  gap: 2px;
   font-size: 0;
 }
 
-.question-content .question-feedback .icon-button {
+.question-feedback-meta {
+  display: none;
+}
+
+/* `.question-container` in the selector: beats `.question-container span` (font size of the question). */
+.question-container .question-feedback .icon-button {
   display: flex;
-  opacity: 0.5;
+  padding: 2px;
+  opacity: 0.6;
   transition: opacity 150ms ease, transform 150ms ease;
 }
 
-.question-content .question-feedback .icon-button:hover,
-.question-content .question-feedback .icon-button:focus-visible {
+.question-container .question-feedback .icon-button:hover,
+.question-container .question-feedback .icon-button:focus-visible {
   opacity: 1;
   transform: scale(1.15);
   outline: none;
 }
 
 .question-feedback svg {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 .feedback-like {
@@ -69,16 +89,16 @@
 }
 
 /* Picked: the chosen thumb pops, the other one goes, then both fade out. */
-.question-content .question-feedback.rated {
+.question-container .question-feedback.rated {
   animation: feedback-fade-out 400ms ease-in 450ms forwards;
 }
 
-.question-content .question-feedback.rated .icon-button {
+.question-container .question-feedback.rated .icon-button {
   pointer-events: none;
   opacity: 0;
 }
 
-.question-content .question-feedback.rated .icon-button.chosen {
+.question-container .question-feedback.rated .icon-button.chosen {
   opacity: 1;
   animation: feedback-pop 450ms ease-out;
 }
@@ -95,11 +115,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .question-content .question-feedback.rated {
+  .question-container .question-feedback.rated {
     animation-delay: 0ms;
   }
 
-  .question-content .question-feedback.rated .icon-button.chosen {
+  .question-container .question-feedback.rated .icon-button.chosen {
     animation: none;
   }
 }
@@ -109,18 +129,11 @@
   font-weight: bold;
 }
 
-/* At most 2 lines: FitTextDirective shrinks the font from the size set here, and clamps if even that isn't enough. */
+/* 2 lines: FitTextDirective shrinks the font from the size set here. Never cut: the whole question
+   always shows. */
 .question-text {
   min-width: 0;
   line-height: 1.2;
-}
-
-.question-text.fit-text-clamped {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
 }
 
 .user-vote-container {
@@ -239,11 +252,8 @@
   justify-self: end;
 }
 
-/* Countdown to the next question of the day: in the empty left column, across from the calendar. */
+/* Countdown to the next question of the day. */
 .next-question-timer {
-  grid-column: 1;
-  grid-row: 1;
-  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -258,9 +268,23 @@
 }
 
 .next-question-time {
+  display: inline-flex;
   font-weight: bold;
-  font-variant-numeric: tabular-nums; /* the digits don't shift every second */
   color: var(--secondary);
+}
+
+/* Fixed width per character, glyph centered: the timer is always as wide, whatever the digits.
+   `.next-question-time` in the selector: beats `.question-container span` (font size of the question). */
+.next-question-time .countdown-char {
+  display: inline-block;
+  width: 1.1ch;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: center;
+}
+
+.next-question-time .countdown-sep {
+  width: 0.6ch;
 }
 
 .calendar-popover {
@@ -323,15 +347,18 @@ app-vote-bubbles.vote-bubbles-voting {
     font-size: 1.4rem;
   }
 
-  .question-content .question-feedback {
-    flex-basis: 16px;
-    width: 16px;
-    gap: 3px;
+  .question-feedback-side {
+    display: none;
+  }
+
+  .question-feedback-meta {
+    display: flex;
+    gap: 2px;
   }
 
   .question-feedback svg {
-    width: 15px;
-    height: 15px;
+    width: 19px;
+    height: 19px;
   }
 
   /* Item and calendar side by side on the right, centered on the same line. */
@@ -348,10 +375,17 @@ app-vote-bubbles.vote-bubbles-voting {
     grid-column: 3;
   }
 
-  /* Own line under the question, small. */
-  .next-question-timer {
+  /* Countdown and thumbs: own line under the question. */
+  .question-meta {
     grid-column: 1 / -1;
     grid-row: 2;
+  }
+
+  .question-container .question-feedback .icon-button {
+    padding: 4px 6px;
+  }
+
+  .next-question-timer {
     padding: 2px 10px;
     font-size: 0.85rem;
   }

@@ -16,6 +16,8 @@ import { Keyboard } from '@capacitor/keyboard';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
+/** Set on <html> while the chat is in full screen (phones only): styles.css then hides the bubbles. */
+const FULLSCREEN_CLASS = 'chat-fullscreen';
 /** Approximate profile card size, only used to decide when to flip it away from an edge. */
 const PROFILE_WIDTH = 280;
 const PROFILE_HEIGHT = 180;
@@ -48,6 +50,8 @@ export class ChatComponent {
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
+  /** Phone: the chat takes the bubbles' room. Only kept while the group is open (never saved). */
+  protected readonly fullscreen = signal(false);
   /** Focus is in the input area (message input or GIF search). */
   protected readonly inputFocused = signal(false);
   private readonly isNative = Capacitor.isNativePlatform();
@@ -65,6 +69,8 @@ export class ChatComponent {
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
   private readonly chatContainer = viewChild<ElementRef<HTMLElement>>('chatContainer');
   private readonly inputArea = viewChild<ElementRef<HTMLElement>>('inputArea');
+  private readonly messageInput = viewChild<ElementRef<HTMLInputElement>>('messageContent');
+  private readonly gifPicker = viewChild(GifPickerComponent);
   /** Last message that failed to send, kept to resend it with the same id. */
   private failedSend: { content: string; clientId: string } | null = null;
   /** Browser only: visible screen height when the input got the focus, before the keyboard opened. */
@@ -89,6 +95,7 @@ export class ChatComponent {
 
   constructor() {
     effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
+    effect(() => document.documentElement.classList.toggle(FULLSCREEN_CLASS, this.fullscreen()));
     // Android's back button closes the keyboard but leaves the focus in the input: the chat would
     // keep the whole screen. When the keyboard closes, we drop the focus ourselves.
     let viewport: VisualViewport | null = null;
@@ -110,7 +117,7 @@ export class ChatComponent {
     }
 
     this.destroyRef.onDestroy(() => {
-      document.documentElement.classList.remove(TYPING_CLASS);
+      document.documentElement.classList.remove(TYPING_CLASS, FULLSCREEN_CLASS);
       viewport?.removeEventListener('resize', onViewportResize);
       this.userProfileService.hide(this.profileScope);
     });
@@ -126,6 +133,15 @@ export class ChatComponent {
     effect(() => {
       this.messages();
       afterNextRender(() => this.autoScroll(), { injector: this.injector });
+    });
+
+    // The thread changes height (full screen animation, keyboard): stay on the latest messages.
+    afterNextRender(() => {
+      const el = this.messagesContainer()?.nativeElement;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(() => this.autoScroll('instant'));
+      observer.observe(el);
+      this.destroyRef.onDestroy(() => observer.disconnect());
     });
   }
 
@@ -253,8 +269,22 @@ export class ChatComponent {
     if (!area.contains(event.relatedTarget as Node | null)) this.inputFocused.set(false);
   }
 
+  protected toggleFullscreen(): void {
+    this.fullscreen.update(v => !v);
+  }
+
+  /** While typing (keyboard open on phones), the focus follows the picker: into its search bar when it
+   *  opens, back to the message when it closes. Otherwise nothing gets the focus, so no keyboard pops up. */
   protected toggleGifPicker(): void {
-    this.showGifPicker.update(v => !v);
+    const opening = !this.showGifPicker();
+    const typing = this.inputArea()?.nativeElement.contains(document.activeElement) ?? false;
+    const searchFocused = this.gifPicker()?.hasFocus() ?? false;
+    this.showGifPicker.set(opening);
+    if (opening && typing) {
+      afterNextRender(() => this.gifPicker()?.focusSearch(), { injector: this.injector });
+    } else if (!opening && searchFocused) {
+      this.messageInput()?.nativeElement.focus();
+    }
   }
 
   protected async onGifSelected(gif: KlipyGif | null): Promise<void> {

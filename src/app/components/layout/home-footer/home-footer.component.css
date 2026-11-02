@@ -4,6 +4,7 @@
     align-items: center;
     gap: 20px;
     height: 10vh;
+    min-height: 56px;
 }
 
 .home-footer .icon-button {
@@ -23,12 +24,17 @@
         bottom: 0;
         z-index: 50;
         display: block;
-        margin: 0 -16px;
+        /* Cancels main-content's side padding (same values) so the bar reaches the screen edges. */
+        margin: 0 calc(-1 * max(16px, var(--safe-right))) 0 calc(-1 * max(16px, var(--safe-left)));
     }
 
     .home-footer {
+        /* 56px for the icons, plus the system bars' space: content-box so the padding is added
+           to the 56px instead of eating it (the icons used to be squashed above the bar). */
+        box-sizing: content-box;
         height: 56px;
-        padding-bottom: var(--safe-bottom);
+        min-height: 0;
+        padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
         background-color: rgba(255, 252, 248, 0.94);
         backdrop-filter: blur(6px);
         border-top: 2px dashed var(--primary-shaded-50, #c1c0bd);

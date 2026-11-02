@@ -30,3 +30,27 @@
   width: 30px;
   height: 30px;
 }
+
+/* Item name shown on a tap (touch screens have no hover for the title). Lives in <body>, positioned by
+   the component; above the modals (2000+). */
+.item-touch-tooltip {
+  position: fixed;
+  z-index: 3000;
+  max-width: min(240px, calc(100vw - 16px));
+  padding: 4px 10px;
+  border: 2px solid #41403e;
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px;
+  background: #fffcf8;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+  color: #41403e;
+  font-family: 'Neucha', sans-serif;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+  animation: item-touch-tooltip-in 120ms ease-out;
+}
+
+@keyframes item-touch-tooltip-in {
+  from { opacity: 0; transform: translateY(4px); }
+}

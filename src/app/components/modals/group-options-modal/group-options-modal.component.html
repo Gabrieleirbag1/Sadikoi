@@ -38,7 +38,6 @@
                       type="button"
                       class="background-danger"
                       (click)="confirmRemoveUser(connectedUser)"
-                      [disabled]="connectedUser.role === 'admin'"
                     >
                       {{ 'groupOptions.leaveGroup' | translate }}
                     </button>

@@ -3,7 +3,7 @@ import { afterRenderEffect, DestroyRef, Directive, ElementRef, inject, input } f
 /**
  * Shrinks the element's font size until its text fits on `maxLines` lines.
  * Starts from the size the stylesheet gives (so media queries still set the largest size).
- * Below `minFontSize` it stops shrinking; the `.fit-text-clamped` class (line clamp in CSS) then cuts the rest.
+ * The text is never cut: below `minFontSize` it stops shrinking and takes the extra lines it needs.
  * The element must be a block (or a flex item) with a numeric `line-height`.
  */
 @Directive({
@@ -16,8 +16,8 @@ export class FitTextDirective {
   /** The text: fitting runs again whenever it changes. */
   public readonly appFitText = input<string | null | undefined>();
   public readonly maxLines = input(2);
-  /** Smallest font size in px. */
-  public readonly minFontSize = input(14);
+  /** Smallest font size in px (only an extremely long text goes past `maxLines` at this size). */
+  public readonly minFontSize = input(11);
 
   constructor() {
     afterRenderEffect(() => {
@@ -38,9 +38,8 @@ export class FitTextDirective {
 
   private fit(): void {
     const el = this.host.nativeElement;
-    // Measure without the previous fit: stylesheet size, no line clamp.
+    // Measure without the previous fit: stylesheet size.
     el.style.fontSize = '';
-    el.classList.remove('fit-text-clamped');
 
     const maxLines = this.maxLines();
     const style = getComputedStyle(el);
@@ -55,6 +54,5 @@ export class FitTextDirective {
       size = Math.max(this.minFontSize(), size - 1);
       el.style.fontSize = `${size}px`;
     }
-    if (!fits()) el.classList.add('fit-text-clamped');
   }
 }

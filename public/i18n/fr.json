@@ -119,7 +119,9 @@
     "groupOptions": "Options du groupe",
     "leaveGroup": "Quitter le groupe",
     "deleteGroup": "Supprimer le groupe",
-    "removeUser": "Supprimer l'utilisateur"
+    "removeUser": "Supprimer l'utilisateur",
+    "leaveConfirm": "Voulez-vous vraiment quitter ce groupe ?",
+    "leaveLastMemberConfirm": "Vous êtes le dernier membre : quitter le groupe le supprimera définitivement. Continuer ?"
   },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",
@@ -129,6 +131,8 @@
     "dislike": "Je n'aime pas cette question"
   },
   "chat": {
+    "fullscreen": "Chat en plein écran",
+    "exitFullscreen": "Réafficher les résultats",
     "noMessagesDisplay": "Aucun message à afficher.",
     "typeYourMessage": "Tapez votre message ici...",
     "send": "Envoyer",
