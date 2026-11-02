@@ -119,7 +119,9 @@
     "groupOptions": "Group Options",
     "leaveGroup": "Leave Group",
     "deleteGroup": "Delete Group",
-    "removeUser": "Remove User"
+    "removeUser": "Remove User",
+    "leaveConfirm": "Are you sure you want to leave this group?",
+    "leaveLastMemberConfirm": "You are the last member: leaving will delete the group for good. Continue?"
   },
   "question": {
     "enterYourAnswer": "Enter your answer...",
