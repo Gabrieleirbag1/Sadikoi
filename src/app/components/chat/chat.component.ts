@@ -227,6 +227,10 @@ export class ChatComponent {
 
   private resizeInput(input: HTMLInputElement | HTMLTextAreaElement): void {
     if (!(input instanceof HTMLTextAreaElement)) return;
+    // Measuring shrinks the field to one line for a moment: the thread gets taller and the browser
+    // pulls its scroll up. Its position is put back below, so typing never moves the thread.
+    const thread = this.messagesContainer()?.nativeElement;
+    const threadTop = thread?.scrollTop ?? 0;
     // Measured without a scrollbar, which would narrow the text and change where lines wrap.
     input.style.overflowY = 'hidden';
     input.style.height = 'auto';
@@ -238,6 +242,12 @@ export class ChatComponent {
     // Scrollbar only once the max height is reached: scrollHeight is rounded to whole pixels, so
     // below that the text can overflow by a fraction of a pixel and show a useless scrollbar.
     input.style.overflowY = needed > max ? 'auto' : 'hidden';
+    if (thread) {
+      // At the bottom: stay there as the field grows. Otherwise: keep the messages being read.
+      thread.scrollTop = this.stickToBottom ? thread.scrollHeight : threadTop;
+      // The scroll event that follows must not be taken for the user scrolling up.
+      this.lastScrollTop = thread.scrollTop;
+    }
   }
 
   @HostListener('document:click', ['$event'])

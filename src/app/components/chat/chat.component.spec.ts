@@ -56,6 +56,40 @@ describe('ChatComponent', () => {
       (component as any).autoScroll('instant');
       expect(scrollTo).toHaveBeenCalledOnce();
     });
+
+    describe('typing in the growing field', () => {
+      let textarea: HTMLTextAreaElement;
+
+      // Measuring the field makes the thread taller for a moment: the browser pulls its scroll up.
+      const type = () => {
+        textarea.value += 'd';
+        textarea.dispatchEvent(new Event('input'));
+      };
+
+      beforeEach(() => {
+        textarea = fixture.nativeElement.querySelector('.chat-input-area textarea');
+        Object.defineProperty(textarea.style, 'height', {
+          configurable: true,
+          get: () => '',
+          set: (v: string) => { if (v === 'auto') container.scrollTop -= 50; },
+        });
+      });
+
+      it('stays at the bottom', () => {
+        scrollUserTo(700);
+        type();
+        container.dispatchEvent(new Event('scroll')); // fired late by the browser
+        expect(container.scrollTop).toBe(1000);
+        expect((component as any).stickToBottom).toBe(true);
+      });
+
+      it('keeps the messages being read when scrolled up', () => {
+        scrollUserTo(700);
+        scrollUserTo(300);
+        type();
+        expect(container.scrollTop).toBe(300);
+      });
+    });
   });
 
   describe('sending a message', () => {
