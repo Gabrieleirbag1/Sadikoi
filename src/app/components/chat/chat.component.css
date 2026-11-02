@@ -112,13 +112,17 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 12px;
+    min-width: 0;
 }
 
+/* The time and report link never wrap: a long username is cut with an ellipsis instead. */
 .message-infos {
     margin-left: auto;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .message-report {
@@ -142,6 +146,10 @@
 }
 
 .message-author {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-family: "Patrick Hand SC", sans-serif;
     font-weight: normal;
     font-size: 1.1rem;
@@ -325,8 +333,14 @@ app-gif-picker {
         transform: rotate(180deg);
     }
 
+    /* No scrollbar on phones (it eats width next to the hand-drawn border); touch scrolling still works. */
     .chat-messages-container {
         padding: 5px 6px;
+        scrollbar-width: none;
+    }
+
+    .chat-messages-container::-webkit-scrollbar {
+        display: none;
     }
 
     .message-row {
