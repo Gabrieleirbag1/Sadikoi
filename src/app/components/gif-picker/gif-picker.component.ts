@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, model, Output, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, model, Output, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { KLIPY_URL } from '../settings/settings.constants';
@@ -24,9 +24,19 @@ export class GifPickerComponent {
   protected loading = signal(false);
   protected view = signal<'recent' | 'trending' | 'search'>('trending');
   protected searchTimeout: ReturnType<typeof setTimeout> | null = null;
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
   async ngOnInit(): Promise<void> {
     await this.loadTrending();
+  }
+
+  /** Puts the cursor in the search bar (the keyboard, if open, now types the search). */
+  public focusSearch(): void {
+    this.searchInput()?.nativeElement.focus();
+  }
+
+  public hasFocus(): boolean {
+    return !!this.searchInput() && document.activeElement === this.searchInput()!.nativeElement;
   }
 
   protected setView(view: 'recent' | 'trending'): void {

@@ -65,6 +65,8 @@ export class ChatComponent {
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
   private readonly chatContainer = viewChild<ElementRef<HTMLElement>>('chatContainer');
   private readonly inputArea = viewChild<ElementRef<HTMLElement>>('inputArea');
+  private readonly messageInput = viewChild<ElementRef<HTMLInputElement>>('messageContent');
+  private readonly gifPicker = viewChild(GifPickerComponent);
   /** Last message that failed to send, kept to resend it with the same id. */
   private failedSend: { content: string; clientId: string } | null = null;
   /** Browser only: visible screen height when the input got the focus, before the keyboard opened. */
@@ -253,8 +255,18 @@ export class ChatComponent {
     if (!area.contains(event.relatedTarget as Node | null)) this.inputFocused.set(false);
   }
 
+  /** While typing (keyboard open on phones), the focus follows the picker: into its search bar when it
+   *  opens, back to the message when it closes. Otherwise nothing gets the focus, so no keyboard pops up. */
   protected toggleGifPicker(): void {
-    this.showGifPicker.update(v => !v);
+    const opening = !this.showGifPicker();
+    const typing = this.inputArea()?.nativeElement.contains(document.activeElement) ?? false;
+    const searchFocused = this.gifPicker()?.hasFocus() ?? false;
+    this.showGifPicker.set(opening);
+    if (opening && typing) {
+      afterNextRender(() => this.gifPicker()?.focusSearch(), { injector: this.injector });
+    } else if (!opening && searchFocused) {
+      this.messageInput()?.nativeElement.focus();
+    }
   }
 
   protected async onGifSelected(gif: KlipyGif | null): Promise<void> {
