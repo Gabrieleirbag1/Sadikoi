@@ -69,6 +69,9 @@ export class VoteBubblesComponent {
   /** Picks needed before the vote can be sent: `limit` (capped by the candidates shown), or 1. */
   protected readonly requiredCount = computed(() =>
     this.multiple() && this.limit() > 0 ? Math.min(this.limit(), this.bubbles().length) : 1);
+  /** Multiple voting: a hint says that several members can (or must) be picked, so nobody votes without knowing it. */
+  protected readonly showMultipleHint = computed(() =>
+    this.isVoting() && this.multiple() && (this.limit() === 0 || this.requiredCount() > 1));
   protected readonly candidates = computed<BubbleCandidate[]>(() =>
     this.bubbles().map(b => ({
       id: b.votedUser.id,
