@@ -237,27 +237,47 @@ app-gif-picker {
         padding: 26px 14px 18px;
     }
 
+    /* Top right, a small paper tag like the results button. The border's corner curves inwards there,
+       hence the wider right offset. */
     .chat-fullscreen-toggle {
         display: flex;
         position: absolute;
-        top: 4px;
-        left: 14px;
-        width: 28px;
+        z-index: 5;
+        top: 3px;
+        right: 18px;
+        width: 36px;
         height: 22px;
+        box-sizing: border-box;
         align-items: center;
         justify-content: center;
+        border: 2px solid var(--primary);
+        border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+        background-color: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
         color: var(--primary);
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
+        transition: background-color 250ms ease, color 250ms ease, transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    .chat-fullscreen-toggle:active {
+        transform: scale(0.9);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
     }
 
     .chat-fullscreen-toggle svg {
-        width: 20px;
-        height: 20px;
-        transition: transform 150ms ease;
+        width: 18px;
+        height: 18px;
+        /* Slight overshoot: the chevron flips with a little bounce. */
+        transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Full screen: the chevron points down, to give the bubbles their room back. */
+    /* Full screen: filled tag, the chevron points down to give the bubbles their room back. */
+    .chat-fullscreen-toggle.expanded {
+        background-color: var(--primary);
+        color: #fff;
+    }
+
     .chat-fullscreen-toggle.expanded svg {
         transform: rotate(180deg);
     }

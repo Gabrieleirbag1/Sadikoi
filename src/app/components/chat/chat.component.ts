@@ -134,6 +134,15 @@ export class ChatComponent {
       this.messages();
       afterNextRender(() => this.autoScroll(), { injector: this.injector });
     });
+
+    // The thread changes height (full screen animation, keyboard): stay on the latest messages.
+    afterNextRender(() => {
+      const el = this.messagesContainer()?.nativeElement;
+      if (!el || typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(() => this.autoScroll('instant'));
+      observer.observe(el);
+      this.destroyRef.onDestroy(() => observer.disconnect());
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -262,8 +271,6 @@ export class ChatComponent {
 
   protected toggleFullscreen(): void {
     this.fullscreen.update(v => !v);
-    // The thread changes height: stay on the latest messages.
-    afterNextRender(() => this.autoScroll('instant'), { injector: this.injector });
   }
 
   /** While typing (keyboard open on phones), the focus follows the picker: into its search bar when it

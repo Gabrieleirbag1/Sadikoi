@@ -111,8 +111,46 @@ html::-webkit-scrollbar {
     display: none;
   }
 
-  /* Phone, chat in full screen (chevron at the top of the chat): no bubbles. */
+  /* Phone, chat in full screen (chevron at the top of the chat): the bubbles fold away and the chat
+     grows into their room. The bubbles shrink with their box. */
+  .question-votes-and-chat-container {
+    transition: gap 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .question-votes-container {
+    transition:
+      flex-grow 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      min-height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      max-height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 250ms ease,
+      visibility 0s;
+  }
+
+  html.chat-fullscreen .question-votes-and-chat-container {
+    gap: 0;
+  }
+
   html.chat-fullscreen .question-votes-container {
-    display: none;
+    flex-grow: 0;
+    min-height: 0;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    /* Hidden (not clickable, not focusable) once folded. */
+    visibility: hidden;
+    transition:
+      flex-grow 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      min-height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      max-height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 200ms ease,
+      visibility 0s linear 350ms;
+  }
+}
+
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .question-votes-and-chat-container,
+  .question-votes-container,
+  html.chat-fullscreen .question-votes-container {
+    transition: none;
   }
 }
