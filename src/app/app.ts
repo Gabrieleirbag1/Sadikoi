@@ -9,6 +9,7 @@ import { LoadingComponent } from "./components/loading/loading.component";
 import { LoadingService } from "./services/loading/loading.service";
 import { DeepLinkService } from "./services/deep-link/deep-link.service";
 import { PushService } from "./services/push/push.service";
+import { BackButtonService } from "./services/back-button/back-button.service";
 import { ConnectivityService } from "./services/connectivity/connectivity.service";
 import { ConnectionErrorComponent } from "./components/connection-error/connection-error.component";
 import { OpenInAppBannerComponent } from "./components/open-in-app-banner/open-in-app-banner.component";
@@ -27,5 +28,6 @@ export class App {
     inject(LoadingService).init();
     inject(DeepLinkService).init();
     inject(PushService).init();
+    inject(BackButtonService).init();
   }
 }
