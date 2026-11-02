@@ -110,4 +110,9 @@ html::-webkit-scrollbar {
   html.chat-typing app-home-footer {
     display: none;
   }
+
+  /* Phone, chat in full screen (chevron at the top of the chat): no bubbles. */
+  html.chat-fullscreen .question-votes-container {
+    display: none;
+  }
 }

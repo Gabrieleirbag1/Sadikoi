@@ -215,6 +215,11 @@ app-gif-picker {
   opacity: 0.3;
 }
 
+/* Full screen toggle: phones only. A bare chevron, no button look. */
+.chat-fullscreen-toggle {
+    display: none;
+}
+
 /* Mobile: the chat takes the full width and the height its parent gives it. */
 @media (max-width: 768px) {
     :host {
@@ -222,13 +227,39 @@ app-gif-picker {
         flex-direction: column;
     }
 
-    /* Extra room so messages and the input don't touch the hand-drawn border (its corners curve inwards). */
+    /* Extra room so messages and the input don't touch the hand-drawn border (its corners curve inwards).
+       The top one also holds the full screen chevron. */
     .chat-container {
         flex: 1;
         min-height: 0;
         width: 100%;
         height: auto;
-        padding: 14px 14px 18px;
+        padding: 26px 14px 18px;
+    }
+
+    .chat-fullscreen-toggle {
+        display: flex;
+        position: absolute;
+        top: 4px;
+        left: 14px;
+        width: 28px;
+        height: 22px;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .chat-fullscreen-toggle svg {
+        width: 20px;
+        height: 20px;
+        transition: transform 150ms ease;
+    }
+
+    /* Full screen: the chevron points down, to give the bubbles their room back. */
+    .chat-fullscreen-toggle.expanded svg {
+        transform: rotate(180deg);
     }
 
     .chat-messages-container {

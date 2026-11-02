@@ -16,6 +16,8 @@ import { Keyboard } from '@capacitor/keyboard';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
+/** Set on <html> while the chat is in full screen (phones only): styles.css then hides the bubbles. */
+const FULLSCREEN_CLASS = 'chat-fullscreen';
 /** Approximate profile card size, only used to decide when to flip it away from an edge. */
 const PROFILE_WIDTH = 280;
 const PROFILE_HEIGHT = 180;
@@ -48,6 +50,8 @@ export class ChatComponent {
 
   protected messages = signal<Message[]>([]);
   protected showGifPicker = signal(false);
+  /** Phone: the chat takes the bubbles' room. Only kept while the group is open (never saved). */
+  protected readonly fullscreen = signal(false);
   /** Focus is in the input area (message input or GIF search). */
   protected readonly inputFocused = signal(false);
   private readonly isNative = Capacitor.isNativePlatform();
@@ -91,6 +95,7 @@ export class ChatComponent {
 
   constructor() {
     effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
+    effect(() => document.documentElement.classList.toggle(FULLSCREEN_CLASS, this.fullscreen()));
     // Android's back button closes the keyboard but leaves the focus in the input: the chat would
     // keep the whole screen. When the keyboard closes, we drop the focus ourselves.
     let viewport: VisualViewport | null = null;
@@ -112,7 +117,7 @@ export class ChatComponent {
     }
 
     this.destroyRef.onDestroy(() => {
-      document.documentElement.classList.remove(TYPING_CLASS);
+      document.documentElement.classList.remove(TYPING_CLASS, FULLSCREEN_CLASS);
       viewport?.removeEventListener('resize', onViewportResize);
       this.userProfileService.hide(this.profileScope);
     });
@@ -253,6 +258,12 @@ export class ChatComponent {
     // Focus moving inside the area (input -> GIF search) is still typing.
     const area = event.currentTarget as HTMLElement;
     if (!area.contains(event.relatedTarget as Node | null)) this.inputFocused.set(false);
+  }
+
+  protected toggleFullscreen(): void {
+    this.fullscreen.update(v => !v);
+    // The thread changes height: stay on the latest messages.
+    afterNextRender(() => this.autoScroll('instant'), { injector: this.injector });
   }
 
   /** While typing (keyboard open on phones), the focus follows the picker: into its search bar when it
