@@ -257,7 +257,10 @@ export class ChatComponent {
     if (this.showGifPicker() && !path.some(el => el.tagName === 'APP-GIF-PICKER' || el.classList.contains('gif-btn'))) {
       this.showGifPicker.set(false);
     }
-    if (this.profileUser() && !path.some(el => el.classList.contains('chat-profile-popover') || el.classList.contains('chat-avatar-btn'))) {
+    // Closing the full size picture (opened from the card) keeps the card open.
+    const keepsProfile = (el: Element) =>
+      el.classList.contains('chat-profile-popover') || el.classList.contains('chat-avatar-btn') || el.classList.contains('image-preview');
+    if (this.profileUser() && !path.some(keepsProfile)) {
       this.closeProfile();
     }
   }
