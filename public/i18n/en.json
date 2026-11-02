@@ -131,6 +131,8 @@
     "dislike": "I don't like this question"
   },
   "chat": {
+    "fullscreen": "Full screen chat",
+    "exitFullscreen": "Show the results again",
     "noMessagesDisplay": "No messages to display.",
     "typeYourMessage": "Type your message here...",
     "send": "Send",

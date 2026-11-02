@@ -131,6 +131,8 @@
     "dislike": "Je n'aime pas cette question"
   },
   "chat": {
+    "fullscreen": "Chat en plein écran",
+    "exitFullscreen": "Réafficher les résultats",
     "noMessagesDisplay": "Aucun message à afficher.",
     "typeYourMessage": "Tapez votre message ici...",
     "send": "Envoyer",
