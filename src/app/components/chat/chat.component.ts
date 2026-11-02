@@ -184,8 +184,8 @@ export class ChatComponent {
   }
 
   protected async sendMessage(content: string, input?: HTMLInputElement | HTMLTextAreaElement): Promise<void> {
-    // Trailing spaces and blank lines are dropped, like Discord.
-    content = content.trimEnd();
+    // Spaces and blank lines around the message are dropped, like Discord.
+    content = content.trim();
     if (!content || this.readOnly()) return;
     const g = this.group();
     if (!g) {

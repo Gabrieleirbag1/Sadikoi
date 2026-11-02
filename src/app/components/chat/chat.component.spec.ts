@@ -128,9 +128,9 @@ describe('ChatComponent', () => {
       expect(send.mock.calls[0][3]).not.toBe(send.mock.calls[1][3]);
     });
 
-    it('trailing spaces and blank lines are dropped, a blank message is not sent', async () => {
-      await (component as any).sendMessage('  hi there \n\n  ');
-      expect(send.mock.calls[0][1]).toBe('  hi there');
+    it('spaces and blank lines around the message are dropped, a blank message is not sent', async () => {
+      await (component as any).sendMessage(' \n  hi\n there \n\n  ');
+      expect(send.mock.calls[0][1]).toBe('hi\n there');
       await (component as any).sendMessage(' \n ');
       expect(send).toHaveBeenCalledOnce();
     });
