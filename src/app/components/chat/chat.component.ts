@@ -29,6 +29,10 @@ function newClientId(): string {
 }
 /** Browser only: the visible screen shrinking by more than this (px) means the on-screen keyboard is open. */
 const KEYBOARD_MIN_HEIGHT = 150;
+/** Longest message the API can store (chat_messages.content is a String(500)). */
+const MAX_MESSAGE_LENGTH = 500;
+/** The character counter shows up from this share of the limit. */
+const COUNTER_THRESHOLD = 0.8;
 
 @Component({
   selector: 'app-chat',
@@ -54,6 +58,10 @@ export class ChatComponent {
   protected readonly fullscreen = signal(false);
   /** Focus is in the input area (message input or GIF search). */
   protected readonly inputFocused = signal(false);
+  protected readonly maxMessageLength = MAX_MESSAGE_LENGTH;
+  /** Characters in the message being written, for the counter. */
+  protected readonly messageLength = signal(0);
+  protected readonly showCounter = computed(() => this.messageLength() >= MAX_MESSAGE_LENGTH * COUNTER_THRESHOLD);
   private readonly isNative = Capacitor.isNativePlatform();
   /** App only: the keyboard is open or coming up (plugin events). */
   private readonly keyboardOpen = signal(false);
@@ -69,7 +77,7 @@ export class ChatComponent {
   private readonly messagesContainer = viewChild<ElementRef<HTMLElement>>('messagesContainer');
   private readonly chatContainer = viewChild<ElementRef<HTMLElement>>('chatContainer');
   private readonly inputArea = viewChild<ElementRef<HTMLElement>>('inputArea');
-  private readonly messageInput = viewChild<ElementRef<HTMLInputElement>>('messageContent');
+  private readonly messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageContent');
   private readonly gifPicker = viewChild(GifPickerComponent);
   /** Last message that failed to send, kept to resend it with the same id. */
   private failedSend: { content: string; clientId: string } | null = null;
@@ -175,8 +183,10 @@ export class ChatComponent {
     }
   }
 
-  protected async sendMessage(content: string, input?: HTMLInputElement): Promise<void> {
-    if (!content.trim() || this.readOnly()) return;
+  protected async sendMessage(content: string, input?: HTMLInputElement | HTMLTextAreaElement): Promise<void> {
+    // Spaces and blank lines around the message are dropped, like Discord.
+    content = content.trim();
+    if (!content || this.readOnly()) return;
     const g = this.group();
     if (!g) {
       this.logger.error('Error sending message: group is not set');
@@ -187,12 +197,56 @@ export class ChatComponent {
     const clientId = this.failedSend?.content === content ? this.failedSend.clientId : newClientId();
     this.failedSend = null;
     // Emptied right away: a second tap on "send" finds nothing to send.
-    if (input) input.value = '';
+    if (input) {
+      input.value = '';
+      this.onInputChange(input);
+    }
     const sent = await this.chatService.sendMessage(g.id, content, this.questionId(), clientId);
     if (!sent) {
       this.failedSend = { content, clientId };
       // Give the text back to retry, unless something new was typed meanwhile.
-      if (input && !input.value) input.value = content;
+      if (input && !input.value) {
+        input.value = content;
+        this.onInputChange(input);
+      }
+    }
+  }
+
+  /** Enter sends, Shift+Enter adds a line break. Ignored while an IME is composing a word. */
+  protected onEnter(event: KeyboardEvent, input: HTMLTextAreaElement): void {
+    if (event.shiftKey || event.isComposing) return;
+    event.preventDefault();
+    void this.sendMessage(input.value, input);
+  }
+
+  /** Fits the text area to its text, so it grows line by line (CSS max-height then makes it scroll). */
+  protected onInputChange(input: HTMLInputElement | HTMLTextAreaElement): void {
+    this.messageLength.set(input.value.length);
+    this.resizeInput(input);
+  }
+
+  private resizeInput(input: HTMLInputElement | HTMLTextAreaElement): void {
+    if (!(input instanceof HTMLTextAreaElement)) return;
+    // Measuring shrinks the field to one line for a moment: the thread gets taller and the browser
+    // pulls its scroll up. Its position is put back below, so typing never moves the thread.
+    const thread = this.messagesContainer()?.nativeElement;
+    const threadTop = thread?.scrollTop ?? 0;
+    // Measured without a scrollbar, which would narrow the text and change where lines wrap.
+    input.style.overflowY = 'hidden';
+    input.style.height = 'auto';
+    // scrollHeight leaves out the borders, which the border-box height includes.
+    const borders = input.offsetHeight - input.clientHeight;
+    const needed = input.scrollHeight + borders;
+    const max = parseFloat(getComputedStyle(input).maxHeight);
+    input.style.height = `${Math.min(needed, max)}px`;
+    // Scrollbar only once the max height is reached: scrollHeight is rounded to whole pixels, so
+    // below that the text can overflow by a fraction of a pixel and show a useless scrollbar.
+    input.style.overflowY = needed > max ? 'auto' : 'hidden';
+    if (thread) {
+      // At the bottom: stay there as the field grows. Otherwise: keep the messages being read.
+      thread.scrollTop = this.stickToBottom ? thread.scrollHeight : threadTop;
+      // The scroll event that follows must not be taken for the user scrolling up.
+      this.lastScrollTop = thread.scrollTop;
     }
   }
 

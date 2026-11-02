@@ -150,6 +150,7 @@
 
 .message-content {
     margin: 0;
+    white-space: pre-wrap; /* keeps the line breaks typed with Shift+Enter */
 }
 
 .message-gif {
@@ -169,22 +170,64 @@
     color: var(--muted);
 }
 
+/* Buttons stay at the bottom while the text area grows upwards. */
 .chat-input-area {
     position: relative;
     display: flex;
-    align-items: stretch;
+    align-items: flex-end;
     gap: 10px;
     margin: 10px 20px;
 }
 
-.chat-input-area input {
+/* paper.css centers every button (align-self): keep them at the bottom too. */
+.chat-input-area > button {
+    align-self: flex-end;
+}
+
+/* Holds the text area and its counter. */
+.chat-input-field {
+    position: relative;
     flex: 1;
     min-width: 0;
 }
 
+/* Sits on the field's top border, at the right: it never covers the text. */
+.chat-input-counter {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    transform: translateY(-50%);
+    padding: 0 4px;
+    background-color: #fdfbff; /* the chat's background, hides the border behind the numbers */
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.chat-input-counter.full {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+/* Starts one line high; resizeInput sets the height to fit the text, up to max-height, then it scrolls. */
+.chat-input-area textarea {
+    display: block;
+    width: 100%;
+    max-height: 8.5em;
+    overflow-y: hidden;
+    resize: none;
+    /* No visible scrollbar (it clashes with the hand-drawn border); wheel, arrows and touch still scroll. */
+    scrollbar-width: none;
+}
+
+.chat-input-area textarea::-webkit-scrollbar {
+    display: none;
+}
+
 /* Same box for the input and the buttons so they line up */
 .chat-input-area button,
-.chat-input-area input {
+.chat-input-area textarea {
     box-sizing: border-box;
     margin: 0;
     padding: 0.5rem 0.75rem;
@@ -297,7 +340,7 @@ app-gif-picker {
 
     /* 16px minimum: smaller inputs make iOS zoom in on focus. */
     .chat-input-area button,
-    .chat-input-area input {
+    .chat-input-area textarea {
         padding: 0.4rem 0.6rem;
         font-size: 16px;
     }

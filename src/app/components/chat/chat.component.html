@@ -92,12 +92,23 @@
     <button type="button" (mousedown)="$event.preventDefault()" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
       {{ 'chat.gif' | translate }}
     </button>
-    <input
-      type="text"
-      [placeholder]="'chat.typeYourMessage' | translate"
-      (keydown.enter)="sendMessage(messageContent.value, messageContent)"
-      #messageContent
-    />
+    <div class="chat-input-field">
+      <!-- Grows with the text (see resizeInput). Enter sends, Shift+Enter goes to a new line. -->
+      <textarea
+        rows="1"
+        [attr.maxlength]="maxMessageLength"
+        [placeholder]="'chat.typeYourMessage' | translate"
+        (keydown.enter)="onEnter($any($event), messageContent)"
+        (input)="onInputChange(messageContent)"
+        #messageContent
+      ></textarea>
+      <!-- Only near the limit, like Discord. -->
+      @if (showCounter()) {
+        <span class="chat-input-counter" [class.full]="messageLength() >= maxMessageLength">
+          {{ messageLength() }}/{{ maxMessageLength }}
+        </span>
+      }
+    </div>
     <button type="button" class="background-secondary" (mousedown)="$event.preventDefault()" (click)="sendMessage(messageContent.value, messageContent)">
       >
     </button>
