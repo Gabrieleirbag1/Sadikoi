@@ -29,6 +29,10 @@ function newClientId(): string {
 }
 /** Browser only: the visible screen shrinking by more than this (px) means the on-screen keyboard is open. */
 const KEYBOARD_MIN_HEIGHT = 150;
+/** Longest message the API can store (chat_messages.content is a String(500)). */
+const MAX_MESSAGE_LENGTH = 500;
+/** The character counter shows up from this share of the limit. */
+const COUNTER_THRESHOLD = 0.8;
 
 @Component({
   selector: 'app-chat',
@@ -54,6 +58,10 @@ export class ChatComponent {
   protected readonly fullscreen = signal(false);
   /** Focus is in the input area (message input or GIF search). */
   protected readonly inputFocused = signal(false);
+  protected readonly maxMessageLength = MAX_MESSAGE_LENGTH;
+  /** Characters in the message being written, for the counter. */
+  protected readonly messageLength = signal(0);
+  protected readonly showCounter = computed(() => this.messageLength() >= MAX_MESSAGE_LENGTH * COUNTER_THRESHOLD);
   private readonly isNative = Capacitor.isNativePlatform();
   /** App only: the keyboard is open or coming up (plugin events). */
   private readonly keyboardOpen = signal(false);
@@ -176,7 +184,9 @@ export class ChatComponent {
   }
 
   protected async sendMessage(content: string, input?: HTMLInputElement | HTMLTextAreaElement): Promise<void> {
-    if (!content.trim() || this.readOnly()) return;
+    // Trailing spaces and blank lines are dropped, like Discord.
+    content = content.trimEnd();
+    if (!content || this.readOnly()) return;
     const g = this.group();
     if (!g) {
       this.logger.error('Error sending message: group is not set');
@@ -189,7 +199,7 @@ export class ChatComponent {
     // Emptied right away: a second tap on "send" finds nothing to send.
     if (input) {
       input.value = '';
-      this.resizeInput(input);
+      this.onInputChange(input);
     }
     const sent = await this.chatService.sendMessage(g.id, content, this.questionId(), clientId);
     if (!sent) {
@@ -197,7 +207,7 @@ export class ChatComponent {
       // Give the text back to retry, unless something new was typed meanwhile.
       if (input && !input.value) {
         input.value = content;
-        this.resizeInput(input);
+        this.onInputChange(input);
       }
     }
   }
@@ -210,7 +220,12 @@ export class ChatComponent {
   }
 
   /** Fits the text area to its text, so it grows line by line (CSS max-height then makes it scroll). */
-  protected resizeInput(input: HTMLInputElement | HTMLTextAreaElement): void {
+  protected onInputChange(input: HTMLInputElement | HTMLTextAreaElement): void {
+    this.messageLength.set(input.value.length);
+    this.resizeInput(input);
+  }
+
+  private resizeInput(input: HTMLInputElement | HTMLTextAreaElement): void {
     if (!(input instanceof HTMLTextAreaElement)) return;
     // Measured without a scrollbar, which would narrow the text and change where lines wrap.
     input.style.overflowY = 'hidden';

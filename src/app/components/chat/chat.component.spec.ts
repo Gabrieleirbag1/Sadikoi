@@ -93,6 +93,34 @@ describe('ChatComponent', () => {
       await (component as any).sendMessage('b');
       expect(send.mock.calls[0][3]).not.toBe(send.mock.calls[1][3]);
     });
+
+    it('trailing spaces and blank lines are dropped, a blank message is not sent', async () => {
+      await (component as any).sendMessage('  hi there \n\n  ');
+      expect(send.mock.calls[0][1]).toBe('  hi there');
+      await (component as any).sendMessage(' \n ');
+      expect(send).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('character counter', () => {
+    const typeIn = (text: string) => {
+      const textarea = fixture.nativeElement.querySelector('.chat-input-area textarea') as HTMLTextAreaElement;
+      textarea.value = text;
+      textarea.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      return fixture.nativeElement.querySelector('.chat-input-counter') as HTMLElement | null;
+    };
+
+    it('the field is limited to 500 characters', () => {
+      const textarea = fixture.nativeElement.querySelector('.chat-input-area textarea') as HTMLTextAreaElement;
+      expect(textarea.maxLength).toBe(500);
+    });
+
+    it('shows up from 80% of the limit, and is highlighted once full', () => {
+      expect(typeIn('a'.repeat(399))).toBeNull();
+      expect(typeIn('a'.repeat(400))?.textContent?.trim()).toBe('400/500');
+      expect(typeIn('a'.repeat(500))?.classList).toContain('full');
+    });
   });
 
   describe('author profile', () => {
