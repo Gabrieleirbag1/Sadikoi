@@ -468,6 +468,7 @@
     "micro_verite": "Micro de la Vérité"
   },
   "themes": {
+    "questionTheme": "Thème de la question : {{theme}}",
     "title": "Thèmes des questions",
     "selected": "{{count}}/{{total}} choisis",
     "atLeastOne": "Garde au moins un thème."

@@ -468,6 +468,7 @@
     "micro_verite": "Mic of Truth"
   },
   "themes": {
+    "questionTheme": "Question theme: {{theme}}",
     "title": "Question themes",
     "selected": "{{count}}/{{total}} selected",
     "atLeastOne": "Keep at least one theme."
