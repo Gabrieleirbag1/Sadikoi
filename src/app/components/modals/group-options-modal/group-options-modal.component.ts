@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { disabled, form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { LoggerService } from '../../../services/logger/logger.service';
 import { GroupsService } from '../../../services/groups/groups.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -27,6 +28,7 @@ export class GroupOptionsComponent implements OnChanges {
   private readonly groupService = inject(GroupsService);
   private readonly notificationService = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
   private readonly modalId = 'group-options-modal';
 
   protected readonly userProfileService = inject(UserProfileService);
@@ -104,10 +106,12 @@ export class GroupOptionsComponent implements OnChanges {
 
   protected confirmRemoveUser(user: User): void {
     const isSelf = user.id === this.connectedUser?.id;
+    // The last member leaving deletes the group (API): say so before.
+    const lastMember = isSelf && (this.group()?.users.length ?? 0) <= 1;
     this.modalService.open(this.removeUserConfirmId, {
-      title: isSelf ? 'Leave Group' : 'Remove User',
+      title: isSelf ? this.translate.instant('groupOptions.leaveGroup') : 'Remove User',
       description: isSelf
-        ? 'Are you sure you want to leave this group?'
+        ? this.translate.instant(lastMember ? 'groupOptions.leaveLastMemberConfirm' : 'groupOptions.leaveConfirm')
         : `Are you sure you want to remove ${user.username} from the group?`,
       save: () => this.removeUser(user),
     });
@@ -118,6 +122,13 @@ export class GroupOptionsComponent implements OnChanges {
       const g = this.group();
       if (!g) throw new Error('Group is not defined');
       const response = await this.groupService.removeUserFromGroup(g.id, user.id);
+      if (user.id === this.connectedUser?.id) {
+        // No longer a member: back to the groups list.
+        this.modalService.close(this.modalId);
+        sessionStorage.setItem('homeState', 'groups');
+        this.router.navigateByUrl('/', { replaceUrl: true });
+        return;
+      }
       this.group.set(response);
     } catch (error) {
       this.logger.error('Error removing user from group:', error);
