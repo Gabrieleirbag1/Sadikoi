@@ -1,13 +1,14 @@
 <div class="profile-image-picker">
   <img
     [src]="displayUrl()"
-    alt="Profile Picture"
+    [alt]="alt()"
     width="200"
     class="border"
     [class]="imgClass()"
-    (click)="openFilePicker()"
+    (click)="onImageClick($event)"
     (error)="onImageError($event)"
     [class.clickable]="!onlyDisplay()"
+    [class.previewable]="previewable()"
   />
   @if (!onlyDisplay()) {
     <input

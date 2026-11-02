@@ -11,6 +11,10 @@
   transform: scale(0.97);
 }
 
+.profile-image-picker img.previewable {
+  cursor: zoom-in;
+}
+
 /* Hides the input visually but keeps it accessible to screen readers/keyboard */
 .visually-hidden {
   position: absolute;

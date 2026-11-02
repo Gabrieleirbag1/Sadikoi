@@ -1,0 +1,7 @@
+<!-- A click anywhere closes it, the image included: there is nothing else to do here. -->
+@if (imagePreviewService.preview(); as preview) {
+  <div class="image-preview" role="dialog" aria-modal="true" [attr.aria-label]="preview.alt" (click)="close()">
+    <img class="image-preview-img border" [src]="preview.url" [alt]="preview.alt" />
+    <span class="image-preview-close" role="button" [attr.aria-label]="'modal.close' | translate">X</span>
+  </div>
+}
