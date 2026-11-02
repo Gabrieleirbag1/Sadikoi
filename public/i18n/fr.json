@@ -15,7 +15,7 @@
     "checking": "Vérification…"
   },
   "auth": {
-    "authenticated": "Vous êtes connecté!",
+    "authenticated": "Vous êtes connecté !",
     "forgetDevice": "Oublier cet appareil à la déconnexion",
     "logout": "Déconnexion",
     "register": "S'inscrire",
@@ -44,8 +44,8 @@
     "language": "Langue :",
     "dateCreated": "Créé le :",
     "devices": "APPAREILS",
-    "getDevices": "Obtenir les appareils",
-    "logoutAllDevices": "Déconnexion de tous les appareils",
+    "getDevices": "Afficher les appareils",
+    "logoutAllDevices": "Déconnecter tous les appareils",
     "logoutAllDevicesTitle": "Déconnecter tous les appareils ?",
     "logoutAllDevicesDescription": "Vous serez déconnecté de tous les appareils autorisés.",
     "device": "Appareil :",
@@ -108,7 +108,7 @@
     "loadingGroup": "Chargement du groupe...",
     "name": "Nom :",
     "description": "Description :",
-    "dailyResetTime": "Heure de réinitialisation quotidienne :",
+    "dailyResetTime": "Heure de la question du jour :",
     "updateGroup": "Mettre à jour le groupe",
     "users": "Utilisateurs :",
     "home": "Accueil",
@@ -119,13 +119,13 @@
     "groupOptions": "Options du groupe",
     "leaveGroup": "Quitter le groupe",
     "deleteGroup": "Supprimer le groupe",
-    "removeUser": "Supprimer l'utilisateur",
+    "removeUser": "Retirer du groupe",
     "leaveConfirm": "Voulez-vous vraiment quitter ce groupe ?",
     "leaveLastMemberConfirm": "Vous êtes le dernier membre : quitter le groupe le supprimera définitivement. Continuer ?"
   },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",
-    "submitAnswer": "Soumettre la réponse",
+    "submitAnswer": "Répondre",
     "nextQuestionIn": "Prochaine question dans",
     "like": "J'aime cette question",
     "dislike": "Je n'aime pas cette question"
@@ -140,9 +140,9 @@
     "report": "!"
   },
   "gifPicker": {
-    "recent": "Récent",
+    "recent": "Récents",
     "trending": "Tendances",
-    "searchKlipy": "Rechercher KLIPY",
+    "searchKlipy": "Rechercher sur KLIPY",
     "loading": "Chargement…",
     "noGifsFound": "Aucun GIF trouvé."
   },
@@ -150,7 +150,7 @@
     "bugReport": "Rapport de bug",
     "bugReportTitle": "Titre :",
     "describeBug": "Décrire le bug :",
-    "submitBugReport": "Soumettre un rapport de bug",
+    "submitBugReport": "Signaler le bug",
     "suggestion": "Suggestion",
     "theme": "Thème :",
     "themeOptions": {
@@ -161,7 +161,7 @@
       "other": "Autre"
     },
     "question": "Question :",
-    "submitSuggestion": "Soumettre la suggestion"
+    "submitSuggestion": "Envoyer la suggestion"
   },
   "openInApp": {
     "text": "Sadikoi, c’est mieux dans l’appli",
@@ -438,7 +438,7 @@
     }
   },
   "itemAnnouncement": {
-    "title": "Les items du jour",
+    "title": "Les objets du jour",
     "members": "Membres",
     "new": {
       "before": "{{user}} a obtenu",
