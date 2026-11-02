@@ -187,7 +187,9 @@
   },
   "voteBubbles": {
     "selected": "Vote for {{name}}?",
-    "confirm": "Confirm vote"
+    "confirm": "Confirm vote",
+    "pickCount": "Pick {{count}} people · {{selected}}/{{count}}",
+    "pickSeveral": "You can pick several people · {{selected}} selected"
   },
   "voteResults": {
     "open": "See detailed results",

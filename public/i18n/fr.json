@@ -187,7 +187,9 @@
   },
   "voteBubbles": {
     "selected": "Voter pour {{name}} ?",
-    "confirm": "Valider le vote"
+    "confirm": "Valider le vote",
+    "pickCount": "Choisissez {{count}} personnes · {{selected}}/{{count}}",
+    "pickSeveral": "Plusieurs choix possibles · {{selected}} sélectionné(s)"
   },
   "voteResults": {
     "open": "Voir les résultats détaillés",
