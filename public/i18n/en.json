@@ -44,8 +44,8 @@
     "language": "Language:",
     "dateCreated": "Date Created:",
     "devices": "DEVICES",
-    "getDevices": "Get Devices",
-    "logoutAllDevices": "Logout All Devices",
+    "getDevices": "Show Devices",
+    "logoutAllDevices": "Log Out of All Devices",
     "logoutAllDevicesTitle": "Logout all devices?",
     "logoutAllDevicesDescription": "This will log you out of every authorized device.",
     "device": "Device:",
@@ -108,7 +108,7 @@
     "loadingGroup": "Loading group...",
     "name": "Name:",
     "description": "Description:",
-    "dailyResetTime": "Daily Reset Time:",
+    "dailyResetTime": "Daily Question Time:",
     "updateGroup": "Update Group",
     "users": "Users:",
     "home": "Home",
@@ -119,13 +119,13 @@
     "groupOptions": "Group Options",
     "leaveGroup": "Leave Group",
     "deleteGroup": "Delete Group",
-    "removeUser": "Remove User",
+    "removeUser": "Remove from Group",
     "leaveConfirm": "Are you sure you want to leave this group?",
     "leaveLastMemberConfirm": "You are the last member: leaving will delete the group for good. Continue?"
   },
   "question": {
     "enterYourAnswer": "Enter your answer...",
-    "submitAnswer": "Submit Answer",
+    "submitAnswer": "Answer",
     "nextQuestionIn": "Next question in",
     "like": "I like this question",
     "dislike": "I don't like this question"
@@ -150,7 +150,7 @@
     "bugReport": "Bug Report",
     "bugReportTitle": "Title:",
     "describeBug": "Describe the bug:",
-    "submitBugReport": "Submit Bug Report",
+    "submitBugReport": "Report Bug",
     "suggestion": "Suggestion",
     "theme": "Theme:",
     "themeOptions": {
@@ -161,7 +161,7 @@
       "other": "Other"
     },
     "question": "Question:",
-    "submitSuggestion": "Submit Suggestion"
+    "submitSuggestion": "Send Suggestion"
   },
   "openInApp": {
     "text": "Sadikoi is better in the app",
@@ -468,6 +468,7 @@
     "micro_verite": "Mic of Truth"
   },
   "themes": {
+    "questionTheme": "Question theme: {{theme}}",
     "title": "Question themes",
     "selected": "{{count}}/{{total}} selected",
     "atLeastOne": "Keep at least one theme."

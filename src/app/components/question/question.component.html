@@ -1,8 +1,12 @@
 <section class="main-container">
   <div class="question-container">
     <!-- Countdown left of the question; on phones, its own line under the question, with the thumbs. -->
-    @if (countdown() || showFeedback()) {
+    @if (question()?.theme || countdown() || showFeedback()) {
       <div class="question-meta">
+        <!-- Phone: the question's theme, left of the hourglass (on a computer: next to the item). -->
+        @if (question()?.theme; as theme) {
+          <div class="question-theme question-theme-meta" [title]="'themes.questionTheme' | translate: { theme }">{{ theme }}</div>
+        }
         @if (countdown(); as left) {
           <div class="next-question-timer" role="timer">
             <div class="next-question-icon" aria-hidden="true">⏳</div>
@@ -30,6 +34,10 @@
     }
     <div class="question-content">
       <span class="question-text" [appFitText]="question()?.content">{{ question()?.content }}</span>
+      <!-- Computer: the theme right of the question text, before the item (on a phone: left of the hourglass). -->
+      @if (question()?.theme; as theme) {
+        <div class="question-theme question-theme-side" [title]="'themes.questionTheme' | translate: { theme }">{{ theme }}</div>
+      }
       @if (!question()?.canWrite) {
         <app-item-image-display class="question-item" [itemName]="question()?.item_name" [imgClass]="'group-question-item'"></app-item-image-display>
       }
