@@ -92,12 +92,14 @@
     <button type="button" (mousedown)="$event.preventDefault()" (click)="toggleGifPicker()" class="gif-btn" [title]="'chat.gif' | translate">
       {{ 'chat.gif' | translate }}
     </button>
-    <input
-      type="text"
+    <!-- Grows with the text (see resizeInput). Enter sends, Shift+Enter goes to a new line. -->
+    <textarea
+      rows="1"
       [placeholder]="'chat.typeYourMessage' | translate"
-      (keydown.enter)="sendMessage(messageContent.value, messageContent)"
+      (keydown.enter)="onEnter($any($event), messageContent)"
+      (input)="resizeInput(messageContent)"
       #messageContent
-    />
+    ></textarea>
     <button type="button" class="background-secondary" (mousedown)="$event.preventDefault()" (click)="sendMessage(messageContent.value, messageContent)">
       >
     </button>
