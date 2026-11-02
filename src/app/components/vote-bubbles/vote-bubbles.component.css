@@ -39,30 +39,26 @@
   cursor: pointer;
 }
 
-/* Multiple voting hint: a small paper tag at the top, the balls go under it. */
+/* Multiple voting hint: plain text at the top, no box. A halo in the field's colour keeps it readable over the
+   grid and the balls, which go under it. */
 .vote-bubbles-hint {
   position: absolute;
-  top: 10px;
+  top: 8px;
   left: 50%;
   z-index: 3;
   transform: translateX(-50%);
   width: max-content;
   max-width: calc(100% - 32px);
   margin: 0;
-  padding: 2px 12px;
-  box-sizing: border-box;
-  border: 2px solid var(--primary);
-  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  background-color: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
+  color: var(--secondary); /* the app's blue, same as the outline of a picked ball */
   text-align: center;
+  text-shadow: 0 0 3px #f2fbff, 0 0 6px #f2fbff, 0 0 10px #f2fbff;
   pointer-events: none;
-  transition: border-color 200ms ease, color 200ms ease;
+  transition: color 200ms ease;
 }
 
 .vote-bubbles-hint.complete {
-  border-color: var(--success);
   color: var(--success);
 }
 
