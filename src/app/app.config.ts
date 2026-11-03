@@ -9,6 +9,7 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { loadingInterceptor } from './interceptors/loading.interceptor';
 import { ParamRouteReuseStrategy } from './utils/param-route-reuse.strategy';
+import { DEFAULT_LANGUAGE, startupLanguage } from './utils/language';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -24,8 +25,9 @@ export const appConfig: ApplicationConfig = {
         prefix: '/i18n/',
         suffix: '.json'
       }),
-      fallbackLang: 'en',
-      lang: 'en'
+      fallbackLang: DEFAULT_LANGUAGE,
+      // The phone / browser language on first launch (English if the app doesn't have it).
+      lang: startupLanguage()
     })
   ]
 };

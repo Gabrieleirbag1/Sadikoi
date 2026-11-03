@@ -9,6 +9,7 @@ import { ModalComponent } from '../modals/modal/modal.component';
 import { ModalService } from '../../services/modal/modal.service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification/notification.service';
+import { deviceLanguage, toSupportedLanguage } from '../../utils/language';
 
 @Component({
   selector: 'app-account',
@@ -38,7 +39,7 @@ export class AccountComponent implements OnInit {
     confirmPassword: '',
     login: true,
     remember: false,
-    language: this.user?.language || navigator.language
+    language: toSupportedLanguage(this.user?.language) ?? deviceLanguage()
   });
 
   protected authForm = form(this.authModel);
@@ -50,7 +51,7 @@ export class AccountComponent implements OnInit {
         ...model,
         username: this.user?.username || '',
         email: this.user?.email || '',
-        language: this.user?.language || navigator.language
+        language: toSupportedLanguage(this.user?.language) ?? deviceLanguage()
       }));
       this.setPfpUrl();
     }

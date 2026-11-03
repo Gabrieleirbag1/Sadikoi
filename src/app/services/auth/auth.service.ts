@@ -10,6 +10,7 @@ import { PushService } from '../push/push.service';
 import { clearPostLoginRedirect, takePostLoginRedirect } from '../../utils/post-login-redirect';
 import { TutorialService } from '../tutorial/tutorial.service';
 import { ReportCategory } from '../feedback/feedback-categories';
+import { deviceLanguage, toSupportedLanguage } from '../../utils/language';
 
 const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password', '/legal', '/privacy', '/terms', '/delete-account'];
 
@@ -121,7 +122,7 @@ export class AuthService {
     formData.append('password', password);
     formData.append('confirm_password', confirmPassword);
     formData.append('email', email);
-    formData.append('language', navigator.language);
+    formData.append('language', toSupportedLanguage(this.translateService.getCurrentLang()) ?? deviceLanguage());
     formData.append('login', String(login));
     formData.append('device_id', this.getDeviceId());
     formData.append('device_name', navigator.platform);
@@ -325,8 +326,9 @@ export class AuthService {
   }
 
   private setLanguage(user: User): void {
-    if (user && user.language) {
-      this.translateService.use(user.language);
+    const language = toSupportedLanguage(user?.language);
+    if (language) {
+      this.translateService.use(language);
     }
   }
 }
