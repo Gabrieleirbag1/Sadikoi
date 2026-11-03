@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, output, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom, map } from 'rxjs';
@@ -29,33 +29,35 @@ export class SuggestionComponent implements OnInit {
 
   readonly submitted = output<void>();
 
-  protected readonly otherTheme = OTHER_CATEGORY;
   // The real question themes, the ones the API accepts (plus "other").
-  protected readonly themes = signal<ThemeOption[]>([]);
+  private readonly themes = signal<ThemeOption[]>([]);
   private readonly lang = toSignal(this.translate.onLangChange.pipe(map(event => event.lang)), {
     initialValue: this.translate.getCurrentLang() ?? 'en',
   });
+  protected readonly options = computed(() => [
+    ...this.themes().map(theme => ({ id: theme.id, label: this.lang() === 'fr' ? theme.fr : theme.en })),
+    { id: OTHER_CATEGORY, label: null }, // translated in the template
+  ]);
+  protected readonly selectedTheme = signal<string>(OTHER_CATEGORY);
 
   async ngOnInit(): Promise<void> {
     try {
       const themes = await firstValueFrom(
         this.httpClient.get<Record<string, ThemeOption>>('/data/question_themes.json')
       );
-      this.themes.set(Object.values(themes));
+      const options = Object.values(themes);
+      this.themes.set(options);
+      this.selectedTheme.set(options[0]?.id ?? OTHER_CATEGORY);
     } catch (error) {
       this.logger.error('Error loading question themes:', error);
     }
   }
 
-  protected label(theme: ThemeOption): string {
-    return this.lang() === 'fr' ? theme.fr : theme.en;
-  }
-
-  protected async submitSuggestion(theme: string, question: string) {
+  protected async submitSuggestion(question: string) {
     if (!question.trim()) {
       return;
     }
-    const sent = await this.feedbackService.submitSuggestion(theme, question);
+    const sent = await this.feedbackService.submitSuggestion(this.selectedTheme(), question);
     if (!sent) {
       this.notifications.showError(this.translate.instant('notification.genericError'));
       return;

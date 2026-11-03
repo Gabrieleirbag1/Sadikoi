@@ -1,18 +1,28 @@
 <div class="feedback-form">
-    <div>
-        <label for="theme">{{ 'feedback.theme' | translate }}</label>
-        <select id="theme" #theme>
-            @for (option of themes(); track option.id) {
-                <option [value]="option.id">{{ label(option) }}</option>
+    <!-- Chips, not a <select>: the native list of every theme is too long and gets cut off. -->
+    <fieldset class="theme-picker">
+        <legend>{{ 'feedback.theme' | translate }}</legend>
+        <div class="theme-chips" role="radiogroup">
+            @for (option of options(); track option.id) {
+                <label class="theme-chip" [class.selected]="option.id === selectedTheme()">
+                    <input
+                        type="radio"
+                        name="suggestion-theme"
+                        class="theme-chip-input"
+                        [value]="option.id"
+                        [checked]="option.id === selectedTheme()"
+                        (change)="selectedTheme.set(option.id)"
+                    />
+                    <span>{{ option.label ?? ('feedback.themeOther' | translate) }}</span>
+                </label>
             }
-            <option [value]="otherTheme">{{ 'feedback.themeOther' | translate }}</option>
-        </select>
-    </div>
+        </div>
+    </fieldset>
 
     <div>
         <label for="question">{{ 'feedback.question' | translate }}</label>
         <textarea id="question" maxlength="200" #question></textarea>
     </div>
 
-    <button class="paper-btn btn-block background-secondary" (click)="submitSuggestion(theme.value, question.value)">{{ 'feedback.submitSuggestion' | translate }}</button>
+    <button class="paper-btn btn-block background-secondary" (click)="submitSuggestion(question.value)">{{ 'feedback.submitSuggestion' | translate }}</button>
 </div>
