@@ -1,13 +1,24 @@
 <div class="feedback-form">
     <div>
-        <label for="title">{{ 'feedback.bugReportTitle' | translate }}</label>
-        <input id="title" type="text" #title>
+        <label for="bug-category">{{ 'feedback.bugCategory' | translate }}</label>
+        <select id="bug-category" (change)="onCategoryChange($event)">
+            @for (category of categories; track category) {
+                <option [value]="category" [selected]="category === selectedCategory()">{{ 'feedback.bugCategories.' + category | translate }}</option>
+            }
+        </select>
     </div>
+
+    @if (isOther()) {
+        <div>
+            <label for="title">{{ 'feedback.bugReportTitle' | translate }}</label>
+            <input id="title" type="text" maxlength="200" [value]="title()" (input)="onTitleInput($event)">
+        </div>
+    }
 
     <div>
         <label for="description">{{ 'feedback.describeBug' | translate }}</label>
-        <textarea id="description" #description></textarea>
+        <textarea id="description" maxlength="1000" #description></textarea>
     </div>
 
-    <button class="paper-btn btn-block background-secondary" (click)="submitBugReport(title.value, description.value)">{{ 'feedback.submitBugReport' | translate }}</button>
+    <button class="paper-btn btn-block background-secondary" (click)="submitBugReport(description.value)">{{ 'feedback.submitBugReport' | translate }}</button>
 </div>

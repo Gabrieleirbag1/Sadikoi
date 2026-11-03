@@ -148,18 +148,23 @@
   },
   "feedback": {
     "bugReport": "Rapport de bug",
+    "bugCategory": "Type de problème :",
+    "bugCategories": {
+      "crash": "L'appli plante ou se ferme",
+      "display": "Problème d'affichage",
+      "performance": "Lenteur ou blocage",
+      "feature": "Une fonctionnalité ne marche pas",
+      "account": "Compte ou connexion",
+      "notifications": "Notifications",
+      "connection": "Réseau ou synchronisation",
+      "other": "Autre"
+    },
     "bugReportTitle": "Titre :",
     "describeBug": "Décrire le bug :",
     "submitBugReport": "Signaler le bug",
     "suggestion": "Suggestion",
     "theme": "Thème :",
-    "themeOptions": {
-      "party": "Fête",
-      "spicy": "Épicé",
-      "family": "Famille",
-      "popCulture": "Cinéma",
-      "other": "Autre"
-    },
+    "themeOther": "Autre",
     "question": "Question :",
     "submitSuggestion": "Envoyer la suggestion"
   },
@@ -229,7 +234,21 @@
   },
   "reportUser": {
     "title": "Signaler {{username}}",
-    "reasonLabel": "Motif (optionnel)",
+    "categoryLabel": "Motif",
+    "categories": {
+      "harassment": "Harcèlement ou insultes",
+      "hate_speech": "Propos haineux ou discriminatoires",
+      "sexual_content": "Contenu sexuel",
+      "violence": "Violence ou menaces",
+      "self_harm": "Suicide ou automutilation",
+      "spam": "Spam ou arnaque",
+      "impersonation": "Usurpation d'identité",
+      "privacy": "Partage de données personnelles",
+      "inappropriate_profile": "Pseudo ou photo de profil inapproprié",
+      "other": "Autre"
+    },
+    "reasonLabel": "Détails (optionnel)",
+    "reasonRequiredLabel": "Détails",
     "placeholder": "Décrivez le problème…",
     "submit": "Signaler",
     "cancel": "Annuler"

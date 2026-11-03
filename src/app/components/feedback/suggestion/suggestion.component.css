@@ -9,3 +9,60 @@
 .feedback-form select {
     width: 100%;
 }
+
+.theme-picker {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.theme-picker legend {
+    margin-bottom: 8px;
+}
+
+.theme-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 5px;
+}
+
+.theme-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 2px 12px;
+    border: 2px solid var(--primary-light);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--primary);
+    font-size: 0.9rem;
+    line-height: 1.1;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-chip:hover,
+.theme-chip.selected {
+    border-color: var(--secondary);
+}
+
+.theme-chip.selected {
+    background: var(--secondary-light);
+}
+
+/* The real radio stays in the page (keyboard, screen readers) but is invisible. */
+.feedback-form .theme-chip-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.theme-chip:has(.theme-chip-input:focus-visible) {
+    outline: 2px solid var(--secondary);
+    outline-offset: 2px;
+}
