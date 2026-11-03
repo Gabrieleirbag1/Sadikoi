@@ -39,6 +39,29 @@
   cursor: pointer;
 }
 
+/* Multiple voting hint: plain text at the top, no box. A halo in the field's colour keeps it readable over the
+   grid and the balls, which go under it. */
+.vote-bubbles-hint {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--secondary); /* the app's blue, same as the outline of a picked ball */
+  text-align: center;
+  text-shadow: 0 0 3px #f2fbff, 0 0 6px #f2fbff, 0 0 10px #f2fbff;
+  pointer-events: none;
+  transition: color 200ms ease;
+}
+
+.vote-bubbles-hint.complete {
+  color: var(--success);
+}
+
 /* Same floating submit button as the previous voting screen. */
 .vote-bubbles-submit {
   position: absolute;

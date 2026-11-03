@@ -47,7 +47,7 @@
         <div class="message" [class.background-secondary]="isOwnMessage(message)">
         @if (isFirstOfRun) {
           <div class="message-header">
-            <strong class="message-author">{{ message.sender.username }}</strong>
+            <strong class="message-author" [title]="message.sender.username">{{ message.sender.username }}</strong>
             <div class="message-infos">
               <time class="message-time" [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'HH:mm' }}</time>
               @if (!isOwnMessage(message)) {

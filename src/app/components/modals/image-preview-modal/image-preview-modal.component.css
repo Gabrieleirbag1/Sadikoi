@@ -1,0 +1,49 @@
+/* Above the other modals and the profile cards. */
+.image-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  box-sizing: border-box;
+  padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+  background-color: rgba(0, 0, 0, 0.75);
+  cursor: zoom-out;
+  animation: image-preview-fade 150ms ease-out;
+}
+
+.image-preview-img {
+  display: block;
+  width: min(420px, 100%);
+  max-height: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background-color: #f0f0f0;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  animation: image-preview-pop 180ms ease-out;
+}
+
+.image-preview-close {
+  position: absolute;
+  top: calc(12px + var(--safe-top));
+  right: calc(16px + var(--safe-right));
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+@keyframes image-preview-fade {
+  from { opacity: 0; }
+}
+
+@keyframes image-preview-pop {
+  from { transform: scale(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-preview,
+  .image-preview-img {
+    animation: none;
+  }
+}

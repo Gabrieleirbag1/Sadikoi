@@ -4,6 +4,8 @@
       [currentImageUrl]="user()?.profile_picture"
       [onlyDisplay]="true"
       [imgClass]="'user-profile-icon'"
+      [previewOnClick]="true"
+      [alt]="user()?.username ?? ''"
     ></app-profile-image-picker>
     <div class="user-profile-identity">
       <strong class="user-profile-name">{{ user()?.username }}</strong>

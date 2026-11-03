@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { backAction } from '../../utils/back-button';
+import { ImagePreviewService } from '../image-preview/image-preview.service';
 
 /**
  * Mobile app only: Android's back button. From a group it always goes home (see backAction),
@@ -14,6 +15,7 @@ import { backAction } from '../../utils/back-button';
 export class BackButtonService {
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
+  private readonly imagePreview = inject(ImagePreviewService);
 
   public init(): void {
     if (!Capacitor.isNativePlatform()) {
@@ -24,6 +26,11 @@ export class BackButtonService {
   }
 
   private onBack(canGoBack: boolean): void {
+    // An open image preview is closed first, like a photo viewer.
+    if (this.imagePreview.preview()) {
+      this.imagePreview.close();
+      return;
+    }
     switch (backAction(this.router.url, canGoBack)) {
       case 'home':
         // Same as the footer's home button: the groups list, not the profile we may have left the group for.

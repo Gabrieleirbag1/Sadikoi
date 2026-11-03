@@ -73,3 +73,43 @@ describe('VoteBubblesComponent, voting on a phone', () => {
     expect(profileOpen()).toBe(false);
   });
 });
+
+describe('VoteBubblesComponent, multiple voting hint', () => {
+  const bob = { id: 2, username: 'bob', profile_picture: null } as unknown as User;
+  const carol = { id: 3, username: 'carol', profile_picture: null } as unknown as User;
+  let fixture: ComponentFixture<VoteBubblesComponent>;
+
+  const hint = () => fixture.nativeElement.querySelector('.vote-bubbles-hint') as HTMLElement | null;
+  const setup = (inputs: Record<string, unknown>) => {
+    fixture = TestBed.createComponent(VoteBubblesComponent);
+    fixture.componentRef.setInput('bubbles', [alice, bob, carol].map(votedUser => ({ votedUser, voters: [] })));
+    fixture.componentRef.setInput('phase', 'voting');
+    for (const [key, value] of Object.entries(inputs)) fixture.componentRef.setInput(key, value);
+    fixture.detectChanges();
+  };
+
+  it('is hidden for a single vote', () => {
+    setup({});
+    expect(hint()).toBeNull();
+  });
+
+  it('shows how many members must be picked, and turns complete once they are', () => {
+    setup({ multiple: true, limit: 2 });
+    expect(hint()?.textContent).toContain('voteBubbles.pickCount');
+    expect(hint()?.classList.contains('complete')).toBe(false);
+
+    fixture.componentInstance.selectedIds.set([1, 2]);
+    fixture.detectChanges();
+    expect(hint()?.classList.contains('complete')).toBe(true);
+  });
+
+  it('says several members can be picked when there is no limit', () => {
+    setup({ multiple: true, limit: 0 });
+    expect(hint()?.textContent).toContain('voteBubbles.pickSeveral');
+  });
+
+  it('is hidden once the vote is sent (results)', () => {
+    setup({ multiple: true, limit: 2, phase: 'results' });
+    expect(hint()).toBeNull();
+  });
+});

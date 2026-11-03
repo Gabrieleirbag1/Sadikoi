@@ -35,6 +35,16 @@
     </div>
   }
 
+  @if (showMultipleHint()) {
+    <p class="vote-bubbles-hint" [class.complete]="limit() > 0 && selectedIds().length >= requiredCount()" aria-live="polite">
+      @if (limit() > 0) {
+        {{ 'voteBubbles.pickCount' | translate: { count: requiredCount(), selected: selectedIds().length } }}
+      } @else {
+        {{ 'voteBubbles.pickSeveral' | translate: { selected: selectedIds().length } }}
+      }
+    </p>
+  }
+
   @if (isVoting() && selectedIds().length >= requiredCount()) {
     <div class="vote-bubbles-submit">
       <button type="button" class="background-success" (click)="confirm()">{{ 'question.submitAnswer' | translate }}</button>
