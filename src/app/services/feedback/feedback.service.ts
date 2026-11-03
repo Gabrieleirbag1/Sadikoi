@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { LoggerService } from '../logger/logger.service';
 import { HttpClient } from '@angular/common/http';
+import { BugCategory } from './feedback-categories';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,8 @@ export class FeedbackService {
   private readonly httpClient = inject(HttpClient);
   private readonly logger = inject(LoggerService);
 
-  public async submitBugReport(title: string, description: string): Promise<boolean> {
-    const paylod = { title, description, device_name: navigator.platform };
+  public async submitBugReport(category: BugCategory, title: string, description: string): Promise<boolean> {
+    const paylod = { category, title, description, device_name: navigator.platform };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}feedback/bug-reports/`, paylod, { withCredentials: true }));
       this.logger.debug('Bug report submitted successfully:', response);
