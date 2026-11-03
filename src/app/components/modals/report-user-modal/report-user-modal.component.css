@@ -43,6 +43,7 @@
   gap: 8px;
 }
 
+.modal-body select,
 .modal-body textarea {
   width: 100%;
   resize: vertical;

@@ -6,7 +6,13 @@
         <span class="modal-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">X</span>
       </div>
       <div class="modal-body">
-        <label for="report-user-reason">{{ 'reportUser.reasonLabel' | translate }}</label>
+        <label for="report-user-category">{{ 'reportUser.categoryLabel' | translate }}</label>
+        <select id="report-user-category" (change)="onCategoryChange($event)">
+          @for (option of categories; track option) {
+            <option [value]="option" [selected]="option === category()">{{ 'reportUser.categories.' + option | translate }}</option>
+          }
+        </select>
+        <label for="report-user-reason">{{ (isOther() ? 'reportUser.reasonRequiredLabel' : 'reportUser.reasonLabel') | translate }}</label>
         <textarea
           id="report-user-reason"
           rows="4"
@@ -17,7 +23,7 @@
         ></textarea>
       </div>
       <div class="modal-footer">
-        <button type="button" class="background-danger" [disabled]="submitting()" (click)="submit()">
+        <button type="button" class="background-danger" [disabled]="submitting() || !canSubmit()" (click)="submit()">
           {{ 'reportUser.submit' | translate }}
         </button>
         <button type="button" (click)="close()">{{ 'reportUser.cancel' | translate }}</button>
