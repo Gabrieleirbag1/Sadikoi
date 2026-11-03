@@ -148,18 +148,23 @@
   },
   "feedback": {
     "bugReport": "Bug Report",
+    "bugCategory": "Type of problem:",
+    "bugCategories": {
+      "crash": "The app crashes or closes",
+      "display": "Display issue",
+      "performance": "Slow or frozen",
+      "feature": "A feature doesn't work",
+      "account": "Account or login",
+      "notifications": "Notifications",
+      "connection": "Network or sync",
+      "other": "Other"
+    },
     "bugReportTitle": "Title:",
     "describeBug": "Describe the bug:",
     "submitBugReport": "Report Bug",
     "suggestion": "Suggestion",
     "theme": "Theme:",
-    "themeOptions": {
-      "party": "Party",
-      "spicy": "Spicy",
-      "family": "Family",
-      "popCulture": "Pop Culture",
-      "other": "Other"
-    },
+    "themeOther": "Other",
     "question": "Question:",
     "submitSuggestion": "Send Suggestion"
   },
@@ -229,7 +234,21 @@
   },
   "reportUser": {
     "title": "Report {{username}}",
-    "reasonLabel": "Reason (optional)",
+    "categoryLabel": "Reason",
+    "categories": {
+      "harassment": "Harassment or insults",
+      "hate_speech": "Hate speech or discrimination",
+      "sexual_content": "Sexual content",
+      "violence": "Violence or threats",
+      "self_harm": "Suicide or self-harm",
+      "spam": "Spam or scam",
+      "impersonation": "Impersonation",
+      "privacy": "Sharing personal information",
+      "inappropriate_profile": "Inappropriate username or profile picture",
+      "other": "Other"
+    },
+    "reasonLabel": "Details (optional)",
+    "reasonRequiredLabel": "Details",
     "placeholder": "Describe the problem…",
     "submit": "Report",
     "cancel": "Cancel"
