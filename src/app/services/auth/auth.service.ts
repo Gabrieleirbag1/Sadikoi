@@ -9,6 +9,7 @@ import { getDeviceId } from '../../utils/device-id';
 import { PushService } from '../push/push.service';
 import { clearPostLoginRedirect, takePostLoginRedirect } from '../../utils/post-login-redirect';
 import { TutorialService } from '../tutorial/tutorial.service';
+import { ReportCategory } from '../feedback/feedback-categories';
 
 const PUBLIC_ROUTE_PREFIXES = ['/forgot-password', '/reset-password', '/legal', '/privacy', '/terms', '/delete-account'];
 
@@ -202,8 +203,8 @@ export class AuthService {
     }
   }
 
-  public async reportUser(reportedUserInfo: string | number, reason: string, groupId: number | null, messageId: number | null): Promise<boolean> {
-    const payload = { reported_user_info: String(reportedUserInfo), reason, group_id: groupId, message_id: messageId };
+  public async reportUser(reportedUserInfo: string | number, category: ReportCategory, reason: string, groupId: number | null, messageId: number | null): Promise<boolean> {
+    const payload = { reported_user_info: String(reportedUserInfo), category, reason, group_id: groupId, message_id: messageId };
     try {
       const response = await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/report-user/`, payload, { withCredentials: true }));
       this.logger.debug('User reported successfully:', response);
