@@ -62,6 +62,9 @@ export class AuthService {
 
   private setAuthSession(user: any, isAuthenticated: boolean): void {
     localStorage.setItem('user', JSON.stringify(user));
+    // The app shows the account's language: the questions come from the server in that language, so
+    // after a login on a phone set to another language the rest of the app must switch too.
+    if (user) this.setLanguage(user);
     this.setAuthenticated(isAuthenticated);
   }
 
@@ -164,7 +167,6 @@ export class AuthService {
       const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}auth/account/`, formData, { withCredentials: true }));
       this.logger.debug('User update successful:', response);
       this.setAuthSession(response.content, true);
-      this.setLanguage(response.content);
       return true;
     } catch (error) {
       this.logger.error('User update failed:', error);

@@ -5,6 +5,7 @@ import { GoogleLoginComponent } from '../google-login/google-login.component';
 import { form, FormField } from '@angular/forms/signals';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CaptchaComponent } from '../captcha/captcha.component';
+import { Capacitor } from '@capacitor/core';
 
 type DisplayMode = 'register' | 'login' | 'verifyDevice';
 
@@ -18,6 +19,12 @@ export class AuthComponent {
   private readonly authService = inject(AuthService);
   protected isAuthenticated = this.authService.isAuthenticated();
   protected displayMode = signal<DisplayMode>('login');
+  /**
+   * Phone app: always "remember me", like a Google login. Without it the session cookie has no expiry
+   * date, and Android drops such cookies when the app's process ends (phone restart, app killed in
+   * the background): the user was logged out.
+   */
+  protected readonly isNative = Capacitor.isNativePlatform();
 
   protected authModel = signal({
     username: '',
@@ -25,7 +32,7 @@ export class AuthComponent {
     password: '',
     confirmPassword: '',
     login: true,
-    remember: false
+    remember: this.isNative
   });
 
   protected authForm = form(this.authModel);

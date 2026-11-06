@@ -1,3 +1,8 @@
+/* Block, so the slide-in (transform) applies. */
+:host {
+    display: block;
+}
+
 .groups-container {
     height: 65vh;
     overflow-y: auto;
