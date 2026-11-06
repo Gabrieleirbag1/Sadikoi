@@ -39,25 +39,33 @@
     height: 60vh;
 }
 
+/* One grid for both columns, so the right column's language field lines up with a row of the left
+   one: the picture covers the rows beside it, then "Language" shares the next label row. */
 .form-fields {
-    display: flex;
-    justify-content: space-between;
-    gap: 10%;
-}
-
-.form-fields-left {
-    width: 50%;
-}
-
-.form-fields-right {
-    width: 40%;
+    display: grid;
+    grid-template-columns: 50% 40%;
+    gap: 10px 10%;
+    align-items: start;
 }
 
 .form-fields-component {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: contents;
 }
+
+.form-fields-left > * {
+    grid-column: 1;
+}
+
+.form-fields-right > * {
+    grid-column: 2;
+}
+
+/* PC: picture beside the first three fields, language level with "Confirm new password". */
+.form-fields-right > :nth-child(1) { grid-row: 1; }
+.form-fields-right > app-profile-image-picker { grid-row: 2 / span 5; }
+.form-fields-right > label[for="language"] { grid-row: 7; }
+.form-fields-right > select { grid-row: 8; }
+.form-fields-right > p { grid-row: 9; margin: 0; }
 
 .form-actions {
     display: flex;
@@ -144,32 +152,36 @@ input, select {
     }
 
     .form-fields {
-        gap: 16px;
-    }
-
-    .form-fields-left {
-        flex: 1 1 0;
-        width: auto;
-        min-width: 0;
+        grid-template-columns: minmax(0, 1fr) 38%;
+        column-gap: 16px;
     }
 
     .form-fields-right {
-        flex: 0 0 38%;
-        width: auto;
-        min-width: 0;
-        align-items: center;
         text-align: center;
     }
 
-    /* Language sits at the bottom, level with the password fields. */
-    .form-fields-right label[for="language"] {
-        margin-top: 10px;
+    /* Smaller picture: beside the first two fields, language level with "New password". */
+    .form-fields-right > app-profile-image-picker { grid-row: 2 / span 3; }
+
+    /* The picture takes exactly the height of those rows (size containment: it doesn't stretch them),
+       so the language field stays level with the password one whatever the font size. */
+    .form-fields-right > app-profile-image-picker {
+        align-self: stretch;
+        contain: size;
     }
 
-    .form-fields-right p {
-        margin: 0;
-        font-size: 0.85rem;
+    .form-fields-right > app-profile-image-picker ::ng-deep .profile-image-picker {
+        height: 100%;
     }
+
+    .form-fields-right > app-profile-image-picker ::ng-deep .account-user-icon {
+        width: auto;
+        height: 100%;
+        max-width: 100%;
+    }
+    .form-fields-right > label[for="language"] { grid-row: 5; }
+    .form-fields-right > select { grid-row: 6; }
+    .form-fields-right > p { grid-row: 7 / span 2; font-size: 0.85rem; }
 
     .form-fields input,
     .form-fields select {
