@@ -70,13 +70,23 @@ export class SettingsComponent {
     }, CLOSE_ANIMATION_MS);
   }
 
+  protected openHome(): void {
+    this.goHome('groups');
+  }
+
   protected openProfile(): void {
+    this.goHome('account');
+  }
+
+  /** Groups list or profile, once the panel has slid out. */
+  private goHome(state: 'groups' | 'account'): void {
     this.close(() => {
       document.querySelector('.main-content')?.scrollTo({ top: 0 });
-      // Home and group pages switch to the profile tab themselves; any other page goes back home on it.
-      if (this.settings.openProfile()) return;
-      sessionStorage.setItem('homeState', 'account');
-      this.transitions.mark('account');
+      // Home and group pages switch the tab themselves; any other page goes back home on it.
+      if (this.settings.goHome(state)) return;
+      if (state === 'groups') sessionStorage.removeItem('pendingGroupId');
+      sessionStorage.setItem('homeState', state);
+      this.transitions.mark(state);
       this.router.navigate(['/']);
     });
   }

@@ -31,10 +31,13 @@ export class HomeFooterComponent implements OnInit {
 
   constructor() {
     this.listenForSwipes();
-    // "Profile" in the settings goes through the same path as the profile button.
-    const settings = inject(SettingsService);
-    const removeOpener = settings.setProfileOpener(() => this.changeHomeState('account'));
-    inject(DestroyRef).onDestroy(removeOpener);
+    // "Home" and "Profile" in the settings go through the same path as these buttons. "Home" is always
+    // the groups list, even on a profile opened from a group (where this home button goes back to the group).
+    const removeNavigator = inject(SettingsService).setHomeNavigator(state => {
+      if (state === 'groups') sessionStorage.removeItem('pendingGroupId');
+      this.changeHomeState(state);
+    });
+    inject(DestroyRef).onDestroy(removeNavigator);
   }
 
   public ngOnInit(): void {
