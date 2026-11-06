@@ -148,26 +148,40 @@
     border-top: 1px solid var(--settings-border);
 }
 
-/* Discreet: just the language name and a small arrow, no box. */
+/* Discreet: just the language name and a small arrow, no box. The arrow sits on the text's baseline
+   (not centred in the box), so it stays level with the word whatever the platform's select padding. */
 .settings-language {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+.settings-language select {
     height: auto;
-    padding: 2px 18px 2px 0;
+    padding: 4px 16px 4px 0;
     border: none;
     border-radius: 0;
-    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2341403e' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 2px center;
+    background: none;
     appearance: none;
     font: inherit;
+    line-height: 1.2;
     color: inherit;
     cursor: pointer;
 }
 
-.settings-language:hover,
-.settings-language:focus-visible {
-    color: var(--settings-accent);
-    border: none;
+/* Over the select's right padding; clicks go through to the select. */
+.settings-language svg {
+    flex: none;
+    margin-left: -12px;
+    pointer-events: none;
 }
 
-.settings-language:focus-visible {
+.settings-language:hover,
+.settings-language:focus-within {
+    color: var(--settings-accent);
+}
+
+.settings-language select:focus-visible {
+    border: none;
     outline: 1px dashed var(--settings-accent);
     outline-offset: 2px;
 }

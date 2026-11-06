@@ -57,21 +57,23 @@
 
       @if (authService.isAuthenticated()) {
         <section class="settings-section settings-logout-section">
-          <button class="settings-item settings-logout" (click)="logout()">{{ 'settings.logout' | translate }}</button>
+          <button class="settings-item settings-logout" (click)="openLogout()">{{ 'settings.logout' | translate }}</button>
         </section>
       }
     </div>
 
     <footer class="settings-footer">
-      <select
-        class="settings-language"
-        [attr.aria-label]="'settings.language' | translate"
-        (change)="changeLanguage($any($event.target).value)"
-      >
-        @for (lang of languages; track lang) {
-          <option [value]="lang" [selected]="lang === language()">{{ (lang === 'fr' ? 'languages.francais' : 'languages.english') | translate }}</option>
-        }
-      </select>
+      <span class="settings-language">
+        <select
+          [attr.aria-label]="'settings.language' | translate"
+          (change)="changeLanguage($any($event.target).value)"
+        >
+          @for (lang of languages; track lang) {
+            <option [value]="lang" [selected]="lang === language()">{{ (lang === 'fr' ? 'languages.francais' : 'languages.english') | translate }}</option>
+          }
+        </select>
+        <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+      </span>
       <span>Sadikoi v{{ version }} &middot; &copy; {{ year }}</span>
     </footer>
   </aside>

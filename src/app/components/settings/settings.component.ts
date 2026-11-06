@@ -79,8 +79,9 @@ export class SettingsComponent {
     });
   }
 
-  protected logout(): void {
-    this.close(() => this.authService.logout(false));
+  /** The logout page, where the user confirms and chooses whether to forget this device. */
+  protected openLogout(): void {
+    this.close(() => this.router.navigate(['/auth']));
   }
 
   protected changeLanguage(value: string): void {
