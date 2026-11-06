@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input, model, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, model, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../../services/settings/settings.service';
@@ -18,6 +18,14 @@ export class HomeFooterComponent implements OnInit {
   public readonly homeState = model<HomeState>('groups');
   public readonly redirect = model<boolean>(false);
   public readonly groupId = input<number | null>(null);
+  /**
+   * Inside a group (or on the profile opened from one, where "home" goes back to the group): the active
+   * button gets another colour, so it doesn't look like the groups list.
+   */
+  protected readonly inGroup = computed(() => {
+    const state = this.homeState();
+    return state === 'group' || (state === 'account' && !!sessionStorage.getItem('pendingGroupId'));
+  });
 
   constructor() {
     this.listenForSwipes();
