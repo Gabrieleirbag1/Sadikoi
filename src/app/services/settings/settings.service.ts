@@ -48,21 +48,21 @@ export class SettingsService {
     this.notificationsOpen.set(false);
   }
 
-  /** Opens the profile tab, set by the bottom menu bar on the pages that have one (home and group). */
-  private profileOpener: (() => void) | null = null;
+  /** Switches the home tab (groups list or profile), set by the bottom menu bar on the pages that have one (home and group). */
+  private homeNavigator: ((state: 'groups' | 'account') => void) | null = null;
 
   /** Returns the function that removes it again (only if no other page replaced it meanwhile). */
-  setProfileOpener(open: () => void): () => void {
-    this.profileOpener = open;
+  setHomeNavigator(go: (state: 'groups' | 'account') => void): () => void {
+    this.homeNavigator = go;
     return () => {
-      if (this.profileOpener === open) this.profileOpener = null;
+      if (this.homeNavigator === go) this.homeNavigator = null;
     };
   }
 
-  /** False when no page on screen can open the profile itself. */
-  openProfile(): boolean {
-    if (!this.profileOpener) return false;
-    this.profileOpener();
+  /** False when no page on screen can switch the home tab itself. */
+  goHome(state: 'groups' | 'account'): boolean {
+    if (!this.homeNavigator) return false;
+    this.homeNavigator(state);
     return true;
   }
 }

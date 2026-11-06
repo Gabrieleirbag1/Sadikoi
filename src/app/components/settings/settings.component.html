@@ -8,6 +8,10 @@
 
     <div class="settings-body">
       @if (authService.isAuthenticated()) {
+        <button class="settings-item" (click)="openHome()">
+          <img src="images/icons/home.svg" width="22" height="22" alt="" />
+          {{ 'settings.home' | translate }}
+        </button>
         <button class="settings-item settings-profile" (click)="openProfile()">
           <img src="images/icons/account.svg" width="22" height="22" alt="" />
           {{ 'settings.profile' | translate }}
