@@ -1,12 +1,19 @@
 @if (settings.isOpen()) {
-  <div class="settings-backdrop" (click)="settings.close()"></div>
-  <aside class="settings-panel" role="dialog" aria-modal="true" [attr.aria-label]="'settings.title' | translate">
+  <div class="settings-backdrop" [class.closing]="closing()" (click)="close()"></div>
+  <aside class="settings-panel" [class.closing]="closing()" role="dialog" aria-modal="true" [attr.aria-label]="'settings.title' | translate">
     <div class="settings-header">
       <h2>{{ 'settings.title' | translate }}</h2>
-      <button class="settings-close" [attr.aria-label]="'modal.close' | translate" (click)="settings.close()">X</button>
+      <button class="settings-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">X</button>
     </div>
 
     <div class="settings-body">
+      @if (authService.isAuthenticated()) {
+        <button class="settings-item settings-profile" (click)="openProfile()">
+          <img src="images/icons/account.svg" width="22" height="22" alt="" />
+          {{ 'settings.profile' | translate }}
+        </button>
+      }
+
       <button class="settings-item settings-notifications" (click)="settings.openNotifications()">
         <img src="images/icons/bell.svg" width="22" height="22" alt="" />
         {{ 'settings.notifications' | translate }}
@@ -47,10 +54,25 @@
           </a>
         </p>
       </section>
+
+      @if (authService.isAuthenticated()) {
+        <section class="settings-section settings-logout-section">
+          <button class="settings-item settings-logout" (click)="logout()">{{ 'settings.logout' | translate }}</button>
+        </section>
+      }
     </div>
 
     <footer class="settings-footer">
-      Sadikoi v{{ version }} &middot; &copy; {{ year }}
+      <select
+        class="settings-language"
+        [attr.aria-label]="'settings.language' | translate"
+        (change)="changeLanguage($any($event.target).value)"
+      >
+        @for (lang of languages; track lang) {
+          <option [value]="lang" [selected]="lang === language()">{{ (lang === 'fr' ? 'languages.francais' : 'languages.english') | translate }}</option>
+        }
+      </select>
+      <span>Sadikoi v{{ version }} &middot; &copy; {{ year }}</span>
     </footer>
   </aside>
 }
