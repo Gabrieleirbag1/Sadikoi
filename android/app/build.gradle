@@ -39,7 +39,11 @@ android {
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.release
             }
-            minifyEnabled false
+            // R8: shrinks and obfuscates the Java/Kotlin code (Google Play flags apps under 25% obfuscated).
+            // Capacitor and its plugins ship their own keep rules; the mapping file goes into the AAB, so
+            // Play Console shows readable crash stack traces. Resources are not shrunk: some are only
+            // looked up by name at runtime (e.g. the local notification icon set in capacitor.config.ts).
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
