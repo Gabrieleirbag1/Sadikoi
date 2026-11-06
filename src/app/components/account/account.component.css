@@ -1,18 +1,6 @@
-/* Opened from the settings: slides in from the right, like the swipe to the profile. */
-:host(.profile-enter) {
+/* Block, so the slide-in (transform) applies. */
+:host {
     display: block;
-    animation: profile-enter 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-@keyframes profile-enter {
-    from { opacity: 0; transform: translateX(32px); }
-    to { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    :host(.profile-enter) {
-        animation: none;
-    }
 }
 
 .account-section {
@@ -65,7 +53,34 @@
 .form-fields-right > app-profile-image-picker { grid-row: 2 / span 5; }
 .form-fields-right > label[for="language"] { grid-row: 7; }
 .form-fields-right > select { grid-row: 8; }
-.form-fields-right > p { grid-row: 9; margin: 0; }
+.form-fields-right > .account-created { grid-row: 9; }
+
+/* "Member since" card: small label, the date in the handwritten font, in a dashed paper frame. */
+.account-created {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 8px 10px;
+    text-align: center;
+    background-color: #fffcf8cc;
+    border: 2px dashed var(--primary-light, #cdcccb);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.account-created-label {
+    font-size: 0.7em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted, #868e96);
+}
+
+.account-created-date {
+    font-family: 'Patrick Hand SC', 'Neucha', cursive;
+    font-size: 1.1em;
+    line-height: 1.1;
+}
 
 .form-actions {
     display: flex;
@@ -181,7 +196,12 @@ input, select {
     }
     .form-fields-right > label[for="language"] { grid-row: 5; }
     .form-fields-right > select { grid-row: 6; }
-    .form-fields-right > p { grid-row: 7 / span 2; font-size: 0.85rem; }
+    /* Fills the space beside "Confirm new password" (its label and field). */
+    .form-fields-right > .account-created {
+        grid-row: 7 / span 2;
+        align-self: stretch;
+        box-sizing: border-box;
+    }
 
     .form-fields input,
     .form-fields select {

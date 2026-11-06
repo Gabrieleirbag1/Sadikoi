@@ -30,7 +30,10 @@
                 <option value="en">{{ 'languages.english' | translate }}</option>
                 <option value="fr">{{ 'languages.francais' | translate }}</option>
               </select>
-              <p>{{ 'account.dateCreated' | translate }} {{ user.date_created | date }}</p>
+              <div class="account-created">
+                <span class="account-created-label">{{ 'userProfile.memberSince' | translate }}</span>
+                <span class="account-created-date">{{ user.date_created | date }}</span>
+              </div>
             </div>
           </div>
           <div class="form-actions">

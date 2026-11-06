@@ -127,14 +127,18 @@
                   <input id="password" type="password" [formField]="authForm.password" />
                 </div>
                 <div class="checkbox-container">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="remember"
-                    [formField]="authForm.remember"
-                  />
+                  @if (!isNative) {
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="remember"
+                      [formField]="authForm.remember"
+                    />
+                  }
                   <div class="checkbox-label-container">
-                    <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
+                    @if (!isNative) {
+                      <label for="remember">{{ 'auth.rememberMe' | translate }}</label>
+                    }
                     <a routerLink="/forgot-password">{{ 'auth.forgotPassword' | translate }}</a>
                   </div>
                 </div>

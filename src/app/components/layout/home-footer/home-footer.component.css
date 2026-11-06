@@ -17,6 +17,17 @@
     border-bottom-color: var(--secondary-light-10);
 }
 
+/* In a group: green instead of blue (#5e7f38, from the PaperCSS greens). */
+.home-footer.in-group .icon-button.active {
+    border-bottom-color: var(--success, #86a361);
+}
+
+.home-footer.in-group .icon-button.active img,
+.home-footer.in-group .icon-button img:hover,
+.home-footer.in-group .icon-button img:active {
+    filter: brightness(0) saturate(100%) invert(40%) sepia(34%) saturate(598%) hue-rotate(45deg) brightness(103%) contrast(93%);
+}
+
 /* Mobile: footer menu bar stuck to the bottom of the screen, edge to edge. */
 @media (max-width: 768px) {
     :host {

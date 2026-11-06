@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs';
 import { SettingsService } from '../../services/settings/settings.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { HomeTransitionService } from '../../services/home-transition/home-transition.service';
 import { FeedbackComponent } from '../feedback/feedback.component';
 import { DonationComponent } from '../donation/donation.component';
 import { NotificationSettingsComponent } from '../notification-settings/notification-settings.component';
@@ -25,6 +26,7 @@ export class SettingsComponent {
   protected readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly transitions = inject(HomeTransitionService);
 
   protected readonly version = APP_VERSION;
   protected readonly year = APP_YEAR;
@@ -74,7 +76,7 @@ export class SettingsComponent {
       // Home and group pages switch to the profile tab themselves; any other page goes back home on it.
       if (this.settings.openProfile()) return;
       sessionStorage.setItem('homeState', 'account');
-      this.settings.markProfileEntrance();
+      this.transitions.mark('account');
       this.router.navigate(['/']);
     });
   }
@@ -84,11 +86,15 @@ export class SettingsComponent {
     this.close(() => this.router.navigate(['/auth']));
   }
 
-  protected changeLanguage(value: string): void {
+  protected async changeLanguage(value: string): Promise<void> {
     const language = toSupportedLanguage(value);
-    if (!language || language === this.language()) return;
+    const previous = this.language();
+    if (!language || language === previous) return;
     this.translate.use(language);
-    // Logged in: saved on the account, so it is kept on the next start and on other devices.
-    if (this.authService.isAuthenticated()) this.authService.updateLanguage(language);
+    // Logged in: saved on the account (the questions come in that language). If that fails, the app goes
+    // back to the account's language, so the questions and the rest of the app never differ.
+    if (this.authService.isAuthenticated() && !(await this.authService.updateLanguage(language)) && previous) {
+      this.translate.use(previous);
+    }
   }
 }

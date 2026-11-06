@@ -17,6 +17,7 @@ import { copyToClipboard } from '../../utils/copy-to-clipboard';
 import { environment } from '../../../environments/environment';
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
+import { HomeTransitionService } from '../../services/home-transition/home-transition.service';
 
 @Component({
   selector: 'app-group',
@@ -25,6 +26,8 @@ import { Share } from '@capacitor/share';
   styleUrl: './group.component.css',
 })
 export class GroupComponent implements OnInit, OnDestroy {
+  /** Back from the profile opened in this group: the page (not the bottom bar) slides in from the left. */
+  protected readonly slideIn = inject(HomeTransitionService).take('group');
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
