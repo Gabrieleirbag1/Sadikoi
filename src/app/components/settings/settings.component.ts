@@ -84,11 +84,15 @@ export class SettingsComponent {
     this.close(() => this.router.navigate(['/auth']));
   }
 
-  protected changeLanguage(value: string): void {
+  protected async changeLanguage(value: string): Promise<void> {
     const language = toSupportedLanguage(value);
-    if (!language || language === this.language()) return;
+    const previous = this.language();
+    if (!language || language === previous) return;
     this.translate.use(language);
-    // Logged in: saved on the account, so it is kept on the next start and on other devices.
-    if (this.authService.isAuthenticated()) this.authService.updateLanguage(language);
+    // Logged in: saved on the account (the questions come in that language). If that fails, the app goes
+    // back to the account's language, so the questions and the rest of the app never differ.
+    if (this.authService.isAuthenticated() && !(await this.authService.updateLanguage(language)) && previous) {
+      this.translate.use(previous);
+    }
   }
 }
