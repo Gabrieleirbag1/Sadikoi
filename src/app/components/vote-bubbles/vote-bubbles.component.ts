@@ -183,6 +183,15 @@ export class VoteBubblesComponent {
     this.hideTimeout = setTimeout(() => this.hideTooltip(), 150);
   }
 
+  /**
+   * A finger lifted from the profile also "leaves" it: on a phone the profile stays open, so its
+   * items can be tapped to show their names. The next tap on the canvas closes it.
+   */
+  protected onTooltipPointerLeave(event: PointerEvent): void {
+    if (event.pointerType === 'touch') return;
+    this.scheduleHide();
+  }
+
   protected keepTooltip(): void {
     clearTimeout(this.hideTimeout);
   }

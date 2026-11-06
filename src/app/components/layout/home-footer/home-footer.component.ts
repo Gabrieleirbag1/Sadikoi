@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, input, model, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SettingsService } from '../../../services/settings/settings.service';
 
 /** Minimum horizontal distance (px) for a swipe, and how much more horizontal than vertical it must be. */
 const SWIPE_MIN_DISTANCE = 70;
@@ -20,6 +21,14 @@ export class HomeFooterComponent implements OnInit {
 
   constructor() {
     this.listenForSwipes();
+    // "Profile" in the settings goes through the same path as the profile button.
+    const settings = inject(SettingsService);
+    const removeOpener = settings.setProfileOpener(() => {
+      if (this.homeState() === 'account') return;
+      settings.markProfileEntrance();
+      this.changeHomeState('account');
+    });
+    inject(DestroyRef).onDestroy(removeOpener);
   }
 
   public ngOnInit(): void {

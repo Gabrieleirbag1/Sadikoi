@@ -157,7 +157,7 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   protected openGroupOptionsModal(): void {
     this.modalService.open('group-options-modal', {
-      title: 'Group Options',
+      title: this.translate.instant('group.groupOptions'),
       description: '',
       save: () => this.logger.debug('Group options confirmed'),
       discard: () => this.logger.debug('Group options cancelled'),

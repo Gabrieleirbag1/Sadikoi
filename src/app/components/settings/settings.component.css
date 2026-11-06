@@ -121,11 +121,87 @@
     width: auto;
 }
 
+.settings-profile {
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--settings-border);
+}
+
+.settings-logout-section {
+    border-bottom: none;
+}
+
+.settings-logout {
+    color: #a7342d;
+}
+
+.settings-logout:hover {
+    color: #ff0000;
+}
+
 .settings-footer {
-    padding: 10px 20px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 20px calc(10px + var(--safe-bottom));
     font-size: 0.9rem;
     border-top: 1px solid var(--settings-border);
+}
+
+/* Discreet: just the language name and a small arrow, no box. The arrow sits on the text's baseline
+   (not centred in the box), so it stays level with the word whatever the platform's select padding. */
+.settings-language {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+.settings-language select {
+    height: auto;
+    padding: 4px 16px 4px 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    appearance: none;
+    font: inherit;
+    line-height: 1.2;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Over the select's right padding; clicks go through to the select. */
+.settings-language svg {
+    flex: none;
+    margin-left: -12px;
+    pointer-events: none;
+}
+
+.settings-language:hover,
+.settings-language:focus-within {
+    color: var(--settings-accent);
+}
+
+.settings-language select:focus-visible {
+    border: none;
+    outline: 1px dashed var(--settings-accent);
+    outline-offset: 2px;
+}
+
+.settings-panel.closing {
+    animation: slide-out 200ms ease forwards;
+}
+
+.settings-backdrop.closing {
+    animation: fade-out 200ms ease forwards;
+}
+
+@keyframes slide-out {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+@keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 @keyframes slide-in {
@@ -140,7 +216,9 @@
 
 @media (prefers-reduced-motion: reduce) {
     .settings-panel,
-    .settings-backdrop {
+    .settings-backdrop,
+    .settings-panel.closing,
+    .settings-backdrop.closing {
         animation: none;
     }
 }

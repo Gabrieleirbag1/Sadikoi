@@ -172,6 +172,20 @@ export class AuthService {
     }
   }
 
+  /** Saves only the language (the other account fields are left as they are). */
+  public async updateLanguage(language: Language): Promise<boolean> {
+    const formData = new FormData();
+    formData.append('language', language);
+    try {
+      const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}auth/account/`, formData, { withCredentials: true }));
+      this.setAuthSession(response.content, true);
+      return true;
+    } catch (error) {
+      this.logger.error('Language update failed:', error);
+      return false;
+    }
+  }
+
   public async forgotPassword(email: string, captchaToken: string | null = null): Promise<boolean> {
     try {
       await firstValueFrom(this.httpClient.post<ApiResponse>(`${environment.apiUrl}auth/security/forgot-password/`, { email, captcha_token: captchaToken }));

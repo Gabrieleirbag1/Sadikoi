@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField } from "@angular/forms/signals";
 import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -10,12 +11,14 @@ import { ModalService } from '../../services/modal/modal.service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification/notification.service';
 import { deviceLanguage, toSupportedLanguage } from '../../utils/language';
+import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
   selector: 'app-account',
   imports: [CommonModule, FormField, ProfileImagePickerComponent, TranslatePipe, ModalComponent],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css',
+  host: { '[class.profile-enter]': 'slideIn' },
 })
 export class AccountComponent implements OnInit {
   @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
@@ -43,6 +46,17 @@ export class AccountComponent implements OnInit {
   });
 
   protected authForm = form(this.authModel);
+
+  /** Opened from the settings: the page slides in instead of just appearing. */
+  protected readonly slideIn = inject(SettingsService).takeProfileEntrance();
+
+  constructor() {
+    // Language changed from the settings while this page is open: the form follows, so saving doesn't undo it.
+    this.translate.onLangChange.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe(event => {
+      const language = toSupportedLanguage(event.lang);
+      if (language) this.authModel.update(model => ({ ...model, language }));
+    });
+  }
 
   public ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('user') || 'null');
