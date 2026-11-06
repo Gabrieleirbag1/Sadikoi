@@ -11,6 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ItemImageDisplayComponent } from '../item-image-display/item-image-display.component';
 import { TutorialModalComponent } from '../modals/tutorial-modal/tutorial-modal.component';
 import { TutorialService } from '../../services/tutorial/tutorial.service';
+import { HomeTransitionService } from '../../services/home-transition/home-transition.service';
 
 
 type ViewState = 'grid' | 'list';
@@ -20,9 +21,12 @@ type ViewState = 'grid' | 'list';
   imports: [CommonModule, ProfileImagePickerComponent, GroupModalComponent, ItemImageDisplayComponent, TranslatePipe, TutorialModalComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
-  standalone: true
+  standalone: true,
+  host: { '[class.page-enter-from-left]': 'slideIn' },
 })
 export class GroupsComponent implements OnInit {
+  /** Back from the profile: slides in from the left. */
+  protected readonly slideIn = inject(HomeTransitionService).take('groups');
   private readonly datetimeService = inject(DatetimeService);
   private readonly logger = inject(LoggerService)
   private readonly groupsService = inject(GroupsService);

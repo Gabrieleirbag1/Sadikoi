@@ -50,8 +50,6 @@ export class SettingsService {
 
   /** Opens the profile tab, set by the bottom menu bar on the pages that have one (home and group). */
   private profileOpener: (() => void) | null = null;
-  /** The profile was opened from the settings: it slides in (once). */
-  private profileEntrance = false;
 
   /** Returns the function that removes it again (only if no other page replaced it meanwhile). */
   setProfileOpener(open: () => void): () => void {
@@ -66,15 +64,5 @@ export class SettingsService {
     if (!this.profileOpener) return false;
     this.profileOpener();
     return true;
-  }
-
-  markProfileEntrance(): void {
-    this.profileEntrance = true;
-  }
-
-  takeProfileEntrance(): boolean {
-    const entrance = this.profileEntrance;
-    this.profileEntrance = false;
-    return entrance;
   }
 }

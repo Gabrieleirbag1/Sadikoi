@@ -2,6 +2,7 @@ import { Component, computed, DestroyRef, inject, input, model, OnInit } from '@
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../../services/settings/settings.service';
+import { HomeTransitionService } from '../../../services/home-transition/home-transition.service';
 
 /** Minimum horizontal distance (px) for a swipe, and how much more horizontal than vertical it must be. */
 const SWIPE_MIN_DISTANCE = 70;
@@ -15,6 +16,7 @@ const SWIPE_DIRECTION_RATIO = 2;
 })
 export class HomeFooterComponent implements OnInit {
   protected readonly router = inject(Router);
+  private readonly transitions = inject(HomeTransitionService);
   public readonly homeState = model<HomeState>('groups');
   public readonly redirect = model<boolean>(false);
   public readonly groupId = input<number | null>(null);
@@ -31,11 +33,7 @@ export class HomeFooterComponent implements OnInit {
     this.listenForSwipes();
     // "Profile" in the settings goes through the same path as the profile button.
     const settings = inject(SettingsService);
-    const removeOpener = settings.setProfileOpener(() => {
-      if (this.homeState() === 'account') return;
-      settings.markProfileEntrance();
-      this.changeHomeState('account');
-    });
+    const removeOpener = settings.setProfileOpener(() => this.changeHomeState('account'));
     inject(DestroyRef).onDestroy(removeOpener);
   }
 
@@ -57,12 +55,15 @@ export class HomeFooterComponent implements OnInit {
       sessionStorage.removeItem('pendingGroupId');
 
       if (pendingGroupId) {
+        this.transitions.mark('group');
         this.homeState.set(newState);
         this.router.navigate(['/group', pendingGroupId]);
         return;
       }
     }
 
+    // The view we go to slides in (from the right for the profile, from the left for home).
+    if (newState !== this.homeState()) this.transitions.mark(newState);
     sessionStorage.setItem('homeState', newState);
     this.homeState.set(newState);
     if (this.redirect()) this.redirectToHome();

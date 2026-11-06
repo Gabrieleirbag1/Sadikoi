@@ -4,6 +4,7 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { backAction } from '../../utils/back-button';
 import { ImagePreviewService } from '../image-preview/image-preview.service';
+import { HomeTransitionService } from '../home-transition/home-transition.service';
 
 /**
  * Mobile app only: Android's back button. From a group it always goes home (see backAction),
@@ -16,6 +17,7 @@ export class BackButtonService {
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
   private readonly imagePreview = inject(ImagePreviewService);
+  private readonly transitions = inject(HomeTransitionService);
 
   public init(): void {
     if (!Capacitor.isNativePlatform()) {
@@ -36,6 +38,7 @@ export class BackButtonService {
         // Same as the footer's home button: the groups list, not the profile we may have left the group for.
         sessionStorage.removeItem('pendingGroupId');
         sessionStorage.setItem('homeState', 'groups');
+        this.transitions.mark('groups');
         this.router.navigateByUrl('/', { replaceUrl: true });
         break;
       case 'history':

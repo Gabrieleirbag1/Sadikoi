@@ -11,14 +11,14 @@ import { ModalService } from '../../services/modal/modal.service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification/notification.service';
 import { deviceLanguage, toSupportedLanguage } from '../../utils/language';
-import { SettingsService } from '../../services/settings/settings.service';
+import { HomeTransitionService } from '../../services/home-transition/home-transition.service';
 
 @Component({
   selector: 'app-account',
   imports: [CommonModule, FormField, ProfileImagePickerComponent, TranslatePipe, ModalComponent],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css',
-  host: { '[class.profile-enter]': 'slideIn' },
+  host: { '[class.page-enter-from-right]': 'slideIn' },
 })
 export class AccountComponent implements OnInit {
   @ViewChild(ProfileImagePickerComponent) imagePicker!: ProfileImagePickerComponent;
@@ -47,8 +47,8 @@ export class AccountComponent implements OnInit {
 
   protected authForm = form(this.authModel);
 
-  /** Opened from the settings: the page slides in instead of just appearing. */
-  protected readonly slideIn = inject(SettingsService).takeProfileEntrance();
+  /** Opened from home (bottom bar, swipe, settings): slides in from the right. */
+  protected readonly slideIn = inject(HomeTransitionService).take('account');
 
   constructor() {
     // Language changed from the settings while this page is open: the form follows, so saving doesn't undo it.
