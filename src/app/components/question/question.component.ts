@@ -15,6 +15,7 @@ import { FitTextDirective } from '../../directives/fit-text.directive';
 import { VoteResultsModalComponent } from '../modals/vote-results-modal/vote-results-modal.component';
 import { TutorialModalComponent } from '../modals/tutorial-modal/tutorial-modal.component';
 import { TutorialService } from '../../services/tutorial/tutorial.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
@@ -40,6 +41,7 @@ export class QuestionComponent implements OnInit{
   private readonly questionService = inject(QuestionService);
   private readonly websocketService = inject(WebsocketService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly tooltipScope = 'question';
   protected connectedUser: User | null = null;
@@ -156,6 +158,29 @@ export class QuestionComponent implements OnInit{
     });
 
     this.websocketService.reconnected$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.refreshCurrentQuestion());
+
+    // The server sends the question in the account's language: fetch it again once a new one is saved.
+    this.authService.languageSaved$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.reloadInNewLanguage());
+  }
+
+  /** Same questions (current one, and the past one picked in the calendar if any), in the new language. */
+  private async reloadInNewLanguage(): Promise<void> {
+    const group = this.group();
+    const past = this.isPastQuestion() ? this.question() : null;
+    await this.refreshCurrentQuestion();
+    if (!group || !past?.date) return;
+    try {
+      // `date` is local time: the API filters on the UTC month.
+      const date = new Date(past.date);
+      const questions = await this.questionService.getQuestionsByDate(group.id, date.getUTCMonth() + 1, date.getUTCFullYear());
+      const translated = questions?.find(q => q.id === past.id);
+      if (translated && this.question()?.id === past.id) {
+        this.question.set(translated);
+        this.populateVoteBubbles();
+      }
+    } catch (error) {
+      this.logger.error('Error reloading the question in the new language:', error);
+    }
   }
 
   /** At the end of the countdown, asks for the new question: the server creates it then, and tells the
@@ -235,7 +260,8 @@ export class QuestionComponent implements OnInit{
   }
 
   private showAnnouncementIfUnseen(groupId: number, question: Question | null): void {
-    if (!question?.announcement) return;
+    // Only on the voting screen: once the user has voted (the votes are shown), the item is old news.
+    if (!question?.announcement || question.votes?.length) return;
     let seenQuestionId: string | null = null;
     try {
       seenQuestionId = localStorage.getItem(announcementSeenKey(groupId));

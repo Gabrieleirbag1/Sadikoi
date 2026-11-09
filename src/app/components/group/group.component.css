@@ -1,3 +1,19 @@
+/* The group page fills the screen exactly: the bubbles and the chat take the height left by the question
+   and the bottom menu bar, which therefore never covers them. Computer: the page never gets shorter than
+   its content (a short window scrolls instead); phone: see below. */
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.main-container {
+    flex: 1;
+    height: auto; /* not the global 75vh: too short for the question line + bubbles on a laptop */
+    display: flex;
+    flex-direction: column;
+}
+
 .group-header {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -31,17 +47,8 @@
 
 /* Mobile (issue #31): the group page fills the screen exactly; bubbles and chat share the height. */
 @media (max-width: 768px) {
-    :host {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
     .main-container {
-        flex: 1;
         min-height: 0;
-        display: flex;
-        flex-direction: column;
     }
 
     /* Title centered on the whole header: an empty column as wide as the buttons on its left keeps it

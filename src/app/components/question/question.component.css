@@ -1,3 +1,17 @@
+/* Fills the group page: the bubbles and the chat take the height left under the question. */
+:host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-container {
+  flex: 1;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Countdown | question | calendar. The side columns never get narrower than what they hold: a long
    question wraps (FitTextDirective shrinks it to 2 lines) instead of running under the countdown.
    With room to spare, both sides are equal and the question stays centered. */
@@ -187,15 +201,15 @@
   justify-content: center;
 }
 
+/* Computer: never so small the bubbles get cramped; a shorter window scrolls instead. */
 .question-votes-and-chat-container {
+  flex: 1;
+  min-height: 260px;
   display: flex;
   justify-content: space-between;
   width: 100%;
   gap: 5vw;
-}
-
-.question-votes-and-chat-container section {
-  height: 60vh;
+  margin-bottom: 12px;
 }
 
 .question-votes-container {
@@ -334,7 +348,9 @@ app-vote-bubbles {
 }
 
 app-vote-bubbles.vote-bubbles-voting {
-  --vote-bubbles-height: 55vh;
+  flex: 1;
+  min-height: 260px;
+  margin-bottom: 12px;
 }
 
 /* The bubbles box fills the results section edge to edge (no .agario-container padding). */
@@ -344,18 +360,12 @@ app-vote-bubbles.vote-bubbles-voting {
 
 /* Mobile (issue #31): question on top, bubbles, then the chat below them. */
 @media (max-width: 768px) {
-  :host {
-    flex: 1;
+  :host,
+  .main-container {
     min-height: 0;
-    display: flex;
-    flex-direction: column;
   }
 
   .main-container {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
     padding-bottom: 12px;
   }
 
@@ -442,10 +452,7 @@ app-vote-bubbles.vote-bubbles-voting {
     min-height: 0;
     flex-direction: column;
     gap: 12px;
-  }
-
-  .question-votes-and-chat-container section {
-    height: auto;
+    margin-bottom: 0;
   }
 
   /* Bubbles and chat share the height left (2:3) instead of fixed minimums, so on short phones
@@ -471,9 +478,8 @@ app-vote-bubbles.vote-bubbles-voting {
 
   /* Voting screen: the bubbles take all the room left. */
   app-vote-bubbles.vote-bubbles-voting {
-    flex: 1;
     min-height: 0;
-    --vote-bubbles-height: 100%;
+    margin-bottom: 0;
   }
 }
 
