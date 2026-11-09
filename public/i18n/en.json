@@ -135,6 +135,7 @@
     "exitFullscreen": "Show the results again",
     "noMessagesDisplay": "No messages to display.",
     "typeYourMessage": "Type your message here...",
+    "mentionSuggestions": "Members to mention",
     "send": "Send",
     "gif": "GIF",
     "report": "!"

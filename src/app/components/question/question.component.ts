@@ -16,6 +16,7 @@ import { VoteResultsModalComponent } from '../modals/vote-results-modal/vote-res
 import { TutorialModalComponent } from '../modals/tutorial-modal/tutorial-modal.component';
 import { TutorialService } from '../../services/tutorial/tutorial.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { keepPunctuationAttached } from '../../utils/typography';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
@@ -66,6 +67,8 @@ export class QuestionComponent implements OnInit{
     return this.tutorial.isSeen(step) ? null : step;
   });
   public readonly question = model<Question | null>(null);
+  /** The question as displayed: "?", "!", ":"... never alone at the start of a line. */
+  protected readonly questionText = computed(() => keepPunctuationAttached(this.question()?.content ?? ''));
   /** The group's current question, as opposed to `question` which may be a past one picked in the calendar. */
   private readonly currentQuestion = signal<Question | null>(null);
   protected readonly isPastQuestion = computed(() => {
