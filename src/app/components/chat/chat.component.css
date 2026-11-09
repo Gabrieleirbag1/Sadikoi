@@ -1,8 +1,15 @@
-.chat-container {
-    position: relative; /* anchors the profile card */
+/* Fills the room its parent gives it: the messages scroll inside, the chat never grows with them. */
+:host {
     display: flex;
     flex-direction: column;
-    height: 100%;
+}
+
+.chat-container {
+    position: relative; /* anchors the profile card */
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     width: 38vw;
     box-sizing: border-box;
     padding: 10px;
@@ -341,18 +348,10 @@ app-gif-picker {
 
 /* Mobile: the chat takes the full width and the height its parent gives it. */
 @media (max-width: 768px) {
-    :host {
-        display: flex;
-        flex-direction: column;
-    }
-
     /* Extra room so messages and the input don't touch the hand-drawn border (its corners curve inwards).
        The top one also holds the full screen chevron. */
     .chat-container {
-        flex: 1;
-        min-height: 0;
         width: 100%;
-        height: auto;
         padding: 26px 14px 18px;
     }
 

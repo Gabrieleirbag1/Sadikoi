@@ -1,12 +1,14 @@
 /* Fills the group page: the bubbles and the chat take the height left under the question. */
 :host {
   flex: 1;
+  min-height: 0; /* never taller than the room left, even with a long chat */
   display: flex;
   flex-direction: column;
 }
 
 .main-container {
   flex: 1;
+  min-height: 0;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -220,6 +222,18 @@
   width: 57vw;
 }
 
+/* The chat fills its column and scrolls inside: it never grows with its messages. */
+.question-votes-and-chat-container > section:last-child {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+app-chat {
+  flex: 1;
+  min-height: 0;
+}
+
 /* Over the bubbles, top-right corner. The box's hand-drawn border curves inwards there, hence the wider
    right offset. Below the profile tooltips (1000+). */
 .vote-results-button,
@@ -362,11 +376,6 @@ app-vote-bubbles.vote-bubbles-voting {
 
 /* Mobile (issue #31): question on top, bubbles, then the chat below them. */
 @media (max-width: 768px) {
-  :host,
-  .main-container {
-    min-height: 0;
-  }
-
   .main-container {
     padding-bottom: 12px;
   }
@@ -468,14 +477,6 @@ app-vote-bubbles.vote-bubbles-voting {
 
   .question-votes-and-chat-container > section:last-child {
     flex: 3 1 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  app-chat {
-    flex: 1;
-    min-height: 0;
   }
 
   /* Voting screen: the bubbles take all the room left. */
