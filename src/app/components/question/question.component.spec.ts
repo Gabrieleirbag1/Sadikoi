@@ -1,8 +1,10 @@
 import type { MockInstance } from 'vitest';
+import { Subject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
 import { QuestionService } from '../../services/question/question.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -169,6 +171,67 @@ describe('QuestionComponent', () => {
       fixture.nativeElement.querySelector('.question-feedback-side').dispatchEvent(new Event('animationend'));
       show(voted);
       expect(thumbs().length).toBe(0);
+    });
+  });
+  describe('item announcement', () => {
+    const announcement = { type: 'new' } as unknown as ItemAnnouncement;
+    let getQuestion: MockInstance<QuestionService['getQuestion']>;
+
+    beforeEach(() => {
+      localStorage.clear();
+      getQuestion = vi.spyOn(TestBed.inject(QuestionService), 'getQuestion');
+      fixture.componentRef.setInput('group', { id: 1, users: [] } as unknown as Group);
+    });
+
+    afterEach(() => localStorage.clear());
+
+    it('shows on the voting screen', async () => {
+      getQuestion.mockResolvedValue({ id: 3, content: 'Q', votes: [], announcement } as unknown as Question);
+      await component.ngOnInit();
+      expect((component as any).announcementToShow()).toEqual(announcement);
+    });
+
+    it('does not show once the user has voted (maybe on another device)', async () => {
+      const votes = [{ voterUser: { id: 5 }, targets: [{ id: 6 }] }];
+      getQuestion.mockResolvedValue({ id: 3, content: 'Q', votes, announcement } as unknown as Question);
+      await component.ngOnInit();
+      expect((component as any).announcementToShow()).toBeNull();
+    });
+  });
+
+  describe('language change', () => {
+    let getQuestion: MockInstance<QuestionService['getQuestion']>;
+    let getQuestionsByDate: MockInstance<QuestionService['getQuestionsByDate']>;
+    let languageSaved: Subject<Language>;
+
+    beforeEach(() => {
+      const questions = TestBed.inject(QuestionService);
+      getQuestion = vi.spyOn(questions, 'getQuestion');
+      getQuestionsByDate = vi.spyOn(questions, 'getQuestionsByDate');
+      languageSaved = new Subject<Language>();
+      (TestBed.inject(AuthService) as any).languageSaved$ = languageSaved;
+      fixture.componentRef.setInput('group', { id: 1, users: [] } as unknown as Group);
+    });
+
+    it('fetches the question again in the newly saved language', async () => {
+      getQuestion.mockResolvedValue({ id: 3, content: 'Who?', votes: [] } as unknown as Question);
+      await component.ngOnInit();
+      getQuestion.mockResolvedValue({ id: 3, content: 'Qui ?', votes: [] } as unknown as Question);
+
+      languageSaved.next('fr');
+      await vi.waitFor(() => expect(component.question()?.content).toBe('Qui ?'));
+    });
+
+    it('also translates the past question picked in the calendar', async () => {
+      getQuestion.mockResolvedValue({ id: 3, content: 'Who?', votes: [] } as unknown as Question);
+      await component.ngOnInit();
+      component.question.set({ id: 2, content: 'Old?', date: '2026-03-15T12:00:00', votes: [] } as unknown as Question);
+      getQuestion.mockResolvedValue({ id: 3, content: 'Qui ?', votes: [] } as unknown as Question);
+      getQuestionsByDate.mockResolvedValue([{ id: 2, content: 'Ancienne ?', votes: [] } as unknown as Question]);
+
+      languageSaved.next('fr');
+      await vi.waitFor(() => expect(component.question()?.content).toBe('Ancienne ?'));
+      expect(getQuestionsByDate).toHaveBeenCalledWith(1, 3, 2026);
     });
   });
 });

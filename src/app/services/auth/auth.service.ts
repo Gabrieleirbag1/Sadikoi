@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 import { Router } from '@angular/router';
@@ -25,6 +25,9 @@ export class AuthService {
   private readonly push = inject(PushService);
   private readonly tutorial = inject(TutorialService);
   private isAuthenticatedFlag = false;
+  private readonly languageSaved = new Subject<Language>();
+  /** The account's language was changed and saved: content coming from the server (questions) must be fetched again. */
+  public readonly languageSaved$ = this.languageSaved.asObservable();
 
   constructor() {
     this.setup();
@@ -181,6 +184,7 @@ export class AuthService {
     try {
       const response = await firstValueFrom(this.httpClient.put<ApiResponse>(`${environment.apiUrl}auth/account/`, formData, { withCredentials: true }));
       this.setAuthSession(response.content, true);
+      this.languageSaved.next(language);
       return true;
     } catch (error) {
       this.logger.error('Language update failed:', error);
