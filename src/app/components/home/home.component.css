@@ -1,19 +1,24 @@
-/* Mobile: the page fills the screen so the footer menu stays at the bottom. */
+/* The page fills the screen so the footer menu is always at the very bottom, at the same place as on the
+   group page (which fills the screen too): switching between groups, profile and a group never moves it. */
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container {
+    flex: 1;
+    height: auto; /* not the global 75vh, which left the footer higher than on the group page */
+}
+
 @media (max-width: 768px) {
-    :host {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-    }
-
-    main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
     .main-container {
-        flex: 1;
         padding-bottom: 16px;
     }
 }

@@ -265,6 +265,12 @@
     }
 }
 
+/* Fewer columns on narrower screens so cards never get squeezed: with 4 columns on a small laptop,
+   the name had ~60px between the pictures and the item and was cut in the middle of words. */
+@media (max-width: 1200px) {
+    .grid-container { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 /* Fewer columns on narrower screens so cards never get squeezed. */
 @media (max-width: 900px) {
     .grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
