@@ -152,6 +152,8 @@
 .question-text {
   min-width: 0;
   line-height: 1.2;
+  /* Lines of even length: a long question is split in two halves, not a full line and a last word. */
+  text-wrap: balance;
 }
 
 .user-vote-container {

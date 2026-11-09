@@ -33,7 +33,7 @@
       </div>
     }
     <div class="question-content">
-      <span class="question-text" [appFitText]="question()?.content">{{ question()?.content }}</span>
+      <span class="question-text" [appFitText]="questionText()">{{ questionText() }}</span>
       <!-- Computer: the theme right of the question text, before the item (on a phone: left of the hourglass). -->
       @if (question()?.theme; as theme) {
         <div class="question-theme question-theme-side" [title]="'themes.questionTheme' | translate: { theme }">{{ theme }}</div>
