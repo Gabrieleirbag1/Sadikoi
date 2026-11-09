@@ -23,6 +23,10 @@ const CHANNELS = [
 const GROUP_TAG_PREFIXES = ['chat', 'answers', 'question'];
 const groupTags = (groupId: number) => GROUP_TAG_PREFIXES.map(prefix => `${prefix}-${groupId}`);
 
+/** A live message is marked as seen this long after it arrived: its notification must reach the other phones
+ *  before the order to remove it (Firebase doesn't keep the order of two messages sent close together). */
+const MESSAGE_SEEN_DELAY_MS = 3000;
+
 /** Stable numeric id for a tag ("chat-12"): a new notification with the same tag replaces the previous one. */
 function notificationId(tag: string): number {
   let hash = 0;
@@ -35,9 +39,11 @@ function notificationId(tag: string): number {
 export type PushPermission = 'granted' | 'denied' | 'unknown';
 
 /**
- * Mobile app only: push notifications (Firebase).
+ * Push notifications (Firebase), mostly for the mobile app:
  * - init(), at launch: opens the right page when a notification is tapped.
  * - start(), once logged in: asks for the permission and sends this phone's token to the API.
+ * - clearGroupNotifications(), on every platform: a group seen here (even on the website) leaves the tray
+ *   of this phone and of the user's other phones.
  */
 @Injectable({
   providedIn: 'root',
@@ -54,6 +60,17 @@ export class PushService {
   public readonly permission = signal<PushPermission>('unknown');
   private listenersReady: Promise<void> | null = null;
   private starting = false;
+  private readonly messageSeenTimers = new Map<number, ReturnType<typeof setTimeout>>();
+
+  constructor() {
+    // Website: back on the tab of a group (the app uses 'resume', see addListeners).
+    if (!Capacitor.isNativePlatform()) {
+      document.addEventListener('visibilitychange', () => {
+        const groupId = this.openGroupId();
+        if (!document.hidden && groupId) this.clearGroupNotifications(groupId);
+      });
+    }
+  }
 
   public init(): void {
     if (!this.available) {
@@ -108,17 +125,41 @@ export class PushService {
     // Back in the app on a group's page (e.g. a notification of the group already open was tapped, which
     // doesn't reload the page): what arrived meanwhile has been seen.
     await App.addListener('resume', () => {
-      const groupId = this.router.url.match(/^\/group\/(\d+)(?:[/?#]|$)/)?.[1];
-      if (groupId) this.clearGroupNotifications(Number(groupId));
+      const groupId = this.openGroupId();
+      if (groupId) this.clearGroupNotifications(groupId);
     });
+  }
+
+  /** The group whose page is on screen, if any. */
+  private openGroupId(): number | null {
+    const groupId = this.router.url.match(/^\/group\/(\d+)(?:[/?#]|$)/)?.[1];
+    return groupId ? Number(groupId) : null;
+  }
+
+  /** A message arrived in the group open on screen: it is seen, so its notification leaves the other phones. */
+  public messageSeen(groupId: number): void {
+    // Not reset by the next messages: a busy chat still gets cleared every few seconds.
+    if (document.hidden || this.messageSeenTimers.has(groupId)) {
+      return;
+    }
+    this.messageSeenTimers.set(groupId, setTimeout(() => {
+      this.messageSeenTimers.delete(groupId);
+      if (!document.hidden) this.clearGroupNotifications(groupId);
+    }, MESSAGE_SEEN_DELAY_MS));
   }
 
   /** The group's page is open: its notifications (chat, answers, question, reminder) leave the tray. */
   public async clearGroupNotifications(groupId: number): Promise<void> {
+    // The user's other phones (e.g. the group is open on the computer): the API sends them the order.
+    this.settingsService.markGroupSeen(groupId, getDeviceId());
+    await this.removeFromTray(groupTags(groupId));
+  }
+
+  /** Removes this phone's notifications with these tags. */
+  private async removeFromTray(tags: string[]): Promise<void> {
     if (!this.available) {
       return;
     }
-    const tags = groupTags(groupId);
     try {
       // Shown by Firebase (app closed or in the background): tagged by the API.
       const { notifications } = await PushNotifications.getDeliveredNotifications();
@@ -143,6 +184,12 @@ export class PushService {
   /** Nothing if the notification's page is on screen (e.g. that group is open), otherwise the usual banner. */
   private async showWhileOpen(notification: PushNotificationSchema): Promise<void> {
     const data = notification.data ?? {};
+    // Order from the API to remove notifications (group seen on another device), nothing to show. On Android
+    // SadikoiMessagingService handles it before it gets here; this is in case it doesn't.
+    if (data.action === 'dismiss') {
+      await this.removeFromTray(String(data.tags ?? '').split(',').filter(Boolean));
+      return;
+    }
     const route = typeof data.route === 'string' ? data.route : '';
     const currentPath = this.router.url.split(/[?#]/)[0];
     if (route && (currentPath === route || currentPath.startsWith(`${route}/`))) {

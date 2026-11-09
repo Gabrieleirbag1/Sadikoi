@@ -6,6 +6,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { GifPickerComponent } from '../gif-picker/gif-picker.component';
 import { KlipyGif, KlipyService } from '../../services/klipy/klipy.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
+import { PushService } from '../../services/push/push.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ReportUserService } from '../../services/report-user/report-user.service';
@@ -46,6 +47,7 @@ export class ChatComponent {
   private readonly chatService = inject(ChatService);
   private readonly klipyService = inject(KlipyService);
   private readonly websocketService = inject(WebsocketService);
+  private readonly pushService = inject(PushService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
   private readonly translate = inject(TranslateService);
@@ -179,6 +181,9 @@ export class ChatComponent {
       if (!this.messages().some(m => m.id === message.id)) {
         this.messages.update(messages => [...messages, message]);
       }
+      // Read here (on the computer, say): its notification leaves the user's phones.
+      const g = this.group();
+      if (g && message.sender?.id !== this.connectedUser.id) this.pushService.messageSeen(g.id);
     });
 
     // Messages sent while disconnected (phone asleep...) never arrived: reload the day.

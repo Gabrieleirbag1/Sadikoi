@@ -56,6 +56,15 @@ export class NotificationSettingsService {
     }
   }
 
+  /** The group is open on this device: the API removes its notifications from the user's other phones. */
+  public async markGroupSeen(groupId: number, deviceId: string): Promise<void> {
+    try {
+      await firstValueFrom(this.httpClient.post<ApiResponse>(`${this.url}groups/${groupId}/seen/`, { device_id: deviceId }, { withCredentials: true }));
+    } catch (error) {
+      this.logger.debug('Failed to mark the group as seen:', error);
+    }
+  }
+
   public async registerDevice(token: string, deviceId: string, platform: string): Promise<void> {
     try {
       await firstValueFrom(this.httpClient.post<ApiResponse>(`${this.url}devices/`, { token, device_id: deviceId, platform }, { withCredentials: true }));
