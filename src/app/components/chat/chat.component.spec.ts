@@ -192,4 +192,85 @@ describe('ChatComponent', () => {
       expect(card()).toBeNull();
     });
   });
+
+  describe('mentions', () => {
+    const alice = { id: 2, username: 'alice', items: [], role: 'member' } as unknown as User;
+    const alan = { id: 3, username: 'Alan Turing', items: [], role: 'member' } as unknown as User;
+    const bob = { id: 4, username: 'bob', items: [], role: 'member' } as unknown as User;
+
+    const textarea = () => fixture.nativeElement.querySelector('.chat-input-area textarea') as HTMLTextAreaElement;
+    const suggestions = () =>
+      [...fixture.nativeElement.querySelectorAll('.mention-suggestion-name')].map((el: Element) => el.textContent?.trim());
+    const typeIn = (text: string) => {
+      textarea().value = text;
+      textarea().setSelectionRange(text.length, text.length);
+      textarea().dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    };
+    const press = (key: string, init: KeyboardEventInit = {}) => {
+      const event = new KeyboardEvent('keydown', { key, cancelable: true, ...init });
+      textarea().dispatchEvent(event);
+      fixture.detectChanges();
+      return event;
+    };
+
+    beforeEach(() => {
+      fixture.componentRef.setInput('group', { id: 1, users: [alice, alan, bob] } as unknown as Group);
+      fixture.detectChanges();
+    });
+
+    afterEach(() => (component as any).closeProfile());
+
+    it('shows mentions of members in blue and opens their profile on click', () => {
+      (component as any).messages.set([{ id: 1, content: 'hey @Alice and @nobody', sender: bob, timestamp: '2025-01-01T10:00:00' }]);
+      fixture.detectChanges();
+      const content = fixture.nativeElement.querySelector('.message-content') as HTMLElement;
+      expect(content.textContent).toBe('hey @Alice and @nobody');
+      const mentions = content.querySelectorAll('.chat-mention');
+      expect([...mentions].map(m => m.textContent)).toEqual(['@Alice']);
+
+      (mentions[0] as HTMLElement).click();
+      fixture.detectChanges();
+      expect((component as any).profileUser()).toBe(alice);
+      expect(fixture.nativeElement.querySelector('.chat-profile-popover app-user-profile')).toBeTruthy();
+    });
+
+    it('suggests the members matching the name being typed', () => {
+      typeIn('salut @al');
+      expect(suggestions()).toEqual(['Alan Turing', 'alice']);
+      typeIn('salut @ali');
+      expect(suggestions()).toEqual(['alice']);
+      typeIn('salut @x');
+      expect(suggestions()).toEqual([]);
+      typeIn('salut');
+      expect(suggestions()).toEqual([]);
+    });
+
+    it('arrows pick the suggestion, Enter completes the name instead of sending', () => {
+      const send = vi.fn();
+      TestBed.inject(ChatService).sendMessage = send as unknown as ChatService['sendMessage'];
+      typeIn('yo @al');
+      press('ArrowDown');
+      const enter = press('Enter');
+      expect(enter.defaultPrevented).toBe(true);
+      expect(textarea().value).toBe('yo @alice ');
+      expect(textarea().selectionStart).toBe(10);
+      expect(suggestions()).toEqual([]);
+      expect(send).not.toHaveBeenCalled();
+    });
+
+    it('clicking a suggestion completes the name, keeping the text after the cursor', () => {
+      typeIn('yo @b');
+      textarea().value = 'yo @b ça va';
+      textarea().setSelectionRange(5, 5);
+      (fixture.nativeElement.querySelector('.mention-suggestion') as HTMLElement).click();
+      expect(textarea().value).toBe('yo @bob ça va');
+    });
+
+    it('Escape closes the suggestions', () => {
+      typeIn('@a');
+      press('Escape');
+      expect(suggestions()).toEqual([]);
+    });
+  });
 });

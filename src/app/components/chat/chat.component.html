@@ -59,7 +59,8 @@
         @if (isGifMessage(message.content)) {
           <img [src]="message.content" alt="GIF" class="message-gif" (load)="autoScroll('instant')" />
         } @else {
-          <p class="message-content">{{ message.content }}</p>
+          <!-- One line on purpose: any space between the parts would show (white-space: pre-wrap). -->
+          <p class="message-content">@for (part of messageParts().get(message.id); track $index) {@if (part.user; as mentioned) {<span class="chat-mention" role="button" tabindex="0" [title]="mentioned.username" [attr.aria-expanded]="userProfileService.isOpenFor(mentioned, profileScope)" (click)="toggleProfile(mentioned, $event)" (keydown.enter)="toggleProfile(mentioned, $event)">{{ part.text }}</span>} @else {<ng-container>{{ part.text }}</ng-container>}}</p>
         }
         </div>
       </div>
@@ -93,13 +94,37 @@
       {{ 'chat.gif' | translate }}
     </button>
     <div class="chat-input-field">
+      <!-- "@" + the start of a name: the matching members, picked with a click, Enter or Tab. -->
+      @if (mentionList().length) {
+        <ul class="mention-suggestions" role="listbox" [attr.aria-label]="'chat.mentionSuggestions' | translate">
+          @for (user of mentionList(); track user.id) {
+            <li
+              class="mention-suggestion"
+              role="option"
+              [class.active]="$index === mentionIndex()"
+              [attr.aria-selected]="$index === mentionIndex()"
+              (mousedown)="$event.preventDefault()"
+              (mousemove)="onSuggestionHover($index, $event)"
+              (click)="pickMention(user, messageContent)"
+            >
+              <app-profile-image-picker [currentImageUrl]="user.profile_picture" [onlyDisplay]="true" [imgClass]="'mention-user-icon'" />
+              <span class="mention-suggestion-name">{{ user.username }}</span>
+            </li>
+          }
+        </ul>
+      }
       <!-- Grows with the text (see resizeInput). Enter sends, Shift+Enter goes to a new line. -->
       <textarea
         rows="1"
         [attr.maxlength]="maxMessageLength"
         [placeholder]="'chat.typeYourMessage' | translate"
-        (keydown.enter)="onEnter($any($event), messageContent)"
+        (keydown)="onKeydown($event, messageContent)"
         (input)="onInputChange(messageContent)"
+        (click)="updateMentions(messageContent)"
+        (keyup.arrowleft)="updateMentions(messageContent)"
+        (keyup.arrowright)="updateMentions(messageContent)"
+        (keyup.home)="updateMentions(messageContent)"
+        (keyup.end)="updateMentions(messageContent)"
         #messageContent
       ></textarea>
       <!-- Only near the limit, like Discord. -->

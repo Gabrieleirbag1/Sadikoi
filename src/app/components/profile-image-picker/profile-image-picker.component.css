@@ -73,6 +73,12 @@
   margin-top: 8px;
 }
 
+.mention-user-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
 @media (max-width: 768px) {
   .account-user-icon {
     width: min(130px, 100%);

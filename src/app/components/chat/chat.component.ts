@@ -13,6 +13,7 @@ import { UserProfileService } from '../../services/user-profile/user-profile.ser
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
+import { MessagePart, mentionQuery, mentionSuggestions, splitMentions } from '../../utils/mentions';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
@@ -86,7 +87,16 @@ export class ChatComponent {
   /** Browser only: the keyboard was seen open since the input got the focus. */
   private keyboardSeen = false;
 
-  /** Author whose profile card is open (clicked avatar). */
+  /** Members matching the "@name" being typed, shown above the input; empty when closed. */
+  protected readonly mentionList = signal<User[]>([]);
+  /** Suggestion picked by Enter / Tab (moved with the arrow keys). */
+  protected readonly mentionIndex = signal(0);
+  /** Position of the "@" whose name is being typed. */
+  private mentionStart = -1;
+  /** Last mouse position over the suggestions (see onSuggestionHover). */
+  private lastPointer: { x: number; y: number } | null = null;
+
+  /** Author whose profile card is open (clicked avatar or mention). */
   protected readonly profileUser = signal<User | null>(null);
   /** Card position inside .chat-container, next to the clicked avatar. */
   protected readonly profilePos = signal({ x: 0, y: 0, flipX: false, flipY: false });
@@ -100,6 +110,15 @@ export class ChatComponent {
   public readonly readOnly = input(false);
   // computed so that vote updates (same id) don't trigger a reload
   private readonly questionId = computed(() => this.question()?.id);
+  /** Each text message cut into text and "@member" mentions (shown in blue, clickable). */
+  protected readonly messageParts = computed(() => {
+    const users = this.group()?.users ?? [];
+    const parts = new Map<number, MessagePart[]>();
+    for (const message of this.messages()) {
+      if (!this.isGifMessage(message.content)) parts.set(message.id, splitMentions(message.content, users));
+    }
+    return parts;
+  });
 
   constructor() {
     effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
@@ -212,6 +231,27 @@ export class ChatComponent {
     }
   }
 
+  /** While suggestions are shown, the arrows move in them and Enter / Tab pick one; otherwise Enter sends. */
+  protected onKeydown(event: KeyboardEvent, input: HTMLTextAreaElement): void {
+    const suggestions = this.mentionList();
+    if (suggestions.length && !event.isComposing) {
+      const move = (step: number) => this.mentionIndex.update(i => (i + step + suggestions.length) % suggestions.length);
+      const handled = ({
+        ArrowDown: () => move(1),
+        ArrowUp: () => move(-1),
+        Enter: () => this.pickMention(suggestions[this.mentionIndex()], input),
+        Tab: () => this.pickMention(suggestions[this.mentionIndex()], input),
+        Escape: () => this.closeMentions(),
+      } as Record<string, () => void>)[event.key];
+      if (handled && !(event.key === 'Enter' && event.shiftKey)) {
+        event.preventDefault();
+        handled();
+        return;
+      }
+    }
+    if (event.key === 'Enter') this.onEnter(event, input);
+  }
+
   /** Enter sends, Shift+Enter adds a line break. Ignored while an IME is composing a word. */
   protected onEnter(event: KeyboardEvent, input: HTMLTextAreaElement): void {
     if (event.shiftKey || event.isComposing) return;
@@ -223,6 +263,50 @@ export class ChatComponent {
   protected onInputChange(input: HTMLInputElement | HTMLTextAreaElement): void {
     this.messageLength.set(input.value.length);
     this.resizeInput(input);
+    this.updateMentions(input);
+  }
+
+  /** Shows the members matching the "@name" right before the cursor (typing, clicking or arrows moved it). */
+  protected updateMentions(input: HTMLInputElement | HTMLTextAreaElement): void {
+    const caret = input.selectionStart ?? input.value.length;
+    const typed = input.selectionEnd === caret ? mentionQuery(input.value, caret) : null;
+    const suggestions = typed ? mentionSuggestions(this.group()?.users ?? [], typed.query, this.connectedUser?.id) : [];
+    const current = this.mentionList();
+    const same = suggestions.length === current.length && suggestions.every((user, i) => user.id === current[i].id);
+    this.mentionStart = typed?.start ?? -1;
+    if (same) return;
+    this.mentionList.set(suggestions);
+    this.mentionIndex.set(0);
+  }
+
+  /** Replaces the "@name" being typed with the member's full username, followed by a space. */
+  protected pickMention(user: User, input: HTMLTextAreaElement): void {
+    if (this.mentionStart < 0) return;
+    const caret = input.selectionStart ?? input.value.length;
+    const before = input.value.slice(0, this.mentionStart);
+    // No double space when there already is one after the cursor.
+    const after = input.value.slice(caret).replace(/^ /, '');
+    const mention = `@${user.username} `;
+    input.value = (before + mention + after).slice(0, MAX_MESSAGE_LENGTH);
+    const position = Math.min(before.length + mention.length, input.value.length);
+    input.setSelectionRange(position, position);
+    input.focus();
+    this.closeMentions();
+    this.messageLength.set(input.value.length);
+    this.resizeInput(input);
+  }
+
+  /** The mouse picks the suggestion under it, only when it really moves: the list showing up (or the
+   *  layout moving) under a still mouse must not undo the choice made with the arrows. */
+  protected onSuggestionHover(index: number, event: MouseEvent): void {
+    const moved = !this.lastPointer || this.lastPointer.x !== event.screenX || this.lastPointer.y !== event.screenY;
+    this.lastPointer = { x: event.screenX, y: event.screenY };
+    if (moved) this.mentionIndex.set(index);
+  }
+
+  protected closeMentions(): void {
+    this.mentionList.set([]);
+    this.mentionStart = -1;
   }
 
   private resizeInput(input: HTMLInputElement | HTMLTextAreaElement): void {
@@ -258,8 +342,8 @@ export class ChatComponent {
       this.showGifPicker.set(false);
     }
     // Closing the full size picture (opened from the card) keeps the card open.
-    const keepsProfile = (el: Element) =>
-      el.classList.contains('chat-profile-popover') || el.classList.contains('chat-avatar-btn') || el.classList.contains('image-preview');
+    const keepsProfile = (el: Element) => ['chat-profile-popover', 'chat-avatar-btn', 'chat-mention', 'image-preview']
+      .some(name => el.classList.contains(name));
     if (this.profileUser() && !path.some(keepsProfile)) {
       this.closeProfile();
     }
@@ -270,8 +354,8 @@ export class ChatComponent {
     this.closeProfile();
   }
 
-  /** Clicking an author's picture opens their profile card; clicking it again closes it. */
-  protected toggleProfile(sender: User, event: MouseEvent): void {
+  /** Clicking an author's picture (or a mention) opens their profile card; clicking it again closes it. */
+  protected toggleProfile(sender: User, event: Event): void {
     if (this.profileUser()?.id === sender.id && this.userProfileService.isOpenFor(sender, this.profileScope)) {
       this.closeProfile();
       return;
@@ -324,6 +408,7 @@ export class ChatComponent {
     // Focus moving inside the area (input -> GIF search) is still typing.
     const area = event.currentTarget as HTMLElement;
     if (!area.contains(event.relatedTarget as Node | null)) this.inputFocused.set(false);
+    if (event.target === this.messageInput()?.nativeElement) this.closeMentions();
   }
 
   protected toggleFullscreen(): void {

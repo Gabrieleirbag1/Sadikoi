@@ -161,6 +161,25 @@
     white-space: pre-wrap; /* keeps the line breaks typed with Shift+Enter */
 }
 
+/* "@member" in a message: blue, opens the member's profile card. */
+.chat-mention {
+    color: var(--secondary);
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.chat-mention:hover,
+.chat-mention:focus-visible {
+    text-decoration: underline;
+    outline: none;
+}
+
+/* Own messages are light blue: a darker blue stands out on them. */
+.message.background-secondary .chat-mention {
+    color: var(--secondary-dark-10, #085aa5);
+}
+
 .message-gif {
     display: block;
     max-width: 100%;
@@ -197,6 +216,55 @@
     position: relative;
     flex: 1;
     min-width: 0;
+}
+
+/* Members matching the "@name" being typed, just above the input. Above the profile tooltips (1000+). */
+.mention-suggestions {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    z-index: 1100;
+    width: min(100%, 260px);
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background-color: #fff;
+    border: 2px solid var(--primary);
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* paper.css puts a hand-drawn bullet before every <li>. */
+.mention-suggestions .mention-suggestion::before {
+    content: none;
+}
+
+.mention-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-indent: 0;
+}
+
+.mention-suggestion.active {
+    background-color: var(--secondary-light);
+    color: var(--secondary-dark-10, #085aa5);
+}
+
+.mention-suggestion-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Sits on the field's top border, at the right: it never covers the text. */
