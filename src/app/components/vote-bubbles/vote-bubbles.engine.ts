@@ -61,12 +61,14 @@ const ORBIT_GAP = 8;
 const FILL = 0.5;
 const MIN_SCALE = 0.45;
 const MAX_SCALE = 1.3;
+/** How fast a ball grows with its votes (see baseRadius): closer to 1, the more each extra vote shows. */
+const VOTE_GROWTH = 0.7;
 /** Smaller, a voter's picture can't be recognized. */
 const MIN_VOTER_RADIUS = 11;
 
 const DEFAULTS: EngineOptions = {
   minRadius: 38,
-  maxRadius: 90,
+  maxRadius: 110,
   voterRadius: 16,
   maxSpeed: 70,
   speedFactor: 1,
@@ -253,10 +255,13 @@ export class BubbleEngine {
     return null;
   }
 
-  /** Radius at scale 1: grows with the votes, up to maxRadius. */
+  /**
+   * Radius at scale 1: grows with the votes, up to maxRadius (reached at 6 votes). The power 0.7 (rather than
+   * a square root) keeps a visible step between 2, 3 and 4 votes: 38, 60, 73, 85, 95, 105, 110.
+   */
   private baseRadius(c: CandidateState): number {
     const { minRadius, maxRadius } = this.options;
-    return Math.min(maxRadius, minRadius + Math.sqrt(c.voters.length) * (maxRadius - minRadius) * 0.45);
+    return Math.min(maxRadius, minRadius + Math.pow(c.voters.length, VOTE_GROWTH) * (maxRadius - minRadius) * 0.3);
   }
 
   /**
