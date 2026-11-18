@@ -187,6 +187,17 @@
     color: var(--secondary-dark-10, #085aa5);
 }
 
+/* Address in a message: underlined, opens in a new tab (the system browser in the app). Long ones wrap anywhere. */
+.chat-link {
+    color: var(--secondary);
+    text-decoration: underline;
+    overflow-wrap: anywhere;
+}
+
+.message.background-secondary .chat-link {
+    color: var(--secondary-dark-10, #085aa5);
+}
+
 .message-gif {
     display: block;
     max-width: 100%;

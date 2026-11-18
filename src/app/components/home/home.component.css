@@ -17,6 +17,20 @@ main {
     height: auto; /* not the global 75vh, which left the footer higher than on the group page */
 }
 
+/* Groups on a computer: the page is exactly the screen (not "at least") and the groups list takes all the
+   room above the footer menu. With only a min-height, the list's container units (cqh) would read 0. */
+@media (min-width: 769px) {
+    :host(.groups-page) {
+        height: 100%;
+    }
+
+    :host(.groups-page) .main-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .main-container {
         padding-bottom: 16px;

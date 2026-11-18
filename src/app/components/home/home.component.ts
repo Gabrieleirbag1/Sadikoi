@@ -8,7 +8,8 @@ import { HomeFooterComponent } from "../layout/home-footer/home-footer.component
   imports: [GroupsComponent, AccountComponent, HomeFooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  standalone: true
+  standalone: true,
+  host: { '[class.groups-page]': "homeState() === 'groups'" },
 })
 export class HomeComponent {
   protected homeState = signal<HomeState>('groups');

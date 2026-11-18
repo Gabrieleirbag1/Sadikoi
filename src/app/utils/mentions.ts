@@ -1,7 +1,11 @@
-/** A piece of a chat message: plain text, or a mention of a group member (`text` is "@name" as typed). */
+/**
+ * A piece of a chat message: plain text, a mention of a group member (`text` is "@name" as typed),
+ * or a link (`url` is the address it opens, see splitLinks).
+ */
 export interface MessagePart {
   text: string;
   user?: User;
+  url?: string;
 }
 
 /** Letters (any alphabet), digits and "_": a mention can't start or end in the middle of a word. */

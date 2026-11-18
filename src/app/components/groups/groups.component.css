@@ -3,6 +3,27 @@
     display: block;
 }
 
+/* Computer: the list fills the room left above the footer menu (HomeComponent gives it the whole screen).
+   .groups-fit is that room, measured in cqh by .groups-container. */
+@media (min-width: 769px) {
+    :host {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .groups-fit {
+        flex: 1;
+        min-height: 0;
+        container-type: size;
+    }
+}
+
+.groups-fit {
+    margin-top: 20px;
+}
+
 .groups-container {
     height: 65vh;
     overflow-y: auto;
@@ -11,23 +32,29 @@
     padding: 6px 6px 0;
     scroll-snap-type: y mandatory;
     scroll-padding-top: 6px;
-    margin-top: 20px;
 }
 
-/* Show a whole number of rows: height = n * (row height + gap) - gap, with n as large as fits in 65vh
-   (round() is supported by current browsers; 65vh above is the fallback). The 12px = 6px top padding + 6px bottom padding of the lists; if the container were any
-   shorter the content would overflow by a few px and scroll-snap could settle at scrollTop > 0, scrolling the
-   top padding away and clipping the hover lift. */
+/* Show a whole number of rows: height = n * (row height + gap) - gap + 12px, with n as large as fits in
+   .groups-fit (100cqh: all the room above the footer menu), and at least one row. round() and cqh are
+   supported by current browsers; 65vh above is the fallback. The 12px = 6px top padding + 6px bottom padding
+   of the lists; if the container were any shorter the content would overflow by a few px and scroll-snap
+   could settle at scrollTop > 0, scrolling the top padding away and clipping the hover lift. */
+.groups-container.view-grid,
+.groups-container.view-list {
+    height: max(
+        var(--row) + 12px,
+        round(down, 100cqh - 12px + var(--gap), var(--row) + var(--gap)) - var(--gap) + 12px
+    );
+}
+
 .groups-container.view-grid {
     --row: 26vh;
     --gap: 30px;
-    height: calc(round(down, 65vh + var(--gap), var(--row) + var(--gap)) - var(--gap) + 12px);
 }
 
 .groups-container.view-list {
     --row: 12vh;
     --gap: 10px;
-    height: calc(round(down, 65vh + var(--gap), var(--row) + var(--gap)) - var(--gap) + 12px);
 }
 
 .group-grid-item, .group-list-item {
