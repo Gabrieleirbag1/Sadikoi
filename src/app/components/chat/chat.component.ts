@@ -12,9 +12,11 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ReportUserService } from '../../services/report-user/report-user.service';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
+import { KeepInViewportDirective } from '../../directives/keep-in-viewport.directive';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { MessagePart, mentionQuery, mentionSuggestions, splitMentions } from '../../utils/mentions';
+import { splitLinks } from '../../utils/links';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
@@ -22,7 +24,7 @@ const TYPING_CLASS = 'chat-typing';
 const FULLSCREEN_CLASS = 'chat-fullscreen';
 /** Approximate profile card size, only used to decide when to flip it away from an edge. */
 const PROFILE_WIDTH = 280;
-const PROFILE_HEIGHT = 180;
+const PROFILE_HEIGHT = 220;
 /** Id of one sent message, so the API can recognise the same message sent twice. */
 function newClientId(): string {
   return typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -38,7 +40,7 @@ const COUNTER_THRESHOLD = 0.8;
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule, GifPickerComponent, ProfileImagePickerComponent, TranslatePipe, UserProfileComponent],
+  imports: [CommonModule, GifPickerComponent, ProfileImagePickerComponent, TranslatePipe, UserProfileComponent, KeepInViewportDirective],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
 })
@@ -112,12 +114,16 @@ export class ChatComponent {
   public readonly readOnly = input(false);
   // computed so that vote updates (same id) don't trigger a reload
   private readonly questionId = computed(() => this.question()?.id);
-  /** Each text message cut into text and "@member" mentions (shown in blue, clickable). */
+  /** Each text message cut into text, "@member" mentions (shown in blue, clickable) and links. */
   protected readonly messageParts = computed(() => {
     const users = this.group()?.users ?? [];
     const parts = new Map<number, MessagePart[]>();
     for (const message of this.messages()) {
-      if (!this.isGifMessage(message.content)) parts.set(message.id, splitMentions(message.content, users));
+      if (!this.isGifMessage(message.content)) {
+        // Links first, so "@name" inside an address (https://x.com/@name) stays part of the link.
+        const pieces = splitLinks([{ text: message.content }]);
+        parts.set(message.id, pieces.flatMap(part => part.url ? [part] : splitMentions(part.text, users)));
+      }
     }
     return parts;
   });
@@ -375,7 +381,9 @@ export class ChatComponent {
       const top = avatar.top - box.top, bottom = avatar.bottom - box.top;
       // Own messages have the picture on the right: the card opens towards the left.
       const flipX = left + PROFILE_WIDTH > box.width && right > PROFILE_WIDTH / 2;
-      const flipY = bottom + PROFILE_HEIGHT > box.height && top > PROFILE_HEIGHT;
+      // Above the picture when there's no room below it, in the chat or on the screen (phones).
+      const flipY = (bottom + PROFILE_HEIGHT > box.height || avatar.bottom + PROFILE_HEIGHT > window.innerHeight)
+        && avatar.top > PROFILE_HEIGHT;
       this.profilePos.set({ x: flipX ? right : left, y: flipY ? top : bottom, flipX, flipY });
     }
     this.profileUser.set(user);
