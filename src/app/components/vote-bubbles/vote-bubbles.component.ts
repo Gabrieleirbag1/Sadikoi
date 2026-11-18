@@ -5,6 +5,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
+import { KeepInViewportDirective } from '../../directives/keep-in-viewport.directive';
 import { environment } from '../../../environments/environment';
 import { BubbleCandidate, BubbleEngine, BubbleVoter, CandidateState } from './vote-bubbles.engine';
 
@@ -17,7 +18,7 @@ export interface VoteBubbleData {
 
 /** Approximate tooltip footprint, only used to decide when to flip it away from an edge. */
 const TOOLTIP_WIDTH = 280;
-const TOOLTIP_HEIGHT = 180;
+const TOOLTIP_HEIGHT = 220;
 const DEFAULT_PICTURE = '/default-profile.svg';
 /** Horizontal line under the picture, as a fraction of the radius below the centre: the name sits under it. */
 const NAME_LINE = 0.55;
@@ -38,7 +39,7 @@ const PALETTE = ['#e76f51', '#2a9d8f', '#e9c46a', '#6a4c93', '#1982c4', '#8ac926
 
 @Component({
   selector: 'app-vote-bubbles',
-  imports: [TranslatePipe, UserProfileComponent],
+  imports: [TranslatePipe, UserProfileComponent, KeepInViewportDirective],
   templateUrl: './vote-bubbles.component.html',
   styleUrls: ['./vote-bubbles.component.css', '../tooltips/user-profile/user-profile-tooltip.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -265,14 +266,17 @@ export class VoteBubblesComponent {
     if (ids.length >= this.requiredCount() && this.isVoting()) this.voted.emit(ids);
   }
 
-  /** The tooltip keeps its natural size: near the right/bottom edge it flips to the other side of the pointer. */
+  /**
+   * The tooltip keeps its natural size: near the right/bottom edge (of the box or of the screen) it flips to
+   * the other side of the pointer. appKeepInViewport then slides it back in if it still sticks out (phones).
+   */
   private placeTooltip(event: Pick<MouseEvent, 'clientX' | 'clientY'>): void {
     const rect = this.boxRef().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left, y = event.clientY - rect.top;
     this.tooltipPos.set({
       x, y,
       flipX: x + TOOLTIP_WIDTH > rect.width && x > TOOLTIP_WIDTH / 2,
-      flipY: y + TOOLTIP_HEIGHT > rect.height && y > TOOLTIP_HEIGHT,
+      flipY: (y + TOOLTIP_HEIGHT > rect.height || event.clientY + TOOLTIP_HEIGHT > window.innerHeight) && event.clientY > TOOLTIP_HEIGHT,
     });
   }
 
