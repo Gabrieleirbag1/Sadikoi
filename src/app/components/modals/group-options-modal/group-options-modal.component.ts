@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { disabled, form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { UserProfileService } from '../../../services/user-profile/user-profile.
 import { ModalComponent } from '../modal/modal.component';
 import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
 import { ThemesComponent } from '../../tooltips/themes/themes.component';
+import { nextQuestionAt } from '../../../utils/reset-time';
 
 @Component({
   selector: 'app-group-options-modal',
@@ -35,11 +36,16 @@ export class GroupOptionsComponent implements OnChanges {
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly tooltipScope = 'group-options-modal';
   protected readonly removeUserConfirmId = 'remove-user-confirm';
+  protected readonly resetDelayConfirmId = 'reset-delay-confirm';
 
   protected connectedUser: User | null = null;
 
   public readonly group = model<Group | null>(null);
+  /** Current question of the group: tells until when it stays if the reset time changes. */
+  public readonly question = input<Question | null>(null);
   protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
+  /** Reset time (local "HH:MM") as saved, to know when the field was changed. */
+  private readonly savedResetTime = signal('');
   private readonly connectedUserId = signal<number | null>(null);
   protected readonly isAdmin = computed(() =>
     this.group()?.users.find(user => user.id === this.connectedUserId())?.role === 'admin'
@@ -51,6 +57,28 @@ export class GroupOptionsComponent implements OnChanges {
     disabled(path.daily_reset_timestamp, () => !this.isAdmin());
   });
   protected selectedThemes: string[] = [];
+
+  /**
+   * A question stays at least 24 h (API): with a new reset time, the current question stays until this date,
+   * then the new time applies. Null when the time isn't changed or there's no question to wait for.
+   */
+  protected readonly resetDelayUntil = computed(() => {
+    const time = this.groupModel().daily_reset_timestamp;
+    const date = this.question()?.date;
+    if (!time || !date || time === this.savedResetTime()) return null;
+    const next = nextQuestionAt(date, this.datetimeService.convertLocalTimestampToUtc(time));
+    return next && next.getTime() > Date.now() ? next : null;
+  });
+
+  /** The delay in words, for the warning tooltip and the confirmation. */
+  protected readonly resetDelayText = computed(() => {
+    const until = this.resetDelayUntil();
+    if (!until) return '';
+    const date = until.toLocaleString(this.translate.getCurrentLang() || undefined, {
+      weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
+    });
+    return this.translate.instant('groupOptions.resetDelay', { date, time: this.groupModel().daily_reset_timestamp });
+  });
 
   protected isOpen(): boolean {
     return this.modalService.isOpen(this.modalId);
@@ -68,11 +96,13 @@ export class GroupOptionsComponent implements OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     const g = this.group();
     if (changes['group'] && g) {
+      const resetTime = this.datetimeService.convertUTCTimeStampToLocal(g.daily_reset_timestamp ?? '');
       this.groupModel.set({
         name: g.name ?? '',
         description: g.description ?? '',
-        daily_reset_timestamp: this.datetimeService.convertUTCTimeStampToLocal(g.daily_reset_timestamp ?? ''),
+        daily_reset_timestamp: resetTime,
       });
+      this.savedResetTime.set(resetTime);
       this.selectedThemes = [...(g.themes ?? [])];
     }
   }
@@ -84,6 +114,23 @@ export class GroupOptionsComponent implements OnChanges {
   }
 
   protected save(event: Event): void {
+    if (this.resetDelayUntil() && this.isAdmin()) {
+      // Not sent yet (no form submit): the new time is confirmed first, knowing the current question stays.
+      event.preventDefault();
+      this.modalService.open(this.resetDelayConfirmId, {
+        title: this.translate.instant('groupOptions.resetDelayTitle'),
+        description: `${this.resetDelayText()} ${this.translate.instant('groupOptions.resetDelayConfirm')}`,
+        save: () => {
+          void this.submitGroup();
+          this.close(event);
+        },
+      });
+      return;
+    }
+    this.close(event);
+  }
+
+  private close(event: Event): void {
     const saveFn = this.config().save;
     this.modalService.close(this.modalId);
     saveFn?.(event);
@@ -91,6 +138,10 @@ export class GroupOptionsComponent implements OnChanges {
 
   protected async updateGroup(event: Event): Promise<void> {
     event.preventDefault();
+    await this.submitGroup();
+  }
+
+  private async submitGroup(): Promise<void> {
     if (!this.isAdmin()) return;
     const val = this.groupModel();
     try {
@@ -99,6 +150,7 @@ export class GroupOptionsComponent implements OnChanges {
       const timestamp = this.datetimeService.convertLocalTimestampToUtc(val.daily_reset_timestamp);
       const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp, this.selectedThemes);
       this.group.set(response);
+      this.savedResetTime.set(val.daily_reset_timestamp);
       this.notificationService.showSuccess(this.translate.instant('notification.groupUpdated'));
     } catch (error) {
       this.logger.error('Error updating group:', error);

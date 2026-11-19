@@ -17,7 +17,16 @@
                 <label for="description">{{ 'group.description' | translate }}</label>
                 <textarea id="description" [formField]="groupForm.description"></textarea>
 
-                <label for="daily_reset_timestamp">{{ 'group.dailyResetTime' | translate }}</label>
+                <label for="daily_reset_timestamp" class="reset-time-label">
+                  {{ 'group.dailyResetTime' | translate }}
+                  <!-- New time chosen: the current question stays its 24 h first (tap or hover for the details). -->
+                  @if (resetDelayText(); as delay) {
+                    <span class="reset-delay-warning" role="img" tabindex="0" [attr.aria-label]="delay">
+                      <span aria-hidden="true">⚠️</span>
+                      <span class="reset-delay-tooltip border" role="tooltip" appKeepInViewport>{{ delay }}</span>
+                    </span>
+                  }
+                </label>
                 <input
                   id="daily_reset_timestamp"
                   type="time"
@@ -97,4 +106,5 @@
     </div>
   </div>
   <app-modal [id]="removeUserConfirmId"></app-modal>
+  <app-modal [id]="resetDelayConfirmId"></app-modal>
 }

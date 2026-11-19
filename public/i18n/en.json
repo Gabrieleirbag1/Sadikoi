@@ -121,7 +121,10 @@
     "deleteGroup": "Delete Group",
     "removeUser": "Remove from Group",
     "leaveConfirm": "Are you sure you want to leave this group?",
-    "leaveLastMemberConfirm": "You are the last member: leaving will delete the group for good. Continue?"
+    "leaveLastMemberConfirm": "You are the last member: leaving will delete the group for good. Continue?",
+    "resetDelay": "A question stays at least 24 hours: the current question will stay until {{date}}, then the new time ({{time}}) will apply.",
+    "resetDelayTitle": "Change the question time",
+    "resetDelayConfirm": "Confirm the change?"
   },
   "question": {
     "enterYourAnswer": "Enter your answer...",
