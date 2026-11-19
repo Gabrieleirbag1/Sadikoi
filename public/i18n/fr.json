@@ -119,9 +119,12 @@
     "groupOptions": "Options du groupe",
     "leaveGroup": "Quitter le groupe",
     "deleteGroup": "Supprimer le groupe",
-    "removeUser": "Retirer du groupe",
+    "removeUser": "Expulser",
     "leaveConfirm": "Voulez-vous vraiment quitter ce groupe ?",
-    "leaveLastMemberConfirm": "Vous êtes le dernier membre : quitter le groupe le supprimera définitivement. Continuer ?"
+    "leaveLastMemberConfirm": "Vous êtes le dernier membre : quitter le groupe le supprimera définitivement. Continuer ?",
+    "resetDelay": "Une question reste au moins 24 h : la question actuelle restera jusqu'au {{date}}, puis la nouvelle heure ({{time}}) s'appliquera.",
+    "resetDelayTitle": "Changer l'heure de la question",
+    "resetDelayConfirm": "Confirmer le changement ?"
   },
   "question": {
     "enterYourAnswer": "Entrez votre réponse...",

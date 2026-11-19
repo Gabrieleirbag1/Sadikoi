@@ -33,7 +33,7 @@
   [groupId]="group()?.id ?? null"
   [redirect]="true"
 ></app-home-footer>
-<app-group-options-modal [group]="group()" (groupChange)="group.set($event)">
+<app-group-options-modal [group]="group()" [question]="question()" (groupChange)="group.set($event)">
 </app-group-options-modal>
 @if (showNotifications() && group(); as g) {
   <app-group-notifications-modal [groupId]="g.id" (closed)="showNotifications.set(false)" />

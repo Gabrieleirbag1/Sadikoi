@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, HostListener, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 /** A tutorial popup (welcome, voting or results tip): closed by its cross, a click outside, Escape or "Got it". */
 @Component({
@@ -15,7 +16,11 @@ export class TutorialModalComponent {
   public readonly size = input<'large' | 'small'>('small');
   public readonly closed = output<void>();
 
-  @HostListener('document:keydown.escape')
+  constructor() {
+    // Shown with an @if: Escape closes it as long as it exists.
+    closeOnEscape(() => this.close());
+  }
+
   protected close(): void {
     this.closed.emit();
   }

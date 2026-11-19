@@ -17,6 +17,7 @@ import { TutorialModalComponent } from '../modals/tutorial-modal/tutorial-modal.
 import { TutorialService } from '../../services/tutorial/tutorial.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { keepPunctuationAttached } from '../../utils/typography';
+import { closeOnEscape } from '../../services/escape/escape.service';
 
 /** localStorage key holding the id of the last question whose item announcement was seen in a group. */
 const announcementSeenKey = (groupId: number) => `item-announcement-seen-${groupId}`;
@@ -123,6 +124,7 @@ export class QuestionComponent implements OnInit{
   private lastNextQuestionRequest = 0;
 
   public constructor() {
+    closeOnEscape(() => this.showCalendarFlag.set(false), () => this.showCalendarFlag());
     // The reset time changed in the group options: the next question comes at another time.
     let resetTime: string | undefined;
     effect(() => {

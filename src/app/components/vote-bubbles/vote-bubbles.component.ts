@@ -8,6 +8,7 @@ import { UserProfileComponent } from '../tooltips/user-profile/user-profile.comp
 import { KeepInViewportDirective } from '../../directives/keep-in-viewport.directive';
 import { environment } from '../../../environments/environment';
 import { BubbleCandidate, BubbleEngine, BubbleVoter, CandidateState } from './vote-bubbles.engine';
+import { closeOnEscape } from '../../services/escape/escape.service';
 
 export interface VoteBubbleData {
   votedUser: User;
@@ -105,6 +106,7 @@ export class VoteBubblesComponent {
   private hideTimeout: any;
 
   public constructor() {
+    closeOnEscape(() => this.hideTooltip(), () => this.userProfileService.isOpenFor(this.tooltipUser(), this.tooltipScope));
     afterNextRender(() => {
       this.ctx = this.canvasRef().nativeElement.getContext('2d');
       this.setupResize();

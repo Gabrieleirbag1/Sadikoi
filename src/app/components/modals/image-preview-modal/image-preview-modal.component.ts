@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ImagePreviewService } from '../../../services/image-preview/image-preview.service';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 @Component({
   selector: 'app-image-preview-modal',
@@ -12,7 +13,11 @@ import { ImagePreviewService } from '../../../services/image-preview/image-previ
 export class ImagePreviewModalComponent {
   protected readonly imagePreviewService = inject(ImagePreviewService);
 
-  @HostListener('document:keydown.escape')
+  constructor() {
+    // Above everything else: opened last (from a profile card...).
+    closeOnEscape(() => this.close(), () => !!this.imagePreviewService.preview());
+  }
+
   protected close(): void {
     this.imagePreviewService.close();
   }

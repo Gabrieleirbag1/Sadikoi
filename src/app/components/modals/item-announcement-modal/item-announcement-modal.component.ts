@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, HostListener, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ItemImageDisplayComponent } from '../../item-image-display/item-image-display.component';
 import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 /** Daily popup: who got, stole or kept yesterday's item, then every member with their items. */
 @Component({
@@ -24,7 +25,11 @@ export class ItemAnnouncementModalComponent {
     };
   });
 
-  @HostListener('document:keydown.escape')
+  constructor() {
+    // Shown with an @if: Escape closes it as long as it exists.
+    closeOnEscape(() => this.close());
+  }
+
   protected close(): void {
     this.closed.emit();
   }
