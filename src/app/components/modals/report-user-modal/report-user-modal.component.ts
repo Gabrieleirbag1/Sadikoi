@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, effect, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth/auth.service';
 import { NotificationService } from '../../../services/notification/notification.service';
 import { ReportUserService } from '../../../services/report-user/report-user.service';
 import { OTHER_CATEGORY, REPORT_CATEGORIES, ReportCategory } from '../../../services/feedback/feedback-categories';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 const MAX_REASON_LENGTH = 200;
 
@@ -30,6 +31,8 @@ export class ReportUserModalComponent {
   protected readonly submitting = signal(false);
 
   public constructor() {
+    // Escape closes it, not the profile card or chat under it.
+    closeOnEscape(() => this.close(), () => !!this.reportUserService.target());
     // start every report with an empty form
     effect(() => {
       this.reportUserService.target();
@@ -38,7 +41,6 @@ export class ReportUserModalComponent {
     });
   }
 
-  @HostListener('document:keydown.escape')
   protected close(): void {
     this.reportUserService.close();
   }

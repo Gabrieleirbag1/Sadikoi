@@ -1,9 +1,10 @@
-import { Component, computed, effect, HostListener, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { SettingsService } from '../../services/settings/settings.service';
 import { NotificationSettingsService } from '../../services/notification-settings/notification-settings.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { PushService } from '../../services/push/push.service';
+import { closeOnEscape } from '../../services/escape/escape.service';
 
 type GlobalSetting = keyof NotificationSettings;
 
@@ -40,6 +41,7 @@ export class NotificationSettingsComponent {
   ];
 
   constructor() {
+    closeOnEscape(() => this.close(), () => this.settings.notificationsOpen());
     // Reload each time the window opens (groups may have changed).
     effect(() => {
       if (this.settings.notificationsOpen()) {
@@ -90,10 +92,5 @@ export class NotificationSettingsComponent {
 
   protected close(): void {
     this.settings.closeNotifications();
-  }
-
-  @HostListener('document:keydown.escape')
-  protected onEscape(): void {
-    this.close();
   }
 }

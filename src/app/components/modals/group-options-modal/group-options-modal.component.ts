@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, model, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, OnChanges, signal, SimpleChanges, untracked } from '@angular/core';
 import { disabled, form, FormField } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { ModalComponent } from '../modal/modal.component';
 import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
 import { ThemesComponent } from '../../tooltips/themes/themes.component';
 import { nextQuestionAt } from '../../../utils/reset-time';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 @Component({
   selector: 'app-group-options-modal',
@@ -45,7 +46,8 @@ export class GroupOptionsComponent implements OnChanges {
   public readonly question = input<Question | null>(null);
   protected groupModel = signal({ name: '', description: '', daily_reset_timestamp: '' });
   /** Reset time (local "HH:MM") as saved, to know when the field was changed. */
-  private readonly savedResetTime = signal('');
+  private readonly savedResetTime = computed(() =>
+    this.datetimeService.convertUTCTimeStampToLocal(this.group()?.daily_reset_timestamp ?? ''));
   private readonly connectedUserId = signal<number | null>(null);
   protected readonly isAdmin = computed(() =>
     this.group()?.users.find(user => user.id === this.connectedUserId())?.role === 'admin'
@@ -56,7 +58,35 @@ export class GroupOptionsComponent implements OnChanges {
     disabled(path.description, () => !this.isAdmin());
     disabled(path.daily_reset_timestamp, () => !this.isAdmin());
   });
-  protected selectedThemes: string[] = [];
+  protected readonly selectedThemes = signal<string[]>([]);
+  protected readonly saving = signal(false);
+  /** The warning bubble of the reset delay is shown (hover, focus or tap); Escape hides it. */
+  protected readonly resetDelayTooltipOpen = signal(false);
+
+  /** Something differs from the saved group: the update button is greyed out otherwise. */
+  protected readonly dirty = computed(() => {
+    const group = this.group();
+    if (!group) return false;
+    const value = this.groupModel();
+    const themes = this.selectedThemes();
+    const savedThemes = group.themes ?? [];
+    return value.name !== (group.name ?? '')
+      || value.description !== (group.description ?? '')
+      || value.daily_reset_timestamp !== this.savedResetTime()
+      || themes.length !== savedThemes.length
+      || themes.some(theme => !savedThemes.includes(theme));
+  });
+
+  constructor() {
+    // Each opening starts from the saved group: what was typed and not saved before closing is dropped.
+    effect(() => {
+      if (this.isOpen()) untracked(() => this.resetForm());
+    });
+    closeOnEscape(() => this.discard(), () => this.isOpen());
+    // The bubble of a member (hover), then the delay warning: above the modal, closed first.
+    closeOnEscape(() => this.userProfileService.hide(this.tooltipScope), () => this.userProfileService.isOpenIn(this.tooltipScope));
+    closeOnEscape(() => this.resetDelayTooltipOpen.set(false), () => this.resetDelayTooltipOpen() && !!this.resetDelayText());
+  }
 
   /**
    * A question stays at least 24 h (API): with a new reset time, the current question stays until this date,
@@ -94,26 +124,34 @@ export class GroupOptionsComponent implements OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    const g = this.group();
-    if (changes['group'] && g) {
-      const resetTime = this.datetimeService.convertUTCTimeStampToLocal(g.daily_reset_timestamp ?? '');
-      this.groupModel.set({
-        name: g.name ?? '',
-        description: g.description ?? '',
-        daily_reset_timestamp: resetTime,
-      });
-      this.savedResetTime.set(resetTime);
-      this.selectedThemes = [...(g.themes ?? [])];
-    }
+    // Not while editing: an update from another member must not wipe what is being typed.
+    if (changes['group'] && !this.isOpen()) this.resetForm();
   }
 
-  protected discard(event: Event): void {
+  /** The form shows the group as saved. */
+  private resetForm(): void {
+    const g = this.group();
+    if (!g) return;
+    this.groupModel.set({
+      name: g.name ?? '',
+      description: g.description ?? '',
+      daily_reset_timestamp: this.savedResetTime(),
+    });
+    this.selectedThemes.set([...(g.themes ?? [])]);
+    this.resetDelayTooltipOpen.set(false);
+  }
+
+  protected discard(event?: Event): void {
     const discardFn = this.config().discard;
     this.modalService.close(this.modalId);
     discardFn?.(event);
   }
 
   protected save(event: Event): void {
+    if (!this.dirty() || this.saving()) {
+      event.preventDefault();
+      return;
+    }
     if (this.resetDelayUntil() && this.isAdmin()) {
       // Not sent yet (no form submit): the new time is confirmed first, knowing the current question stays.
       event.preventDefault();
@@ -142,18 +180,20 @@ export class GroupOptionsComponent implements OnChanges {
   }
 
   private async submitGroup(): Promise<void> {
-    if (!this.isAdmin()) return;
+    if (!this.isAdmin() || !this.dirty() || this.saving()) return;
     const val = this.groupModel();
+    this.saving.set(true);
     try {
       const g = this.group();
       if (!g) throw new Error('Group is not defined');
       const timestamp = this.datetimeService.convertLocalTimestampToUtc(val.daily_reset_timestamp);
-      const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp, this.selectedThemes);
+      const response = await this.groupService.updateGroup(g.id, val.name, val.description, timestamp, this.selectedThemes());
       this.group.set(response);
-      this.savedResetTime.set(val.daily_reset_timestamp);
       this.notificationService.showSuccess(this.translate.instant('notification.groupUpdated'));
     } catch (error) {
       this.logger.error('Error updating group:', error);
+    } finally {
+      this.saving.set(false);
     }
   }
 

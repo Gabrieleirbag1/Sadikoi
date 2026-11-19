@@ -1,6 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { ModalConfig, ModalService } from '../../../services/modal/modal.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 @Component({
   selector: 'app-modal',
@@ -13,6 +14,11 @@ export class ModalComponent {
 
   public readonly id = input.required<string>();
 
+  constructor() {
+    // Usually a confirmation over another popup: Escape closes only it (as "Close").
+    closeOnEscape(() => this.discard(), () => this.isOpen());
+  }
+
   protected isOpen(): boolean {
     return this.modalService.isOpen(this.id());
   }
@@ -21,7 +27,7 @@ export class ModalComponent {
     return this.modalService.config(this.id());
   }
 
-  protected discard(event: Event): void {
+  protected discard(event?: Event): void {
     const discardFn = this.config().discard;
     this.modalService.close(this.id());
     discardFn?.(event);

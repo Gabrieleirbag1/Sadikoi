@@ -17,6 +17,7 @@ import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { MessagePart, mentionQuery, mentionSuggestions, splitMentions } from '../../utils/mentions';
 import { splitLinks } from '../../utils/links';
+import { closeOnEscape } from '../../services/escape/escape.service';
 
 /** Set on <html> while the user writes in the chat: on phones, styles.css then hides the bubbles and the bottom menu bar. */
 const TYPING_CLASS = 'chat-typing';
@@ -129,6 +130,9 @@ export class ChatComponent {
   });
 
   constructor() {
+    // The GIF picker, then the profile card (opened over it, from a message) close with Escape.
+    closeOnEscape(() => this.showGifPicker.set(false), () => this.showGifPicker());
+    closeOnEscape(() => this.closeProfile(), () => this.userProfileService.isOpenFor(this.profileUser(), this.profileScope));
     effect(() => document.documentElement.classList.toggle(TYPING_CLASS, this.typing()));
     effect(() => document.documentElement.classList.toggle(FULLSCREEN_CLASS, this.fullscreen()));
     // Android's back button closes the keyboard but leaves the focus in the input: the chat would
@@ -358,11 +362,6 @@ export class ChatComponent {
     if (this.profileUser() && !path.some(keepsProfile)) {
       this.closeProfile();
     }
-  }
-
-  @HostListener('document:keydown.escape')
-  protected closeProfileOnEscape(): void {
-    this.closeProfile();
   }
 
   /** Clicking an author's picture (or a mention) opens their profile card; clicking it again closes it. */

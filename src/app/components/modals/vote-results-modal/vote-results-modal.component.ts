@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, HostListener, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProfileImagePickerComponent } from '../../profile-image-picker/profile-image-picker.component';
 import { buildVoteResults, isDuoQuestion } from '../../vote-results/vote-results';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 /** Plain list of the votes, opened from the bubbles: one line per voted member (or pair, for a duo) with its voters. */
 @Component({
@@ -18,7 +19,11 @@ export class VoteResultsModalComponent {
   protected readonly isDuo = computed(() => isDuoQuestion(this.question()));
   protected readonly rows = computed(() => buildVoteResults(this.question().votes ?? [], this.isDuo()));
 
-  @HostListener('document:keydown.escape')
+  constructor() {
+    // Shown with an @if: Escape closes it as long as it exists.
+    closeOnEscape(() => this.close());
+  }
+
   protected close(): void {
     this.closed.emit();
   }

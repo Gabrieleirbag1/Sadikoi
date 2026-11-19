@@ -38,7 +38,8 @@
           </div>
           <div class="form-actions">
             <div class="update-actions">
-              <button type="submit" class="paper-btn background-secondary">
+              <!-- Greyed out until something changes, like the notification settings' button. -->
+              <button type="submit" class="paper-btn background-secondary" [disabled]="!dirty() || saving()">
                 {{ 'account.updateAccount' | translate }}
               </button>
 

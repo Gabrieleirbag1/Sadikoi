@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { JoinGroupComponent } from '../../join-group/join-group.component';
 import { DatetimeService } from '../../../services/datetime/datetime.service';
 import { ThemesComponent } from '../../tooltips/themes/themes.component';
+import { closeOnEscape } from '../../../services/escape/escape.service';
 
 type GroupModalState = 'chose' | 'create' | 'join';
 
@@ -27,6 +28,10 @@ export class GroupModalComponent {
   protected groupDescription = viewChild<ElementRef<HTMLInputElement>>('groupDescription');
   protected groupTime = viewChild<ElementRef<HTMLInputElement>>('groupTime');
 
+  constructor() {
+    closeOnEscape(() => this.discard(), () => this.isOpen());
+  }
+
   protected isOpen(): boolean {
     return this.modalService.isOpen(this.modalId);
   }
@@ -35,7 +40,7 @@ export class GroupModalComponent {
     return this.modalService.config(this.modalId);
   }
 
-  protected discard(event: Event): void {
+  protected discard(event?: Event): void {
     const discardFn = this.config().discard;
     this.modalService.close(this.modalId);
     discardFn?.(event);

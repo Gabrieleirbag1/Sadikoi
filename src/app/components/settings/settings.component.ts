@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -11,6 +11,7 @@ import { DonationComponent } from '../donation/donation.component';
 import { NotificationSettingsComponent } from '../notification-settings/notification-settings.component';
 import { APP_VERSION, APP_YEAR, CONTACT_EMAIL, KLIPY_URL, MISSCLICK_URL } from './settings.constants';
 import { deviceLanguage, SUPPORTED_LANGUAGES, toSupportedLanguage } from '../../utils/language';
+import { closeOnEscape } from '../../services/escape/escape.service';
 
 /** Length of the panel's slide-out (same as `.closing` in the CSS). */
 const CLOSE_ANIMATION_MS = 200;
@@ -45,13 +46,9 @@ export class SettingsComponent {
 
   constructor() {
     inject(DestroyRef).onDestroy(() => clearTimeout(this.closeTimer));
-  }
-
-  @HostListener('document:keydown.escape')
-  protected onEscape(): void {
-    if (this.settings.isOpen()) this.close();
-    this.settings.closeFeedback();
-    this.settings.closeDonation();
+    // The feedback and notification modals close themselves (FeedbackComponent, NotificationSettingsComponent).
+    closeOnEscape(() => this.close(), () => this.settings.isOpen());
+    closeOnEscape(() => this.settings.closeDonation(), () => this.settings.donationOpen());
   }
 
   /** Slides the panel out, then runs `then` (so the next page doesn't show up under a panel still moving). */

@@ -42,6 +42,11 @@ export class UserProfileService {
     return this.open();
   }
 
+  /** A card is open in this place (any user). */
+  public isOpenIn(scope: string): boolean {
+    return this.open() && this.activeScope() === scope;
+  }
+
   public isOpenFor(user: User | null | undefined, scope: string): boolean {
     return !!user && this.open() && this.activeScope() === scope && this.activeUser()?.id === user.id;
   }

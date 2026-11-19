@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title">{{ config().title }}</h1>
-          <span class="modal-close" (click)="discard($event)">X</span>
+          <span class="modal-close" role="button" tabindex="0" [attr.aria-label]="'modal.close' | translate" (click)="discard($event)" (keydown.enter)="discard($event)">X</span>
         </div>
         <div class="modal-body">
           <span>{{ config().description }}</span>
@@ -19,11 +19,24 @@
 
                 <label for="daily_reset_timestamp" class="reset-time-label">
                   {{ 'group.dailyResetTime' | translate }}
-                  <!-- New time chosen: the current question stays its 24 h first (tap or hover for the details). -->
+                  <!-- New time chosen: the current question stays its 24 h first (hover, focus or tap for the details;
+                       Escape hides them). -->
                   @if (resetDelayText(); as delay) {
-                    <span class="reset-delay-warning" role="img" tabindex="0" [attr.aria-label]="delay">
-                      <span aria-hidden="true">⚠️</span>
-                      <span class="reset-delay-tooltip border" role="tooltip" appKeepInViewport>{{ delay }}</span>
+                    <span
+                      class="reset-delay-warning"
+                      role="img"
+                      tabindex="0"
+                      [attr.aria-label]="delay"
+                      (mouseenter)="resetDelayTooltipOpen.set(true)"
+                      (mouseleave)="resetDelayTooltipOpen.set(false)"
+                      (focus)="resetDelayTooltipOpen.set(true)"
+                      (blur)="resetDelayTooltipOpen.set(false)"
+                      (click)="$event.preventDefault()"
+                    >
+                      <img src="images/icons/warning.svg" width="22" height="22" alt="" />
+                      @if (resetDelayTooltipOpen()) {
+                        <span class="reset-delay-tooltip border" role="tooltip" appKeepInViewport>{{ delay }}</span>
+                      }
                     </span>
                   }
                 </label>
@@ -37,7 +50,8 @@
 
                 <div class="group-options-form-buttons">
                   @if (connectedUser) {
-                    <button type="submit" class="paper-btn btn-secondary" (click)="save($event)" [disabled]="!isAdmin()">
+                    <!-- Greyed out until something changes, like the notification settings' button. -->
+                    <button type="submit" class="paper-btn btn-secondary" (click)="save($event)" [disabled]="!isAdmin() || !dirty() || saving()">
                       {{ 'group.updateGroup' | translate }}
                     </button>
                   }

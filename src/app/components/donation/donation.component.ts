@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../services/settings/settings.service';
 
-/** Donation modal (PayPal / Buy Me a Coffee), opened from the settings. Escape is handled by SettingsComponent. */
+/** Donation modal (PayPal / Buy Me a Coffee), opened from the settings. Escape is handled by SettingsComponent (closeOnEscape). */
 @Component({
   selector: 'app-donation',
   imports: [TranslatePipe],
