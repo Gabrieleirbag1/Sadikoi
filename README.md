@@ -53,7 +53,8 @@ The backend lives in a separate repository: [Gabrieleirbag1/Sadikoi-API](https:/
 ├── public/                 # Static files: images, translations (i18n/), assetlinks.json
 ├── android/                # Capacitor Android project
 ├── assets/                 # Source icon and splash screen for the Android app
-├── docs/mobile.html        # Android guide
+├── docs/android.html       # Android guide
+├── docs/ios.html           # iOS guide (App Store, built with GitHub Actions)
 ├── capacitor.config.ts
 └── build_project.sh        # Production build and deploy to Apache
 ```
@@ -146,7 +147,11 @@ npm run assets                         # Regenerate the icon and splash screen f
 npm run android:release                # Build the signed AAB for the Play Store
 ```
 
-Signing keys, Play Console, Google Sign-In, App Links and push notifications are covered in [`docs/mobile.html`](docs/mobile.html). Open it in a browser.
+Signing keys, Play Console, Google Sign-In, App Links and push notifications are covered in [`docs/android.html`](docs/android.html). Open it in a browser.
+
+## iOS app
+
+The iOS app is not set up yet. [`docs/ios.html`](docs/ios.html) covers the whole App Store release from Linux, without a Mac or an iPhone: Apple Developer account, certificates, push notifications (APNs), Google Sign-In, Universal Links, the GitHub Actions build and App Review.
 
 ## Translations
 

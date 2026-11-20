@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sadikoi iOS</title>
+<meta name="description" content="Sadikoi iOS app guide: publishing on the App Store from Linux, without a Mac or an iPhone, with GitHub Actions.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --text: #22211f;
+    --muted: #6b6862;
+    --border: #e3e0d8;
+    --accent: #0b74d5;
+    --accent-soft: #e4f0fb;
+    --ok: #1e8a4c;
+    --ok-soft: #e3f4ea;
+    --warn: #a35c00;
+    --warn-soft: #fbf0df;
+    --danger: #b3261e;
+    --danger-soft: #fbe6e4;
+    --code-bg: #f3f1ec;
+    --radius: 10px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1a19;
+      --surface: #242321;
+      --surface-2: #2d2b29;
+      --text: #ecebe8;
+      --muted: #a8a49c;
+      --border: #3a3835;
+      --accent: #5aa9f0;
+      --accent-soft: #1d3247;
+      --ok: #5cc98a;
+      --ok-soft: #1c3427;
+      --warn: #f0b05a;
+      --warn-soft: #3a2c17;
+      --danger: #f08a82;
+      --danger-soft: #3d2120;
+      --code-bg: #2d2b29;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1a19;
+    --surface: #242321;
+    --surface-2: #2d2b29;
+    --text: #ecebe8;
+    --muted: #a8a49c;
+    --border: #3a3835;
+    --accent: #5aa9f0;
+    --accent-soft: #1d3247;
+    --ok: #5cc98a;
+    --ok-soft: #1c3427;
+    --warn: #f0b05a;
+    --warn-soft: #3a2c17;
+    --danger: #f08a82;
+    --danger-soft: #3d2120;
+    --code-bg: #2d2b29;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 var(--sans);
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: var(--accent); }
+  h1, h2, h3 { line-height: 1.25; }
+  h1 { font-size: 1.9rem; margin: 0 0 .4rem; }
+  h2 { font-size: 1.4rem; margin: 0 0 1rem; padding-top: .5rem; }
+  h3 { font-size: 1.08rem; margin: 1.6rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  ul, ol { padding-left: 1.3rem; }
+  li { margin: .25rem 0; }
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--code-bg);
+    padding: .1em .35em;
+    border-radius: 5px;
+    overflow-wrap: anywhere;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 40px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  nav.toc {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    font-size: .92rem;
+  }
+  nav.toc .brand { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+  nav.toc .other-guide { display: block; font-size: .85rem; margin-bottom: 12px; }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  nav.toc li { margin: 0; counter-increment: toc; }
+  nav.toc ol a {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  nav.toc ol a::before { content: counter(toc) ". "; opacity: .6; }
+  nav.toc ol a:hover { background: var(--surface-2); color: var(--text); }
+  nav.toc ol a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .theme-btn {
+    margin-top: 16px;
+    font: inherit;
+    font-size: .85rem;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  main { min-width: 0; }
+  header.hero { margin-bottom: 28px; }
+  header.hero p { color: var(--muted); margin: 0; max-width: 62ch; }
+  section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  section > p, section > ul, section > ol { max-width: 72ch; }
+
+  .callout {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 1rem 0;
+    border-left: 4px solid;
+  }
+  .callout strong:first-child { display: block; margin-bottom: 2px; }
+  .callout.info { background: var(--accent-soft); border-color: var(--accent); }
+  .callout.ok { background: var(--ok-soft); border-color: var(--ok); }
+  .callout.warn { background: var(--warn-soft); border-color: var(--warn); }
+  .callout.danger { background: var(--danger-soft); border-color: var(--danger); }
+  .callout p { margin: .2rem 0; }
+
+  .code {
+    position: relative;
+    margin: .8rem 0;
+  }
+  .code pre {
+    margin: 0;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    padding-right: 70px;
+    overflow-x: auto;
+    font: .86rem/1.55 var(--mono);
+    white-space: pre;
+  }
+  .code .label {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-family: var(--mono);
+  }
+  .copy {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    font: .78rem var(--sans);
+    padding: 4px 9px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .copy.done { color: var(--ok); border-color: var(--ok); }
+
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; margin: .8rem 0; }
+  .table-wrap { overflow-x: auto; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: .82rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); font-weight: 600; }
+  td code { white-space: nowrap; }
+
+  .tag {
+    display: inline-block;
+    font-size: .74rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .tag.info { background: var(--accent-soft); color: var(--accent); }
+  .tag.muted { background: var(--surface-2); color: var(--muted); }
+  .tag.danger { background: var(--danger-soft); color: var(--danger); }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin: 1.2rem 0;
+    flex-wrap: wrap;
+  }
+  .flow .step {
+    flex: 1 1 140px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: .88rem;
+  }
+  .flow .step b { display: block; font-size: .93rem; margin-bottom: 2px; }
+  .flow .arrow { align-self: center; color: var(--muted); font-size: 1.2rem; }
+
+  /* Credential explorer */
+  .keys { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 1rem 0 0; }
+  .key-btn {
+    text-align: left;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .key-btn small { display: block; color: var(--muted); font-size: .8rem; }
+  .key-btn b { display: block; font-size: 1rem; }
+  .key-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .key-panel {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    background: var(--surface);
+  }
+  .key-panel dl { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: .92rem; }
+  .key-panel dt { color: var(--muted); }
+  .key-panel dd { margin: 0; }
+
+  /* Checklist */
+  .progress { display: flex; align-items: center; gap: 12px; margin: .5rem 0 1rem; }
+  .bar { flex: 1; height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s; }
+  .progress output { font-size: .88rem; color: var(--muted); min-width: 4.5em; text-align: right; }
+  .checklist h3 { margin-top: 1.2rem; }
+  .checklist label {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .checklist label:hover { background: var(--surface-2); }
+  .checklist input { margin-top: 5px; width: 16px; height: 16px; flex: none; accent-color: var(--ok); }
+  .checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
+  .reset {
+    font: inherit;
+    font-size: .82rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 3px 9px;
+    cursor: pointer;
+  }
+
+  details {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 14px;
+    margin: 8px 0;
+    background: var(--surface);
+  }
+  details[open] { padding-bottom: 10px; }
+  summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
+  summary code { font-weight: 400; }
+
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 40px; margin: 1.1rem 0; }
+  .steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--surface);
+    font-size: .85rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 16px 16px 60px; }
+    nav.toc { position: static; max-height: none; }
+    nav.toc ol { display: flex; flex-wrap: wrap; gap: 4px; }
+    nav.toc ol a { background: var(--surface); border: 1px solid var(--border); font-size: .82rem; padding: 3px 8px; }
+    nav.toc ol a::before { content: none; }
+    section { padding: 18px 16px; }
+    .keys { grid-template-columns: minmax(0, 1fr); }
+    .key-panel dl { grid-template-columns: minmax(0, 1fr); }
+    .key-panel dt { margin-top: 6px; }
+    .flow .arrow { transform: rotate(90deg); width: 100%; text-align: center; }
+    h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <div class="brand">Sadikoi iOS</div>
+  <a class="other-guide" href="android.html">Android guide →</a>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#needs">What you need</a></li>
+    <li><a href="#account">Apple Developer account</a></li>
+    <li><a href="#platform">Add the iOS platform</a></li>
+    <li><a href="#project">Configure Xcode from Linux</a></li>
+    <li><a href="#credentials">Certificates &amp; keys</a></li>
+    <li><a href="#push">Push notifications</a></li>
+    <li><a href="#google">Google Sign-In</a></li>
+    <li><a href="#links">Universal Links</a></li>
+    <li><a href="#ci">GitHub Actions build</a></li>
+    <li><a href="#testing">Testing without an iPhone</a></li>
+    <li><a href="#asc">App Store Connect</a></li>
+    <li><a href="#review">Submit for review</a></li>
+    <li><a href="#checklist">Release checklist</a></li>
+    <li><a href="#update">Publish an update</a></li>
+    <li><a href="#troubleshoot">Troubleshooting</a></li>
+  </ol>
+  <button class="theme-btn" type="button" id="theme-btn">Theme: auto</button>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Sadikoi iOS app</h1>
+  <p>How to publish the app on the App Store from Linux, with no Mac and no iPhone: the iOS build runs on a macOS machine provided by GitHub Actions, and everything else is done in a browser.</p>
+</header>
+
+<!-- 1 -->
+<section id="overview">
+  <h2>Overview</h2>
+  <p>The iOS app is the same Angular build as the website and the Android app, packaged with <b>Capacitor</b>. Building and signing an iOS app requires Xcode, which only runs on macOS. That one step is done by a <b>GitHub Actions macOS runner</b>. The rest happens on Linux (code, Xcode project files) or in a browser (Apple Developer, App Store Connect).</p>
+  <div class="flow" aria-label="Release pipeline">
+    <div class="step"><b>Linux</b>Code, <code>ios/</code> project, push to GitHub</div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>GitHub Actions</b>macOS runner: <code>ng build</code>, <code>cap sync</code>, <code>xcodebuild</code>, signing</div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>App Store Connect</b>The build appears in TestFlight</div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>An iPhone</b>Borrowed, tests through TestFlight</div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="step"><b>App Review</b>Then the App Store</div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Item</th><th>Value / file</th></tr>
+    <tr><td>Bundle ID</td><td><code>com.missclick.sadikoi</code> (same as the Android app ID)</td></tr>
+    <tr><td>Team ID</td><td>10 characters, shown in developer.apple.com → Membership details. Written <code>TEAMID</code> in this guide.</td></tr>
+    <tr><td>Xcode project</td><td><code>ios/App/App.xcodeproj</code>, scheme <code>App</code>, dependencies through Swift Package Manager (no CocoaPods)</td></tr>
+    <tr><td>Native iOS files</td><td><code>ios/App/App/Info.plist</code>, <code>ios/App/App/AppDelegate.swift</code>, <code>ios/App/App/App.entitlements</code></td></tr>
+    <tr><td>Build workflow</td><td><code>.github/workflows/ios.yml</code>, <code>ios/ExportOptions.plist</code></td></tr>
+    <tr><td>App origin (as seen by the API)</td><td><code>capacitor://localhost</code> (already allowed by the API, see the <a href="android.html#backend">Android guide</a>)</td></tr>
+    <tr><td>Version</td><td><code>versionName</code> in <code>android/app/build.gradle</code>, read by the workflow so both apps share the same version</td></tr>
+  </table>
+  </div>
+  <div class="callout info">
+    <strong>What is different from Android</strong>
+    <p>You never hold the signing key in a keystore that you build with locally: the certificate and profile are stored as GitHub secrets and used by the runner. Push notifications go through Apple (APNs), and Apple reviews <b>every</b> version before it is published, usually within 24 to 48 hours.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="needs">
+  <h2>What you need</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Need</th><th>Without a Mac / iPhone</th><th>Cost</th></tr>
+    <tr><td>Apple Developer Program</td><td>Enrollment on the web (developer.apple.com) with an Apple ID. Two-factor authentication works by SMS.</td><td>99 USD (or €) per year</td></tr>
+    <tr><td>Xcode (build, signing)</td><td>GitHub Actions <code>macos-26</code> runner</td><td>Free on a public repository</td></tr>
+    <tr><td>Certificate request (CSR)</td><td><code>openssl</code> on Linux instead of the Mac Keychain</td><td>Free</td></tr>
+    <tr><td>Editing the Xcode project</td><td>Hand edits of the plist files + the <code>xcodeproj</code> Ruby gem for <code>project.pbxproj</code></td><td>Free</td></tr>
+    <tr><td>Testing on a real device</td><td>A friend's iPhone with TestFlight, at least once before the first submission</td><td>Free</td></tr>
+    <tr><td>Quick UI checks</td><td>Simulator build run in the browser (Appetize.io)</td><td>Free tier</td></tr>
+  </table>
+  </div>
+  <div class="code"><div class="label">Linux tools used in this guide (Ubuntu)</div><pre>sudo apt install openssl ruby-full
+gem install --user-install xcodeproj
+gh auth login   # GitHub CLI, to set the secrets</pre></div>
+  <div class="callout warn">
+    <strong>Private repository = paid minutes</strong>
+    <p>The repository is public, so macOS runners are free. If it ever becomes private, every macOS minute counts as 10 minutes of the free quota (2,000 minutes per month on the free plan, so about 200 macOS minutes). A full build takes about 10 to 15 minutes.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="account">
+  <h2>Apple Developer account</h2>
+  <ol class="steps">
+    <li>
+      <b>Enroll</b> at <code>developer.apple.com/programs/enroll</code> with your Apple ID.
+      <ul>
+        <li><b>Individual</b>: fastest (hours to 2 days). Your <b>legal name</b> is shown as the seller on the App Store.</li>
+        <li><b>Organization</b>: the company name is shown, but you need a D-U-N-S number (free, takes 1 to 2 weeks) and a legal entity.</li>
+      </ul>
+    </li>
+    <li><b>Note your Team ID</b>: developer.apple.com → Account → Membership details.</li>
+    <li>
+      <b>Accept the agreements</b>: App Store Connect → Business. The free apps agreement is accepted with the program. The Paid Apps agreement and the tax/banking forms are only needed for paid apps or in-app purchases.
+    </li>
+    <li>
+      <b>EU Digital Services Act</b>: App Store Connect → Business → <b>Compliance</b> → declare whether you are a <i>trader</i>. Without this declaration, the app cannot be distributed in the European Union. A trader's address, phone number and email are shown publicly on the App Store page. A free app made outside of any business can usually be declared as <i>non-trader</i>: check the definition that applies to you.
+    </li>
+  </ol>
+</section>
+
+<!-- 4 -->
+<section id="platform">
+  <h2>Add the iOS platform (once)</h2>
+  <p>Capacitor 8 creates iOS projects with <b>Swift Package Manager</b>, so no <code>pod install</code> is needed and the command works on Linux.</p>
+  <div class="code"><div class="label">Create ios/</div><pre>npm i @capacitor/ios
+npx ng build
+npx cap add ios
+npx cap sync ios</pre></div>
+  <p>Commit the <code>ios/</code> folder. Its own <code>.gitignore</code> already leaves out the generated files (<code>App/App/public</code>, <code>capacitor.config.json</code>): the workflow recreates them with <code>npx cap sync ios</code>.</p>
+  <details>
+    <summary>If <code>npx cap add ios</code> fails on Linux</summary>
+    <p>Run it once on a macOS runner and download the result: a workflow with a single job (<code>npm ci</code>, <code>npx ng build</code>, <code>npx cap add ios</code>), then <code>actions/upload-artifact</code> with <code>path: ios</code>. Unzip it into the project and commit it.</p>
+  </details>
+
+  <h3>Icon and splash screen</h3>
+  <p>Add <code>--ios</code> to the <code>assets</code> script in <code>package.json</code> (next to <code>--android</code>), then run it again. It writes <code>ios/App/App/Assets.xcassets</code>.</p>
+  <div class="code"><div class="label">package.json → scripts.assets (beginning)</div><pre>npx --yes @capacitor/assets@3.0.5 generate --android --ios --iconBackgroundColor '#0b74d5' ...</pre></div>
+  <div class="callout warn">
+    <strong>The App Store icon must not be transparent</strong>
+    <p>A 1024×1024 icon with an alpha channel is rejected on upload (<code>ITMS-90717</code>). Check it, and flatten it on the brand color if needed:</p>
+    <div class="code"><pre>identify -format '%[channels]\n' ios/App/App/Assets.xcassets/AppIcon.appiconset/*.png
+convert icon.png -background '#0b74d5' -alpha remove -alpha off icon.png</pre></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="project">
+  <h2>Configure the Xcode project from Linux</h2>
+  <p>Without Xcode, the native settings are edited in text files. Plist files are plain XML. The project file (<code>project.pbxproj</code>) is edited with a Ruby script, so that no setting is written by hand into it.</p>
+
+  <h3>1. Info.plist</h3>
+  <p>Add these keys inside the main <code>&lt;dict&gt;</code> of <code>ios/App/App/Info.plist</code>:</p>
+  <div class="code"><div class="label">ios/App/App/Info.plist</div><pre>&lt;!-- No custom encryption (HTTPS only): no export compliance question on each build --&gt;
+&lt;key&gt;ITSAppUsesNonExemptEncryption&lt;/key&gt;
+&lt;false/&gt;
+
+&lt;!-- Background pushes (the "dismiss" messages, see Push notifications) --&gt;
+&lt;key&gt;UIBackgroundModes&lt;/key&gt;
+&lt;array&gt;
+  &lt;string&gt;remote-notification&lt;/string&gt;
+&lt;/array&gt;
+
+&lt;!-- Google Sign-In: the iOS client ID, reversed (see Google Sign-In) --&gt;
+&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
+&lt;array&gt;
+  &lt;dict&gt;
+    &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
+    &lt;array&gt;
+      &lt;string&gt;com.googleusercontent.apps.XXXXXXXX-xxxxxxxx&lt;/string&gt;
+    &lt;/array&gt;
+  &lt;/dict&gt;
+&lt;/array&gt;
+
+&lt;!-- The profile picture picker (&lt;input type="file"&gt;) offers "Take Photo":
+     without this text, the app crashes when it is chosen --&gt;
+&lt;key&gt;NSCameraUsageDescription&lt;/key&gt;
+&lt;string&gt;Take a photo for your profile picture.&lt;/string&gt;
+&lt;key&gt;NSPhotoLibraryUsageDescription&lt;/key&gt;
+&lt;string&gt;Choose a photo for your profile picture.&lt;/string&gt;
+
+&lt;!-- Languages of the app, shown on the App Store page --&gt;
+&lt;key&gt;CFBundleLocalizations&lt;/key&gt;
+&lt;array&gt;
+  &lt;string&gt;en&lt;/string&gt;
+  &lt;string&gt;fr&lt;/string&gt;
+&lt;/array&gt;</pre></div>
+  <p>Check that <code>CFBundleShortVersionString</code> is <code>$(MARKETING_VERSION)</code> and <code>CFBundleVersion</code> is <code>$(CURRENT_PROJECT_VERSION)</code> (the Capacitor template does this): the workflow sets both values.</p>
+
+  <h3>2. Entitlements</h3>
+  <p>Create <code>ios/App/App/App.entitlements</code>. It declares push notifications (production APNs, used by TestFlight and the App Store) and the domain of the Universal Links.</p>
+  <div class="code"><div class="label">ios/App/App/App.entitlements</div><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+  &lt;key&gt;aps-environment&lt;/key&gt;
+  &lt;string&gt;production&lt;/string&gt;
+  &lt;key&gt;com.apple.developer.associated-domains&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;applinks:sadikoi.missclick.net&lt;/string&gt;
+  &lt;/array&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</pre></div>
+
+  <h3>3. Privacy manifest</h3>
+  <p>Apple requires a reason for some system APIs. Capacitor and its plugins ship their own manifests. The app's manifest declares <code>UserDefaults</code> (used by Capacitor's <code>Preferences</code> and the WebView storage) and avoids the <code>ITMS-91053</code> warning email.</p>
+  <div class="code"><div class="label">ios/App/App/PrivacyInfo.xcprivacy</div><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+  &lt;key&gt;NSPrivacyTracking&lt;/key&gt;
+  &lt;false/&gt;
+  &lt;key&gt;NSPrivacyTrackingDomains&lt;/key&gt;
+  &lt;array/&gt;
+  &lt;key&gt;NSPrivacyCollectedDataTypes&lt;/key&gt;
+  &lt;array/&gt;
+  &lt;key&gt;NSPrivacyAccessedAPITypes&lt;/key&gt;
+  &lt;array&gt;
+    &lt;dict&gt;
+      &lt;key&gt;NSPrivacyAccessedAPIType&lt;/key&gt;
+      &lt;string&gt;NSPrivacyAccessedAPICategoryUserDefaults&lt;/string&gt;
+      &lt;key&gt;NSPrivacyAccessedAPITypeReasons&lt;/key&gt;
+      &lt;array&gt;
+        &lt;string&gt;CA92.1&lt;/string&gt;
+      &lt;/array&gt;
+    &lt;/dict&gt;
+  &lt;/array&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</pre></div>
+
+  <h3>4. Project settings (Ruby script)</h3>
+  <p>The files above must be referenced in the project, and the <b>App target</b> must be set to manual signing. Signing settings go into the project rather than onto the <code>xcodebuild</code> command line: on the command line they would also apply to the Swift packages, which fail with <i>"does not support provisioning profiles"</i>.</p>
+  <div class="code"><div class="label">scripts/ios-configure.rb</div><pre>#!/usr/bin/env ruby
+# Native iOS settings that Xcode would normally set. Run from the project root:
+#   APPLE_TEAM_ID=XXXXXXXXXX ruby scripts/ios-configure.rb
+# Safe to run again: files already referenced are left as they are.
+require 'xcodeproj'
+
+TEAM_ID = ENV.fetch('APPLE_TEAM_ID')
+PROFILE = ENV.fetch('IOS_PROFILE_NAME', 'Sadikoi App Store')
+
+project = Xcodeproj::Project.open('ios/App/App.xcodeproj')
+target = project.targets.find { |t| t.name == 'App' }
+group = project.main_group['App']
+
+def reference(group, name)
+  group.files.find { |f| f.path == name } || group.new_reference(name)
+end
+
+# Copied into the app (resources). Add 'GoogleService-Info.plist' here if you use Firebase on iOS.
+resources = ['PrivacyInfo.xcprivacy'].map { |name| reference(group, name) }
+resources.each do |ref|
+  target.add_resources([ref]) unless target.resources_build_phase.files_references.include?(ref)
+end
+# Read when signing, not copied.
+reference(group, 'App.entitlements')
+
+target.build_configurations.each do |config|
+  s = config.build_settings
+  s['DEVELOPMENT_TEAM'] = TEAM_ID
+  s['CODE_SIGN_ENTITLEMENTS'] = 'App/App.entitlements'
+  s['TARGETED_DEVICE_FAMILY'] = '1'   # iPhone only: no iPad screenshots to provide
+  next unless config.name == 'Release'
+  s['CODE_SIGN_STYLE'] = 'Manual'
+  s['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
+  s['CODE_SIGN_IDENTITY[sdk=iphoneos*]'] = 'Apple Distribution'
+  s['PROVISIONING_PROFILE_SPECIFIER'] = PROFILE
+end
+
+project.save
+puts 'ios/App/App.xcodeproj updated'</pre></div>
+  <div class="code"><div class="label">Run it, then commit ios/ and the script</div><pre>APPLE_TEAM_ID=XXXXXXXXXX ruby scripts/ios-configure.rb
+git diff --stat ios/</pre></div>
+  <p><code>IOS_PROFILE_NAME</code> must be the exact <b>name</b> given to the provisioning profile on developer.apple.com (<a href="#credentials">next section</a>).</p>
+
+  <h3>5. ExportOptions.plist</h3>
+  <p>Tells <code>xcodebuild</code> how to turn the archive into an <code>.ipa</code> for the App Store.</p>
+  <div class="code"><div class="label">ios/ExportOptions.plist</div><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+  &lt;key&gt;method&lt;/key&gt;
+  &lt;string&gt;app-store-connect&lt;/string&gt;
+  &lt;key&gt;destination&lt;/key&gt;
+  &lt;string&gt;export&lt;/string&gt;
+  &lt;key&gt;teamID&lt;/key&gt;
+  &lt;string&gt;XXXXXXXXXX&lt;/string&gt;
+  &lt;key&gt;signingStyle&lt;/key&gt;
+  &lt;string&gt;manual&lt;/string&gt;
+  &lt;key&gt;signingCertificate&lt;/key&gt;
+  &lt;string&gt;Apple Distribution&lt;/string&gt;
+  &lt;key&gt;provisioningProfiles&lt;/key&gt;
+  &lt;dict&gt;
+    &lt;key&gt;com.missclick.sadikoi&lt;/key&gt;
+    &lt;string&gt;Sadikoi App Store&lt;/string&gt;
+  &lt;/dict&gt;
+  &lt;key&gt;uploadSymbols&lt;/key&gt;
+  &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</pre></div>
+</section>
+
+<!-- 6 -->
+<section id="credentials">
+  <h2>Certificates, profiles and keys</h2>
+  <p>Apple uses four different credentials. Click one to see what it does:</p>
+  <div class="keys" role="group" aria-label="Apple credentials">
+    <button class="key-btn" type="button" data-key="cert" aria-pressed="true"><small>Signing</small><b>Distribution certificate</b></button>
+    <button class="key-btn" type="button" data-key="profile" aria-pressed="false"><small>Signing</small><b>Provisioning profile</b></button>
+    <button class="key-btn" type="button" data-key="apns" aria-pressed="false"><small>Notifications</small><b>APNs key</b></button>
+    <button class="key-btn" type="button" data-key="asc" aria-pressed="false"><small>Upload</small><b>App Store Connect API key</b></button>
+  </div>
+  <div class="key-panel" id="key-panel" aria-live="polite"></div>
+
+  <h3>Step by step</h3>
+  <ol class="steps">
+    <li>
+      <b>Register the App ID</b>: developer.apple.com → Certificates, IDs &amp; Profiles → <b>Identifiers</b> → + → App IDs → App. Description <code>Sadikoi</code>, explicit Bundle ID <code>com.missclick.sadikoi</code>. Tick the capabilities <b>Push Notifications</b> and <b>Associated Domains</b>.
+    </li>
+    <li>
+      <b>Create the certificate request</b> on Linux, outside the project folder:
+      <div class="code"><pre>mkdir -p ~/sadikoi-ios &amp;&amp; cd ~/sadikoi-ios
+openssl genrsa -out distribution.key 2048
+openssl req -new -key distribution.key -out distribution.csr \
+  -subj "/emailAddress=you@example.com/CN=Your Name/C=FR"</pre></div>
+    </li>
+    <li>
+      <b>Create the certificate</b>: Certificates → + → <b>Apple Distribution</b> → upload <code>distribution.csr</code> → download <code>distribution.cer</code>.
+    </li>
+    <li>
+      <b>Make the .p12</b> (certificate + private key in one file, protected by a password you choose):
+      <div class="code"><pre>openssl x509 -inform DER -in distribution.cer -out distribution.pem
+openssl pkcs12 -export -legacy -inkey distribution.key -in distribution.pem \
+  -name "Apple Distribution" -out distribution.p12</pre></div>
+      <p><code>-legacy</code> uses the encryption that macOS's <code>security</code> tool always accepts (OpenSSL 3 defaults to a newer one).</p>
+    </li>
+    <li>
+      <b>Create the provisioning profile</b>: Profiles → + → Distribution → <b>App Store Connect</b> → App ID <code>com.missclick.sadikoi</code> → the certificate from step 3 → name it <code>Sadikoi App Store</code> → download the <code>.mobileprovision</code>.
+    </li>
+    <li>
+      <b>Create the APNs key</b>: Keys → + → name <code>Sadikoi APNs</code> → tick <b>Apple Push Notifications service (APNs)</b> → download the <code>.p8</code> (only once!) and note its <b>Key ID</b>.
+    </li>
+    <li>
+      <b>Create the App Store Connect API key</b>: App Store Connect → Users and Access → Integrations → <b>App Store Connect API</b> → Team Keys → + → name <code>GitHub Actions</code>, access <b>App Manager</b> → download the <code>.p8</code> (only once!) and note the <b>Key ID</b> and the <b>Issuer ID</b> shown above the list.
+    </li>
+    <li>
+      <b>Back up</b> <code>~/sadikoi-ios</code> (key, .p12 and its password, both .p8 files) somewhere safe, outside the repository.
+    </li>
+  </ol>
+  <div class="callout danger">
+    <strong>Never commit these files</strong>
+    <p>The repository is public. <code>distribution.key</code>, <code>.p12</code> and <code>.p8</code> files only go into GitHub secrets (encrypted) and your backup. If one leaks, revoke it on developer.apple.com / App Store Connect and create a new one.</p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="push">
+  <h2>Push notifications on iOS</h2>
+  <p>On Android, the API sends notifications through Firebase (FCM). On iOS, <code>@capacitor/push-notifications</code> gives an <b>APNs token</b>, not an FCM token: sent to FCM as it is, it is rejected. Two ways to fix it:</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Option</th><th>App</th><th>API</th></tr>
+    <tr>
+      <td><b>A. API sends straight to APNs</b> <span class="tag ok">Recommended</span></td>
+      <td>Unchanged except two small fixes. No Firebase SDK on iOS.</td>
+      <td>A small APNs sender, chosen when the token's <code>platform</code> is <code>ios</code> (already stored).</td>
+    </tr>
+    <tr>
+      <td><b>B. Firebase on iOS too</b></td>
+      <td>Replace the push plugin with <code>@capacitor-firebase/messaging</code> on both platforms (returns an FCM token), and adapt <code>SadikoiMessagingService</code> on Android.</td>
+      <td>Unchanged (plus an <code>apns</code> block in the messages). The APNs key is uploaded to Firebase.</td>
+    </tr>
+  </table>
+  </div>
+  <p>Option A doesn't touch the Android app, which already works. The rest of this section describes it.</p>
+
+  <h3>App: forward the token from AppDelegate</h3>
+  <p>The Capacitor push plugin needs these two methods in <code>ios/App/App/AppDelegate.swift</code>, inside the <code>AppDelegate</code> class:</p>
+  <div class="code"><div class="label">ios/App/App/AppDelegate.swift</div><pre>func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
+}
+
+func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+}</pre></div>
+
+  <h3>App: don't create Android channels on iOS</h3>
+  <p><code>PushNotifications.createChannel</code> is not implemented on iOS and throws. In <code>push.service.ts</code>, <code>start()</code> calls <code>createChannels()</code> before <code>register()</code>: on iOS, the error stops it and the token is never sent. Only create them on Android:</p>
+  <div class="code"><div class="label">src/app/services/push/push.service.ts → start()</div><pre>if (Capacitor.getPlatform() === 'android') {
+  await this.createChannels();
+}</pre></div>
+
+  <h3>App: tags on iOS</h3>
+  <p>Android notifications carry a <code>tag</code> (<code>chat-12</code>...). On iOS, the API sets the same value as <code>apns-collapse-id</code>, which becomes the notification's <b>identifier</b>: a new notification with the same id replaces the previous one. In <code>removeFromTray()</code>, match on the id when there is no tag:</p>
+  <div class="code"><div class="label">src/app/services/push/push.service.ts → removeFromTray()</div><pre>const delivered = notifications.filter(n =&gt; tags.includes(n.tag ?? n.id));</pre></div>
+
+  <h3>App: "dismiss" messages while the app is closed</h3>
+  <p>On Android, <code>SadikoiMessagingService</code> removes notifications when the group is seen on another device, even when the app is closed. On iOS, the JavaScript doesn't run in the background: the same job is done in <code>AppDelegate.swift</code> (add <code>import UserNotifications</code> at the top):</p>
+  <div class="code"><div class="label">ios/App/App/AppDelegate.swift</div><pre>// Background push from the API ("dismiss"): the group was seen on another device,
+// its notifications leave this phone's tray. Their identifier is the API's tag (apns-collapse-id).
+func application(_ application: UIApplication,
+                 didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                 fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -&gt; Void) {
+    guard userInfo["action"] as? String == "dismiss", let tags = userInfo["tags"] as? String else {
+        completionHandler(.noData)
+        return
+    }
+    let ids = tags.split(separator: ",").map(String.init)
+    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
+    completionHandler(.newData)
+}</pre></div>
+  <div class="callout info">
+    <strong>Best effort on iOS</strong>
+    <p>iOS limits background pushes (a few per hour) and doesn't deliver them at all if the user force-quit the app from the app switcher. When the app is opened, <code>clearGroupNotifications()</code> still cleans up the group on screen.</p>
+  </div>
+
+  <h3>API: send to APNs</h3>
+  <p>Put the APNs <code>.p8</code> key on the server next to the Firebase service account (git-ignored), with its Key ID and your Team ID. APNs needs HTTP/2:</p>
+  <div class="code"><div class="label">Sadikoi-API dependencies</div><pre>pip install "httpx[http2]" "PyJWT[crypto]"</pre></div>
+  <div class="code"><div class="label">Sadikoi-API/src/notifications.py (sketch)</div><pre>import time
+import httpx
+import jwt
+
+class ApnsClient:
+    """Sends to Apple directly, for the tokens registered with platform 'ios'."""
+    HOST = 'https://api.push.apple.com'  # production: TestFlight and App Store builds
+    TOPIC = 'com.missclick.sadikoi'
+
+    def __init__(self, key_path: str, key_id: str, team_id: str):
+        self.key_path, self.key_id, self.team_id = key_path, key_id, team_id
+        self._client = httpx.Client(http2=True, timeout=10)
+        self._token, self._issued = None, 0
+
+    def _jwt(self) -&gt; str:
+        # Apple wants a token renewed between 20 and 60 minutes.
+        if not self._token or time.time() - self._issued &gt; 45 * 60:
+            with open(self.key_path) as key:
+                self._issued = int(time.time())
+                self._token = jwt.encode({'iss': self.team_id, 'iat': self._issued}, key.read(),
+                                         algorithm='ES256', headers={'kid': self.key_id})
+        return self._token
+
+    def send(self, token: str, headers: dict, payload: dict) -&gt; str:
+        """Same results as FcmClient.send: 'ok', 'unregistered' or 'error'."""
+        response = self._client.post(f'{self.HOST}/3/device/{token}', json=payload, headers={
+            'authorization': f'bearer {self._jwt()}', 'apns-topic': self.TOPIC, **headers})
+        if response.status_code == 200:
+            return 'ok'
+        reason = response.json().get('reason', '') if response.content else ''
+        if response.status_code == 410 or reason in ('BadDeviceToken', 'Unregistered'):
+            return 'unregistered'
+        log(f"APNs error {response.status_code}: {reason}", level="ERROR")
+        return 'error'
+
+
+def build_apns_message(title: str, body: str, route: str, channel: str, tag: str | None = None):
+    """Same content as build_message, in Apple's format: (headers, payload)."""
+    headers = {'apns-push-type': 'alert', 'apns-priority': '10'}
+    aps = {'alert': {'title': title, 'body': body}, 'sound': 'default'}
+    if tag:
+        headers['apns-collapse-id'] = tag   # replaces the previous notification with this tag
+        aps['thread-id'] = tag              # groups them in the tray
+    return headers, {'aps': aps, 'route': route, 'channel': channel, 'tag': tag}
+
+
+def build_apns_dismiss(tags: set[str]):
+    """Background push, low priority, dropped after a day (like build_dismiss_message)."""
+    headers = {'apns-push-type': 'background', 'apns-priority': '5',
+               'apns-expiration': str(int(time.time()) + 86400)}
+    return headers, {'aps': {'content-available': 1}, 'action': 'dismiss', 'tags': ','.join(sorted(tags))}</pre></div>
+  <p>Then, where the (token, message) pairs are built (<code>_pairs_for</code>, <code>deliver</code>), pick the format and the sender from <code>PushTokenModel.platform</code>: <code>fcm.send</code> for <code>android</code>, <code>apns.send</code> for <code>ios</code>. Invalid tokens are cleaned up the same way.</p>
+  <details>
+    <summary>Option B: Firebase on iOS too</summary>
+    <ul>
+      <li>Firebase console → Project settings → add an <b>iOS app</b> (<code>com.missclick.sadikoi</code>) → download <code>GoogleService-Info.plist</code> into <code>ios/App/App/</code> and add it to the resources list of <code>scripts/ios-configure.rb</code>.</li>
+      <li>Project settings → Cloud Messaging → Apple app configuration → upload the <b>APNs key</b> (.p8) with its Key ID and your Team ID.</li>
+      <li>Replace <code>@capacitor/push-notifications</code> with <code>@capacitor-firebase/messaging</code>: <code>getToken()</code> instead of <code>register()</code> + <code>registration</code>, events <code>notificationReceived</code> / <code>notificationActionPerformed</code>. On Android, <code>SadikoiMessagingService</code> must then extend the new plugin's service (check its class name in <code>node_modules/@capacitor-firebase/messaging/android</code>). Follow the plugin's README for the iOS <code>AppDelegate</code> changes.</li>
+      <li>API: add an <code>apns</code> block to the FCM messages, with the same headers as above (<code>apns-collapse-id</code>, and <code>apns-push-type: background</code> + <code>content-available: 1</code> for dismiss).</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 8 -->
+<section id="google">
+  <h2>Google Sign-In on iOS</h2>
+  <p>The app already uses the native plugin <code>@capgo/capacitor-social-login</code> (<code>src/app/components/google-login/google-login.component.ts</code>). On iOS, it needs an iOS OAuth client of its own.</p>
+  <ol class="steps">
+    <li>Google Cloud Console → APIs &amp; Services → <b>Credentials</b>, in the <b>same project</b> as the Web client → Create credentials → OAuth client ID → type <b>iOS</b> → Bundle ID <code>com.missclick.sadikoi</code>, Team ID. No SHA fingerprint on iOS.</li>
+    <li>
+      Note the client ID (<code>XXXX-yyyy.apps.googleusercontent.com</code>) and its <b>reversed</b> form (<code>com.googleusercontent.apps.XXXX-yyyy</code>, also shown on the client's page as <i>iOS URL scheme</i>). The reversed form goes into <code>CFBundleURLSchemes</code> in <code>Info.plist</code> (<a href="#project">Configure Xcode</a>).
+    </li>
+    <li>
+      Add the iOS client ID to <code>src/environments/secrets.ts</code> and pass it to the plugin:
+      <div class="code"><div class="label">src/environments/secrets.ts</div><pre>export const secrets = {
+    googleClientId: '...web client...',
+    googleIosClientId: '...ios client...',
+};</pre></div>
+      <div class="code"><div class="label">google-login.component.ts → getNativeSocialLogin()</div><pre>await SocialLogin.initialize({
+  google: {
+    webClientId: secrets.googleClientId,
+    iOSClientId: secrets.googleIosClientId,
+    // Asks Google for a token meant for the backend (the Web client).
+    iOSServerClientId: secrets.googleClientId,
+  },
+});</pre></div>
+    </li>
+    <li>
+      <b>API</b>: depending on the Google SDK version, the token's <code>aud</code> can be the iOS client ID. Add it to the accepted audiences in <code>google_login_handler</code> (<code>Sadikoi-API/src/auth.py</code>), e.g. a new <code>GOOGLE_CLIENT_IOS_ID</code> in <code>.google.secrets</code>, next to <code>GOOGLE_CLIENT_BROWSER_ID</code> and <code>GOOGLE_CLIENT_MOBILE_ID</code>.
+    </li>
+  </ol>
+  <div class="callout info">
+    <strong>Check the plugin's iOS setup page</strong>
+    <p>Some versions of the plugin also need a line in <code>AppDelegate.swift</code> to handle the URL Google opens at the end of the sign-in. Read the iOS section of the Google provider in the plugin's documentation for the version in <code>package.json</code>.</p>
+  </div>
+  <div class="callout ok">
+    <strong>Sign in with Apple is not required</strong>
+    <p>App Review guideline 4.8 only requires it (or an equivalent) when a third-party login is the <i>only</i> way in. Sadikoi also has its own email + password accounts.</p>
+  </div>
+</section>
+
+<!-- 9 -->
+<section id="links">
+  <h2>Universal Links (links that open the app)</h2>
+  <p>iOS equivalent of the Android App Links: <code>https://sadikoi.missclick.net/group/…</code> and <code>/reset-password/…</code> open the app. <code>deep-link.service.ts</code> already handles <code>appUrlOpen</code> on both platforms: nothing to change in Angular.</p>
+  <ol class="steps">
+    <li>The entitlement <code>applinks:sadikoi.missclick.net</code> (<a href="#project">App.entitlements</a>) and the <b>Associated Domains</b> capability on the App ID.</li>
+    <li>
+      The file <code>public/.well-known/apple-app-site-association</code> (no extension), next to <code>assetlinks.json</code>:
+      <div class="code"><div class="label">public/.well-known/apple-app-site-association</div><pre>{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID.com.missclick.sadikoi"],
+        "components": [
+          { "/": "/group/*" },
+          { "/": "/reset-password/*" }
+        ]
+      }
+    ]
+  }
+}</pre></div>
+    </li>
+    <li>
+      Serve it as JSON. Apache doesn't know the type of a file without extension: add this to <code>.htaccess</code>:
+      <div class="code"><div class="label">.htaccess</div><pre>&lt;Files "apple-app-site-association"&gt;
+  ForceType application/json
+&lt;/Files&gt;</pre></div>
+    </li>
+    <li>
+      Redeploy the site (<code>build_project.sh</code>) and check. Apple doesn't read the file from your server but from its CDN, which can take up to a day to refresh:
+      <div class="code"><div class="label">200, application/json, no redirect</div><pre>curl -i https://sadikoi.missclick.net/.well-known/apple-app-site-association
+curl -s https://app-site-association.cdn-apple.com/a/v1/sadikoi.missclick.net</pre></div>
+    </li>
+  </ol>
+  <div class="callout info">
+    <strong>How to test</strong>
+    <p>Tap a link in Notes, Messages or Mail. A link typed in Safari's address bar never opens the app, and if the user once chose "Open in Safari" from the banner, iOS remembers it: long-press the link → "Open in Sadikoi" to switch back.</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="ci">
+  <h2>Build and upload with GitHub Actions</h2>
+
+  <h3>1. Secrets</h3>
+  <p>Repository → Settings → Secrets and variables → Actions, or with the GitHub CLI from Linux:</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Secret</th><th>Content</th></tr>
+    <tr><td><code>IOS_P12_BASE64</code></td><td><code>distribution.p12</code>, base64</td></tr>
+    <tr><td><code>IOS_P12_PASSWORD</code></td><td>The .p12 password</td></tr>
+    <tr><td><code>IOS_PROFILE_BASE64</code></td><td>The <code>.mobileprovision</code>, base64</td></tr>
+    <tr><td><code>ASC_KEY_ID</code></td><td>App Store Connect API Key ID</td></tr>
+    <tr><td><code>ASC_ISSUER_ID</code></td><td>App Store Connect API Issuer ID</td></tr>
+    <tr><td><code>ASC_KEY_P8_BASE64</code></td><td>The App Store Connect API <code>.p8</code>, base64</td></tr>
+    <tr><td><code>SECRETS_TS</code></td><td>The whole content of <code>src/environments/secrets.ts</code> (git-ignored, so absent from the runner)</td></tr>
+  </table>
+  </div>
+  <div class="code"><div class="label">Set them from ~/sadikoi-ios</div><pre>cd ~/sadikoi-ios
+base64 -w0 distribution.p12 | gh secret set IOS_P12_BASE64 -R Gabrieleirbag1/Sadikoi
+gh secret set IOS_P12_PASSWORD -R Gabrieleirbag1/Sadikoi
+base64 -w0 Sadikoi_App_Store.mobileprovision | gh secret set IOS_PROFILE_BASE64 -R Gabrieleirbag1/Sadikoi
+gh secret set ASC_KEY_ID -R Gabrieleirbag1/Sadikoi
+gh secret set ASC_ISSUER_ID -R Gabrieleirbag1/Sadikoi
+base64 -w0 AuthKey_XXXXXXXXXX.p8 | gh secret set ASC_KEY_P8_BASE64 -R Gabrieleirbag1/Sadikoi
+gh secret set SECRETS_TS -R Gabrieleirbag1/Sadikoi &lt; ~/Documents/VSCODE/Sadikoi/Sadikoi/src/environments/secrets.ts</pre></div>
+  <p><code>gh secret set NAME</code> without input asks for the value (password, IDs).</p>
+  <div class="callout warn">
+    <strong>Public repository: never run this workflow on pull requests</strong>
+    <p>The workflow below only starts by hand (<code>workflow_dispatch</code>) or on a tag you push. Secrets are not given to pull requests from forks, but a <code>pull_request_target</code> trigger would expose them: don't add one.</p>
+  </div>
+
+  <h3>2. The workflow</h3>
+  <div class="code"><div class="label">.github/workflows/ios.yml</div><pre>name: iOS release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['ios-v*']
+
+jobs:
+  testflight:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Restore the git-ignored secrets file
+        env:
+          SECRETS_TS: ${{ secrets.SECRETS_TS }}
+        run: printf '%s\n' "$SECRETS_TS" &gt; src/environments/secrets.ts
+
+      - name: Build the site and copy it into ios/
+        run: |
+          npm ci
+          npx ng build --configuration=production
+          npx cap sync ios
+
+      - name: Install the certificate and the provisioning profile
+        env:
+          P12_BASE64: ${{ secrets.IOS_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          PROFILE_BASE64: ${{ secrets.IOS_PROFILE_BASE64 }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 24)"
+          echo "$P12_BASE64" | base64 --decode &gt; "$RUNNER_TEMP/distribution.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$RUNNER_TEMP/distribution.p12" -k "$KEYCHAIN" -P "$P12_PASSWORD" -A -t cert -f pkcs12
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+
+          PROFILE="$RUNNER_TEMP/profile.mobileprovision"
+          echo "$PROFILE_BASE64" | base64 --decode &gt; "$PROFILE"
+          UUID=$(security cms -D -i "$PROFILE" | plutil -extract UUID raw -)
+          # Xcode 16+ reads the first folder, older versions the second.
+          for dir in "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles" \
+                     "$HOME/Library/MobileDevice/Provisioning Profiles"; do
+            mkdir -p "$dir"
+            cp "$PROFILE" "$dir/$UUID.mobileprovision"
+          done
+
+      - name: Archive
+        run: |
+          # Same version as the Android app; the build number only has to go up.
+          VERSION=$(sed -n 's/.*versionName "\(.*\)".*/\1/p' android/app/build.gradle)
+          xcodebuild archive \
+            -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION=${{ github.run_number }}
+
+      - name: Export the .ipa
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -exportPath "$RUNNER_TEMP/export"
+
+      - name: Upload to App Store Connect (TestFlight)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_KEY_P8_BASE64" | base64 --decode &gt; ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+          xcrun altool --upload-app --type ios \
+            --file "$RUNNER_TEMP/export/App.ipa" \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
+
+      - name: Keep the .ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: sadikoi-ios-${{ github.run_number }}
+          path: ${{ runner.temp }}/export/App.ipa
+          retention-days: 14
+
+      - name: Remove the keychain
+        if: always()
+        run: security delete-keychain "$RUNNER_TEMP/build.keychain-db" || true</pre></div>
+
+  <h3>3. Run it</h3>
+  <ul>
+    <li>GitHub → Actions → <b>iOS release</b> → Run workflow, or <code>gh workflow run ios.yml</code>, or push a tag: <code>git tag ios-v1.0.11 &amp;&amp; git push origin ios-v1.0.11</code>.</li>
+    <li>Follow it with <code>gh run watch</code>. When it is green, the build shows up in App Store Connect → TestFlight after 5 to 30 minutes of processing. Apple also sends an email if something is wrong in the build (missing purpose string, icon...).</li>
+  </ul>
+  <details>
+    <summary>Simulator build, for testing in a browser (no signing)</summary>
+    <p>A second job, or a separate workflow, that doesn't need any secret except <code>SECRETS_TS</code>:</p>
+    <div class="code"><div class="label">.github/workflows/ios-simulator.yml (steps after checkout, Xcode, Node, secrets.ts and cap sync)</div><pre>      - name: Build for the simulator
+        run: |
+          xcodebuild build \
+            -project ios/App/App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/sim" CODE_SIGNING_ALLOWED=NO
+          cd "$RUNNER_TEMP/sim/Build/Products/Debug-iphonesimulator"
+          zip -qr "$RUNNER_TEMP/Sadikoi-simulator.zip" App.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sadikoi-simulator
+          path: ${{ runner.temp }}/Sadikoi-simulator.zip</pre></div>
+  </details>
+</section>
+
+<!-- 11 -->
+<section id="testing">
+  <h2>Testing without an iPhone</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Method</th><th>What it tests</th><th>Setup</th></tr>
+    <tr>
+      <td><b>TestFlight, internal</b></td>
+      <td><span class="tag ok">Everything</span> on a real iPhone: push, Google Sign-In, Universal Links, camera, keyboard</td>
+      <td>App Store Connect → Users and Access → invite the owner of the iPhone (their Apple ID email, role <i>Developer</i> or <i>Marketing</i>). Then TestFlight → Internal Testing → add them. No review, up to 100 testers. They install the <b>TestFlight</b> app and accept the invitation.</td>
+    </tr>
+    <tr>
+      <td><b>TestFlight, external</b></td>
+      <td><span class="tag ok">Everything</span>, for testers outside your team</td>
+      <td>TestFlight → External Testing → new group → public link. The first build of each version goes through a short Beta App Review (about a day). Up to 10,000 testers.</td>
+    </tr>
+    <tr>
+      <td><b>Appetize.io</b></td>
+      <td><span class="tag warn">Layout only</span>: screens, safe areas, email login, navigation. No push, no Universal Links.</td>
+      <td>Upload <code>Sadikoi-simulator.zip</code> (simulator build above) and open the app in the browser. Free tier with limited minutes.</td>
+    </tr>
+  </table>
+  </div>
+  <h3>What to check on the iPhone before submitting</h3>
+  <ul>
+    <li>Sign in with email and with Google, close the app, open it again: still signed in.</li>
+    <li>Push permission prompt, a notification received with the app closed, tapping it opens the right group.</li>
+    <li>An invitation link opened from Notes or Messages opens the app on the invitation.</li>
+    <li>Profile picture: choose from the library and take a photo.</li>
+    <li>Header under the notch / Dynamic Island, the keyboard doesn't hide the message field.</li>
+    <li>The captcha (Turnstile) works: <code>localhost</code> must be in the widget's hostnames (already needed by Android).</li>
+  </ul>
+  <div class="callout info">
+    <strong>Crashes</strong>
+    <p>TestFlight sends crash reports and screenshots from testers to App Store Connect → TestFlight → Feedback / Crashes. They are readable in the browser.</p>
+  </div>
+</section>
+
+<!-- 12 -->
+<section id="asc">
+  <h2>App Store Connect: the app's page</h2>
+  <h3>Create the app</h3>
+  <p>App Store Connect → Apps → + → New App: platform iOS, name <code>Sadikoi</code>, primary language English, Bundle ID <code>com.missclick.sadikoi</code>, SKU <code>sadikoi</code>, full access. Add French under App Information → Localizable information.</p>
+
+  <h3>Listing (per language)</h3>
+  <p>The texts in <code>store-listing/en</code> and <code>store-listing/fr</code> (Play Store) are a good base.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Field</th><th>Limit</th><th>Source / note</th></tr>
+    <tr><td>Name</td><td>30</td><td><code>Sadikoi</code></td></tr>
+    <tr><td>Subtitle</td><td>30</td><td>New: shown under the name in search results</td></tr>
+    <tr><td>Promotional text</td><td>170</td><td>Can be changed at any time without a review</td></tr>
+    <tr><td>Description</td><td>4000</td><td><code>full-description.txt</code></td></tr>
+    <tr><td>Keywords</td><td>100</td><td>Comma separated, no spaces, don't repeat the name</td></tr>
+    <tr><td>Support URL</td><td>required</td><td>A page with a way to contact you</td></tr>
+    <tr><td>Privacy policy URL</td><td>required</td><td><code>https://sadikoi.missclick.net/privacy</code></td></tr>
+    <tr><td>Copyright</td><td>required</td><td><code>2026 Your Name</code></td></tr>
+    <tr><td>Category</td><td></td><td>e.g. Social Networking</td></tr>
+  </table>
+  </div>
+
+  <h3>Screenshots</h3>
+  <p>Only the <b>6.9" iPhone</b> size is required (Apple scales it down for the other iPhones): <b>1320 × 2868</b> portrait (1290 × 2796 is also accepted), 1 to 10 images. The Play Store screenshots (1080 × 1920, 9:16) don't fit this ratio.</p>
+  <ul>
+    <li>Render the app the same way as the Play screenshots, with a browser at <b>440 × 956</b> CSS pixels and a device scale factor of <b>3</b>, which gives 1320 × 2868.</li>
+    <li>Or take them on the borrowed iPhone (a Pro Max gives the right size directly) or from the simulator in CI (<code>xcrun simctl io booted screenshot</code>).</li>
+    <li>They must show the real app: a caption frame is fine, a fake screen is not.</li>
+  </ul>
+  <p>With <code>TARGETED_DEVICE_FAMILY = 1</code> (iPhone only), no iPad screenshots are asked for.</p>
+
+  <h3>App Privacy</h3>
+  <p>App Store Connect → App Privacy → Get Started. It must match the privacy policy. For Sadikoi, likely:</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Data type</th><th>Examples</th><th>Linked to the user</th><th>Tracking</th></tr>
+    <tr><td>Contact info</td><td>Email address, name (username)</td><td>Yes</td><td>No</td></tr>
+    <tr><td>User content</td><td>Messages, photos (profile pictures, items), other content (answers, votes)</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Identifiers</td><td>User ID, device ID (<code>getDeviceId()</code>, push tokens)</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Diagnostics</td><td>Only if crash or error logs are sent to the API (<code>feedback</code>, logger)</td><td>Check</td><td>No</td></tr>
+  </table>
+  </div>
+  <p>Purpose: <i>App Functionality</i>. No ads, no third-party analytics: no tracking, no App Tracking Transparency prompt.</p>
+
+  <h3>Age rating</h3>
+  <p>App Information → Age Rating → answer the questionnaire. Declare the <b>user-generated content</b> and <b>messaging between users</b> (group chat). That's why the rules in the next section apply.</p>
+
+  <h3>Pricing and availability</h3>
+  <p>Free, and pick the countries (all by default). The EU needs the trader declaration from the <a href="#account">account section</a>.</p>
+</section>
+
+<!-- 13 -->
+<section id="review">
+  <h2>Submit for review</h2>
+  <ol class="steps">
+    <li>App Store Connect → the app → the version (<code>1.0.11</code>) → <b>Build</b> → choose the TestFlight build.</li>
+    <li>
+      <b>App Review Information</b>:
+      <ul>
+        <li>Sign-in required: <b>yes</b>. Give a <b>demo account</b> (email + password) that is already in a group with messages, questions and votes, so the reviewer sees the whole app without inviting anyone.</li>
+        <li>Notes: explain that groups are invitation-only, where the demo group is, and that account deletion is in Settings.</li>
+        <li>Contact: your name, email and phone number (not public).</li>
+      </ul>
+    </li>
+    <li>Version release: <b>manual</b> for the first version (you choose the moment after approval) or automatic.</li>
+    <li><b>Add for Review</b> → Submit. The status goes Waiting for Review → In Review → Ready for Distribution, usually within 24 to 48 hours.</li>
+  </ol>
+
+  <h3>What App Review checks for an app like Sadikoi</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Rule</th><th>Requirement</th><th>Sadikoi</th></tr>
+    <tr><td>5.1.1(v) Account deletion</td><td>Delete the account from inside the app</td><td><span class="tag ok">Done</span> Settings → delete account</td></tr>
+    <tr><td>1.2 User-generated content</td><td>Report content or users</td><td><span class="tag ok">Done</span> <code>report-user</code></td></tr>
+    <tr><td>1.2 User-generated content</td><td>Block abusive users</td><td><span class="tag warn">To check</span> group admins can remove a member, but there is no "block" for a regular member. Explain it in the review notes (private, invitation-only groups) and be ready to add one if the reviewer asks.</td></tr>
+    <tr><td>1.2 User-generated content</td><td>Terms that forbid objectionable content, and a contact</td><td><span class="tag ok">Done</span> <code>/terms</code>, support URL</td></tr>
+    <tr><td>4.8 Login services</td><td>An alternative to Google login</td><td><span class="tag ok">Done</span> email + password accounts</td></tr>
+    <tr><td>4.2 Minimum functionality</td><td>Not just a website in a frame</td><td><span class="tag ok">Done</span> push, native Google Sign-In, Universal Links, share sheet</td></tr>
+    <tr><td>2.1 Completeness</td><td>No crash, no broken link, demo account works</td><td><span class="tag info">Test</span> on the iPhone with TestFlight</td></tr>
+  </table>
+  </div>
+  <div class="callout info">
+    <strong>If the app is rejected</strong>
+    <p>The reason is in App Store Connect → Resolution Center, with the guideline number. Answer there (a reply is often enough for a misunderstanding), or fix it, upload a new build and submit again.</p>
+  </div>
+</section>
+
+<!-- 14 -->
+<section id="checklist" class="checklist">
+  <h2>Release checklist</h2>
+  <p>Your progress is saved in this browser.</p>
+  <div class="progress">
+    <div class="bar"><span id="bar"></span></div>
+    <output id="count">0 / 0</output>
+    <button class="reset" type="button" id="reset">Reset</button>
+  </div>
+
+  <h3>Accounts</h3>
+  <label><input type="checkbox" data-id="enroll"><span>Apple Developer Program paid and active, Team ID noted</span></label>
+  <label><input type="checkbox" data-id="dsa"><span>EU trader status declared in App Store Connect</span></label>
+
+  <h3>Project</h3>
+  <label><input type="checkbox" data-id="add-ios"><span><code>ios/</code> created and committed</span></label>
+  <label><input type="checkbox" data-id="icons"><span>iOS icon and splash generated, 1024 icon without alpha</span></label>
+  <label><input type="checkbox" data-id="plist"><span><code>Info.plist</code> keys, <code>App.entitlements</code>, <code>PrivacyInfo.xcprivacy</code> added</span></label>
+  <label><input type="checkbox" data-id="rb"><span><code>scripts/ios-configure.rb</code> run, <code>ExportOptions.plist</code> created</span></label>
+  <label><input type="checkbox" data-id="push-app"><span>Push: AppDelegate methods, channels only on Android, tag/id match</span></label>
+  <label><input type="checkbox" data-id="push-api"><span>Push: APNs sender in the API, <code>.p8</code> key on the server</span></label>
+  <label><input type="checkbox" data-id="google"><span>Google: iOS OAuth client, URL scheme, <code>iOSClientId</code>, audience accepted by the API</span></label>
+  <label><input type="checkbox" data-id="aasa"><span><code>apple-app-site-association</code> online as JSON, visible on Apple's CDN</span></label>
+
+  <h3>Apple credentials and CI</h3>
+  <label><input type="checkbox" data-id="appid"><span>App ID with Push Notifications and Associated Domains</span></label>
+  <label><input type="checkbox" data-id="cert"><span>Distribution certificate → <code>.p12</code></span></label>
+  <label><input type="checkbox" data-id="profile"><span>App Store provisioning profile <code>Sadikoi App Store</code></span></label>
+  <label><input type="checkbox" data-id="keys"><span>APNs key and App Store Connect API key downloaded and backed up</span></label>
+  <label><input type="checkbox" data-id="secrets"><span>7 GitHub secrets set</span></label>
+  <label><input type="checkbox" data-id="green"><span>Workflow green, build visible in TestFlight</span></label>
+
+  <h3>Test and submit</h3>
+  <label><input type="checkbox" data-id="iphone"><span>Tested on a real iPhone with TestFlight (login, push, links, camera)</span></label>
+  <label><input type="checkbox" data-id="listing"><span>Listing, 6.9" screenshots, privacy policy, App Privacy, age rating</span></label>
+  <label><input type="checkbox" data-id="demo"><span>Demo account with a full group, review notes written</span></label>
+  <label><input type="checkbox" data-id="submit"><span>Submitted for review</span></label>
+  <label><input type="checkbox" data-id="live"><span>Approved and released</span></label>
+</section>
+
+<!-- 15 -->
+<section id="update">
+  <h2>Publish an update</h2>
+  <ol class="steps">
+    <li>Increase <code>versionName</code> in <code>android/app/build.gradle</code> (shared with iOS by the workflow). The build number is the workflow's run number: it always goes up by itself.</li>
+    <li>Run the <b>iOS release</b> workflow (or push an <code>ios-v…</code> tag).</li>
+    <li>App Store Connect → the app → <b>+</b> next to iOS App → new version with the same number → "What's New in This Version" → choose the build → submit for review.</li>
+  </ol>
+  <p>Several builds with the same version can be uploaded to TestFlight. A version that is live can't receive new builds: increase <code>versionName</code> first.</p>
+  <h3>Once a year</h3>
+  <ul>
+    <li>The <b>Developer Program</b> renews every year: if it lapses, the app is removed from the App Store.</li>
+    <li>The <b>distribution certificate</b> and the <b>profile</b> expire after a year. The published app keeps working; only new builds fail. Create a new certificate (same CSR steps) and profile, then update <code>IOS_P12_BASE64</code>, <code>IOS_P12_PASSWORD</code> and <code>IOS_PROFILE_BASE64</code>.</li>
+    <li>The APNs key and the App Store Connect API key don't expire.</li>
+  </ul>
+</section>
+
+<!-- 16 -->
+<section id="troubleshoot">
+  <h2>Troubleshooting</h2>
+  <details>
+    <summary><code>No signing certificate "iOS Distribution" found</code> / <code>No profiles for 'com.missclick.sadikoi' were found</code></summary>
+    <ul>
+      <li>The "Install the certificate" step must show <code>1 identity imported</code>. Check the <code>.p12</code> password and that it was made with <code>-legacy</code>.</li>
+      <li><code>PROVISIONING_PROFILE_SPECIFIER</code> (Ruby script) and <code>ExportOptions.plist</code> must use the profile's exact name.</li>
+      <li>The profile must be of type <b>App Store Connect</b> and include the certificate in the <code>.p12</code>.</li>
+    </ul>
+  </details>
+  <details>
+    <summary><code>… does not support provisioning profiles, but provisioning profile … has been manually specified</code></summary>
+    <p>A signing setting was passed on the <code>xcodebuild</code> command line, which applies it to the Swift packages too. Keep the signing settings in the project, on the App target only (Ruby script).</p>
+  </details>
+  <details>
+    <summary><code>Provisioning profile … doesn't include the aps-environment / associated-domains entitlement</code></summary>
+    <p>The capability was enabled on the App ID after the profile was created. Edit the profile on developer.apple.com (or create it again), download it and update <code>IOS_PROFILE_BASE64</code>.</p>
+  </details>
+  <details>
+    <summary>Upload refused: <code>The bundle version must be higher than the previously uploaded version</code></summary>
+    <p>The build number (<code>CURRENT_PROJECT_VERSION</code>) was already used for this version, e.g. after renaming the workflow, which resets <code>github.run_number</code>. Add an offset: <code>CURRENT_PROJECT_VERSION=$(( ${{ github.run_number }} + 100 ))</code>.</p>
+  </details>
+  <details>
+    <summary>Email from Apple: <code>ITMS-90717</code>, <code>ITMS-90683</code>, <code>ITMS-91053</code></summary>
+    <ul>
+      <li><code>ITMS-90717</code> Invalid App Store Icon: the 1024 icon has an alpha channel (<a href="#platform">flatten it</a>).</li>
+      <li><code>ITMS-90683</code> Missing purpose string: a <code>NS…UsageDescription</code> is missing from <code>Info.plist</code> (camera, photo library...).</li>
+      <li><code>ITMS-91053</code> Missing API declaration: add the reason it names to <code>PrivacyInfo.xcprivacy</code>.</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Push: the <code>registration</code> event never fires on iOS</summary>
+    <ul>
+      <li>The two <code>AppDelegate</code> methods are missing.</li>
+      <li><code>createChannels()</code> throws on iOS before <code>register()</code> (check the <code>Push notifications setup failed</code> log).</li>
+      <li>The app was built without the <code>aps-environment</code> entitlement.</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Push: APNs answers <code>BadDeviceToken</code> or <code>DeviceTokenNotForTopic</code></summary>
+    <p><code>BadDeviceToken</code>: the token comes from a debug build (sandbox) and was sent to the production server, or the reverse. TestFlight and App Store builds use production. <code>DeviceTokenNotForTopic</code>: <code>apns-topic</code> must be the bundle ID, and the APNs key must belong to the same team.</p>
+  </details>
+  <details>
+    <summary>Google Sign-In crashes: <code>Your app is missing support for the following URL schemes</code></summary>
+    <p>The reversed iOS client ID is not in <code>CFBundleURLSchemes</code> in <code>Info.plist</code>, or it doesn't match <code>iOSClientId</code>.</p>
+  </details>
+  <details>
+    <summary>Google Sign-In: the API answers <code>Token has wrong audience</code></summary>
+    <p>The token was issued for the iOS client ID. Add it to the audiences accepted by <code>google_login_handler</code>.</p>
+  </details>
+  <details>
+    <summary>Links open Safari instead of the app</summary>
+    <ul>
+      <li>Apple's CDN (<code>app-site-association.cdn-apple.com/a/v1/sadikoi.missclick.net</code>) must return the file. It can take up to a day after a change.</li>
+      <li><code>appIDs</code> must be <code>TEAMID.com.missclick.sadikoi</code> with your real Team ID.</li>
+      <li>Test from Notes or Messages, not from Safari's address bar. Long-press → "Open in Sadikoi" if Safari was chosen once.</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Logged out at every launch / CORS errors</summary>
+    <p>The API must allow the <code>capacitor://localhost</code> origin with credentials (already done for iOS, see the <a href="android.html#backend">Android guide</a>). <code>CapacitorHttp</code> and <code>CapacitorCookies</code> must stay enabled in <code>capacitor.config.ts</code>.</p>
+    <div class="code"><pre>curl -si -X OPTIONS https://sadikoi.missclick.net/api/ -H "Origin: capacitor://localhost" -H "Access-Control-Request-Method: POST" | grep -i access-control</pre></div>
+  </details>
+  <details>
+    <summary>The workflow can't find Xcode or the <code>macos-26</code> runner</summary>
+    <p>Check the runner images available in GitHub's <code>actions/runner-images</code> repository and use the latest macOS label. Apple only accepts uploads built with a recent Xcode (the current major version), so <code>latest-stable</code> is the safest choice.</p>
+  </details>
+</section>
+</main>
+</div>
+
+<script>
+(function () {
+  function store(action, key, value) {
+    try {
+      if (action === 'get') return localStorage.getItem(key);
+      if (action === 'set') localStorage.setItem(key, value);
+      if (action === 'del') localStorage.removeItem(key);
+    } catch (e) { /* storage unavailable: the page still works */ }
+    return null;
+  }
+
+  // Copy buttons on every code block.
+  document.querySelectorAll('.code pre').forEach(function (pre) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      var done = function () {
+        btn.textContent = 'Copied';
+        btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1500);
+      };
+      var text = pre.textContent;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+      } else {
+        fallback(text);
+        done();
+      }
+    });
+    pre.parentNode.appendChild(btn);
+  });
+  function fallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  // Credential explorer.
+  var keys = {
+    cert: {
+      what: 'Proves the app comes from your team. A certificate (.cer) from Apple + the private key you generated with openssl.',
+      file: 'distribution.p12 (certificate + private key), password protected',
+      used: 'Signing the archive on the GitHub runner (secrets IOS_P12_BASE64 + IOS_P12_PASSWORD)',
+      expires: '1 year. Published apps keep working; only new builds need a new one.',
+      lose: 'Revoke it and create a new one (new CSR), then a new profile. No impact on the published app.'
+    },
+    profile: {
+      what: 'Links the App ID, the certificate and the capabilities (push, associated domains) for App Store distribution.',
+      file: 'Sadikoi_App_Store.mobileprovision',
+      used: 'Signing on the runner (secret IOS_PROFILE_BASE64), named in ios-configure.rb and ExportOptions.plist',
+      expires: 'With the certificate. Must be regenerated after any capability change on the App ID.',
+      lose: 'Download it again from developer.apple.com: it is not secret on its own.'
+    },
+    apns: {
+      what: 'Lets the API send notifications through Apple. One key works for every app of the team, sandbox and production.',
+      file: 'AuthKey_XXXXXXXXXX.p8 + its Key ID + your Team ID',
+      used: 'On the production server, by the API (or uploaded to Firebase with option B)',
+      expires: 'Never. At most 2 APNs keys per team.',
+      lose: 'It can only be downloaded once: revoke it and create a new one, then update the server.'
+    },
+    asc: {
+      what: 'Lets the workflow upload builds to App Store Connect without your password or two-factor code.',
+      file: 'AuthKey_XXXXXXXXXX.p8 + Key ID + Issuer ID',
+      used: 'Upload step of the workflow (secrets ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8_BASE64)',
+      expires: 'Never (until revoked).',
+      lose: 'It can only be downloaded once: revoke it, create a new one and update the secrets.'
+    }
+  };
+  var panel = document.getElementById('key-panel');
+  var buttons = document.querySelectorAll('.key-btn');
+  function showKey(id) {
+    var k = keys[id];
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.key === id)); });
+    var rows = [
+      ['What it is', k.what],
+      ['File', k.file],
+      ['Used by', k.used],
+      ['Expires', k.expires],
+      ['If lost', k.lose]
+    ];
+    panel.innerHTML = '<dl>' + rows.map(function (r) {
+      return '<dt>' + r[0] + '</dt><dd>' + r[1].replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</dd>';
+    }).join('') + '</dl>';
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { showKey(b.dataset.key); }); });
+  showKey('cert');
+
+  // Checklist with progress, saved in this browser.
+  var KEY = 'sadikoi-ios-checklist';
+  var saved = {};
+  try { saved = JSON.parse(store('get', KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = document.querySelectorAll('.checklist input[type=checkbox]');
+  var bar = document.getElementById('bar');
+  var count = document.getElementById('count');
+  function update() {
+    var done = 0;
+    boxes.forEach(function (b) { if (b.checked) done++; });
+    count.textContent = done + ' / ' + boxes.length;
+    bar.style.width = (boxes.length ? (done / boxes.length) * 100 : 0) + '%';
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.dataset.id];
+    b.addEventListener('change', function () {
+      saved[b.dataset.id] = b.checked;
+      store('set', KEY, JSON.stringify(saved));
+      update();
+    });
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    saved = {};
+    store('del', KEY);
+    boxes.forEach(function (b) { b.checked = false; });
+    update();
+  });
+  update();
+
+  // Theme toggle: auto -> light -> dark (shared with the Android guide).
+  var root = document.documentElement;
+  var themeBtn = document.getElementById('theme-btn');
+  var labels = { auto: 'Theme: auto', light: 'Theme: light', dark: 'Theme: dark' };
+  function applyTheme(t) {
+    if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t);
+    themeBtn.textContent = labels[t];
+  }
+  var theme = store('get', 'sadikoi-mobile-theme') || 'auto';
+  if (!labels[theme]) theme = 'auto';
+  applyTheme(theme);
+  themeBtn.addEventListener('click', function () {
+    theme = theme === 'auto' ? 'light' : theme === 'light' ? 'dark' : 'auto';
+    store('set', 'sadikoi-mobile-theme', theme);
+    applyTheme(theme);
+  });
+
+  // Highlight the current section in the table of contents.
+  var links = {};
+  document.querySelectorAll('nav.toc ol a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          Object.keys(links).forEach(function (id) { links[id].classList.toggle('active', id === e.target.id); });
+        }
+      });
+    }, { rootMargin: '0px 0px -70% 0px' });
+    document.querySelectorAll('main section').forEach(function (s) { observer.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

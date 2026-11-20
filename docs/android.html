@@ -105,19 +105,20 @@
     overflow: auto;
     font-size: .92rem;
   }
-  nav.toc .brand { font-weight: 700; font-size: 1.05rem; margin-bottom: 12px; }
+  nav.toc .brand { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+  nav.toc .other-guide { display: block; font-size: .85rem; margin-bottom: 12px; }
   nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
   nav.toc li { margin: 0; counter-increment: toc; }
-  nav.toc a {
+  nav.toc ol a {
     display: block;
     padding: 5px 10px;
     border-radius: 6px;
     color: var(--muted);
     text-decoration: none;
   }
-  nav.toc a::before { content: counter(toc) ". "; opacity: .6; }
-  nav.toc a:hover { background: var(--surface-2); color: var(--text); }
-  nav.toc a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  nav.toc ol a::before { content: counter(toc) ". "; opacity: .6; }
+  nav.toc ol a:hover { background: var(--surface-2); color: var(--text); }
+  nav.toc ol a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
   .theme-btn {
     margin-top: 16px;
     font: inherit;
@@ -316,8 +317,8 @@
     .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 16px 16px 60px; }
     nav.toc { position: static; max-height: none; }
     nav.toc ol { display: flex; flex-wrap: wrap; gap: 4px; }
-    nav.toc a { background: var(--surface); border: 1px solid var(--border); font-size: .82rem; padding: 3px 8px; }
-    nav.toc a::before { content: none; }
+    nav.toc ol a { background: var(--surface); border: 1px solid var(--border); font-size: .82rem; padding: 3px 8px; }
+    nav.toc ol a::before { content: none; }
     section { padding: 18px 16px; }
     .keys { grid-template-columns: minmax(0, 1fr); }
     .key-panel dl { grid-template-columns: minmax(0, 1fr); }
@@ -332,6 +333,7 @@
 
 <nav class="toc" aria-label="Contents">
   <div class="brand">Sadikoi Android</div>
+  <a class="other-guide" href="ios.html">iOS guide →</a>
   <ol>
     <li><a href="#overview">Overview</a></li>
     <li><a href="#setup">Setup &amp; development</a></li>
@@ -417,7 +419,7 @@ npm i @capacitor/android
 ng build
 npx cap add android
 npx cap sync</pre></div>
-    <p>iOS (<code>npm i @capacitor/ios</code>, <code>npx cap add ios</code>) requires a Mac and is not set up yet.</p>
+    <p>iOS (<code>npm i @capacitor/ios</code>, <code>npx cap add ios</code>) is not set up yet: see the <a href="ios.html">iOS guide</a>, which builds it with GitHub Actions, without a Mac.</p>
   </details>
 </section>
 
@@ -869,7 +871,7 @@ versionName "1.1"</pre></div>
 
   // Highlight the current section in the table of contents.
   var links = {};
-  document.querySelectorAll('nav.toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  document.querySelectorAll('nav.toc ol a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
