@@ -578,7 +578,7 @@ target.build_configurations.each do |config|
   s = config.build_settings
   s['DEVELOPMENT_TEAM'] = TEAM_ID
   s['CODE_SIGN_ENTITLEMENTS'] = 'App/App.entitlements'
-  s['TARGETED_DEVICE_FAMILY'] = '1'   # iPhone only: no iPad screenshots to provide
+  s['TARGETED_DEVICE_FAMILY'] = '1,2' # iPhone + iPad: iPad screenshots are required
   next unless config.name == 'Release'
   s['CODE_SIGN_STYLE'] = 'Manual'
   s['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
@@ -1102,7 +1102,7 @@ jobs:
     <li>Or take them on the borrowed iPhone (a Pro Max gives the right size directly) or from the simulator in CI (<code>xcrun simctl io booted screenshot</code>).</li>
     <li>They must show the real app: a caption frame is fine, a fake screen is not.</li>
   </ul>
-  <p>With <code>TARGETED_DEVICE_FAMILY = 1</code> (iPhone only), no iPad screenshots are asked for.</p>
+  <p>The app also runs natively on iPad (<code>TARGETED_DEVICE_FAMILY = "1,2"</code>), so the <b>13" iPad</b> size is required too: <b>2064 × 2752</b> portrait (2048 × 2732 is also accepted), 1 to 10 images. Render them with a browser at <b>1032 × 1376</b> CSS pixels and a device scale factor of <b>2</b>, or from an iPad simulator in CI. App Review also tests the app on an iPad, so check that the layout works at that width.</p>
 
   <h3>App Privacy</h3>
   <p>App Store Connect → App Privacy → Get Started. It must match the privacy policy. For Sadikoi, likely:</p>

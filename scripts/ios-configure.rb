@@ -28,7 +28,7 @@ target.build_configurations.each do |config|
   s = config.build_settings
   s['DEVELOPMENT_TEAM'] = TEAM_ID
   s['CODE_SIGN_ENTITLEMENTS'] = 'App/App.entitlements'
-  s['TARGETED_DEVICE_FAMILY'] = '1'   # iPhone only: no iPad screenshots to provide
+  s['TARGETED_DEVICE_FAMILY'] = '1,2' # iPhone + iPad: iPad screenshots are required
   next unless config.name == 'Release'
 
   s['CODE_SIGN_STYLE'] = 'Manual'
