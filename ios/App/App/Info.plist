@@ -43,6 +43,36 @@
       </array>
     </dict>
 	</dict>
+	<!-- No custom encryption (HTTPS only): no export compliance question on each build -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<!-- Background pushes (the "dismiss" messages, see Push notifications in docs/ios.html) -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<!-- Google Sign-In: the iOS client ID, reversed (see Google Sign-In in docs/ios.html) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.XXXXXXXX-xxxxxxxx</string>
+			</array>
+		</dict>
+	</array>
+	<!-- The profile picture picker (<input type="file">) offers "Take Photo":
+	     without this text, the app crashes when it is chosen -->
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo for your profile picture.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a photo for your profile picture.</string>
+	<!-- Languages of the app, shown on the App Store page -->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>fr</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
