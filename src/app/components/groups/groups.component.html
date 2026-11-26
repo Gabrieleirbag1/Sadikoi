@@ -1,4 +1,4 @@
-<div class="groups-header" [hidden]="isMobile">
+<div class="groups-header" [hidden]="isMobile()">
   <span
     class="icon-button"
     [class.active]="view === 'grid'"
@@ -23,6 +23,7 @@
   </span>
 </div>
 <div class="groups-fit">
+@if (loaded()) {
 <section class="groups-container" [class.view-grid]="view === 'grid'" [class.view-list]="view === 'list'">
   @if (view == 'grid') {
     <section class="grid-container">
@@ -114,6 +115,7 @@
     </section>
   }
 </section>
+}
 </div>
 
 <app-group-modal></app-group-modal>

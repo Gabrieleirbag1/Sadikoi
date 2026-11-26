@@ -303,6 +303,29 @@
     .grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/* Touch tablets (iPad): 26vh rows only fill whole rows, which left up to a quarter of the screen empty above
+   the footer menu (2 rows on an upright iPad). The rows share the whole room instead, as many as the height
+   comfortably takes: 2, 3 from 950px, 4 from 1300px. Same container formula as above, which then finds exactly
+   that many rows (the -0.5px keeps rounding from dropping one). Touch screens only: a computer keeps 26vh cards. */
+@media (min-width: 769px) and (hover: none) and (pointer: coarse) {
+    .groups-container.view-grid {
+        --rows: 2;
+        --row: calc((100cqh - 12px - (var(--rows) - 1) * var(--gap)) / var(--rows) - 0.5px);
+    }
+
+    .groups-container.view-grid .group-grid-item {
+        height: var(--row);
+    }
+}
+
+@media (min-width: 769px) and (min-height: 950px) and (hover: none) and (pointer: coarse) {
+    .groups-container.view-grid { --rows: 3; }
+}
+
+@media (min-width: 769px) and (min-height: 1300px) and (hover: none) and (pointer: coarse) {
+    .groups-container.view-grid { --rows: 4; }
+}
+
 /* Mobile (issue #31): the page scrolls as a whole, cards size to their content. */
 @media (max-width: 768px) {
     .groups-container,

@@ -357,6 +357,13 @@ app-gif-picker {
     display: none;
 }
 
+/* Upright tablet (iPad): under the bubbles (QuestionComponent), so the full width instead of a side column. */
+@media (min-width: 769px) and (orientation: portrait) {
+    .chat-container {
+        width: 100%;
+    }
+}
+
 /* Mobile: the chat takes the full width and the height its parent gives it. */
 @media (max-width: 768px) {
     /* Extra room so messages and the input don't touch the hand-drawn border (its corners curve inwards).
