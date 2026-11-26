@@ -802,7 +802,7 @@ APNS_TEAM_ID=TEAMID</pre></div>
 <!-- 9 -->
 <section id="links">
   <h2>Universal Links (links that open the app)</h2>
-  <p>iOS equivalent of the Android App Links: <code>https://sadikoi.missclick.net/group/…</code> and <code>/reset-password/…</code> open the app. <code>deep-link.service.ts</code> already handles <code>appUrlOpen</code> on both platforms: nothing to change in Angular.</p>
+  <p>iOS equivalent of the Android App Links: <code>https://sadikoi.missclick.net/group/…</code> and <code>/reset-password/…</code> open the app. <code>deep-link.service.ts</code> already handles <code>appUrlOpen</code> on both platforms: nothing to change in Angular. On the native side, the <code>SceneDelegate.swift</code> of the Capacitor 8 template already forwards the links (<code>scene(_:continue:)</code>, and <code>willConnectTo</code> when the link launches the app). Same paths as the Android intent filter: the home page, <code>/group/</code> and <code>/reset-password/</code>.</p>
   <ol class="steps">
     <li>The entitlement <code>applinks:sadikoi.missclick.net</code> (<a href="#project">App.entitlements</a>) and the <b>Associated Domains</b> capability on the App ID.</li>
     <li>
@@ -813,6 +813,7 @@ APNS_TEAM_ID=TEAMID</pre></div>
       {
         "appIDs": ["TEAMID.com.missclick.sadikoi"],
         "components": [
+          { "/": "/" },
           { "/": "/group/*" },
           { "/": "/reset-password/*" }
         ]

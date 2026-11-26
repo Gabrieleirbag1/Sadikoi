@@ -6,8 +6,8 @@ import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
 
 /**
- * Mobile app only: when Android opens the app from a site link (an invitation, a password reset email...),
- * show the matching page instead of the home page.
+ * Mobile app only: when Android (App Links) or iOS (Universal Links) opens the app from a site link (an invitation,
+ * a password reset email...), show the matching page instead of the home page.
  */
 @Injectable({
   providedIn: 'root',
@@ -40,7 +40,7 @@ export class DeepLinkService {
       this.logger.error('Ignored invalid deep link:', url);
       return;
     }
-    // Only our own site's links: Android only sends those, but the URL comes from outside the app.
+    // Only our own site's links: Android and iOS only send those, but the URL comes from outside the app.
     if (parsed.host !== this.siteHost) {
       this.logger.error('Ignored deep link to another site:', url);
       return;

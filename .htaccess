@@ -15,6 +15,11 @@
   RewriteRule ^ /index.html [END]
 </IfModule>
 
+# iOS Universal Links: Apple only accepts this file (no extension) as JSON.
+<Files "apple-app-site-association">
+  ForceType application/json
+</Files>
+
 <IfModule mod_headers.c>
   # The page depends on the browser language: caches must keep one copy per language.
   <FilesMatch "^index(\.fr)?\.html$">
