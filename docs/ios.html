@@ -878,7 +878,7 @@ gh secret set SECRETS_TS -R Gabrieleirbag1/Sadikoi &lt; ~/Documents/VSCODE/Sadik
 on:
   workflow_dispatch:
   push:
-    tags: ['ios-v*']
+    tags: ['[0-9]+.[0-9]+.[0-9]+', 'ios-v*']
 
 jobs:
   testflight:
@@ -975,7 +975,7 @@ jobs:
 
   <h3>3. Run it</h3>
   <ul>
-    <li>GitHub → Actions → <b>iOS release</b> → Run workflow, or <code>gh workflow run ios.yml</code>, or push a tag: <code>git tag ios-v1.0.11 &amp;&amp; git push origin ios-v1.0.11</code>.</li>
+    <li>GitHub → Actions → <b>iOS release</b> → Run workflow, or <code>gh workflow run ios.yml</code>, or create a version tag, the same as the Android releases: <code>git tag 1.0.12 &amp;&amp; git push origin 1.0.12</code>, or a GitHub release with a new tag. The tag must equal <code>versionName</code> in <code>android/app/build.gradle</code>, otherwise the workflow stops at its first step.</li>
     <li>Follow it with <code>gh run watch</code>. When it is green, the build shows up in App Store Connect → TestFlight after 5 to 30 minutes of processing. Apple also sends an email if something is wrong in the build (missing purpose string, icon...).</li>
   </ul>
   <details>
@@ -1168,7 +1168,7 @@ jobs:
   <h2>Publish an update</h2>
   <ol class="steps">
     <li>Increase <code>versionName</code> in <code>android/app/build.gradle</code> (shared with iOS by the workflow). The build number is the workflow's run number: it always goes up by itself.</li>
-    <li>Run the <b>iOS release</b> workflow (or push an <code>ios-v…</code> tag).</li>
+    <li>Run the <b>iOS release</b> workflow (or create the version tag, e.g. <code>1.0.12</code>).</li>
     <li>App Store Connect → the app → <b>+</b> next to iOS App → new version with the same number → "What's New in This Version" → choose the build → submit for review.</li>
   </ol>
   <p>Several builds with the same version can be uploaded to TestFlight. A version that is live can't receive new builds: increase <code>versionName</code> first.</p>

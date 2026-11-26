@@ -1,12 +1,13 @@
 # Builds the iOS app on a macOS runner, signs it and uploads it to App Store Connect (TestFlight).
-# See docs/ios.html, "GitHub Actions build". Started by hand or by an ios-v* tag only:
+# See docs/ios.html, "GitHub Actions build". Started by hand or by a version tag (1.0.12, also ios-v1.0.12) only:
 # the repository is public, never run this on pull requests (it uses the signing secrets).
 name: iOS release
 
 on:
   workflow_dispatch:
   push:
-    tags: ['ios-v*']
+    # A version tag, pushed or created with a GitHub release: 1.0.12 (same tags as the Android releases) or ios-v1.0.12.
+    tags: ['[0-9]+.[0-9]+.[0-9]+', 'ios-v*']
 
 permissions:
   contents: read
@@ -22,6 +23,18 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+
+      # The version sent to Apple is versionName (android/app/build.gradle): a tag that says otherwise
+      # stops here instead of uploading the wrong version after the whole build.
+      - name: Check that the tag matches the app version
+        if: github.ref_type == 'tag'
+        run: |
+          VERSION=$(sed -n 's/.*versionName "\(.*\)".*/\1/p' android/app/build.gradle)
+          TAG="${GITHUB_REF_NAME#ios-v}"
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME but versionName is $VERSION in android/app/build.gradle"
+            exit 1
+          fi
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
