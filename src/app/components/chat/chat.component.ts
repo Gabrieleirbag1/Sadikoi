@@ -475,6 +475,13 @@ export class ChatComponent {
     return new Date(message.timestamp).toDateString();
   }
 
+  /** "jeudi 26 novembre 2026" / "Thursday, November 26, 2026": in the app's language (the date pipe has no
+   *  locale registered and always wrote it in English). */
+  protected dayLabel(message: Message): string {
+    const lang = this.translate.getCurrentLang() || this.translate.getFallbackLang() || 'en';
+    return new Date(message.timestamp).toLocaleDateString(lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
   protected isOwnMessage(message: Message): boolean {
     return message.sender.id === this.connectedUser?.id;
   }

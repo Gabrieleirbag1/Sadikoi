@@ -24,7 +24,7 @@
       @let isNewDay = !previous || dayKey(previous) !== dayKey(message);
       @let isFirstOfRun = isNewDay || previous.sender.id !== message.sender.id;
       @if (isNewDay) {
-        <div class="day-separator"><time [attr.datetime]="message.timestamp">{{ message.timestamp | date: 'fullDate' }}</time></div>
+        <div class="day-separator"><time [attr.datetime]="message.timestamp">{{ dayLabel(message) }}</time></div>
       }
       <div class="message-row" [class.own]="isOwnMessage(message)">
         @if (isFirstOfRun) {
