@@ -16,7 +16,14 @@ let nativeInit: Promise<typeof import('@capgo/capacitor-social-login').SocialLog
 function getNativeSocialLogin() {
   nativeInit ??= import('@capgo/capacitor-social-login').then(async ({ SocialLogin }) => {
     // The web client ID is correct here: the Android client ID is only registered in the Google console.
-    await SocialLogin.initialize({ google: { webClientId: secrets.googleClientId } });
+    await SocialLogin.initialize({
+      google: {
+        webClientId: secrets.googleClientId,
+        iOSClientId: secrets.googleIosClientId,
+        // Asks Google for a token meant for the backend (the Web client).
+        iOSServerClientId: secrets.googleClientId,
+      },
+    });
     return SocialLogin;
   });
   return nativeInit;
@@ -49,7 +56,7 @@ export class GoogleLoginComponent implements AfterViewInit {
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
       client_id: secrets.googleClientId,
-      callback: (response: any) => this.handleCredentialResponse(response)
+      callback: (response: any) => this.handleCredentialResponse(response),
     });
 
     const button = document.getElementById('google-signin-button');
@@ -59,7 +66,7 @@ export class GoogleLoginComponent implements AfterViewInit {
     }
     google.accounts.id.renderButton(
       button,
-      { theme: 'outline', size: 'large' }  // customization attributes
+      { theme: 'outline', size: 'large' }, // customization attributes
     );
 
     google.accounts.id.prompt(); // also display the One Tap dialog
