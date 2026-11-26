@@ -1,4 +1,4 @@
-import { afterEveryRender, Component, ElementRef, inject, OnInit, signal } from '@angular/core';
+import { afterEveryRender, Component, DestroyRef, ElementRef, inject, OnInit, signal } from '@angular/core';
 import { GroupsService } from '../../services/groups/groups.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -37,12 +37,23 @@ export class GroupsComponent implements OnInit {
   /** First login of a new account: the rules in short, and how to get a group. */
   protected readonly showWelcome = signal(this.tutorial.shouldWelcome());
   protected groups = signal<Group[]>([]);
+  /** The grid / list only appears with the groups: shown before, the "create a group" card alone would be the
+   *  scroll-snap target, and the browser would stay on it (scrolled to the bottom) once the groups arrive above. */
+  protected readonly loaded = signal(false);
   protected view: ViewState = 'grid';
-  /** On phones only the list exists: no toggle, and a saved 'grid' choice is ignored. */
-  protected readonly isMobile = window.matchMedia('(max-width: 768px)').matches;
+  /** On phones only the list exists: no toggle, and a saved 'grid' choice is ignored. Follows the width: an iPad
+   *  turned, or narrowed by Split View, switches between the two while the page is open. */
+  private readonly mobileQuery = window.matchMedia('(max-width: 768px)');
+  protected readonly isMobile = signal(this.mobileQuery.matches);
 
   constructor() {
     afterEveryRender(() => this.syncNeedsVoteAnimations());
+    const onWidthChange = (event: MediaQueryListEvent) => {
+      this.view = event.matches ? 'list' : this.savedView();
+      this.isMobile.set(event.matches);
+    };
+    this.mobileQuery.addEventListener('change', onWidthChange);
+    inject(DestroyRef).onDestroy(() => this.mobileQuery.removeEventListener('change', onWidthChange));
   }
 
   /**
@@ -66,11 +77,12 @@ export class GroupsComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.fetchGroups();
-    if (this.isMobile) {
-      this.view = 'list';
-      return;
-    }
-    this.changeView(localStorage.getItem('groupsView') as ViewState || 'grid');
+    this.view = this.isMobile() ? 'list' : this.savedView();
+    this.loaded.set(true);
+  }
+
+  private savedView(): ViewState {
+    return localStorage.getItem('groupsView') === 'list' ? 'list' : 'grid';
   }
 
   protected async fetchGroups(): Promise<void> {

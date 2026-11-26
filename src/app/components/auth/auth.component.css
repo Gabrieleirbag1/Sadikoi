@@ -270,6 +270,30 @@ h1 {
   color: var(--muted);
 }
 
+/* Upright tablet (iPad): the wide card side by side with its image only took a third of the height, and the image
+   was too narrow for its bubbles. The form alone instead, like on a phone, at a comfortable width. */
+@media (min-width: 769px) and (orientation: portrait) {
+  .auth-container {
+    width: min(100%, 640px);
+    margin: 0 auto;
+  }
+
+  .side-image-container,
+  .auth-main-container::before {
+    display: none;
+  }
+
+  .auth-main-container {
+    width: 100%;
+  }
+
+  .auth-divider,
+  .form-container,
+  .form-container form {
+    width: 100%;
+  }
+}
+
 /* Mobile: single column, no side image, forms take the full width. */
 @media (max-width: 768px) {
   .auth-container {
