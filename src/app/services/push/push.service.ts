@@ -11,7 +11,7 @@ import { getDeviceId } from '../../utils/device-id';
 import { LoggerService } from '../logger/logger.service';
 import { NotificationSettingsService } from '../notification-settings/notification-settings.service';
 
-/** Android notification channels: same ids as the API (notifications.py). */
+/** Android notification channels: same ids as the API (notifications.py). iOS has no channels. */
 const CHANNELS = [
   { id: 'messages', nameKey: 'notificationSettings.messages' },
   { id: 'questions', nameKey: 'notificationSettings.questions' },
@@ -39,7 +39,7 @@ function notificationId(tag: string): number {
 export type PushPermission = 'granted' | 'denied' | 'unknown';
 
 /**
- * Push notifications (Firebase), mostly for the mobile app:
+ * Push notifications (Firebase on Android, APNs on iOS), mostly for the mobile app:
  * - init(), at launch: opens the right page when a notification is tapped.
  * - start(), once logged in: asks for the permission and sends this phone's token to the API.
  * - clearGroupNotifications(), on every platform: a group seen here (even on the website) leaves the tray
@@ -93,7 +93,10 @@ export class PushService {
       }
       this.permission.set(status.receive === 'granted' ? 'granted' : 'denied');
       if (status.receive === 'granted') {
-        await this.createChannels();
+        // Android only: not implemented on iOS, where it throws and the token would never be sent.
+        if (Capacitor.getPlatform() === 'android') {
+          await this.createChannels();
+        }
         // Fires 'registration' with the token, every time (so it is sent again after a new login).
         await PushNotifications.register();
       }
@@ -161,9 +164,10 @@ export class PushService {
       return;
     }
     try {
-      // Shown by Firebase (app closed or in the background): tagged by the API.
+      // Shown by the system (app closed or in the background): tagged by the API. On iOS there is no tag:
+      // the API sends it as apns-collapse-id, which becomes the notification's id.
       const { notifications } = await PushNotifications.getDeliveredNotifications();
-      const delivered = notifications.filter(n => n.tag && tags.includes(n.tag));
+      const delivered = notifications.filter(n => tags.includes(n.tag ?? n.id));
       if (delivered.length) {
         await PushNotifications.removeDeliveredNotifications({ notifications: delivered });
       }

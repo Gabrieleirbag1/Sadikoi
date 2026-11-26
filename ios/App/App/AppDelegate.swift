@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,6 +32,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+
+    // Push notifications: hands the APNs token (or the error) to the Capacitor push plugin.
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+
+    // Background push from the API ("dismiss"): the group was seen on another device, its notifications
+    // leave this phone's tray. Their identifier is the API's tag (apns-collapse-id). Done here because the
+    // JavaScript doesn't run while the app is in the background (Android: SadikoiMessagingService).
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        guard userInfo["action"] as? String == "dismiss", let tags = userInfo["tags"] as? String else {
+            completionHandler(.noData)
+            return
+        }
+        let ids = tags.split(separator: ",").map(String.init)
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
+        completionHandler(.newData)
     }
 
     func application(_ application: UIApplication,

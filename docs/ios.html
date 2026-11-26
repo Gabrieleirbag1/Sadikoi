@@ -734,60 +734,22 @@ func application(_ application: UIApplication,
   </div>
 
   <h3>API: send to APNs</h3>
-  <p>Put the APNs <code>.p8</code> key on the server next to the Firebase service account (git-ignored), with its Key ID and your Team ID. APNs needs HTTP/2:</p>
-  <div class="code"><div class="label">Sadikoi-API dependencies</div><pre>pip install "httpx[http2]" "PyJWT[crypto]"</pre></div>
-  <div class="code"><div class="label">Sadikoi-API/src/notifications.py (sketch)</div><pre>import time
-import httpx
-import jwt
-
-class ApnsClient:
-    """Sends to Apple directly, for the tokens registered with platform 'ios'."""
-    HOST = 'https://api.push.apple.com'  # production: TestFlight and App Store builds
-    TOPIC = 'com.missclick.sadikoi'
-
-    def __init__(self, key_path: str, key_id: str, team_id: str):
-        self.key_path, self.key_id, self.team_id = key_path, key_id, team_id
-        self._client = httpx.Client(http2=True, timeout=10)
-        self._token, self._issued = None, 0
-
-    def _jwt(self) -&gt; str:
-        # Apple wants a token renewed between 20 and 60 minutes.
-        if not self._token or time.time() - self._issued &gt; 45 * 60:
-            with open(self.key_path) as key:
-                self._issued = int(time.time())
-                self._token = jwt.encode({'iss': self.team_id, 'iat': self._issued}, key.read(),
-                                         algorithm='ES256', headers={'kid': self.key_id})
-        return self._token
-
-    def send(self, token: str, headers: dict, payload: dict) -&gt; str:
-        """Same results as FcmClient.send: 'ok', 'unregistered' or 'error'."""
-        response = self._client.post(f'{self.HOST}/3/device/{token}', json=payload, headers={
-            'authorization': f'bearer {self._jwt()}', 'apns-topic': self.TOPIC, **headers})
-        if response.status_code == 200:
-            return 'ok'
-        reason = response.json().get('reason', '') if response.content else ''
-        if response.status_code == 410 or reason in ('BadDeviceToken', 'Unregistered'):
-            return 'unregistered'
-        log(f"APNs error {response.status_code}: {reason}", level="ERROR")
-        return 'error'
-
-
-def build_apns_message(title: str, body: str, route: str, channel: str, tag: str | None = None):
-    """Same content as build_message, in Apple's format: (headers, payload)."""
-    headers = {'apns-push-type': 'alert', 'apns-priority': '10'}
-    aps = {'alert': {'title': title, 'body': body}, 'sound': 'default'}
-    if tag:
-        headers['apns-collapse-id'] = tag   # replaces the previous notification with this tag
-        aps['thread-id'] = tag              # groups them in the tray
-    return headers, {'aps': aps, 'route': route, 'channel': channel, 'tag': tag}
-
-
-def build_apns_dismiss(tags: set[str]):
-    """Background push, low priority, dropped after a day (like build_dismiss_message)."""
-    headers = {'apns-push-type': 'background', 'apns-priority': '5',
-               'apns-expiration': str(int(time.time()) + 86400)}
-    return headers, {'aps': {'content-available': 1}, 'action': 'dismiss', 'tags': ','.join(sorted(tags))}</pre></div>
-  <p>Then, where the (token, message) pairs are built (<code>_pairs_for</code>, <code>deliver</code>), pick the format and the sender from <code>PushTokenModel.platform</code>: <code>fcm.send</code> for <code>android</code>, <code>apns.send</code> for <code>ios</code>. Invalid tokens are cleaned up the same way.</p>
+  <p>In <code>Sadikoi-API/src/notifications.py</code>, <code>ApnsClient</code> sends to Apple over HTTP/2 (<code>httpx[http2]</code>), authenticated with a JWT signed by the APNs <code>.p8</code> key (<code>PyJWT</code>), renewed every 45 minutes. The notifications are still built once, in the FCM format (<code>build_message</code>, <code>build_dismiss_message</code>): <code>to_apns()</code> converts them when they are sent.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>FCM message</th><th>APNs request</th></tr>
+    <tr><td><code>notification</code> (title, body)</td><td><code>aps.alert</code>, <code>sound: default</code>, <code>apns-push-type: alert</code>, priority 10</td></tr>
+    <tr><td><code>data.tag</code></td><td><code>apns-collapse-id</code> (the notification's identifier on the phone) and <code>aps.thread-id</code></td></tr>
+    <tr><td><code>data</code> (route, channel, tag)</td><td>Top level of the payload, read by the app as <code>notification.data</code></td></tr>
+    <tr><td>Data only (dismiss)</td><td><code>aps.content-available: 1</code>, <code>apns-push-type: background</code>, priority 5, expires after a day</td></tr>
+  </table>
+  </div>
+  <p><code>_send_all</code> looks up each token's <code>platform</code> (sent by the app at registration): <code>ios</code> goes through <code>apns</code>, the rest through <code>fcm</code>. Invalid tokens (<code>410</code>, <code>BadDeviceToken</code>, <code>Unregistered</code>) are deleted, as with Firebase. Without the APNs files, iPhones get nothing and Android works as before.</p>
+  <p>Put the files next to the Firebase service account, in <code>Sadikoi-API/src/</code> (git-ignored, mounted read-only by <code>server_sadikoi.sh</code>, left out of the image):</p>
+  <div class="code"><div class="label">Sadikoi-API/src/.apns-key.p8</div><pre>(the AuthKey_XXXXXXXXXX.p8 file of the "Sadikoi APNs" key, renamed)</pre></div>
+  <div class="code"><div class="label">Sadikoi-API/src/.apns.secrets</div><pre>APNS_KEY_ID=XXXXXXXXXX
+APNS_TEAM_ID=TEAMID</pre></div>
+  <p>Then rebuild the image (new dependencies in <code>requirements.txt</code>) and restart the container. The API uses the production APNs server (<code>api.push.apple.com</code>), which serves TestFlight and App Store builds.</p>
   <details>
     <summary>Option B: Firebase on iOS too</summary>
     <ul>
