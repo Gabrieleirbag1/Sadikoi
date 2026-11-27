@@ -168,6 +168,28 @@
     white-space: pre-wrap; /* keeps the line breaks typed with Shift+Enter */
 }
 
+/* A message of a blocked user, or of someone who blocked me. */
+.message-blocked {
+    font-style: italic;
+    color: var(--muted);
+}
+
+/* Reset PaperCSS's button look: it reads as text, a tap shows the message. */
+.message-reveal,
+.message-reveal:hover,
+.message-reveal:focus {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    background: none;
+    font-size: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
 /* "@member" in a message: blue, opens the member's profile card. */
 .chat-mention {
     color: var(--secondary);
