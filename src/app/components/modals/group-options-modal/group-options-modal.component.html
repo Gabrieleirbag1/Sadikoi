@@ -1,6 +1,6 @@
 @if (isOpen()) {
   <div class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog border" role="document">
+    <div class="modal-dialog border" role="document" (scroll)="userProfileService.hide(tooltipScope)">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title">{{ config().title }}</h1>
@@ -68,13 +68,14 @@
                 </div>
               </form>
             </div>
-            <div class="group-users-list-container">
+            <!-- The card is fixed to the screen, so it would stay behind when the list scrolls: it closes instead. -->
+            <div class="group-users-list-container" (scroll)="userProfileService.hide(tooltipScope)">
               <div class="group-users-list">
                 <span>{{ 'group.users' | translate }}</span>
                 @for (user of group()?.users; track user.id) {
                   <div
                     class="group-user user-profile-anchor border"
-                    (mouseenter)="userProfileService.show(user, tooltipScope)"
+                    (mouseenter)="showProfile(user, $event)"
                     (mouseleave)="userProfileService.hide(tooltipScope)"
                   >
                     <div class="group-user-info">
@@ -106,7 +107,13 @@
                       </button>
                     </div>
                     @if (userProfileService.isOpenFor(user, tooltipScope)) {
-                      <div class="user-profile-popover" role="tooltip" appKeepInViewport>
+                      <div
+                        class="user-profile-popover group-user-popover"
+                        role="tooltip"
+                        appKeepInViewport
+                        [style.top.px]="profilePos().top"
+                        [style.left.px]="profilePos().left"
+                      >
                         <app-user-profile [user]="user" [group]="group()"></app-user-profile>
                       </div>
                     }
