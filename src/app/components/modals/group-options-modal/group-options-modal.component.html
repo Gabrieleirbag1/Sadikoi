@@ -78,7 +78,7 @@
                     (mouseenter)="showProfile(user, $event)"
                     (mouseleave)="userProfileService.hide(tooltipScope)"
                   >
-                    <div class="group-user-info">
+                    <div class="group-user-info" (click)="showProfile(user, $event, true)">
                       <app-profile-image-picker
                         [currentImageUrl]="user.profile_picture"
                         [onlyDisplay]="true"

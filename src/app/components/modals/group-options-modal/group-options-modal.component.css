@@ -216,7 +216,8 @@
     white-space: normal;
 }
 
-/* A member's card: fixed to the screen (top/left set from the hovered row), so the scrolling list can't cut it. */
-.group-user-popover {
+/* A member's card: fixed to the screen (top/left set from the hovered row), so the scrolling list can't cut it.
+   Both classes: user-profile-tooltip.css is loaded after this file and its `position: absolute` would win. */
+.user-profile-popover.group-user-popover {
     position: fixed;
 }

@@ -81,12 +81,18 @@ export class GroupOptionsComponent implements OnChanges {
 
   /**
    * The card is fixed to the screen, not placed inside the member list: the list scrolls (overflow), so a card
-   * inside it was cut off and added a scrollbar. It opens under the hovered row; KeepInViewport keeps it on screen.
+   * inside it was cut off and added a scrollbar. It opens under the hovered (or clicked) row; KeepInViewport keeps
+   * it on screen.
    */
-  protected showProfile(user: User, event: MouseEvent): void {
-    const row = (event.currentTarget as HTMLElement).getBoundingClientRect();
+  protected showProfile(user: User, event: MouseEvent, now = false): void {
+    const row = (event.currentTarget as HTMLElement).closest('.group-user')!.getBoundingClientRect();
     this.profilePos.set({ top: row.bottom, left: row.left });
-    this.userProfileService.show(user, this.tooltipScope);
+    // Hover opens after a delay; a click (or tap on phones) opens right away.
+    if (now) {
+      this.userProfileService.showNow(user, this.tooltipScope);
+    } else {
+      this.userProfileService.show(user, this.tooltipScope);
+    }
   }
 
   constructor() {
