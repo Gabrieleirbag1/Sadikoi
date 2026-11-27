@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../../environments/environment';
 import { BlockUserService } from './block-user.service';
+import { WebsocketService } from '../websocket/websocket.service';
+import { Subject } from 'rxjs';
 
 describe('BlockUserService', () => {
   let service: BlockUserService;
@@ -9,7 +11,12 @@ describe('BlockUserService', () => {
   const url = `${environment.apiUrl}auth/security/blocks/`;
   const bob = { id: 2, username: 'bob' } as User;
 
+  const blocksChanged = new Subject<void>();
+
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [{ provide: WebsocketService, useValue: { listen: vi.fn(() => blocksChanged) } }],
+    });
     service = TestBed.inject(BlockUserService);
     backend = TestBed.inject(HttpTestingController);
   });
@@ -22,6 +29,18 @@ describe('BlockUserService', () => {
     await loading;
     expect([...service.blocked()]).toEqual([2]);
     expect([...service.blockedBy()]).toEqual([3, 4]);
+  });
+
+  it('reloads when the other side blocks or unblocks me (socket)', async () => {
+    const loading = service.load();
+    backend.expectOne(url).flush({ success: true, message: '', content: { blocked: [], blocked_by: [] } });
+    await loading;
+
+    blocksChanged.next();
+    backend.expectOne(url).flush({ success: true, message: '', content: { blocked: [], blocked_by: [2] } });
+    await Promise.resolve();
+    expect([...service.blockedBy()]).toEqual([2]);
+    expect(TestBed.inject(WebsocketService).listen).toHaveBeenCalledOnce();
   });
 
   it('block, then unblock', async () => {

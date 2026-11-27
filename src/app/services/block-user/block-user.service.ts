@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoggerService } from '../logger/logger.service';
+import { WebsocketService } from '../websocket/websocket.service';
 
 interface Blocks {
   blocked: number[];
@@ -19,6 +20,8 @@ interface Blocks {
 export class BlockUserService {
   private readonly httpClient = inject(HttpClient);
   private readonly logger = inject(LoggerService);
+  private readonly injector = inject(Injector);
+  private listening = false;
   private readonly url = `${environment.apiUrl}auth/security/blocks/`;
 
   private readonly _blocked = signal<ReadonlySet<number>>(new Set());
@@ -29,7 +32,16 @@ export class BlockUserService {
   /** The user the confirmation modal asks about. */
   public readonly target = this._target.asReadonly();
 
+  /**
+   * Fetches the blocks. The first call also starts listening to 'blocks_changed' (sent to both users on a block or
+   * unblock), so an open chat updates on the other side too, and on my other devices. Not done in the constructor:
+   * the modal in app.html creates this service at launch, and the socket must only connect once logged in.
+   */
   public async load(): Promise<void> {
+    if (!this.listening) {
+      this.listening = true;
+      this.injector.get(WebsocketService).listen('blocks_changed').subscribe(() => this.load());
+    }
     try {
       const response = await firstValueFrom(this.httpClient.get<ApiResponse>(this.url, { withCredentials: true }));
       const blocks = response.content as Blocks;
