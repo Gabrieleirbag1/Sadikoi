@@ -317,6 +317,19 @@ describe('ChatComponent', () => {
       expect(content().textContent?.trim()).toBe('chat.blockedYou');
     });
 
+    it('unblocked by the sender: their messages are fetched again', async () => {
+      await setBlocks([], [2]);
+      show({ content: '', blocked_you: true });
+      const getMessages = vi.fn().mockResolvedValue([{ id: 1, content: 'secret', sender: bob, timestamp: '2025-01-01T10:00:00' }]);
+      TestBed.inject(ChatService).getMessages = getMessages;
+      await setBlocks([], []);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(getMessages).toHaveBeenCalledWith(1, undefined);
+      expect(content().textContent?.trim()).toBe('secret');
+    });
+
     it('other messages show as usual', () => {
       show({});
       expect(content().textContent?.trim()).toBe('secret');

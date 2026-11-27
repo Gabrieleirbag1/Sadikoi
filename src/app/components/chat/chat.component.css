@@ -63,9 +63,10 @@
     cursor: pointer;
 }
 
-.chat-avatar-btn:hover,
-.chat-avatar-btn:focus,
-.chat-avatar-btn:active {
+/* Same :not() chain as PaperCSS's [type=button] hover/focus rules (border + shadow), or they win. */
+.chat-avatar-btn:not(:disabled):not(.disabled):hover,
+.chat-avatar-btn:not(:disabled):not(.disabled):focus,
+.chat-avatar-btn:not(:disabled):not(.disabled):active {
     border: none;
     background: none;
     box-shadow: none;
@@ -174,10 +175,12 @@
     color: var(--muted);
 }
 
-/* Reset PaperCSS's button look: it reads as text, a tap shows the message. */
+/* Reset PaperCSS's button look: it reads as text, a tap shows the message.
+   Same :not() chain as PaperCSS's hover/focus rules (shadow, border), or they win. */
 .message-reveal,
-.message-reveal:hover,
-.message-reveal:focus {
+.message-reveal:not(:disabled):not(.disabled):hover,
+.message-reveal:not(:disabled):not(.disabled):focus,
+.message-reveal:not(:disabled):not(.disabled):active {
     display: block;
     margin: 0;
     padding: 0;

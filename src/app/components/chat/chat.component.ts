@@ -178,6 +178,16 @@ export class ChatComponent {
       afterNextRender(() => this.autoScroll(), { injector: this.injector });
     });
 
+    // Unblocked by someone: the API had sent their messages without content, fetch them again.
+    effect(() => {
+      const blockedBy = this.blockUserService.blockedBy();
+      untracked(() => {
+        const group = this.group();
+        const stale = this.messages().some(message => message.blocked_you && !blockedBy.has(message.sender.id));
+        if (group && stale) this.loadMessages(group.id, this.questionId());
+      });
+    });
+
     // The thread changes height (full screen animation, keyboard): stay on the latest messages.
     afterNextRender(() => {
       const el = this.messagesContainer()?.nativeElement;

@@ -94,10 +94,12 @@
   margin-left: auto;
 }
 
-/* Reset PaperCSS's [type=button] styles: under 520px they centre it and add a 1rem bottom margin. */
+/* Reset PaperCSS's [type=button] styles: under 520px they centre it and add a 1rem bottom margin.
+   Same :not() chain as its hover/focus rules (shadow, border), or they win. */
 .user-profile-action,
-.user-profile-action:hover,
-.user-profile-action:focus {
+.user-profile-action:not(:disabled):not(.disabled):hover,
+.user-profile-action:not(:disabled):not(.disabled):focus,
+.user-profile-action:not(:disabled):not(.disabled):active {
   margin: 0;
   padding: 0;
   border: none;
