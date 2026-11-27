@@ -4,6 +4,7 @@ import { HeaderComponent } from "./components/layout/header/header.component";
 import { FooterComponent } from "./components/layout/footer/footer.component";
 import { SettingsComponent } from "./components/settings/settings.component";
 import { ReportUserModalComponent } from "./components/modals/report-user-modal/report-user-modal.component";
+import { BlockUserModalComponent } from "./components/modals/block-user-modal/block-user-modal.component";
 import { ImagePreviewModalComponent } from "./components/modals/image-preview-modal/image-preview-modal.component";
 import { ErrorModalComponent } from "./components/error-modal/error-modal.component";
 import { LoadingComponent } from "./components/loading/loading.component";
@@ -17,7 +18,7 @@ import { OpenInAppBannerComponent } from "./components/open-in-app-banner/open-i
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, ErrorModalComponent, SettingsComponent, ReportUserModalComponent, ImagePreviewModalComponent, LoadingComponent, ConnectionErrorComponent, OpenInAppBannerComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ErrorModalComponent, SettingsComponent, ReportUserModalComponent, BlockUserModalComponent, ImagePreviewModalComponent, LoadingComponent, ConnectionErrorComponent, OpenInAppBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
