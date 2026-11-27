@@ -141,7 +141,9 @@
     "mentionSuggestions": "Members to mention",
     "send": "Send",
     "gif": "GIF",
-    "report": "!"
+    "report": "!",
+    "blockedMessage": "Message from a blocked user. Tap to show it.",
+    "blockedYou": "This user blocked you"
   },
   "gifPicker": {
     "recent": "Recent",
@@ -234,7 +236,10 @@
     "showLess": "Show less",
     "items": "Items",
     "memberSince": "Member since",
-    "report": "Report"
+    "report": "Report",
+    "block": "Block",
+    "unblock": "Unblock",
+    "blockedYou": "This user blocked you"
   },
   "reportUser": {
     "title": "Report {{username}}",
@@ -257,6 +262,12 @@
     "submit": "Report",
     "cancel": "Cancel"
   },
+  "blockUser": {
+    "title": "Block {{username}}?",
+    "description": "Their messages will be hidden in the chat (tap one to read it anyway) and you won't get notifications for them anymore. You can unblock them at any time from their profile.",
+    "confirm": "Block",
+    "cancel": "Cancel"
+  },
   "notification": {
     "genericError": "Something went wrong.",
     "networkError": "Server unreachable. Check your connection.",
@@ -268,7 +279,9 @@
     "feedbackSent": "Thanks for your feedback!",
     "userReported": "User reported. Thank you!",
     "invitationCopied": "Invitation link copied!",
-    "invitationCopyFailed": "Couldn't copy the invitation link."
+    "invitationCopyFailed": "Couldn't copy the invitation link.",
+    "userBlocked": "User blocked",
+    "userUnblocked": "User unblocked"
   },
   "forgotPassword": {
     "title": "Forgot your password?",
