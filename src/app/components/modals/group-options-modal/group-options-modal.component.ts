@@ -36,6 +36,8 @@ export class GroupOptionsComponent implements OnChanges {
 
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly tooltipScope = 'group-options-modal';
+  /** Where the member's card opens on screen: under the hovered row (see showProfile). */
+  protected readonly profilePos = signal({ top: 0, left: 0 });
   protected readonly removeUserConfirmId = 'remove-user-confirm';
   protected readonly resetDelayConfirmId = 'reset-delay-confirm';
 
@@ -76,6 +78,16 @@ export class GroupOptionsComponent implements OnChanges {
       || themes.length !== savedThemes.length
       || themes.some(theme => !savedThemes.includes(theme));
   });
+
+  /**
+   * The card is fixed to the screen, not placed inside the member list: the list scrolls (overflow), so a card
+   * inside it was cut off and added a scrollbar. It opens under the hovered row; KeepInViewport keeps it on screen.
+   */
+  protected showProfile(user: User, event: MouseEvent): void {
+    const row = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.profilePos.set({ top: row.bottom, left: row.left });
+    this.userProfileService.show(user, this.tooltipScope);
+  }
 
   constructor() {
     // Each opening starts from the saved group: what was typed and not saved before closing is dropped.

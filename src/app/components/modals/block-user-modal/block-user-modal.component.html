@@ -1,0 +1,17 @@
+@if (blockUserService.target(); as user) {
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="block-user-title" (click)="close()">
+    <div class="modal-dialog border" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h1 id="block-user-title" class="modal-title">{{ 'blockUser.title' | translate: { username: user.username } }}</h1>
+        <span class="modal-close" [attr.aria-label]="'modal.close' | translate" (click)="close()">X</span>
+      </div>
+      <p class="block-user-description">{{ 'blockUser.description' | translate }}</p>
+      <div class="modal-footer">
+        <button type="button" class="background-danger" [disabled]="submitting()" (click)="confirm()">
+          {{ 'blockUser.confirm' | translate }}
+        </button>
+        <button type="button" (click)="close()">{{ 'blockUser.cancel' | translate }}</button>
+      </div>
+    </div>
+  </div>
+}

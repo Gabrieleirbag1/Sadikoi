@@ -63,9 +63,10 @@
     cursor: pointer;
 }
 
-.chat-avatar-btn:hover,
-.chat-avatar-btn:focus,
-.chat-avatar-btn:active {
+/* Same :not() chain as PaperCSS's [type=button] hover/focus rules (border + shadow), or they win. */
+.chat-avatar-btn:not(:disabled):not(.disabled):hover,
+.chat-avatar-btn:not(:disabled):not(.disabled):focus,
+.chat-avatar-btn:not(:disabled):not(.disabled):active {
     border: none;
     background: none;
     box-shadow: none;
@@ -166,6 +167,30 @@
 .message-content {
     margin: 0;
     white-space: pre-wrap; /* keeps the line breaks typed with Shift+Enter */
+}
+
+/* A message of a blocked user, or of someone who blocked me. */
+.message-blocked {
+    font-style: italic;
+    color: var(--muted);
+}
+
+/* Reset PaperCSS's button look: it reads as text, a tap shows the message.
+   Same :not() chain as PaperCSS's hover/focus rules (shadow, border), or they win. */
+.message-reveal,
+.message-reveal:not(:disabled):not(.disabled):hover,
+.message-reveal:not(:disabled):not(.disabled):focus,
+.message-reveal:not(:disabled):not(.disabled):active {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    background: none;
+    font-size: inherit;
+    text-align: left;
+    cursor: pointer;
 }
 
 /* "@member" in a message: blue, opens the member's profile card. */

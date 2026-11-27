@@ -22,7 +22,7 @@ The backend lives in a separate repository: [Gabrieleirbag1/Sadikoi-API](https:/
 - Real-time group chat with GIFs (Klipy)
 - Push notifications on Android, with per-group settings
 - Profile pictures, account settings, account deletion
-- Bug reports, suggestions and user reports
+- Bug reports, suggestions, user reports and blocking
 - English and French
 - Android app built from the same code with Capacitor, with links that open the app directly
 

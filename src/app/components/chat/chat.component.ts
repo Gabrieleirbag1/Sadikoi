@@ -10,6 +10,7 @@ import { PushService } from '../../services/push/push.service';
 import { ProfileImagePickerComponent } from '../profile-image-picker/profile-image-picker.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ReportUserService } from '../../services/report-user/report-user.service';
+import { BlockUserService } from '../../services/block-user/block-user.service';
 import { UserProfileService } from '../../services/user-profile/user-profile.service';
 import { UserProfileComponent } from '../tooltips/user-profile/user-profile.component';
 import { KeepInViewportDirective } from '../../directives/keep-in-viewport.directive';
@@ -55,10 +56,13 @@ export class ChatComponent {
   private readonly injector = inject(Injector);
   private readonly translate = inject(TranslateService);
   private readonly reportUserService = inject(ReportUserService);
+  private readonly blockUserService = inject(BlockUserService);
   protected readonly userProfileService = inject(UserProfileService);
   protected readonly profileScope = 'chat';
 
   protected messages = signal<Message[]>([]);
+  /** Messages of blocked users that were tapped to be shown anyway. */
+  protected readonly revealed = signal<ReadonlySet<number>>(new Set());
   protected showGifPicker = signal(false);
   /** Phone: the chat takes the bubbles' room. Only kept while the group is open (never saved). */
   protected readonly fullscreen = signal(false);
@@ -172,6 +176,16 @@ export class ChatComponent {
     effect(() => {
       this.messages();
       afterNextRender(() => this.autoScroll(), { injector: this.injector });
+    });
+
+    // Unblocked by someone: the API had sent their messages without content, fetch them again.
+    effect(() => {
+      const blockedBy = this.blockUserService.blockedBy();
+      untracked(() => {
+        const group = this.group();
+        const stale = this.messages().some(message => message.blocked_you && !blockedBy.has(message.sender.id));
+        if (group && stale) this.loadMessages(group.id, this.questionId());
+      });
     });
 
     // The thread changes height (full screen animation, keyboard): stay on the latest messages.
@@ -489,6 +503,20 @@ export class ChatComponent {
   protected reportMessage(message: Message): void {
     const group = this.group();
     this.reportUserService.open(message.sender, `[group: ${group?.name ?? ''}, message: ${message.id}]`, group?.id, message.id);
+  }
+
+  /** The sender blocked me: the API sends no content for their past messages, live ones are hidden here. */
+  protected isBlockedYou(message: Message): boolean {
+    return !!message.blocked_you || this.blockUserService.blockedBy().has(message.sender.id);
+  }
+
+  /** I blocked the sender: the message is masked until tapped. */
+  protected isMasked(message: Message): boolean {
+    return this.blockUserService.blocked().has(message.sender.id) && !this.revealed().has(message.id);
+  }
+
+  protected reveal(message: Message): void {
+    this.revealed.update(ids => new Set(ids).add(message.id));
   }
 
   protected isGifMessage(content: string): boolean {

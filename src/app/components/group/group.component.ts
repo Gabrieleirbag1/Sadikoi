@@ -13,6 +13,7 @@ import { ModalService } from '../../services/modal/modal.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { PushService } from '../../services/push/push.service';
+import { BlockUserService } from '../../services/block-user/block-user.service';
 import { copyToClipboard } from '../../utils/copy-to-clipboard';
 import { environment } from '../../../environments/environment';
 import { Capacitor } from '@capacitor/core';
@@ -33,6 +34,7 @@ export class GroupComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly pushService = inject(PushService);
+  private readonly blockUserService = inject(BlockUserService);
   private readonly modalService = inject(ModalService);
   private readonly websocketService = inject(WebsocketService);
   private readonly destroyRef = inject(DestroyRef);
@@ -87,6 +89,8 @@ export class GroupComponent implements OnInit, OnDestroy {
   }
 
   protected async fetchGroup(groupId: number): Promise<void> {
+    // Who I blocked and who blocked me, for the chat and the profile cards (also refreshed after a reconnection).
+    void this.blockUserService.load();
     try {
       const group = await this.groupsService.getGroup(groupId);
       if (group) this.group.set(group);

@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChatComponent } from './chat.component';
 import { ChatService } from '../../services/chat/chat.service';
+import { BlockUserService } from '../../services/block-user/block-user.service';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { environment } from '../../../environments/environment';
 
 describe('ChatComponent', () => {
   let component: ChatComponent;
@@ -271,6 +274,65 @@ describe('ChatComponent', () => {
       typeIn('@a');
       press('Escape');
       expect(suggestions()).toEqual([]);
+    });
+  });
+
+  describe('blocked users', () => {
+    const bob = { id: 2, username: 'bob', items: [], role: 'member' } as unknown as User;
+    const content = () => fixture.nativeElement.querySelector('.message .message-content, .message .message-blocked') as HTMLElement;
+
+    const setBlocks = async (blocked: number[], blocked_by: number[]) => {
+      const loading = TestBed.inject(BlockUserService).load();
+      TestBed.inject(HttpTestingController).expectOne(`${environment.apiUrl}auth/security/blocks/`)
+        .flush({ success: true, message: '', content: { blocked, blocked_by } });
+      await loading;
+    };
+
+    const show = (message: Partial<Message>) => {
+      fixture.componentRef.setInput('group', { id: 1, users: [bob] } as unknown as Group);
+      (component as any).messages.set([{ id: 1, content: 'secret', sender: bob, timestamp: '2025-01-01T10:00:00', ...message }]);
+      fixture.detectChanges();
+    };
+
+    it('a message of someone I blocked is masked, a tap shows it', async () => {
+      await setBlocks([2], []);
+      show({});
+      expect(content().tagName).toBe('BUTTON');
+      expect(content().textContent?.trim()).toBe('chat.blockedMessage');
+
+      content().click();
+      fixture.detectChanges();
+      expect(content().textContent?.trim()).toBe('secret');
+    });
+
+    it('a message of someone who blocked me cannot be shown', async () => {
+      await setBlocks([], [2]);
+      show({});
+      expect(content().tagName).toBe('P');
+      expect(content().textContent?.trim()).toBe('chat.blockedYou');
+    });
+
+    it('the history flag from the API is enough', () => {
+      show({ content: '', blocked_you: true });
+      expect(content().textContent?.trim()).toBe('chat.blockedYou');
+    });
+
+    it('unblocked by the sender: their messages are fetched again', async () => {
+      await setBlocks([], [2]);
+      show({ content: '', blocked_you: true });
+      const getMessages = vi.fn().mockResolvedValue([{ id: 1, content: 'secret', sender: bob, timestamp: '2025-01-01T10:00:00' }]);
+      TestBed.inject(ChatService).getMessages = getMessages;
+      await setBlocks([], []);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(getMessages).toHaveBeenCalledWith(1, undefined);
+      expect(content().textContent?.trim()).toBe('secret');
+    });
+
+    it('other messages show as usual', () => {
+      show({});
+      expect(content().textContent?.trim()).toBe('secret');
     });
   });
 });

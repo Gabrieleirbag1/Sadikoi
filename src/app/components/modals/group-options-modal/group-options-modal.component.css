@@ -215,3 +215,8 @@
     line-height: 1.3;
     white-space: normal;
 }
+
+/* A member's card: fixed to the screen (top/left set from the hovered row), so the scrolling list can't cut it. */
+.group-user-popover {
+    position: fixed;
+}

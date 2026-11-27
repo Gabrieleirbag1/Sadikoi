@@ -25,7 +25,7 @@
     </div>
   }
 
-  <!-- "Show more" and "Report" share one row, so the bubble doesn't grow a line for each. -->
+  <!-- "Show more", "Block" and "Report" share one row, so the bubble doesn't grow a line for each. -->
   @if ((items().length && hiddenCount() > 0) || canReport()) {
     <div class="user-profile-footer">
       @if (items().length && hiddenCount() > 0) {
@@ -34,7 +34,16 @@
         </button>
       }
       @if (canReport()) {
-        <button type="button" class="user-profile-report" (click)="reportUser()">{{ 'userProfile.report' | translate }}</button>
+        <div class="user-profile-actions">
+          @if (isBlocked()) {
+            <button type="button" class="user-profile-action" [disabled]="unblocking()" (click)="unblockUser()">{{ 'userProfile.unblock' | translate }}</button>
+          } @else if (hasBlockedMe()) {
+            <span class="user-profile-blocked-you">{{ 'userProfile.blockedYou' | translate }}</span>
+          } @else {
+            <button type="button" class="user-profile-action" (click)="blockUser()">{{ 'userProfile.block' | translate }}</button>
+          }
+          <button type="button" class="user-profile-action" (click)="reportUser()">{{ 'userProfile.report' | translate }}</button>
+        </div>
       }
     </div>
   }

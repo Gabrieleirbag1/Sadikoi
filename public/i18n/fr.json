@@ -141,7 +141,9 @@
     "mentionSuggestions": "Membres à mentionner",
     "send": "Envoyer",
     "gif": "GIF",
-    "report": "!"
+    "report": "!",
+    "blockedMessage": "Message d'un utilisateur bloqué. Appuie pour l'afficher.",
+    "blockedYou": "Cet utilisateur vous a bloqué"
   },
   "gifPicker": {
     "recent": "Récents",
@@ -234,7 +236,10 @@
     "showLess": "Voir moins",
     "items": "Objets",
     "memberSince": "Membre depuis",
-    "report": "Signaler"
+    "report": "Signaler",
+    "block": "Bloquer",
+    "unblock": "Débloquer",
+    "blockedYou": "Cet utilisateur vous a bloqué"
   },
   "reportUser": {
     "title": "Signaler {{username}}",
@@ -257,6 +262,12 @@
     "submit": "Signaler",
     "cancel": "Annuler"
   },
+  "blockUser": {
+    "title": "Bloquer {{username}} ?",
+    "description": "Ses messages seront masqués dans le chat (appuie dessus pour les lire quand même) et tu ne recevras plus de notifications pour eux. Tu peux le débloquer à tout moment depuis son profil.",
+    "confirm": "Bloquer",
+    "cancel": "Annuler"
+  },
   "notification": {
     "genericError": "Une erreur s'est produite.",
     "networkError": "Serveur injoignable. Vérifie ta connexion.",
@@ -268,7 +279,9 @@
     "feedbackSent": "Merci pour votre retour !",
     "userReported": "Utilisateur signalé. Merci !",
     "invitationCopied": "Lien d'invitation copié !",
-    "invitationCopyFailed": "Impossible de copier le lien d'invitation."
+    "invitationCopyFailed": "Impossible de copier le lien d'invitation.",
+    "userBlocked": "Utilisateur bloqué",
+    "userUnblocked": "Utilisateur débloqué"
   },
   "forgotPassword": {
     "title": "Mot de passe oublié ?",

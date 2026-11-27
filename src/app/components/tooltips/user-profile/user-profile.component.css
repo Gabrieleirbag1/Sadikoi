@@ -84,18 +84,42 @@
   margin: 0;
 }
 
-/* Reset PaperCSS's [type=button] styles: under 520px they centre it and add a 1rem bottom margin. */
-.user-profile-report,
-.user-profile-report:hover,
-.user-profile-report:focus {
-  margin: 0 0 0 auto;
+/* Block and Report, pushed to the right of the row, on one line when there is room. */
+.user-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px 12px;
+  margin-left: auto;
+}
+
+/* Reset PaperCSS's [type=button] styles: under 520px they centre it and add a 1rem bottom margin.
+   Same :not() chain as its hover/focus rules (shadow, border), or they win. */
+.user-profile-action,
+.user-profile-action:not(:disabled):not(.disabled):hover,
+.user-profile-action:not(:disabled):not(.disabled):focus,
+.user-profile-action:not(:disabled):not(.disabled):active {
+  margin: 0;
   padding: 0;
   border: none;
   box-shadow: none;
   transform: none;
   background: none;
   font-size: 0.75rem;
+  line-height: 1.5;
   color: var(--muted);
   text-decoration: underline;
   cursor: pointer;
+}
+
+.user-profile-action:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.user-profile-blocked-you {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
 }
